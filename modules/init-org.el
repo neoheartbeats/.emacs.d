@@ -45,10 +45,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Org ui
+;; Org UI
 ;;
 ;; Use unicode symbols
-(setq org-ellipsis " ▼")
+(setq org-ellipsis " …")
 (use-package org-bullets
   :diminish t
   :hook
@@ -158,7 +158,7 @@
 	    ("" "mhchem" t)
         ("" "mathtools" t)
 	    ("" "gensymb" t)
-	    ("" "notomath" t)))
+	    ("" "txfonts" t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

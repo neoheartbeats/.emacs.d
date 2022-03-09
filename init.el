@@ -1,3 +1,17 @@
+;; init.el --- Lyrith: loading first -*- lexical-binding: t -*-
+;;
+;; Copyright © 2022 Ilya.w
+;;
+;; Author: Ilya.w <ilya.w@icloud.com>
+;;
+;; This file is not part of GNU Emacs.
+;;
+;; Commentary:
+;;
+;; Essentials must be loaded first.
+;;
+;; Code:
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Package management
@@ -6,8 +20,8 @@
 (require 'package)
 (setq package-archives
       '(("org" . "https://orgmode.org/elpa/")
-	("elpa" . "https://elpa.gnu.org/packages/")
-	("melpa" . "https://melpa.org/packages/")))
+	    ("elpa" . "https://elpa.gnu.org/packages/")
+	    ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
 ;; Bootstrap "use-package"
@@ -20,21 +34,30 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Load modules
 (add-to-list 'load-path "~/.emacs.d/modules/")
+
 (require 'core)
 (require 'defaults)
 (require 'ui)
 (require 'init-org)
 (require 'enhance)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Set custom file
 (setq custom-file "~/.emacs.d/modules/custom.el")
 (load custom-file 'no-error 'no-message)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Temporary code
 (setq py-python-command "python3"
       python-shell-interpreter "python3"
       org-babel-python-command "python3"
       python-indent-guess-indent-offset-verbose nil)
-
 (use-package vterm-toggle
   :init
   (use-package vterm)
@@ -42,17 +65,16 @@
   (vterm-toggle-fullscreen-p nil)
   :config
   (add-to-list 'display-buffer-alist
-	       '((lambda (b _)
-		   (with-current-buffer b
-		     (equal major-mode
-			    'vterm-mode)))
-		 (display-buffer-reuse-window
-		  display-buffer-at-bottom)
-		 (reusable-frames . visible)
-		 (window-height . 0.3)))
+	           '((lambda (b _)
+		           (with-current-buffer b
+		             (equal major-mode
+			                'vterm-mode)))
+		         (display-buffer-reuse-window
+		          display-buffer-at-bottom)
+		         (reusable-frames . visible)
+		         (window-height . 0.3)))
   :bind
   ("M-`" . vterm-toggle-cd))
-
 (use-package emms
   :init
   (require 'emms-setup)
@@ -60,10 +82,12 @@
   (emms-default-players)
   :bind
   ("s-p s" . (lambda ()
-	       (interactive)
-	       (emms-add-directory "~/org/Emms/")
-	       (emms-shuffle)
-	       (emms-start)))
+	           (interactive)
+	           (emms-add-directory "~/org/Emms/")
+	           (emms-shuffle)
+	           (emms-start)))
   ("s-p n" . emms-next)
   ("s-p p" . emms-previous)
   ("s-p t" . emms-stop))
+
+;; init.el ends here

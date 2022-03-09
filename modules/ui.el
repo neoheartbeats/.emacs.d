@@ -28,12 +28,14 @@
     (setq initial-frame-alist
           '((top . 0)
 	        (width . 100)
-	        (height . 50))))
+	        (height . 50)
+            (alpha . (90 . 60)))))
 
 (setq default-frame-alist
       '((top . 0)
 	    (width . 100)
-	    (height . 50)))
+	    (height . 50)
+        (alpha . (90 . 60))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -60,6 +62,8 @@
 		            :font "Noto Serif CJK SC"
 		            :height 150)
 (set-fontset-font t 'han "Noto Serif CJK SC")
+(set-fontset-font t 'japanese-jisx0208 "Noto Serif CJK JP")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
