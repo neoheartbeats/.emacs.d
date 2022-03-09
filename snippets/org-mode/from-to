@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: from to
+# key: ft
+# --
+\left.$1\right|_{$2}^{$3}$0

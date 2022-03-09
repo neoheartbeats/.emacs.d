@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: modulus
+# key: mm
+# --
+\left|$1\right|$0

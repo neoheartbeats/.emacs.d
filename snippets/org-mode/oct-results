@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: oct-results
+# key: <o
+# --
+#+begin_src octave :results output
+$0
+#+end_src

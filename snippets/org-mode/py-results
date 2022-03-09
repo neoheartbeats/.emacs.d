@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: python block
+# key: <p
+# --
+#+begin_src python :results output
+$0
+#+end_src

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: mDD
+# key: \mathrm{d}
+# --
+\partial

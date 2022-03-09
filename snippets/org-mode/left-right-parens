@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: \left(\right)
+# key: pp
+# --
+\left($1\right)$0
