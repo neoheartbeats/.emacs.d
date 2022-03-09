@@ -21,6 +21,9 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 
+;; Remove title text
+(setq frame-title-format nil)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Set default frame size & position
@@ -39,14 +42,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Identity
-;;
 ;; Default message startup
 (defun display-startup-echo-area-message ()
   (message "Funding for this program is made possible by viewers like you."))
-
-;; Set frame title
-(setq frame-title-format "Lyrith is built for you.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
