@@ -39,9 +39,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Identity
+;;
 ;; Default message startup
 (defun display-startup-echo-area-message ()
   (message "Funding for this program is made possible by viewers like you."))
+
+;; Set frame title
+(setq frame-title-format "Lyrith is built for you.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -89,23 +94,21 @@
 ;; Mode line
 ;;
 ;; Diminish uneccessary modes
-(use-package diminish)
-(defun diminish-modes ()
-  (require 'diminish)
-  (diminish 'company-mode)
-  (diminish 'global-company-mode)
-  (diminish 'smartparens-mode)
-  (diminish 'yas-minor-mode)
-  (diminish 'rainbow-delimiters-mode)
-  (diminish 'org-fragtog-mode)
-  (diminish 'org-bullets-mode)
-  (diminish 'org-fancy-priorities-mode)
-  (diminish 'visual-line-mode)
-  (diminish 'org-indent-mode)
-  (diminish 'auto-revert-mode))
-(add-hook 'after-init-hook 'diminish-modes)
+(use-package diminish
+  :hook
+  (after-init . (lambda () (diminish 'company-mode)
+                  (diminish 'global-company-mode)
+                  (diminish 'smartparens-mode)
+                  (diminish 'yas-minor-mode)
+                  (diminish 'rainbow-delimiters-mode)
+                  (diminish 'org-fragtog-mode)
+                  (diminish 'org-bullets-mode)
+                  (diminish 'org-fancy-priorities-mode)
+                  (diminish 'visual-line-mode)
+                  (diminish 'org-indent-mode)
+                  (diminish 'auto-revert-mode))))
 
-;; Smart mode line
+;; Smart mode line looks fruity
 (use-package smart-mode-line
   :init
   (sml/setup))

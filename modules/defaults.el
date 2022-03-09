@@ -123,9 +123,6 @@
 ;; Start without default scratch buffer
 (setq initial-buffer-choice nil)
 
-;; Clean frame title
-(setq frame-title-format nil)
-
 ;; Inhibit tooltips
 (tooltip-mode -1)
 
