@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: lim n
-# key: limn
-# --
-\lim_{n\to\infty}$0

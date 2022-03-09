@@ -2,6 +2,8 @@
 /.gitattributes
 /auto-save-list/
 /eln-cache/
-/elpa/
+/packages/
 /org-roam.db
 /transient/
+/.org-id-locations
+/request/
