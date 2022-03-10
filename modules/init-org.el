@@ -35,11 +35,13 @@
 
 ;; Enhance LaTeX editing
 (use-package org-fragtog
+  :delight
   :hook
   (org-mode . org-fragtog-mode))
 
 ;; Searching synonyms
 (use-package powerthesaurus
+  :delight
   :bind
   ("M-p" . powerthesaurus-lookup-synonyms-dwim))
 
@@ -50,13 +52,13 @@
 ;; Use unicode symbols
 (setq org-ellipsis " …")
 (use-package org-bullets
-  :diminish t
+  :diminish org-bullets-mode
   :hook
   (org-mode . org-bullets-mode)
   :custom
   (org-bullets-bullet-list '("▼")))
 (use-package org-fancy-priorities
-  :diminish t
+  :diminish org-fancy-priorities-mode
   :hook
   (org-mode . org-fancy-priorities-mode)
   :custom
@@ -154,11 +156,11 @@
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
-      '(("" "physics" t)
-	    ("" "mhchem" t)
-        ("" "mathtools" t)
-	    ("" "gensymb" t)
-	    ("" "txfonts" t)))
+      '((nil "physics" t)
+	    (nil "mhchem" t)
+        (nil "mathtools" t)
+	    (nil "gensymb" t)
+	    (nil "txfonts" t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

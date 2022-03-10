@@ -86,14 +86,14 @@
 (global-visual-line-mode 1)
 
 ;; Show line numbers in prog-mode
-(add-hook 'prog-mode-hook 'linum-mode)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 ;; Show lambda as λ
-(defun prog-icons ()
+(defun toggle-prog-icons ()
   (setq prettify-symbols-alist
 	'(("lambda" . "λ")))
   (prettify-symbols-mode))
-(add-hook 'prog-mode-hook 'prog-icons)
+(add-hook 'prog-mode-hook 'toggle-prog-icons)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -120,24 +120,11 @@
 ;; Inhibit default messages
 (setq inhibit-startup-message t)
 
-;; Start without default scratch buffer
-(setq initial-buffer-choice nil)
-
 ;; Inhibit tooltips
 (tooltip-mode -1)
 
 ;; Remove cursor in inactive windows
 (setq cursor-in-non-selected-windows nil)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Default init modes
-;;
-;; Default init mode to text mode
-(setq initial-major-mode 'text-mode)
-
-;; Default major mode to text mode
-(setq default-major-mode 'text-mode)
 
 (provide 'defaults)
 

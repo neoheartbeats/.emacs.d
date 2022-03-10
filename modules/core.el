@@ -47,6 +47,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Server mode support
+(server-start)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Excess pre-loaded functions
+;;
+;; hide-mode-line-mode
+(use-package hide-mode-line)
 
 (provide 'core)
 

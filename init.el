@@ -14,7 +14,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Package management
+;; Package pre-loaded process
 ;;
 ;; Determine package loading sources
 (require 'package)
@@ -24,7 +24,7 @@
 	    ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
-;; Bootstrap "use-package"
+;; Bootstrap `use-package`
 (unless package-archive-contents
   (package-refresh-contents))
 (unless (package-installed-p 'use-package)
@@ -37,13 +37,20 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Load modules
+;;
+;; Load path
 (add-to-list 'load-path "~/.emacs.d/modules/")
 
+;; Load components
 (require 'core)
 (require 'defaults)
+(require 'enhance)
 (require 'ui)
 (require 'init-org)
-(require 'enhance)
+(require 'init-lisp)
+(require 'init-python)
+(require 'init-term)
+(require 'init-emms)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -54,40 +61,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Temporary code
-(setq py-python-command "python3"
-      python-shell-interpreter "python3"
-      org-babel-python-command "python3"
-      python-indent-guess-indent-offset-verbose nil)
-(use-package vterm-toggle
-  :init
-  (use-package vterm)
-  :custom
-  (vterm-toggle-fullscreen-p nil)
-  :config
-  (add-to-list 'display-buffer-alist
-	           '((lambda (b _)
-		           (with-current-buffer b
-		             (equal major-mode
-			                'vterm-mode)))
-		         (display-buffer-reuse-window
-		          display-buffer-at-bottom)
-		         (reusable-frames . visible)
-		         (window-height . 0.3)))
-  :bind
-  ("M-`" . vterm-toggle-cd))
-(use-package emms
-  :init
-  (require 'emms-setup)
-  (emms-all)
-  (emms-default-players)
-  :bind
-  ("s-p s" . (lambda ()
-	           (interactive)
-	           (emms-add-directory "~/org/Emms/")
-	           (emms-shuffle)
-	           (emms-start)))
-  ("s-p n" . emms-next)
-  ("s-p p" . emms-previous)
-  ("s-p t" . emms-stop))
 
 ;; init.el ends here

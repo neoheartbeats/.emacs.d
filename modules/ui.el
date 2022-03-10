@@ -8,7 +8,7 @@
 ;;
 ;; Commentary:
 ;;
-;; Essentials must be loaded first.
+;; UI setup.
 ;;
 ;; Code:
 
@@ -26,27 +26,24 @@
 ;; Set default frame size & position
 (if (display-graphic-p)
     (setq initial-frame-alist
-          '((top . 0)
-	        (width . 100)
-	        (height . 50)
-            (alpha . (90 . 60)))))
-
+          '((top . 65)
+	        (width . 95)
+	        (height . 42))))
 (setq default-frame-alist
-      '((top . 0)
-	    (width . 100)
-	    (height . 50)
-        (alpha . (90 . 60))))
+      '((top . 65)
+	    (width . 95)
+	    (height . 42)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Identity
 ;;
-;; Default message startup
+;; Default startup message
 (defun display-startup-echo-area-message ()
   (message "Funding for this program is made possible by viewers like you."))
 
 ;; Set title text
-(setq frame-title-format "GccEmacs@28.0.91 | Lyrith is built for you.")
+(setq frame-title-format "GccEmacs@28.0.91. Lyrith is built for you.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -59,29 +56,31 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Rainbow delimiters
+(use-package rainbow-delimiters
+  :diminish rainbow-delimiters-mode
+  :hook
+  (prog-mode . rainbow-delimiters-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Font settings
 (set-face-attribute 'default nil
 		            :font "FIRA CODE"
-		            :height 150)
-(set-face-attribute 'variable-pitch nil
-		            :font "Noto Serif CJK SC"
-		            :height 150)
-(set-fontset-font t 'han "Noto Serif CJK SC")
-(set-fontset-font t 'japanese-jisx0208 "Noto Serif CJK JP")
-
+		            :height 155)
+(set-fontset-font t 'han "Heiti SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modus themes
 (use-package modus-themes
-  :diminish t
+  :delight
   :init
   (modus-themes-load-themes)
   (modus-themes-load-vivendi)
   :custom
-  (modus-themes-variable-pitch-ui t)
   (modus-themes-mode-line '(borderless))
-  (modus-themes-syntax '(yellow-comments green-strings))
+  (modus-themes-syntax '(green-strings))
   (modus-themes-completions 'opinionated)
   (modus-themes-hl-line '(underline))
   (modus-themes-paren-match '(bold intense))
@@ -93,25 +92,15 @@
 ;;
 ;; Mode line
 ;;
-;; Diminish uneccessary modes
+;; Diminish native minor modes
 (use-package diminish
+  :config
+  (defun diminish-minor-mode ()
+    (diminish 'visual-line-mode)
+    (diminish 'org-indent-mode)
+    (diminish 'auto-revert-mode))
   :hook
-  (after-init . (lambda () (diminish 'company-mode)
-                  (diminish 'global-company-mode)
-                  (diminish 'smartparens-mode)
-                  (diminish 'yas-minor-mode)
-                  (diminish 'rainbow-delimiters-mode)
-                  (diminish 'org-fragtog-mode)
-                  (diminish 'org-bullets-mode)
-                  (diminish 'org-fancy-priorities-mode)
-                  (diminish 'visual-line-mode)
-                  (diminish 'org-indent-mode)
-                  (diminish 'auto-revert-mode))))
-
-;; Smart mode line looks fruity
-(use-package smart-mode-line
-  :init
-  (sml/setup))
+  (after-init . diminish-minor-mode))
 
 (provide 'ui)
 
