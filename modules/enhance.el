@@ -18,7 +18,6 @@
 ;;
 ;; Company setup
 (use-package company
-  :diminish company-mode
   :init
   (global-company-mode 1)
   :custom
@@ -49,7 +48,6 @@
 
 ;; Completion for parens
 (use-package smartparens
-  :diminish smartparens-mode
   :hook
   (prog-mode . smartparens-mode)
   (org-mode . smartparens-mode)
@@ -59,7 +57,6 @@
 
 ;; YASnippet for snippets
 (use-package yasnippet
-  :diminish yas-minor-mode
   :init
   (yas-global-mode 1)
   :custom
@@ -68,22 +65,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Enhance minibuffer
-;;
-;; Better context menu
-;;(use-package embark
-;;  :custom
-;;  (prefix-help-command 'embark-prefix-help-command)
-;;  :bind
-;;  ("C-;" . embark-act))
-
-;; Better comment
-(use-package marginalia
-  :init
-  (marginalia-mode 1))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Enhance searching
 ;;
 ;; Consult setup
 (use-package consult

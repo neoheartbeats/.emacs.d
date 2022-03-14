@@ -26,24 +26,26 @@
 ;; Set default frame size & position
 (if (display-graphic-p)
     (setq initial-frame-alist
-          '((top . 65)
-	        (width . 95)
-	        (height . 42))))
+          '((top . 55)
+	        (width . 90)
+	        (height . 45)
+            (alpha . (90 . 60)))))
 (setq default-frame-alist
-      '((top . 65)
-	    (width . 95)
-	    (height . 42)))
+      '((top . 55)
+	    (width . 90)
+	    (height . 45)
+        (alpha . (90 . 60))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Identity
-;;
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-  (message "Funding for this program is made possible by viewers like you."))
+  (message "Funding for this program was made possible by viewers like you."))
 
-;; Set title text
-(setq frame-title-format "GccEmacs@28.0.91. Lyrith is built for you.")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Clean frame title
+(setq frame-title-format nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -66,15 +68,14 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-		            :font "FIRA CODE"
-		            :height 155)
-(set-fontset-font t 'han "Heiti SC")
+		            :font "Input Mono"
+		            :height 150)
+(set-fontset-font t 'han "Noto Sans CJK SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modus themes
 (use-package modus-themes
-  :delight
   :init
   (modus-themes-load-themes)
   (modus-themes-load-vivendi)
@@ -90,17 +91,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Mode line
-;;
-;; Diminish native minor modes
-(use-package diminish
-  :config
-  (defun diminish-minor-mode ()
-    (diminish 'visual-line-mode)
-    (diminish 'org-indent-mode)
-    (diminish 'auto-revert-mode))
-  :hook
-  (after-init . diminish-minor-mode))
+;; Hide mode line
+(setq-default mode-line-format nil)
 
 (provide 'ui)
 

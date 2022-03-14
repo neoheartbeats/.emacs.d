@@ -14,13 +14,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Environment check
-(if (not (eq system-type 'darwin))
-    (progn (message-box "Wrong system! This setup only supports macOS.")
-	   (kill-emacs)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Encoding system
 ;;
 ;; Default UTF-8 encoding
@@ -30,7 +23,7 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
-;; Use lexical binding
+;; Default lexical binding
 (setq-default lexical-binding t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -43,18 +36,6 @@
 ;;
 ;; Font ligature support
 (mac-auto-operator-composition-mode 1)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Server mode support
-(server-start)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Excess pre-loaded functions
-;;
-;; hide-mode-line-mode
-(use-package hide-mode-line)
 
 (provide 'core)
 

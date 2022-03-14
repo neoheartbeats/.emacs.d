@@ -18,13 +18,14 @@
 ;;
 ;; Determine package loading sources
 (require 'package)
+(setq package-user-dir "~/.emacs.d/packages")
 (setq package-archives
       '(("org" . "https://orgmode.org/elpa/")
 	    ("elpa" . "https://elpa.gnu.org/packages/")
 	    ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
-;; Bootstrap `use-package`
+;; Bootstrap `use-package'
 (unless package-archive-contents
   (package-refresh-contents))
 (unless (package-installed-p 'use-package)
@@ -47,19 +48,11 @@
 (require 'enhance)
 (require 'ui)
 (require 'init-org)
-(require 'init-lisp)
-(require 'init-python)
-(require 'init-term)
-(require 'init-emms)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Set custom file
 (setq custom-file "~/.emacs.d/modules/custom.el")
 (load custom-file 'no-error 'no-message)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Temporary code
 
 ;; init.el ends here

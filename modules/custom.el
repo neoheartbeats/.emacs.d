@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(embark dired diminish geiser-mit yasnippet vertico use-package smartparens rainbow-delimiters powerthesaurus org-roam org-fragtog org-fancy-priorities org-bullets orderless modus-themes magit emms consult company))
+   '(embark dired geiser-mit yasnippet vertico use-package smartparens rainbow-delimiters powerthesaurus org-roam org-fragtog org-bullets orderless modus-themes magit emms consult company))
  '(warning-suppress-log-types '((comp) (comp) (modus-themes)))
  '(warning-suppress-types '((comp) (comp) (comp) (modus-themes))))
 (custom-set-faces

@@ -39,12 +39,6 @@
   :hook
   (org-mode . org-fragtog-mode))
 
-;; Searching synonyms
-(use-package powerthesaurus
-  :delight
-  :bind
-  ("M-p" . powerthesaurus-lookup-synonyms-dwim))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org UI
@@ -57,12 +51,6 @@
   (org-mode . org-bullets-mode)
   :custom
   (org-bullets-bullet-list '("▼")))
-(use-package org-fancy-priorities
-  :diminish org-fancy-priorities-mode
-  :hook
-  (org-mode . org-fancy-priorities-mode)
-  :custom
-  (org-fancy-priorities-list '("🔴" "🟡" "🟢")))
 
 ;; Prettify symbols
 (defun org-icons ()
@@ -182,23 +170,7 @@
   ("<s-up>" . org-roam-dailies-goto-previous-note)
   ("<s-down>" . org-roam-dailies-goto-next-note)
   :config
-  (org-roam-setup)
-  (add-to-list 'display-buffer-alist
-               '("\\*org-roam\\*"
-		         (display-buffer-in-side-window)
-		         (side . right)
-		         (slot . 0)
-		         (window-width . 0.42)
-		         (window-parameters . ((no-other-window . t)
-                                       (no-delete-other-windows . t)))))
-  (defun display-backlink-latex (node)
-    (org--latex-preview-region (point-min) (point-max)))
-  (eval-after-load 'org-roam
-    (advice-add 'org-roam-reflinks-section
-		        :after #'display-backlink-latex))
-  :hook
-  (after-init . org-roam-dailies-goto-today)
-  (org-roam-backlinks-mode . visual-line-mode))
+  (org-roam-setup))
 
 (provide 'init-org)
 

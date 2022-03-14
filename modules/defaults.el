@@ -31,8 +31,8 @@
 (global-set-key (kbd "s-s") 'save-buffer)
 (global-set-key (kbd "s-q") 'save-buffers-kill-emacs)
 (global-set-key (kbd "s-w") (lambda ()
-			      (interactive)
-			      (kill-buffer (current-buffer))))
+			                  (interactive)
+			                  (kill-buffer (current-buffer))))
 (global-set-key (kbd "<s-right>") 'next-buffer)
 (global-set-key (kbd "<s-left>") 'previous-buffer)
 
@@ -43,8 +43,8 @@
 ;; File management
 (global-set-key (kbd "s-n") 'find-file)
 (global-set-key (kbd "C-c p") (lambda ()
-				(interactive)
-				(find-file "~/.emacs.d/init.el")))
+				                (interactive)
+				                (find-file "~/.emacs.d/init.el")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -91,7 +91,7 @@
 ;; Show lambda as λ
 (defun toggle-prog-icons ()
   (setq prettify-symbols-alist
-	'(("lambda" . "λ")))
+	    '(("lambda" . "λ")))
   (prettify-symbols-mode))
 (add-hook 'prog-mode-hook 'toggle-prog-icons)
 
