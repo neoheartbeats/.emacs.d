@@ -32,11 +32,6 @@
 (setq mac-option-modifier 'meta
       mac-command-modifier 'super)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Font ligature support
-(mac-auto-operator-composition-mode 1)
-
 (provide 'core)
 
 ;; core.el ends here

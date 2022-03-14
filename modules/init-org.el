@@ -170,7 +170,9 @@
   ("<s-up>" . org-roam-dailies-goto-previous-note)
   ("<s-down>" . org-roam-dailies-goto-next-note)
   :config
-  (org-roam-setup))
+  (org-roam-setup)
+  :hook
+  (after-init . org-roam-dailies-goto-today))
 
 (provide 'init-org)
 
