@@ -26,13 +26,15 @@
 ;; Set default frame size & position
 (if (display-graphic-p)
     (setq initial-frame-alist
-          '((top . 55)
-	        (width . 90)
+          '((top . 60)
+            (left . 150)
+	        (width . 120)
 	        (height . 45)
             (alpha . (90 . 60)))))
 (setq default-frame-alist
-      '((top . 55)
-	    (width . 90)
+      '((top . 60)
+        (left . 150)
+	    (width . 120)
 	    (height . 45)
         (alpha . (90 . 60))))
 
@@ -45,7 +47,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Clean frame title
+;;
+;; Set frame text
 (setq frame-title-format nil)
+
+;; Setup transparent titles
+(use-package ns-auto-titlebar
+  :init
+  (ns-auto-titlebar-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -67,10 +76,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Font settings
-(set-face-attribute 'default nil
-		            :font "Input Mono"
-		            :height 150)
-(set-fontset-font t 'han "Noto Sans CJK SC")
+(set-frame-font "Input Mono-15")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

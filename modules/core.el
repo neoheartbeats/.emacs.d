@@ -32,6 +32,11 @@
 (setq mac-option-modifier 'meta
       mac-command-modifier 'super)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Setup pixel scrolling
+(pixel-scroll-precision-mode)
+
 (provide 'core)
 
 ;; core.el ends here

@@ -36,7 +36,7 @@
 (global-set-key (kbd "<s-right>") 'next-buffer)
 (global-set-key (kbd "<s-left>") 'previous-buffer)
 
-;; Window management
+;; Window & frame management
 (global-set-key (kbd "s-e") 'delete-window)
 (global-set-key (kbd "s-m") 'toggle-frame-fullscreen)
 

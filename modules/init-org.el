@@ -21,7 +21,7 @@
 
 ;; Open org files with previewing
 (setq org-startup-with-inline-images t)
-(setq org-startup-with-latex-preview t)
+;; (setq org-startup-with-latex-preview t)
 
 ;; Use indent mode
 (setq org-startup-indented t)
@@ -32,12 +32,6 @@
 ;;
 ;; Enhance inserting headings
 (org-insert-heading-respect-content t)
-
-;; Enhance LaTeX editing
-(use-package org-fragtog
-  :delight
-  :hook
-  (org-mode . org-fragtog-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -55,17 +49,12 @@
 ;; Prettify symbols
 (defun org-icons ()
   (setq prettify-symbols-alist
-	    '(("lambda" . "λ")
-	      (":PROPERTIES:" . "≡")
-	      (":ID:" . "i")
-	      (":END:" . "-")
-	      ("#+TITLE:" . "T")
-          ("#+title:" . "T")
-	      ("#+begin_src" . "»")
-	      ("#+end_src" . "»")
+	    '(("#+title:" . "T")
+          (":PROPERTIES:" . "≡")
+	      ("#+BEGIN_SRC" . "»")
+	      ("#+END_SRC" . "»")
           ("#+RESULTS:" . ":")
-          ("#+attr_org:" . "⌘")
-	      (":ROAM_ALIASES:" . "@")))
+          ("#+ATTR_ORG:" . "⌘")))
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'org-icons)
 
@@ -92,7 +81,6 @@
 
 ;; Shortcut to display images
 (global-set-key (kbd "C-x p") 'org-display-inline-images)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -122,33 +110,28 @@
 ;;
 ;; Org LaTeX
 ;;
-;; Set preview caches directory
-(setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
-
-;; Set preview process
-(setq org-preview-latex-default-process 'imagemagick)
-(setq org-preview-latex-process-alist
-      '((imagemagick
-	     :programs
-	     ("latex" "convert")
-	     :description "pdf > png"
-	     :image-input-type "pdf"
-	     :image-output-type "png"
-	     :image-size-adjust
-	     (1.0 . 1.0)
-	     :latex-compiler
-	     ("xelatex -interaction nonstopmode -output-directory %o %f")
-	     :image-converter
-	     ("convert -density %D -trim -antialias %f -quality 100 %O"))))
-(plist-put org-format-latex-options :scale 1.0)
+;; Use xenops to replace built-in latex-preview program
+(use-package xenops
+  :config
+  (setq xenops-math-image-scale-factor 1.8)
+  (setq xenops-cache-directory "~/.cache/xenops/")
+  (setq xenops-math-latex-max-tasks-in-flight 64)
+  (setq xenops-tooltip-delay 0)
+  :hook
+  (org-mode . xenops-mode))
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
-      '((nil "physics" t)
-	    (nil "mhchem" t)
-        (nil "mathtools" t)
-	    (nil "gensymb" t)
-	    (nil "txfonts" t)))
+      '(("" "physics" t)
+	    ("" "mhchem" t)
+        ("" "mathtools" t)
+	    ("" "gensymb" t)
+        ("" "txfonts" t)))
+
+;; Setup CDLaTeX
+(use-package cdlatex
+  :hook
+  (org-mode . org-cdlatex-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
