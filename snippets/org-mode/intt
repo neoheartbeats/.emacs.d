@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: intt
-# key: intt
-# --
-\int_{$1}^{$2}$3\,\mathrm{d}$0
