@@ -34,8 +34,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Setup pixel scrolling
-(pixel-scroll-precision-mode)
+;; Font ligatures support
+(mac-auto-operator-composition-mode 1)
 
 (provide 'core)
 

@@ -113,8 +113,8 @@
 ;; Use xenops to replace built-in latex-preview program
 (use-package xenops
   :config
-  (setq xenops-math-image-scale-factor 1.8)
-  (setq xenops-cache-directory "~/.cache/xenops/")
+  (setq xenops-math-image-scale-factor 1.2)
+  (setq xenops-cache-directory "~/.emacs.d/xenops/")
   (setq xenops-math-latex-max-tasks-in-flight 64)
   (setq xenops-tooltip-delay 0)
   :hook
