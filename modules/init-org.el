@@ -8,20 +8,18 @@
 ;;
 ;; Commentary:
 ;;
-;; Essentials must be loaded first.
+;; Org mode setup.
 ;;
 ;; Code:
-
-(require 'org)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org init
+(require 'org)
 (setq org-directory "~/org/")
 
 ;; Open org files with previewing
 (setq org-startup-with-inline-images t)
-;; (setq org-startup-with-latex-preview t)
 
 ;; Use indent mode
 (setq org-startup-indented t)
@@ -38,13 +36,13 @@
 ;; Org UI
 ;;
 ;; Use unicode symbols
-(setq org-ellipsis " …")
+(setq org-ellipsis " ▼")
 (use-package org-bullets
   :diminish org-bullets-mode
   :hook
   (org-mode . org-bullets-mode)
   :custom
-  (org-bullets-bullet-list '("▼")))
+  (org-bullets-bullet-list '("✿")))
 
 ;; Prettify symbols
 (defun org-icons ()
@@ -65,7 +63,7 @@
     (0 (prog1 ()
 	     (compose-region
 	      (match-beginning 1)
-	      (match-end 1) "•"))))))
+	      (match-end 1) "◉"))))))
 
 ;; Pretty entities
 (setq org-pretty-entities t)
@@ -73,6 +71,9 @@
 
 ;; Hide drawers
 (add-hook 'org-mode-hook 'org-hide-drawer-all)
+
+;; Hide emphasis markers
+(setq org-hide-emphasis-markers t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

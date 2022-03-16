@@ -36,7 +36,7 @@
 	    ("C-p" . company-select-previous)
 	    ("C-n" . company-select-next)))
 
-;; Use list as completion style
+;; Use listed completion style
 (use-package vertico
   :init
   (vertico-mode 1))

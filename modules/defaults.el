@@ -8,7 +8,7 @@
 ;;
 ;; Commentary:
 ;;
-;; Essentials must be loaded first.
+;; Modified built-in functions.
 ;;
 ;; Code:
 
@@ -44,7 +44,7 @@
 (global-set-key (kbd "s-n") 'find-file)
 (global-set-key (kbd "C-c p") (lambda ()
 				                (interactive)
-				                (find-file "~/.emacs.d/modules/")))
+				                (find-file "~/.emacs.d/init.el")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
