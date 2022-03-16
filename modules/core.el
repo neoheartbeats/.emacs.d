@@ -35,6 +35,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Font ligatures support
+(setq mac-auto-operator-composition-characters "!\"#$%&'()*+,-./:<=>?@[\\]^_`{|}~")
 (mac-auto-operator-composition-mode 1)
 
 (provide 'core)
