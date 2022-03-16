@@ -27,13 +27,13 @@
 (if (display-graphic-p)
     (setq initial-frame-alist
           '((top . 70)
-            (left . 180)
+            (left . 160)
 	        (width . 120)
 	        (height . 42)
             (alpha . (90 . 60)))))
 (setq default-frame-alist
       '((top . 70)
-        (left . 180)
+        (left . 160)
 	    (width . 120)
 	    (height . 42)
         (alpha . (90 . 60))))
