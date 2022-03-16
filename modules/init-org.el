@@ -24,6 +24,9 @@
 ;; Use indent mode
 (setq org-startup-indented t)
 
+;; Show section numbers
+(add-hook 'org-mode-hook 'org-num-mode)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org editor
@@ -36,13 +39,11 @@
 ;; Org UI
 ;;
 ;; Use unicode symbols
-(setq org-ellipsis " ▼")
 (use-package org-bullets
-  :diminish org-bullets-mode
   :hook
   (org-mode . org-bullets-mode)
   :custom
-  (org-bullets-bullet-list '("✿")))
+  (org-bullets-bullet-list '("§")))
 
 ;; Prettify symbols
 (defun org-icons ()
@@ -63,7 +64,7 @@
     (0 (prog1 ()
 	     (compose-region
 	      (match-beginning 1)
-	      (match-end 1) "◉"))))))
+	      (match-end 1) "○"))))))
 
 ;; Pretty entities
 (setq org-pretty-entities t)
@@ -157,6 +158,13 @@
   (org-roam-setup)
   :hook
   (after-init . org-roam-dailies-goto-today))
+
+;; Mixed pitch mode
+(use-package mixed-pitch
+  :config
+  (setq mixed-pitch-set-height 120)
+  :hook
+  (org-mode . mixed-pitch-mode))
 
 (provide 'init-org)
 

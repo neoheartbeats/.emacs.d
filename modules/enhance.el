@@ -74,7 +74,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Better git
+;; Excellent git client
 (use-package magit)
 
 (provide 'enhance)

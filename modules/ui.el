@@ -28,15 +28,13 @@
     (setq initial-frame-alist
           '((top . 70)
             (left . 160)
-	        (width . 120)
-	        (height . 42)
-            (alpha . (90 . 60)))))
+	        (width . 150)
+	        (height . 40))))
 (setq default-frame-alist
       '((top . 70)
         (left . 160)
-	    (width . 120)
-	    (height . 42)
-        (alpha . (90 . 60))))
+	    (width . 150)
+	    (height . 40)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -58,7 +56,7 @@
 (setq-default cursor-type '(bar . 1))
 
 ;; Highlight lines
-(global-hl-line-mode 1)
+;; (global-hl-line-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -71,7 +69,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Font settings
-(set-frame-font "FIRA CODE-15.5")
+(set-face-attribute 'default nil
+                    :font "M PLUS 1 Code"
+                    :height 165)
+
+(set-face-attribute 'variable-pitch nil
+                    :font "Times"
+                    :height 180)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -79,7 +83,7 @@
 (use-package modus-themes
   :init
   (modus-themes-load-themes)
-  (modus-themes-load-vivendi)
+  (modus-themes-load-operandi)
   :custom
   (modus-themes-mode-line '(borderless))
   (modus-themes-syntax '(green-strings))
