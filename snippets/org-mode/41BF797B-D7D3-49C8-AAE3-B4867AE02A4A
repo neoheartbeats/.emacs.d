@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: rm
+# key: rm
+# --
+\\mathrm{$1}$0

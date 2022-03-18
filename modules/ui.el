@@ -1,4 +1,4 @@
-;; ui.el --- Lyrith: loading first -*- lexical-binding: t -*-
+;; ui.el --- Credits: loading first -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -23,31 +23,20 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Set default frame size & position
-(if (display-graphic-p)
-    (setq initial-frame-alist
-          '((top . 70)
-            (left . 160)
-	        (width . 150)
-	        (height . 40))))
-(setq default-frame-alist
-      '((top . 70)
-        (left . 160)
-	    (width . 150)
-	    (height . 40)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Default startup message
 (defun display-startup-echo-area-message ()
   (message "Funding for this program was made possible by viewers like you."))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Clean frame title
+;; Frame title setup
 ;;
-;; Set frame text
-(setq frame-title-format nil)
+;; Show icon & full path in title bar
+(setq frame-title-format
+      '(:eval
+        (if buffer-file-name
+            (abbreviate-file-name buffer-file-name)
+          "%b")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -55,8 +44,10 @@
 (blink-cursor-mode -1)
 (setq-default cursor-type '(bar . 1))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Highlight lines
-;; (global-hl-line-mode 1)
+(add-hook 'prog-mode-hook 'hl-line-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -70,12 +61,19 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-                    :font "M PLUS 1 Code"
-                    :height 165)
+                    :font "FIRA CODE"
+                    :height 155)
 
 (set-face-attribute 'variable-pitch nil
                     :font "Times"
                     :height 180)
+
+(set-fontset-font "fontset-default" 'han "Songti SC")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Improve the readability by increasing line spacing
+(setq-default line-spacing 0.12)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -83,22 +81,71 @@
 (use-package modus-themes
   :init
   (modus-themes-load-themes)
-  (modus-themes-load-operandi)
   :custom
+  (modus-themes-subtle-line-numbers t)
+  (modus-themes-lang-checkers '(straight-underline))
   (modus-themes-mode-line '(borderless))
   (modus-themes-syntax '(green-strings))
-  (modus-themes-completions 'opinionated)
-  (modus-themes-hl-line '(underline))
-  (modus-themes-paren-match '(bold intense))
-  (modus-themes-links '(neutral-underline))
+  (modus-themes-completions 'moderate)
+  (modus-themes-hl-line '(underline accented))
+  (modus-themes-paren-match '(underline intense))
+  (modus-themes-links '(neutral-underline no-color))
+  (modus-themes-org-blocks 'tinted-background)
   (modus-themes-box-buttons '(variable-pitch 0.9))
-  (modus-themes-prompts '(intense)))
+  (modus-themes-prompts '(intense background))
+  :config
+  (modus-themes-load-operandi))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Hide mode line
-(setq-default mode-line-format nil)
+;; Use single line as modeline
+(use-package emacs
+  :custom-face
+  (mode-line ((t (:height 0.1))))
+  (mode-line-inactive ((t (:inherit mode-line))))
+  :config
+  (setq-default mode-line-format '("")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Animations
+;;
+;; Special animations
+(mac-start-animation nil
+                     :type 'page-curl-with-shadow
+                     :duration 0.75
+                     :direction 'right
+                     :angle 45)
+(mac-start-animation (selected-window)
+                     :type 'move-out
+                     :duration 0.75
+                     :direction 'right)
+
+;; Implement fade-outs
+(defcustom mac-animation-duration 0.25
+  "Duration of transition animations")
+(defvar mac-animation-locked-p nil)
+(defun mac-animation-toggle-lock ()
+  (setq mac-animation-locked-p (not mac-animation-locked-p)))
+
+(defun animate-frame-fade-out (&rest args)
+  (unless mac-animation-locked-p
+    (mac-animation-toggle-lock)
+    (mac-start-animation nil
+                         :type 'fade-out
+                         :duration mac-animation-duration)
+    (run-with-timer mac-animation-duration nil
+                    'mac-animation-toggle-lock)))
+
+(advice-add 'set-window-buffer
+            :before 'animate-frame-fade-out)
+(advice-add 'split-window
+            :before 'animate-frame-fade-out)
+(advice-add 'delete-window
+            :before 'animate-frame-fade-out)
+(advice-add 'delete-other-windows
+            :before 'animate-frame-fade-out)
+(advice-add 'window-toggle-side-windows
+            :before 'animate-frame-fade-out)
 
 (provide 'ui)
-
-;; ui.el ends here

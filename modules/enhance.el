@@ -1,4 +1,4 @@
-;; enhance.el --- Lyrith: loading first -*- lexical-binding: t -*-
+;; enhance.el --- Credits: loading first -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -8,7 +8,7 @@
 ;;
 ;; Commentary:
 ;;
-;; Essentials must be loaded first.
+;; Enhance minibuffer & editors.
 ;;
 ;; Code:
 
@@ -46,7 +46,7 @@
   :custom
   (completion-styles '(orderless)))
 
-;; Completion for parens
+;; Completion for parenthesis
 (use-package smartparens
   :hook
   (prog-mode . smartparens-mode)
@@ -55,11 +55,16 @@
   (show-paren-mode 1)
   (setq show-paren-delay 0))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Template system
+;;
 ;; YASnippet for snippets
 (use-package yasnippet
   :init
   (yas-global-mode 1)
   :custom
+  (yas-visit-from-menu t)
   (yas-triggers-in-field t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -70,13 +75,24 @@
 (use-package consult
   :bind
   (("C-s" . consult-line)
-   ("M-s" . consult-grep)))
+   ("M-s" . consult-ripgrep)
+   ("s-b" . consult-buffer)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Window management
+;;
+;; Ignore buffers start with "*" & "magit:" while moving to previous or next buffer
+(set-frame-parameter (selected-frame) 'buffer-predicate
+                     (lambda (buf)
+                       (not (string-match-p "^\\(magit:\\|*\\)" (buffer-name buf)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Excellent git client
-(use-package magit)
+(use-package magit
+  :custom
+  (magit-diff-refine-hunk t)
+  (magit-section-visibility-indicator nil))
 
 (provide 'enhance)
-
-;; enhance.el ends here

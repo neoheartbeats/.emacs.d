@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: uu
+# key: uu
+# --
+\SI{$1}{$2}$0

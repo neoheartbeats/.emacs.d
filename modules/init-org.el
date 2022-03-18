@@ -1,4 +1,4 @@
-;; init-org.el --- Lyrith: loading first -*- lexical-binding: t -*-
+;; init-org.el --- Credits: loading first -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -15,14 +15,20 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org init
+(use-package org
+  :straight (:type built-in))
+
 (require 'org)
+
 (setq org-directory "~/org/")
 
 ;; Open org files with previewing
 (setq org-startup-with-inline-images t)
+(setq org-startup-with-latex-preview t)
 
 ;; Use indent mode
 (setq org-startup-indented t)
+(setq org-adapt-indentation t)
 
 ;; Show section numbers
 (add-hook 'org-mode-hook 'org-num-mode)
@@ -36,28 +42,35 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Support mouse click
+(use-package org-mouse
+  :straight (:type built-in))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Org UI
 ;;
 ;; Use unicode symbols
+(setq org-ellipsis " ⤵")
+
 (use-package org-bullets
   :hook
   (org-mode . org-bullets-mode)
   :custom
   (org-bullets-bullet-list '("§")))
 
-;; Prettify symbols
 (defun org-icons ()
   (setq prettify-symbols-alist
-	    '(("#+title:" . "T")
+	    '(("#+TITLE:" . "T")
           (":PROPERTIES:" . "≡")
-	      ("#+BEGIN_SRC" . "»")
-	      ("#+END_SRC" . "»")
+          ("#+BEGIN_SRC" . "»")
+          ("#+END_SRC" . "«")
           ("#+RESULTS:" . ":")
           ("#+ATTR_ORG:" . "⌘")))
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'org-icons)
 
-;; Org list displayed as dots
+;; Display Org list prefix as dots
 (font-lock-add-keywords
  'org-mode
  '(("^ *\\([-]\\) "
@@ -66,11 +79,11 @@
 	      (match-beginning 1)
 	      (match-end 1) "○"))))))
 
-;; Pretty entities
+;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)
 (setq org-pretty-entities-include-sub-superscripts nil)
 
-;; Hide drawers
+;; Fold drawers by default
 (add-hook 'org-mode-hook 'org-hide-drawer-all)
 
 ;; Hide emphasis markers
@@ -102,38 +115,70 @@
 
 ;; Load languages
 (org-babel-do-load-languages 'org-babel-load-languages
-			                 '((shell . t)
-			                   (octave . t)
-			                   (scheme . t)
-			                   (emacs-lisp . t)
+			                 '((emacs-lisp . t)
 			                   (python . t)))
+
+;; Determine Python execution program
+(setq org-babel-python-command "python3")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org LaTeX
 ;;
-;; Use xenops to replace built-in latex-preview program
-(use-package xenops
-  :config
-  (setq xenops-math-image-scale-factor 1.25)
-  (setq xenops-cache-directory "~/.emacs.d/xenops/")
-  (setq xenops-math-latex-max-tasks-in-flight 64)
-  (setq xenops-tooltip-delay 0)
-  :hook
-  (org-mode . xenops-mode))
+;; Install AUCTeX
+(use-package auctex
+  :defer t)
+
+;; Setup `dvisvgm' to preview LaTeX fragments
+(setq org-preview-latex-default-process 'dvisvgm)
+(setq org-preview-latex-process-alist
+      '((dvisvgm
+         :programs ("latex" "dvisvgm")
+         :description "dvi > svg"
+         :image-input-type "xdv"
+         :image-output-type "svg"
+         :image-size-adjust (1.7 . 1.5)
+         :latex-compiler ;; Default `xelatex' as the process previewing LaTeX fragments 
+         ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+         :image-converter ;; Set `dvisvgm' with --exact option
+         ("dvisvgm %f -e -n -b min -c %S -o %O"))))
+
+;; Set LaTeX preview image size
+(plist-put org-format-latex-options :scale 1.26)
 
 ;; Org LaTeX packages
+;; (setq org-latex-packages-alist
+;;       '(("" "physics" t)
+;;         ("" "mhchem" t)
+;;         ("" "gensymb" t)
+;;         ("" "siunitx" t)
+;;         ("mathrm=sym" "unicode-math" t)
+;;         ("" "firamath-otf" t)))
+
 (setq org-latex-packages-alist
       '(("" "physics" t)
-	    ("" "mhchem" t)
-        ("" "mathtools" t)
-	    ("" "gensymb" t)
+        ("" "mhchem" t)
+        ("" "gensymb" t)
+        ("" "siunitx" t)
         ("" "txfonts" t)))
 
-;; Setup CDLaTeX
+;; Direct LaTeX preview image files
+(setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
+
+;; Setup `CDLaTeX'
 (use-package cdlatex
   :hook
   (org-mode . org-cdlatex-mode))
+
+;; Setup `org-fragtog'
+(use-package org-fragtog
+  :hook
+  (org-mode . org-fragtog-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Org todo
+(setq org-todo-keywords '((sequence "TODO" "REVIEW" "DONE")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -156,16 +201,31 @@
   ("<s-down>" . org-roam-dailies-goto-next-note)
   :config
   (org-roam-setup)
-  :hook
+  (setq org-roam-dailies-capture-templates ;; Preferred upper-case title tags
+        '(("d" "default" entry "* %?"
+           :target (file+head "%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d>"))))
+  (setq org-roam-capture-templates
+        '(("d" "default" plain "%?"
+           :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}")
+           :unnarrowed t)))
+  :hook ;; Roam Research liked experience
   (after-init . org-roam-dailies-goto-today))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Mixed pitch mode
 (use-package mixed-pitch
-  :config
-  (setq mixed-pitch-set-height 120)
+  :config ;; Ensure larger font can be displayed correctly
+  (setq mixed-pitch-set-height t)
   :hook
   (org-mode . mixed-pitch-mode))
 
-(provide 'init-org)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Spell checking
+(use-package ispell
+  :straight (:type built-in)
+  :hook
+  (org-mode . flyspell-mode))
 
-;; init-org.el ends here
+(provide 'init-org)

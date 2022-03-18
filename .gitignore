@@ -1,5 +1,6 @@
 /.DS_Store
 /.gitattributes
+/bookmarks
 /auto-save-list/
 /eln-cache/
 /packages/
@@ -7,4 +8,10 @@
 /transient/
 /.org-id-locations
 /request/
-/xenops/
+/ltximg/
+/snippets/.DS_Store
+/modules/.DS_Store
+/straight/
+/places
+/modules/custom.el
+/img/.DS_Store

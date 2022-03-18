@@ -1,4 +1,4 @@
-;; init.el --- Lyrith: loading first -*- lexical-binding: t -*-
+;; init.el --- Credits: loading first -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -16,24 +16,22 @@
 ;;
 ;; Package pre-loaded process
 ;;
-;; Determine package loading sources
-(require 'package)
-(setq package-user-dir "~/.emacs.d/packages")
-(setq package-archives
-      '(("org" . "https://orgmode.org/elpa/")
-	    ("elpa" . "https://elpa.gnu.org/packages/")
-	    ("melpa" . "https://melpa.org/packages/")))
-(package-initialize)
+;; Bootstrap `straight.el'
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-;; Bootstrap `use-package'
-(unless package-archive-contents
-  (package-refresh-contents))
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
-;; Default to ensure installing packages
-(require 'use-package)
-(setq use-package-always-ensure t)
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -43,16 +41,14 @@
 (add-to-list 'load-path "~/.emacs.d/modules/")
 
 ;; Load components
-(require 'core)
 (require 'defaults)
 (require 'enhance)
 (require 'ui)
 (require 'init-org)
+(require 'term)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Set custom file
+;; Setup custom file
 (setq custom-file "~/.emacs.d/modules/custom.el")
 (load custom-file 'no-error 'no-message)
-
-;; init.el ends here

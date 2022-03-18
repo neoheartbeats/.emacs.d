@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: bg
+# key: bg
+# --
+\\begin{$1}
+$2
+\\end{$1}
+$0
