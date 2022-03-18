@@ -26,15 +26,15 @@
 ;; Set default frame size & position
 (if (display-graphic-p)
     (setq initial-frame-alist
-          '((top . 70)
-            (left . 160)
-	        (width . 150)
-	        (height . 40))))
+          '((top . 60)
+            (left . 165)
+	        (width . 120)
+	        (height . 45))))
 (setq default-frame-alist
-      '((top . 70)
-        (left . 160)
-	    (width . 150)
-	    (height . 40)))
+      '((top . 60)
+        (left . 165)
+	    (width . 130)
+	    (height . 45)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -70,12 +70,14 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-                    :font "M PLUS 1 Code"
-                    :height 165)
+                    :font "Input Mono"
+                    :height 155)
 
 (set-face-attribute 'variable-pitch nil
                     :font "Times"
                     :height 180)
+
+(set-fontset-font t 'han "Songti SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

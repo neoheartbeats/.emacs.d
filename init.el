@@ -18,7 +18,7 @@
 ;;
 ;; Determine package loading sources
 (require 'package)
-(setq package-user-dir "~/.emacs.d/packages")
+(setq package-user-dir "~/.emacs.d/packages/")
 (setq package-archives
       '(("org" . "https://orgmode.org/elpa/")
 	    ("elpa" . "https://elpa.gnu.org/packages/")

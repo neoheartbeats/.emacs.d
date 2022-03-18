@@ -39,6 +39,8 @@
 ;; Org UI
 ;;
 ;; Use unicode symbols
+(setq org-ellipsis " ❡")
+
 (use-package org-bullets
   :hook
   (org-mode . org-bullets-mode)
@@ -48,16 +50,16 @@
 ;; Prettify symbols
 (defun org-icons ()
   (setq prettify-symbols-alist
-	    '(("#+title:" . "T")
+	    '(("#+TITLE:" . "T")
           (":PROPERTIES:" . "≡")
 	      ("#+BEGIN_SRC" . "»")
-	      ("#+END_SRC" . "»")
-          ("#+RESULTS:" . ":")
+	      ("#+END_SRC" . "«")
+          ("#+RESULTS:" . "⌘")
           ("#+ATTR_ORG:" . "⌘")))
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'org-icons)
 
-;; Org list displayed as dots
+;; Org list prefix displayed as dots
 (font-lock-add-keywords
  'org-mode
  '(("^ *\\([-]\\) "
@@ -108,17 +110,31 @@
 			                   (emacs-lisp . t)
 			                   (python . t)))
 
+;; Determine Python execution program
+(setq org-babel-python-command "python3")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org LaTeX
 ;;
-;; Use xenops to replace built-in latex-preview program
+;; Use `xenops' as the default latex-preview program
 (use-package xenops
   :config
   (setq xenops-math-image-scale-factor 1.25)
   (setq xenops-cache-directory "~/.emacs.d/xenops/")
   (setq xenops-math-latex-max-tasks-in-flight 64)
   (setq xenops-tooltip-delay 0)
+  (setq xenops-math-latex-process-alist ;; Set `dvisvgm' with --exact option
+        '((dvisvgm
+           :programs ("latex" "dvisvgm")
+           :description "dvi > svg"
+           :message "you need to install the programs: latex and dvisvgm."
+           :image-input-type "dvi"
+           :image-output-type "svg"
+           :image-size-adjust (1.7 . 1.5)
+           :latex-compiler
+           ("latex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
+           :image-converter ("dvisvgm %f -e -n -b %B -c %S -o %O"))))
   :hook
   (org-mode . xenops-mode))
 
@@ -126,11 +142,12 @@
 (setq org-latex-packages-alist
       '(("" "physics" t)
 	    ("" "mhchem" t)
-        ("" "mathtools" t)
-	    ("" "gensymb" t)
+        ("" "gensymb" t)
+	    ("" "siunitx" t)
+        ("T1" "fontenc" t)
         ("" "txfonts" t)))
 
-;; Setup CDLaTeX
+;; Setup `CDLaTeX'
 (use-package cdlatex
   :hook
   (org-mode . org-cdlatex-mode))
@@ -156,13 +173,20 @@
   ("<s-down>" . org-roam-dailies-goto-next-note)
   :config
   (org-roam-setup)
+  (setq org-roam-dailies-capture-templates ;; Preferred upper-case title tags
+        '(("d" "default" entry "* %?"
+           :target (file+head "%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d>"))))
+  (setq org-roam-capture-templates
+        '(("d" "default" plain "%?"
+           :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}")
+           :unnarrowed t)))
   :hook
   (after-init . org-roam-dailies-goto-today))
 
 ;; Mixed pitch mode
 (use-package mixed-pitch
   :config
-  (setq mixed-pitch-set-height 120)
+  (setq mixed-pitch-set-height 120) ;; Ensure larger font can be displayed correctly
   :hook
   (org-mode . mixed-pitch-mode))
 

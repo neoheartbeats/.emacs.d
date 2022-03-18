@@ -21,7 +21,7 @@
   :init
   (global-company-mode 1)
   :custom
-  (company-minimum-prefix-length 3)
+  (company-minimum-prefix-length 1)
   (company-idle-delay 0)
   (company-echo-delay 0)
   (company-selection-wrap-around t)
