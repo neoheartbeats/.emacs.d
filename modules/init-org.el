@@ -183,12 +183,20 @@
   :hook
   (after-init . org-roam-dailies-goto-today))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Mixed pitch mode
 (use-package mixed-pitch
   :config
   (setq mixed-pitch-set-height 120) ;; Ensure larger font can be displayed correctly
   :hook
   (org-mode . mixed-pitch-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Spell checking
+(require 'ispell)
+(add-hook 'org-mode-hook 'flyspell-mode)
 
 (provide 'init-org)
 

@@ -51,7 +51,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Set custom file
+;; Setup custom file
 (setq custom-file "~/.emacs.d/modules/custom.el")
 (load custom-file 'no-error 'no-message)
 

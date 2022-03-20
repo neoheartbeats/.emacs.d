@@ -77,7 +77,7 @@
                     :font "Times"
                     :height 180)
 
-(set-fontset-font t 'han "Songti SC")
+(set-fontset-font "fontset-default" 'han "Songti SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
