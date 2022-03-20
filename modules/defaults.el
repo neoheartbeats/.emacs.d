@@ -126,6 +126,14 @@
 ;; Remove cursor in inactive windows
 (setq cursor-in-non-selected-windows nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Setup `dired'
+;;
+;; Fix error "ls does not support --dired"
+(when (string= system-type "darwin")       
+  (setq dired-use-ls-dired nil))
+
 (provide 'defaults)
 
 ;; defaults.el ends here

@@ -105,8 +105,6 @@
 ;; Load languages
 (org-babel-do-load-languages 'org-babel-load-languages
 			                 '((shell . t)
-			                   (octave . t)
-			                   (scheme . t)
 			                   (emacs-lisp . t)
 			                   (python . t)))
 
