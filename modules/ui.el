@@ -26,15 +26,17 @@
 ;; Set default frame size & position
 (if (display-graphic-p)
     (setq initial-frame-alist
-          '((top . 60)
+          '((top . 35)
             (left . 165)
-	        (width . 120)
-	        (height . 45))))
+	        (width . 130)
+	        (height . 45)
+            (alpha . (85 . 60)))))
 (setq default-frame-alist
-      '((top . 60)
+      '((top . 35)
         (left . 165)
 	    (width . 130)
-	    (height . 45)))
+	    (height . 45)
+        (alpha . (85 . 60))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -56,7 +58,7 @@
 (setq-default cursor-type '(bar . 1))
 
 ;; Highlight lines
-;; (global-hl-line-mode 1)
+(global-hl-line-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -70,14 +72,14 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-                    :font "Input Mono"
+                    :font "Fira Code"
                     :height 155)
 
 (set-face-attribute 'variable-pitch nil
-                    :font "Times"
-                    :height 180)
+                    :font "Fira Sans"
+                    :height 155)
 
-(set-fontset-font "fontset-default" 'han "Songti SC")
+(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -85,12 +87,14 @@
 (use-package modus-themes
   :init
   (modus-themes-load-themes)
-  (modus-themes-load-operandi)
+  (modus-themes-load-vivendi)
   :custom
+  (modus-themes-mixed-fonts t)
+  (modus-themes-variable-pitch-ui t)
   (modus-themes-mode-line '(borderless))
   (modus-themes-syntax '(green-strings))
   (modus-themes-completions 'opinionated)
-  (modus-themes-hl-line '(underline))
+  (modus-themes-hl-line '(underline accented))
   (modus-themes-paren-match '(bold intense))
   (modus-themes-links '(neutral-underline))
   (modus-themes-box-buttons '(variable-pitch 0.9))
