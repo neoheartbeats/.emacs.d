@@ -3,8 +3,8 @@
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
 (("org-capture-last-stored"
- (filename . "~/org/20220319231224-maxwell_boltzmann_distribution.org")
+ (filename . "~/org/20220321130350-chemistry.org")
  (front-context-string)
- (rear-context-string . "nn distribution\n")
- (position . 108))
+ (rear-context-string . "ITLE: Chemistry\n")
+ (position . 87))
 )
