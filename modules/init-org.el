@@ -20,12 +20,13 @@
 
 ;; Open org files with previewing
 (setq org-startup-with-inline-images t)
+(setq org-startup-with-latex-preview t)
 
 ;; Use indent mode
 (setq org-startup-indented t)
 
 ;; Show section numbers
-(add-hook 'org-mode-hook 'org-num-mode)
+;; (add-hook 'org-mode-hook 'org-num-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -39,13 +40,13 @@
 ;; Org UI
 ;;
 ;; Use unicode symbols
-(setq org-ellipsis " ❡")
+(setq org-ellipsis " …")
 
 (use-package org-bullets
   :hook
   (org-mode . org-bullets-mode)
   :custom
-  (org-bullets-bullet-list '("§")))
+  (org-bullets-bullet-list '("▼")))
 
 ;; Prettify symbols
 (defun org-icons ()
@@ -115,27 +116,21 @@
 ;;
 ;; Org LaTeX
 ;;
-;; Use `xenops' as the default latex-preview program
-(use-package xenops
-  :config
-  (setq xenops-math-image-scale-factor 1.25)
-  (setq xenops-math-image-margin 0)
-  (setq xenops-cache-directory "~/.emacs.d/xenops/")
-  (setq xenops-math-latex-max-tasks-in-flight 64)
-  (setq xenops-tooltip-delay 0)
-  (setq xenops-math-latex-process-alist ;; Set `dvisvgm' with --exact option
-        '((dvisvgm
-           :programs ("latex" "dvisvgm")
-           :description "dvi > svg"
-           :message "you need to install the programs: latex and dvisvgm."
-           :image-input-type "dvi"
-           :image-output-type "svg"
-           :image-size-adjust (1.7 . 1.5)
-           :latex-compiler
-           ("latex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
-           :image-converter ("dvisvgm %f -e -n -b %B -c %S -o %O"))))
-  :hook
-  (org-mode . xenops-mode))
+;; Setup `dvisvgm' to preview LaTeX fragments
+(setq org-preview-latex-default-process 'dvisvgm)
+(setq org-preview-latex-process-alist
+      '((dvisvgm
+         :programs ("latex" "dvisvgm")
+         :description "dvi > svg"
+         :image-input-type "xdv"
+         :image-output-type "svg"
+         :image-size-adjust (1.7 . 1.5)
+         :latex-compiler
+         ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+         :image-converter ("dvisvgm %f -e -n -b min -c %S -o %O"))))
+
+;; Set LaTeX preview image size
+(plist-put org-format-latex-options :scale 1.1)
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
@@ -143,13 +138,21 @@
 	    ("" "mhchem" t)
         ("" "gensymb" t)
 	    ("" "siunitx" t)
-        ("T1" "fontenc" t)
-        ("" "txfonts" t)))
+        ("mathrm=sym" "unicode-math" t)
+        ("" "firamath-otf" t)))
+
+;; Direct LaTeX preview image files
+(setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
 
 ;; Setup `CDLaTeX'
 (use-package cdlatex
   :hook
   (org-mode . org-cdlatex-mode))
+
+;; Setup `org-fragtog'
+(use-package org-fragtog
+  :hook
+  (org-mode . org-fragtog-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
