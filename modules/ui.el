@@ -1,4 +1,3 @@
-
 ;; ui.el --- Lyrith: loading first -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
@@ -31,17 +30,13 @@
             (left . 165)
 	        (width . 130)
 	        (height . 42)
-            (alpha . (85 . 60))
-            (ns-appearance . light)
-            (ns-transparent-titlebar . t))))
+            (alpha . (85 . 60)))))
 (setq default-frame-alist
       '((top . 75)
         (left . 165)
 	    (width . 130)
 	    (height . 42)
-        (alpha . (85 . 60))
-        (ns-appearance . light)
-        (ns-transparent-titlebar . t)))
+        (alpha . (85 . 60))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -112,12 +107,16 @@
 ;;
 ;; Animations
 ;;
-;; Startup the feature
+;; Special animations
 (mac-start-animation nil
                      :type 'page-curl-with-shadow
-                     :duration 1.0
+                     :duration 0.75
                      :direction 'right
                      :angle 45)
+(mac-start-animation (selected-window)
+                     :type 'move-out
+                     :duration 0.75
+                     :direction 'right)
 
 ;; Implement fade-outs
 (defcustom mac-animation-duration 0.3
