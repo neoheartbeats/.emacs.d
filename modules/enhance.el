@@ -70,7 +70,7 @@
 (use-package consult
   :bind
   (("C-s" . consult-line)
-   ("M-s" . consult-grep)))
+   ("M-s" . consult-ripgrep)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

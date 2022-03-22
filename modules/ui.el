@@ -26,17 +26,21 @@
 ;; Set default frame size & position
 (if (display-graphic-p)
     (setq initial-frame-alist
-          '((top . 35)
+          '((top . 75)
             (left . 165)
 	        (width . 130)
-	        (height . 45)
-            (alpha . (85 . 60)))))
+	        (height . 42)
+            (alpha . (85 . 60))
+            (ns-appearance . light)
+            (ns-transparent-titlebar . t))))
 (setq default-frame-alist
-      '((top . 35)
+      '((top . 75)
         (left . 165)
 	    (width . 130)
-	    (height . 45)
-        (alpha . (85 . 60))))
+	    (height . 42)
+        (alpha . (85 . 60))
+        (ns-appearance . light)
+        (ns-transparent-titlebar . t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -77,7 +81,7 @@
 
 (set-face-attribute 'variable-pitch nil
                     :font "Fira Sans"
-                    :height 155)
+                    :height 170)
 
 (set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
 
@@ -89,8 +93,6 @@
   (modus-themes-load-themes)
   (modus-themes-load-vivendi)
   :custom
-  (modus-themes-mixed-fonts t)
-  (modus-themes-variable-pitch-ui t)
   (modus-themes-mode-line '(borderless))
   (modus-themes-syntax '(green-strings))
   (modus-themes-completions 'opinionated)

@@ -130,7 +130,7 @@
          :image-converter ("dvisvgm %f -e -n -b min -c %S -o %O"))))
 
 ;; Set LaTeX preview image size
-(plist-put org-format-latex-options :scale 1.1)
+(plist-put org-format-latex-options :scale 1.2)
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
