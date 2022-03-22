@@ -1,5 +1,3 @@
-* Lyrith
+* Prelude
 
-A simple setup for emacs-mac that focusing on Org mode.
-
-Hope this can be your present one day. Let me finish it.
+A simple setup for emacs-mac focusing on scientific writing for Org mode.

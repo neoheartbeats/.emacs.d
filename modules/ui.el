@@ -1,4 +1,4 @@
-;; ui.el --- Lyrith: loading first -*- lexical-binding: t -*-
+;; ui.el --- Credits: loading first -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -26,17 +26,17 @@
 ;; Set default frame size & position
 (if (display-graphic-p)
     (setq initial-frame-alist
-          '((top . 35)
+          '((top . 75)
             (left . 165)
 	        (width . 130)
-	        (height . 45)
-            (alpha . (85 . 60)))))
+	        (height . 42)
+            (alpha . (90 . 60)))))
 (setq default-frame-alist
-      '((top . 35)
+      '((top . 75)
         (left . 165)
 	    (width . 130)
-	    (height . 45)
-        (alpha . (85 . 60))))
+	    (height . 42)
+        (alpha . (90 . 60))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -73,11 +73,12 @@
 ;; Font settings
 (set-face-attribute 'default nil
                     :font "Fira Code"
-                    :height 155)
+                    :height 155
+                    :weight 'Medium)
 
 (set-face-attribute 'variable-pitch nil
                     :font "Fira Sans"
-                    :height 155)
+                    :height 170)
 
 (set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
 
@@ -89,8 +90,6 @@
   (modus-themes-load-themes)
   (modus-themes-load-vivendi)
   :custom
-  (modus-themes-mixed-fonts t)
-  (modus-themes-variable-pitch-ui t)
   (modus-themes-mode-line '(borderless))
   (modus-themes-syntax '(green-strings))
   (modus-themes-completions 'opinionated)
@@ -105,6 +104,46 @@
 ;; Hide mode line
 (setq-default mode-line-format nil)
 
-(provide 'ui)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Animations
+;;
+;; Special animations
+(mac-start-animation nil
+                     :type 'page-curl-with-shadow
+                     :duration 0.75
+                     :direction 'right
+                     :angle 45)
+(mac-start-animation (selected-window)
+                     :type 'move-out
+                     :duration 0.75
+                     :direction 'right)
 
-;; ui.el ends here
+;; Implement fade-outs
+(defcustom mac-animation-duration 0.3
+  "Duration of transition animations")
+(defvar mac-animation-locked-p nil)
+(defun mac-animation-toggle-lock ()
+  (setq mac-animation-locked-p (not mac-animation-locked-p)))
+
+(defun animate-frame-fade-out (&rest args)
+  (unless mac-animation-locked-p
+    (mac-animation-toggle-lock)
+    (mac-start-animation nil
+                         :type 'fade-out
+                         :duration mac-animation-duration)
+    (run-with-timer mac-animation-duration nil
+                    'mac-animation-toggle-lock)))
+
+(advice-add 'set-window-buffer
+            :before 'animate-frame-fade-out)
+(advice-add 'split-window
+            :before 'animate-frame-fade-out)
+(advice-add 'delete-window
+            :before 'animate-frame-fade-out)
+(advice-add 'delete-other-windows
+            :before 'animate-frame-fade-out)
+(advice-add 'window-toggle-side-windows
+            :before 'animate-frame-fade-out)
+
+(provide 'ui)

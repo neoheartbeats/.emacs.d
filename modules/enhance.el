@@ -1,4 +1,4 @@
-;; enhance.el --- Lyrith: loading first -*- lexical-binding: t -*-
+;; enhance.el --- Credits: loading first -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -8,7 +8,7 @@
 ;;
 ;; Commentary:
 ;;
-;; Essentials must be loaded first.
+;; Enhance minibuffer & editors.
 ;;
 ;; Code:
 
@@ -70,7 +70,7 @@
 (use-package consult
   :bind
   (("C-s" . consult-line)
-   ("M-s" . consult-grep)))
+   ("M-s" . consult-ripgrep)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -78,5 +78,3 @@
 (use-package magit)
 
 (provide 'enhance)
-
-;; enhance.el ends here
