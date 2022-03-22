@@ -1,4 +1,4 @@
-;; core.el --- Lyrith: loading first -*- lexical-binding: t -*-
+;; core.el --- Credits: loading first -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -8,20 +8,9 @@
 ;;
 ;; Commentary:
 ;;
-;; Essentials must be loaded first.
+;; macOS bootstrap.
 ;;
 ;; Code:
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Encoding system
-;;
-;; Default UTF-8 encoding
-(prefer-coding-system 'utf-8)
-(set-language-environment 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
 
 ;; Default lexical binding
 (setq-default lexical-binding t)
@@ -39,5 +28,3 @@
 (mac-auto-operator-composition-mode 1)
 
 (provide 'core)
-
-;; core.el ends here

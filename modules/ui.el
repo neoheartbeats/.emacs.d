@@ -1,4 +1,4 @@
-;; ui.el --- Lyrith: loading first -*- lexical-binding: t -*-
+;; ui.el --- Credits: loading first -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -30,13 +30,13 @@
             (left . 165)
 	        (width . 130)
 	        (height . 42)
-            (alpha . (85 . 60)))))
+            (alpha . (90 . 60)))))
 (setq default-frame-alist
       '((top . 75)
         (left . 165)
 	    (width . 130)
 	    (height . 42)
-        (alpha . (85 . 60))))
+        (alpha . (90 . 60))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -73,7 +73,8 @@
 ;; Font settings
 (set-face-attribute 'default nil
                     :font "Fira Code"
-                    :height 155)
+                    :height 155
+                    :weight 'Medium)
 
 (set-face-attribute 'variable-pitch nil
                     :font "Fira Sans"
@@ -128,15 +129,21 @@
 (defun animate-frame-fade-out (&rest args)
   (unless mac-animation-locked-p
     (mac-animation-toggle-lock)
-    (mac-start-animation nil :type 'fade-out :duration mac-animation-duration)
-    (run-with-timer mac-animation-duration nil 'mac-animation-toggle-lock)))
+    (mac-start-animation nil
+                         :type 'fade-out
+                         :duration mac-animation-duration)
+    (run-with-timer mac-animation-duration nil
+                    'mac-animation-toggle-lock)))
 
-(advice-add 'set-window-buffer :before 'animate-frame-fade-out)
-(advice-add 'split-window :before 'animate-frame-fade-out)
-(advice-add 'delete-window :before 'animate-frame-fade-out)
-(advice-add 'delete-other-windows :before 'animate-frame-fade-out)
-(advice-add 'window-toggle-side-windows :before 'animate-frame-fade-out)
+(advice-add 'set-window-buffer
+            :before 'animate-frame-fade-out)
+(advice-add 'split-window
+            :before 'animate-frame-fade-out)
+(advice-add 'delete-window
+            :before 'animate-frame-fade-out)
+(advice-add 'delete-other-windows
+            :before 'animate-frame-fade-out)
+(advice-add 'window-toggle-side-windows
+            :before 'animate-frame-fade-out)
 
 (provide 'ui)
-
-;; ui.el ends here

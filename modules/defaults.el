@@ -1,4 +1,4 @@
-;; defaults.el --- Lyrith: loading first -*- lexical-binding: t -*-
+;; defaults.el --- Credits: loading first -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -135,5 +135,3 @@
   (setq dired-use-ls-dired nil))
 
 (provide 'defaults)
-
-;; defaults.el ends here

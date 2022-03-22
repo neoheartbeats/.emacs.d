@@ -1,4 +1,4 @@
-;; init-org.el --- Lyrith: loading first -*- lexical-binding: t -*-
+;; init-org.el --- Credits: loading first -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -15,6 +15,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org init
+(use-package org ;; Using `straight' may cause errors.
+  :straight (:type built-in))
 (require 'org)
 (setq org-directory "~/org/")
 
@@ -26,7 +28,7 @@
 (setq org-startup-indented t)
 
 ;; Show section numbers
-;; (add-hook 'org-mode-hook 'org-num-mode)
+(add-hook 'org-mode-hook 'org-num-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -40,13 +42,13 @@
 ;; Org UI
 ;;
 ;; Use unicode symbols
-(setq org-ellipsis " …")
+(setq org-ellipsis " ▼")
 
 (use-package org-bullets
   :hook
   (org-mode . org-bullets-mode)
   :custom
-  (org-bullets-bullet-list '("▼")))
+  (org-bullets-bullet-list '("§")))
 
 ;; Prettify symbols
 (defun org-icons ()
@@ -58,6 +60,7 @@
           ("#+RESULTS:" . "⌘")
           ("#+ATTR_ORG:" . "⌘")))
   (prettify-symbols-mode))
+
 (add-hook 'org-mode-hook 'org-icons)
 
 ;; Org list prefix displayed as dots
@@ -116,6 +119,10 @@
 ;;
 ;; Org LaTeX
 ;;
+;; Install AUCTeX
+(use-package auctex
+  :defer t)
+
 ;; Setup `dvisvgm' to preview LaTeX fragments
 (setq org-preview-latex-default-process 'dvisvgm)
 (setq org-preview-latex-process-alist
@@ -201,5 +208,3 @@
 (add-hook 'org-mode-hook 'flyspell-mode)
 
 (provide 'init-org)
-
-;; init-org.el ends here
