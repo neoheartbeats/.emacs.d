@@ -15,9 +15,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org init
-(use-package org ;; Using `straight' may cause errors.
+(use-package org ;; Using `straight.el' may cause errors.
   :straight (:type built-in))
+
 (require 'org)
+
 (setq org-directory "~/org/")
 
 ;; Open org files with previewing
@@ -55,8 +57,8 @@
   (setq prettify-symbols-alist
 	    '(("#+TITLE:" . "T")
           (":PROPERTIES:" . "≡")
-	      ("#+BEGIN_SRC" . "»")
-	      ("#+END_SRC" . "«")
+          ("#+BEGIN_SRC" . "»")
+          ("#+END_SRC" . "«")
           ("#+RESULTS:" . "⌘")
           ("#+ATTR_ORG:" . "⌘")))
   (prettify-symbols-mode))
@@ -142,9 +144,9 @@
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
       '(("" "physics" t)
-	    ("" "mhchem" t)
+        ("" "mhchem" t)
         ("" "gensymb" t)
-	    ("" "siunitx" t)
+        ("" "siunitx" t)
         ("mathrm=sym" "unicode-math" t)
         ("" "firamath-otf" t)))
 

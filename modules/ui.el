@@ -49,7 +49,7 @@
 ;; Clean frame title
 ;;
 ;; Set frame text
-(setq frame-title-format nil)
+(setq frame-title-format "Into the Abyss")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -120,7 +120,7 @@
                      :direction 'right)
 
 ;; Implement fade-outs
-(defcustom mac-animation-duration 0.3
+(defcustom mac-animation-duration 0.2
   "Duration of transition animations")
 (defvar mac-animation-locked-p nil)
 (defun mac-animation-toggle-lock ()
