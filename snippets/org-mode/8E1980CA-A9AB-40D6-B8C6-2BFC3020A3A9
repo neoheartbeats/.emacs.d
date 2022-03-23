@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
-# name: insert-img
+# name: img
 # key: img
 # --
 #+ATTR_ORG: :width $1
-[[$2]]$0
+[[$2]]
+$0

@@ -21,7 +21,7 @@
   :init
   (global-company-mode 1)
   :custom
-  (company-minimum-prefix-length 1)
+  (company-minimum-prefix-length 3)
   (company-idle-delay 0)
   (company-echo-delay 0)
   (company-selection-wrap-around t)
@@ -46,7 +46,20 @@
   :custom
   (completion-styles '(orderless)))
 
-;; Completion for parens
+;; Use the Corfu completion UI
+(use-package corfu
+  :init
+  (corfu-global-mode)
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-separator ?\s)
+  (corfu-scroll-margin 5)
+  :config
+  (setq completion-cycle-threshold 3)
+  (setq tab-always-indent 'complete))
+
+;; Completion for parenthesis
 (use-package smartparens
   :hook
   (prog-mode . smartparens-mode)
@@ -55,11 +68,16 @@
   (show-paren-mode 1)
   (setq show-paren-delay 0))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Template system
+;;
 ;; YASnippet for snippets
 (use-package yasnippet
   :init
   (yas-global-mode 1)
   :custom
+  (yas-visit-from-menu t)
   (yas-triggers-in-field t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: d
+# key: d
+# --
+\\mathrm{d}$0

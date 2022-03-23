@@ -64,7 +64,6 @@
 ;; Enhance editing
 ;;
 ;; Adjust indentations
-(setq tab-always-indent 'complete)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 
@@ -89,11 +88,7 @@
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 ;; Show lambda as λ
-(defun toggle-prog-icons ()
-  (setq prettify-symbols-alist
-	    '(("lambda" . "λ")))
-  (prettify-symbols-mode))
-(add-hook 'prog-mode-hook 'toggle-prog-icons)
+(global-prettify-symbols-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

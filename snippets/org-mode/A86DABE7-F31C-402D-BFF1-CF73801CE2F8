@@ -1,7 +1,8 @@
 # -*- mode: snippet -*-
-# name: python-code-block
+# name: <p
 # key: <p
 # --
 #+BEGIN_SRC python :results output
-$0
+$1
 #+END_SRC
+$0

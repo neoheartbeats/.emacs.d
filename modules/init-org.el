@@ -15,7 +15,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org init
-(use-package org ;; Using `straight.el' may cause errors.
+(use-package org ;; Using `straight.el' may cause errors
   :straight (:type built-in))
 
 (require 'org)
@@ -52,14 +52,14 @@
   :custom
   (org-bullets-bullet-list '("§")))
 
-;; Prettify symbols
+;; Use unicode symbols
 (defun org-icons ()
   (setq prettify-symbols-alist
 	    '(("#+TITLE:" . "T")
           (":PROPERTIES:" . "≡")
           ("#+BEGIN_SRC" . "»")
           ("#+END_SRC" . "«")
-          ("#+RESULTS:" . "⌘")
+          ("#+RESULTS:" . ":")
           ("#+ATTR_ORG:" . "⌘")))
   (prettify-symbols-mode))
 
@@ -76,6 +76,7 @@
 
 ;; Pretty entities
 (setq org-pretty-entities t)
+;; (setq org-use-sub-superscripts '{})
 (setq org-pretty-entities-include-sub-superscripts nil)
 
 ;; Hide drawers

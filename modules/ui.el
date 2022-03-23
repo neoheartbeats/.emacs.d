@@ -31,6 +31,7 @@
 	        (width . 130)
 	        (height . 42)
             (alpha . (90 . 60)))))
+
 (setq default-frame-alist
       '((top . 75)
         (left . 165)
@@ -73,8 +74,7 @@
 ;; Font settings
 (set-face-attribute 'default nil
                     :font "Fira Code"
-                    :height 155
-                    :weight 'Medium)
+                    :height 155)
 
 (set-face-attribute 'variable-pitch nil
                     :font "Fira Sans"
