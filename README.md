@@ -1,8 +1,8 @@
-<h1 align="center">
-    Credits
-    <br>
-    <img src="./img/IMG_6051.JPG" width="240">
-</h1>
+<div align="center">
+PARANOIA
+<br>
+<img src="./img/IMG_6051.JPG" width="240">
+</div>
 
 ---
 
