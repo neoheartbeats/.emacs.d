@@ -92,7 +92,7 @@
   ;;                             (selection . (semibold accented))
   ;;                             (popup . (accented intense))))
   :config
-  (modus-themes-load-vivendi))
+  (modus-themes-load-operandi))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

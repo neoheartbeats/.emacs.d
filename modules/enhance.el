@@ -90,6 +90,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Excellent git client
-(use-package magit)
+(use-package magit
+  :custom
+  (magit-diff-refine-hunk t)
+  (magit-section-visibility-indicator nil))
 
 (provide 'enhance)
