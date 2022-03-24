@@ -74,10 +74,6 @@
 (delete-selection-mode 1)
 (setq shift-select-mode nil)
 
-;; Highting brackets
-(show-paren-mode 1)
-(setq show-paren-style 'parenthesis)
-
 ;; Create newline at end of file
 (setq require-final-newline t)
 
