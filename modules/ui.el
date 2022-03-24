@@ -120,7 +120,7 @@
                      :direction 'right)
 
 ;; Implement fade-outs
-(defcustom mac-animation-duration 0.2
+(defcustom mac-animation-duration 0.25
   "Duration of transition animations")
 (defvar mac-animation-locked-p nil)
 (defun mac-animation-toggle-lock ()

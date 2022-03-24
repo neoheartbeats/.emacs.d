@@ -128,7 +128,7 @@
 
 ;; Setup `dvisvgm' to preview LaTeX fragments
 (setq org-preview-latex-default-process 'dvisvgm)
-(setq org-preview-latex-process-alist
+(setq org-preview-latex-process-alist ;; Set `dvisvgm' with --exact option
       '((dvisvgm
          :programs ("latex" "dvisvgm")
          :description "dvi > svg"

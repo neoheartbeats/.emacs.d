@@ -88,7 +88,8 @@
 (use-package consult
   :bind
   (("C-s" . consult-line)
-   ("M-s" . consult-ripgrep)))
+   ("M-s" . consult-ripgrep)
+   ("s-b" . consult-buffer)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
