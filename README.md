@@ -1,7 +1,9 @@
 <div align="center">
-PARANOIA
+KOISHI HANGOUT
 <br>
 <img src="./img/IMG_6051.JPG" width="240">
+<br>
+<sub>Funding for this program was made possible by viewers like you.</sub>
 </div>
 
 ---
