@@ -1,3 +1,5 @@
 * Prelude
 
 A simple setup for emacs-mac focusing on scientific writing for Org mode.
+
+来自古典学术与现代设计的结合.

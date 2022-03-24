@@ -23,34 +23,20 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Set default frame size & position
-(if (display-graphic-p)
-    (setq initial-frame-alist
-          '((top . 75)
-            (left . 165)
-	        (width . 130)
-	        (height . 42)
-            (alpha . (90 . 60)))))
-
-(setq default-frame-alist
-      '((top . 75)
-        (left . 165)
-	    (width . 130)
-	    (height . 42)
-        (alpha . (90 . 60))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Default startup message
 (defun display-startup-echo-area-message ()
   (message "Funding for this program was made possible by viewers like you."))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Clean frame title
+;; Frame title setup
 ;;
-;; Set frame text
-(setq frame-title-format "Into the Abyss")
+;; Show icon & full path in title bar
+(setq frame-title-format
+      '(:eval
+        (if buffer-file-name
+            (abbreviate-file-name buffer-file-name)
+          "%b")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -58,6 +44,8 @@
 (blink-cursor-mode -1)
 (setq-default cursor-type '(bar . 1))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Highlight lines
 (global-hl-line-mode 1)
 
@@ -73,14 +61,14 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-                    :font "Fira Code"
-                    :height 155)
+                    :font "M PLUS 1 Code"
+                    :height 165)
 
 (set-face-attribute 'variable-pitch nil
-                    :font "Fira Sans"
-                    :height 170)
+                    :font "Times"
+                    :height 180)
 
-(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
+(set-fontset-font "fontset-default" 'han "Songti SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -88,21 +76,33 @@
 (use-package modus-themes
   :init
   (modus-themes-load-themes)
-  (modus-themes-load-vivendi)
   :custom
+  (modus-themes-subtle-line-numbers t)
+  (modus-themes-lang-checkers '(straight-underline))
   (modus-themes-mode-line '(borderless))
   (modus-themes-syntax '(green-strings))
-  (modus-themes-completions 'opinionated)
+  (modus-themes-completions 'moderate)
   (modus-themes-hl-line '(underline accented))
-  (modus-themes-paren-match '(bold intense))
-  (modus-themes-links '(neutral-underline))
+  (modus-themes-paren-match '(underline intense))
+  (modus-themes-links '(neutral-underline no-color))
+  (modus-themes-org-blocks 'tinted-background)
   (modus-themes-box-buttons '(variable-pitch 0.9))
-  (modus-themes-prompts '(intense)))
+  (modus-themes-prompts '(intense background))
+  ;; (modus-themes-completions '((matches . (bold))
+  ;;                             (selection . (semibold accented))
+  ;;                             (popup . (accented intense))))
+  :config
+  (modus-themes-load-vivendi))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Hide mode line
-(setq-default mode-line-format nil)
+;; Use single line as modeline
+(use-package emacs
+  :custom-face
+  (mode-line ((t (:height 0.1))))
+  (mode-line-inactive ((t (:inherit mode-line))))
+  :config
+  (setq-default mode-line-format '("")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

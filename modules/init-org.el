@@ -15,7 +15,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org init
-(use-package org ;; Using `straight.el' may cause errors
+(use-package org
   :straight (:type built-in))
 
 (require 'org)
@@ -41,10 +41,16 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Support mouse click
+(use-package org-mouse
+  :straight (:type built-in))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Org UI
 ;;
 ;; Use unicode symbols
-(setq org-ellipsis " ▼")
+(setq org-ellipsis " ❡")
 
 (use-package org-bullets
   :hook
@@ -140,16 +146,24 @@
          :image-converter ("dvisvgm %f -e -n -b min -c %S -o %O"))))
 
 ;; Set LaTeX preview image size
-(plist-put org-format-latex-options :scale 1.2)
+(plist-put org-format-latex-options :scale 1.27)
 
 ;; Org LaTeX packages
+;; (setq org-latex-packages-alist
+;;       '(("" "physics" t)
+;;         ("" "mhchem" t)
+;;         ("" "gensymb" t)
+;;         ("" "siunitx" t)
+;;         ("mathrm=sym" "unicode-math" t)
+;;         ("" "firamath-otf" t)))
+
 (setq org-latex-packages-alist
       '(("" "physics" t)
         ("" "mhchem" t)
         ("" "gensymb" t)
         ("" "siunitx" t)
-        ("mathrm=sym" "unicode-math" t)
-        ("" "firamath-otf" t)))
+        ("" "txfonts" t)))
+
 
 ;; Direct LaTeX preview image files
 (setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
@@ -163,6 +177,11 @@
 (use-package org-fragtog
   :hook
   (org-mode . org-fragtog-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Org todo
+(setq org-todo-keywords '((sequence "TODO" "REVIEW" "DONE")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

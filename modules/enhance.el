@@ -46,19 +46,6 @@
   :custom
   (completion-styles '(orderless)))
 
-;; Use the Corfu completion UI
-(use-package corfu
-  :init
-  (corfu-global-mode)
-  :custom
-  (corfu-cycle t)
-  (corfu-auto t)
-  (corfu-separator ?\s)
-  (corfu-scroll-margin 5)
-  :config
-  (setq completion-cycle-threshold 3)
-  (setq tab-always-indent 'complete))
-
 ;; Completion for parenthesis
 (use-package smartparens
   :hook
@@ -66,7 +53,6 @@
   (org-mode . smartparens-mode)
   :config
   (show-paren-mode 1)
-  (setq show-paren-style 'parenthesis)
   (setq show-paren-delay 0))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -91,6 +77,15 @@
   (("C-s" . consult-line)
    ("M-s" . consult-ripgrep)
    ("s-b" . consult-buffer)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Window management
+;;
+;; Ignore buffers start with "*" & "magit:" while moving to previous or next buffer
+(set-frame-parameter (selected-frame) 'buffer-predicate
+                     (lambda (buf)
+                       (not (string-match-p "^\\(magit:\\|*\\)" (buffer-name buf)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

@@ -46,6 +46,10 @@
 				                (interactive)
 				                (find-file "~/.emacs.d/init.el")))
 
+;; Disable swipe left/right to change buffer
+(global-unset-key [swipe-left])
+(global-unset-key [swipe-right])
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Enhance backups & caches
@@ -90,11 +94,16 @@
 ;;
 ;; Diminish prompt messages
 ;;
-;; Make it quiet
-(setq visible-bell t)
-(setq use-dialog-box nil)
-(setq use-file-dialog nil)
-(setq pop-up-windows nil)
+;; Disable these messages such ignore unused signals
+(defun filter-command-error-function (data context caller)
+  (when (not (memq (car data) '(buffer-read-only
+                                beginning-of-line
+                                end-of-line
+                                beginning-of-buffer
+                                end-of-buffer)))
+    (command-error-default-function data context caller)))
+
+(setq command-error-function #'filter-command-error-function)
 
 ;; Disable unnecessary warnings
 (put 'narrow-to-region 'disabled nil)
@@ -108,9 +117,6 @@
 ;; No confirmation for visiting non-existent files
 (setq confirm-nonexistent-file-or-buffer nil)
 
-;; Inhibit default messages
-(setq inhibit-startup-message t)
-
 ;; Inhibit tooltips
 (tooltip-mode -1)
 
@@ -121,8 +127,14 @@
 ;;
 ;; Setup `dired'
 ;;
-;; Fix error "ls does not support --dired"
-(when (string= system-type "darwin")       
-  (setq dired-use-ls-dired nil))
+;; Hide all the information of files & folders except their names
+(use-package dired
+  :straight (:type built-in)
+  :custom
+  (dired-use-ls-dired nil) ;; Fix error "ls does not support --dired"
+  (dired-kill-when-opening-new-dired-buffer t)
+  :config
+  (add-hook 'dired-mode-hook (lambda ()
+                               (dired-hide-details-mode))))
 
 (provide 'defaults)
