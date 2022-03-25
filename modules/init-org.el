@@ -164,7 +164,6 @@
         ("" "siunitx" t)
         ("" "txfonts" t)))
 
-
 ;; Direct LaTeX preview image files
 (setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
 
@@ -218,15 +217,17 @@
 ;;
 ;; Mixed pitch mode
 (use-package mixed-pitch
-  :config
-  (setq mixed-pitch-set-height 120) ;; Ensure larger font can be displayed correctly
+  :config ;; Ensure larger font can be displayed correctly
+  (setq mixed-pitch-set-height 120)
   :hook
   (org-mode . mixed-pitch-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Spell checking
-(require 'ispell)
-(add-hook 'org-mode-hook 'flyspell-mode)
+(use-package ispell
+  :straight (:type built-in)
+  :hook
+  (org-mode . flyspell-mode))
 
 (provide 'init-org)

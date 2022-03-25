@@ -132,9 +132,6 @@
   :straight (:type built-in)
   :custom
   (dired-use-ls-dired nil) ;; Fix error "ls does not support --dired"
-  (dired-kill-when-opening-new-dired-buffer t)
-  :config
-  (add-hook 'dired-mode-hook (lambda ()
-                               (dired-hide-details-mode))))
+  (dired-kill-when-opening-new-dired-buffer t))
 
 (provide 'defaults)

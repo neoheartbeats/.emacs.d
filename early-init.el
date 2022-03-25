@@ -12,16 +12,48 @@
 ;;
 ;; Code:
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; A big contributor to startup times is garbage collection
-(setq gc-cons-threshold most-positive-fixnum)
+;;
+;; https://github.com/casouri/lunarymacs/blob/6ce1a6da38d5e5c261d71a495ee2fdbd051303f9/early-init.el#L3-L26
+;;
+;; Defer garbage collection further back in the startup process
+(add-hook 'emacs-startup-hook
+          (let ((old-list file-name-handler-alist)
+                (threshold (* 100 gc-cons-threshold))
+                (percentage gc-cons-percentage))
+            (lambda ()
+              (setq file-name-handler-alist old-list
+                    gc-cons-threshold threshold
+                    gc-cons-percentage percentage)
+              (garbage-collect))) t)
 
+(setq package-enable-at-startup nil
+      file-name-handler-alist nil
+      message-log-max 16384
+      gc-cons-threshold most-positive-fixnum
+      gc-cons-percentage 0.6
+      auto-window-vscroll nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Prevent unwanted runtime compilation for GccEmacs
 (setq native-comp-deferred-compilation nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Compile external packages for GccEmacs
+(setq package-native-compile t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Prevent `package.el' loading packages prior to their init-file loading
 (setq package-enable-at-startup nil)
 (setq package-quickstart t)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Keep it quiet
 (setq warning-minimum-level :error)
 (setq inhibit-startup-screen t)
@@ -33,12 +65,34 @@
 (setq use-file-dialog nil)
 (setq pop-up-windows nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Set the frame parameters before it's drawing
 (setq default-frame-alist
-      '((top . 45)
+      '((top . 60)
         (left . 160)
 	    (width . 150)
-	    (height . 42)))
+	    (height . 40)))
 
 ;; Make UTF-8 the default coding system
 (set-language-environment "UTF-8")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Default lexical binding
+(setq-default lexical-binding t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; macOS key mapping
+(setq mac-option-key-is-meta t
+      x-select-enable-clipboard 't
+      mac-command-modifier 'super
+      mac-option-modifier 'meta)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Font ligatures support
+;;
+;; (setq mac-auto-operator-composition-characters "!\"#$%&'()*+,-./:<=>?@[\\]^_`{|}~")
+;; (mac-auto-operator-composition-mode 1)

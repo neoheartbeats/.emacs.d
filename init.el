@@ -41,11 +41,11 @@
 (add-to-list 'load-path "~/.emacs.d/modules/")
 
 ;; Load components
-(require 'core)
 (require 'defaults)
 (require 'enhance)
 (require 'ui)
 (require 'init-org)
+(require 'term)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
