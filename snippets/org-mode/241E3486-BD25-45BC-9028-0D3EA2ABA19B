@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: .
-# key: .
+# name: cc
+# key: cc
 # --
-\$$1\$$0
+\celsius
