@@ -85,7 +85,7 @@
   (modus-themes-hl-line '(underline accented))
   (modus-themes-paren-match '(underline intense))
   (modus-themes-links '(neutral-underline no-color))
-  (modus-themes-org-blocks 'tinted-background)
+  (modus-themes-org-blocks 'gray-background)
   (modus-themes-box-buttons '(variable-pitch 0.9))
   (modus-themes-prompts '(intense background))
   ;; (modus-themes-completions '((matches . (bold))
