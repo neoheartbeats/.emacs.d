@@ -28,6 +28,7 @@
 
 ;; Use indent mode
 (setq org-startup-indented t)
+(setq org-adapt-indentation t)
 
 ;; Show section numbers
 (add-hook 'org-mode-hook 'org-num-mode)
@@ -218,7 +219,7 @@
 ;; Mixed pitch mode
 (use-package mixed-pitch
   :config ;; Ensure larger font can be displayed correctly
-  (setq mixed-pitch-set-height 120)
+  (setq mixed-pitch-set-height t)
   :hook
   (org-mode . mixed-pitch-mode))
 
