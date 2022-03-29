@@ -59,7 +59,6 @@
   :custom
   (org-bullets-bullet-list '("§")))
 
-;; Use unicode symbols
 (defun org-icons ()
   (setq prettify-symbols-alist
 	    '(("#+TITLE:" . "T")
@@ -69,10 +68,9 @@
           ("#+RESULTS:" . ":")
           ("#+ATTR_ORG:" . "⌘")))
   (prettify-symbols-mode))
-
 (add-hook 'org-mode-hook 'org-icons)
 
-;; Org list prefix displayed as dots
+;; Display Org list prefix as dots
 (font-lock-add-keywords
  'org-mode
  '(("^ *\\([-]\\) "
@@ -81,12 +79,11 @@
 	      (match-beginning 1)
 	      (match-end 1) "○"))))))
 
-;; Pretty entities
+;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)
-;; (setq org-use-sub-superscripts '{})
 (setq org-pretty-entities-include-sub-superscripts nil)
 
-;; Hide drawers
+;; Fold drawers by default
 (add-hook 'org-mode-hook 'org-hide-drawer-all)
 
 ;; Hide emphasis markers
@@ -135,16 +132,17 @@
 
 ;; Setup `dvisvgm' to preview LaTeX fragments
 (setq org-preview-latex-default-process 'dvisvgm)
-(setq org-preview-latex-process-alist ;; Set `dvisvgm' with --exact option
+(setq org-preview-latex-process-alist
       '((dvisvgm
          :programs ("latex" "dvisvgm")
          :description "dvi > svg"
          :image-input-type "xdv"
          :image-output-type "svg"
          :image-size-adjust (1.7 . 1.5)
-         :latex-compiler
+         :latex-compiler ;; Default `xelatex' as the process previewing LaTeX fragments 
          ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
-         :image-converter ("dvisvgm %f -e -n -b min -c %S -o %O"))))
+         :image-converter ;; Set `dvisvgm' with --exact option
+         ("dvisvgm %f -e -n -b min -c %S -o %O"))))
 
 ;; Set LaTeX preview image size
 (plist-put org-format-latex-options :scale 1.27)
@@ -211,7 +209,7 @@
         '(("d" "default" plain "%?"
            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}")
            :unnarrowed t)))
-  :hook
+  :hook ;; Roam Research liked experience
   (after-init . org-roam-dailies-goto-today))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

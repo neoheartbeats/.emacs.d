@@ -126,8 +126,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Setup `dired'
-;;
-;; Hide all the information of files & folders except their names
 (use-package dired
   :straight (:type built-in)
   :custom
