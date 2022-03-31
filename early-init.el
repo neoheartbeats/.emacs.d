@@ -71,8 +71,8 @@
 (setq default-frame-alist
       '((top . 60)
         (left . 160)
-	    (width . 150)
-	    (height . 40)))
+	    (width . 130)
+	    (height . 42)))
 
 ;; Make UTF-8 the default coding system
 (set-language-environment "UTF-8")
@@ -94,5 +94,5 @@
 ;;
 ;; Font ligatures support
 ;;
-;; (setq mac-auto-operator-composition-characters "!\"#$%&'()*+,-./:<=>?@[\\]^_`{|}~")
-;; (mac-auto-operator-composition-mode 1)
+(setq mac-auto-operator-composition-characters "!\"#$%&'()*+,-./:<=>?@[\\]^_`{|}~")
+(mac-auto-operator-composition-mode 1)
