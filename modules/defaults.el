@@ -125,6 +125,19 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Buffers setup
+;;
+;; Revert buffers when underlying files are changed externally
+(global-auto-revert-mode t)
+
+;; Set initial buffer mode to org-mode
+(setq-default initial-major-mode 'org-mode)
+
+;; Note cursor position for each buffer
+(save-place-mode t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Setup `dired'
 (use-package dired
   :straight (:type built-in)

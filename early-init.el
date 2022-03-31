@@ -58,20 +58,23 @@
 (setq warning-minimum-level :error)
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-message t)
-(setq initial-scratch-message nil)
+
+;; Scratch Buffer settings
+(setq initial-scratch-message "Funding for this program was made possible by viewers like you.")
 
 (setq ring-bell-function 'ignore)
 (setq use-dialog-box nil)
 (setq use-file-dialog nil)
 (setq pop-up-windows nil)
+(setq save-silently t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Set the frame parameters before it's drawing
 (setq default-frame-alist
       '((top . 60)
-        (left . 160)
-	    (width . 130)
+        (left . 155)
+	    (width . 125)
 	    (height . 42)))
 
 ;; Make UTF-8 the default coding system

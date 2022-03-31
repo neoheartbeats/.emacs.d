@@ -51,7 +51,7 @@
 ;; Org UI
 ;;
 ;; Use unicode symbols
-(setq org-ellipsis " ❡")
+(setq org-ellipsis " ⤵")
 
 (use-package org-bullets
   :hook
@@ -115,8 +115,7 @@
 
 ;; Load languages
 (org-babel-do-load-languages 'org-babel-load-languages
-			                 '((shell . t)
-			                   (emacs-lisp . t)
+			                 '((emacs-lisp . t)
 			                   (python . t)))
 
 ;; Determine Python execution program

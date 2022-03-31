@@ -62,13 +62,18 @@
 ;; Font settings
 (set-face-attribute 'default nil
                     :font "Fira Code"
-                    :height 155)
+                    :height 150)
 
 (set-face-attribute 'variable-pitch nil
                     :font "Times"
                     :height 180)
 
 (set-fontset-font "fontset-default" 'han "Songti SC")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Improve the readability by increasing line spacing
+(setq-default line-spacing 0.12)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
