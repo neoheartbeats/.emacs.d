@@ -92,6 +92,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Font ligatures support
+;;
+;; (setq mac-auto-operator-composition-characters "!\"#$%&'()*+,-./:<=>?@[\\]^_`{|}~")
+;; (mac-auto-operator-composition-mode 1)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Diminish prompt messages
 ;;
 ;; Disable these messages such ignore unused signals

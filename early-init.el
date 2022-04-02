@@ -72,10 +72,10 @@
 ;;
 ;; Set the frame parameters before it's drawing
 (setq default-frame-alist
-      '((top . 60)
+      '((top . 55)
         (left . 155)
-	    (width . 125)
-	    (height . 42)))
+	    (width . 130)
+	    (height . 45)))
 
 ;; Make UTF-8 the default coding system
 (set-language-environment "UTF-8")
@@ -92,10 +92,3 @@
       x-select-enable-clipboard 't
       mac-command-modifier 'super
       mac-option-modifier 'meta)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Font ligatures support
-;;
-(setq mac-auto-operator-composition-characters "!\"#$%&'()*+,-./:<=>?@[\\]^_`{|}~")
-(mac-auto-operator-composition-mode 1)

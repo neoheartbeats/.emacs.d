@@ -61,8 +61,8 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-                    :font "Fira Code"
-                    :height 150)
+                    :font "Input"
+                    :height 155)
 
 (set-face-attribute 'variable-pitch nil
                     :font "Times"
