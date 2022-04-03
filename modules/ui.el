@@ -61,7 +61,7 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-                    :font "Input"
+                    :font "FIRA CODE"
                     :height 155)
 
 (set-face-attribute 'variable-pitch nil
