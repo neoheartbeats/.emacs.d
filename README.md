@@ -1,12 +1,8 @@
-<div align="center">
-KOISHI HANGOUT
-<br>
-<img src="./img/IMG_6051.JPG" width="240">
-<br>
-<sub>Funding for this program was made possible by viewers like you.</sub>
-</div>
+Funding for this program was made possible by viewers like you.
 
 ---
+
+![](./img/ECB45CCC-76A4-4ED0-A203-E1FD236A5ECB.png)
 
 A simple setup for [emacs-mac](https://bitbucket.org/mituharu/emacs-mac/src/work/) focusing on scientific writing in Org mode.
 
