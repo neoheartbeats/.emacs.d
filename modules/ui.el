@@ -61,14 +61,14 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-                    :font "FIRA CODE"
+                    :font "Fira Code"
                     :height 155)
 
 (set-face-attribute 'variable-pitch nil
-                    :font "Times"
-                    :height 180)
+                    :font "Fira Sans"
+                    :height 160)
 
-(set-fontset-font "fontset-default" 'han "Songti SC")
+(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -94,7 +94,7 @@
   (modus-themes-box-buttons '(variable-pitch 0.9))
   (modus-themes-prompts '(intense background))
   :config
-  (modus-themes-load-operandi))
+  (modus-themes-load-vivendi))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
