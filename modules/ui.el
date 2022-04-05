@@ -73,7 +73,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Improve the readability by increasing line spacing
-(setq-default line-spacing 0.12)
+(setq-default line-spacing 0.25)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -89,12 +89,14 @@
   (modus-themes-completions 'moderate)
   (modus-themes-hl-line '(underline accented))
   (modus-themes-paren-match '(underline intense))
-  (modus-themes-links '(neutral-underline no-color))
+  (modus-themes-links '(neutral-underline))
   (modus-themes-org-blocks 'tinted-background)
-  (modus-themes-box-buttons '(variable-pitch 0.9))
+  (modus-themes-box-buttons '(flat))
   (modus-themes-prompts '(intense background))
   :config
-  (modus-themes-load-vivendi))
+  (modus-themes-load-vivendi)
+  (set-face-attribute 'cursor nil
+                      :background (modus-themes-color 'green)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
