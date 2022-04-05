@@ -130,21 +130,35 @@
   :defer t)
 
 ;; Setup `dvisvgm' to preview LaTeX fragments
-(setq org-preview-latex-default-process 'dvisvgm)
+(setq org-preview-latex-default-process 'imagemagick)
 (setq org-preview-latex-process-alist
-      '((dvisvgm
-         :programs ("latex" "dvisvgm")
-         :description "dvi > svg"
-         :image-input-type "xdv"
-         :image-output-type "svg"
-         :image-size-adjust (1.7 . 1.5)
-         :latex-compiler ;; Default `xelatex' as the process previewing LaTeX fragments
-         ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
-         :image-converter ;; Set `dvisvgm' with --exact option
-         ("dvisvgm %f -e -n -b min -c %S -o %O"))))
+      '((imagemagick
+         :programs ("latex" "convert")
+         :description "pdf > png"
+         :image-input-type "pdf"
+         :image-output-type "png"
+         :image-size-adjust (1.0 . 1.0)
+         :latex-compiler
+         ("xelatex -interaction nonstopmode -output-directory %o %f")
+         :image-converter
+         ("convert -density %D -trim -antialias %f -quality 100 %O"))))
+
+;; `dvisvgm' got problems with MacTeX 2022
+;;
+;; (setq org-preview-latex-process-alist
+;;       '((dvisvgm
+;;          :programs ("latex" "dvisvgm")
+;;          :description "dvi > svg"
+;;          :image-input-type "xdv"
+;;          :image-output-type "svg"
+;;          :image-size-adjust (1.7 . 1.5)
+;;          :latex-compiler ;; Default `xelatex' as the process previewing LaTeX fragments
+;;          ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+;;          :image-converter ;; Set `dvisvgm' with --exact option
+;;          ("dvisvgm %f -e -n -b min -c %S -o %O"))))
 
 ;; Set LaTeX preview image size
-(plist-put org-format-latex-options :scale 1.1)
+;; (plist-put org-format-latex-options :scale 1.1)
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
