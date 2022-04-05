@@ -138,29 +138,29 @@
          :image-input-type "xdv"
          :image-output-type "svg"
          :image-size-adjust (1.7 . 1.5)
-         :latex-compiler ;; Default `xelatex' as the process previewing LaTeX fragments 
+         :latex-compiler ;; Default `xelatex' as the process previewing LaTeX fragments
          ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
          :image-converter ;; Set `dvisvgm' with --exact option
          ("dvisvgm %f -e -n -b min -c %S -o %O"))))
 
 ;; Set LaTeX preview image size
-(plist-put org-format-latex-options :scale 1.26)
+(plist-put org-format-latex-options :scale 1.1)
 
 ;; Org LaTeX packages
-;; (setq org-latex-packages-alist
-;;       '(("" "physics" t)
-;;         ("" "mhchem" t)
-;;         ("" "gensymb" t)
-;;         ("" "siunitx" t)
-;;         ("mathrm=sym" "unicode-math" t)
-;;         ("" "firamath-otf" t)))
-
 (setq org-latex-packages-alist
       '(("" "physics" t)
         ("" "mhchem" t)
         ("" "gensymb" t)
         ("" "siunitx" t)
-        ("" "txfonts" t)))
+        ("mathrm=sym" "unicode-math" t)
+        ("" "firamath-otf" t)))
+
+;; (setq org-latex-packages-alist
+;;       '(("" "physics" t)
+;;         ("" "mhchem" t)
+;;         ("" "gensymb" t)
+;;         ("" "siunitx" t)
+;;         ("" "txfonts" t)))
 
 ;; Direct LaTeX preview image files
 (setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
