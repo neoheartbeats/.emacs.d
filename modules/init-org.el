@@ -51,7 +51,7 @@
 ;; Org UI
 ;;
 ;; Use unicode symbols
-(setq org-ellipsis " ⤵")
+(setq org-ellipsis " ▼")
 
 (use-package org-bullets
   :hook
@@ -77,7 +77,7 @@
     (0 (prog1 ()
 	     (compose-region
 	      (match-beginning 1)
-	      (match-end 1) "○"))))))
+	      (match-end 1) "▶︎"))))))
 
 ;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)
@@ -152,6 +152,7 @@
         ("" "mhchem" t)
         ("" "gensymb" t)
         ("" "siunitx" t)
+        ("" "isomath" t)
         ("mathrm=sym" "unicode-math" t)
         ("" "firamath-otf" t)))
 
