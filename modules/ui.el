@@ -35,8 +35,7 @@
 (setq frame-title-format
       '(:eval
         (if buffer-file-name
-            (abbreviate-file-name buffer-file-name)
-          "%b")))
+            (abbreviate-file-name buffer-file-name) "%b")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -65,7 +64,7 @@
                     :height 155)
 
 (set-face-attribute 'variable-pitch nil
-                    :font "Fira Sans"
+                    :font "FiraGo"
                     :height 160)
 
 (set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
@@ -107,47 +106,5 @@
   (mode-line-inactive ((t (:inherit mode-line))))
   :config
   (setq-default mode-line-format '("")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Animations
-;;
-;; Special animations
-(mac-start-animation nil
-                     :type 'page-curl-with-shadow
-                     :duration 0.75
-                     :direction 'right
-                     :angle 45)
-(mac-start-animation (selected-window)
-                     :type 'move-out
-                     :duration 0.75
-                     :direction 'right)
-
-;; Implement fade-outs
-(defcustom mac-animation-duration 0.25
-  "Duration of transition animations")
-(defvar mac-animation-locked-p nil)
-(defun mac-animation-toggle-lock ()
-  (setq mac-animation-locked-p (not mac-animation-locked-p)))
-
-(defun animate-frame-fade-out (&rest args)
-  (unless mac-animation-locked-p
-    (mac-animation-toggle-lock)
-    (mac-start-animation nil
-                         :type 'fade-out
-                         :duration mac-animation-duration)
-    (run-with-timer mac-animation-duration nil
-                    'mac-animation-toggle-lock)))
-
-(advice-add 'set-window-buffer
-            :before 'animate-frame-fade-out)
-(advice-add 'split-window
-            :before 'animate-frame-fade-out)
-(advice-add 'delete-window
-            :before 'animate-frame-fade-out)
-(advice-add 'delete-other-windows
-            :before 'animate-frame-fade-out)
-(advice-add 'window-toggle-side-windows
-            :before 'animate-frame-fade-out)
 
 (provide 'ui)
