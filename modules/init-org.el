@@ -233,6 +233,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Org tables
+;;
+;; Align Org mode tables
+(use-package valign
+	:hook
+	(org-mode . valign-mode)
+	:custom
+	(valign-fancy-bar t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Spell checking
 (use-package ispell
   :straight (:type built-in)
