@@ -52,7 +52,6 @@
 ;;
 ;; Rainbow delimiters
 (use-package rainbow-delimiters
-  :diminish rainbow-delimiters-mode
   :hook
   (prog-mode . rainbow-delimiters-mode))
 

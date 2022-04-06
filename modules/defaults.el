@@ -68,8 +68,13 @@
 ;; Enhance editing
 ;;
 ;; Adjust indentations
-(setq-default indent-tabs-mode nil)
+;; (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
+
+;; EditorConfig
+(use-package editorconfig
+  :config
+  (editorconfig-mode 1))
 
 ;; Make sentences divided by one space
 (setq sentence-end-double-space nil)
