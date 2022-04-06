@@ -1,0 +1,31 @@
+;; .editorconfig --- Credits: EditorConfig
+;;
+;; Copyright © 2022 Ilya.w
+;;
+;; Author: Ilya.w <ilya.w@icloud.com>
+;;
+;; Commentary:
+;;
+;; EditorConfig file for ".emacs.d".
+;;
+;; EditorConfig helps maintain consistent coding styles.
+;; Check https://EditorConfig.org to get instructions.
+;;
+;; Code:
+
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.el]
+indent_style = tab
+tab_width = 2
+
+[*.md]
+indent_style = tab
+tab_width = 2
