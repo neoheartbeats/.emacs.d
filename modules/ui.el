@@ -8,7 +8,7 @@
 ;;
 ;; Commentary:
 ;;
-;; UI setup.
+;; Emacs frame UI setup.
 ;;
 ;; Code:
 
@@ -60,11 +60,11 @@
 ;; Font settings
 (set-face-attribute 'default nil
 	:font "Fira Code Retina"
-	:height 155)
+	:height 145)
 
 (set-face-attribute 'variable-pitch nil
 	:font "FiraGo"
-	:height 160)
+	:height 155)
 
 (set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
 
@@ -100,5 +100,11 @@
 	(mode-line ((t (:height 0.1))))
 	(mode-line-inactive ((t (:inherit mode-line))))
 	:config (setq-default mode-line-format '("")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Bootstrap ALL THE ICONS
+(use-package all-the-icons
+  :if (display-graphic-p))
 
 (provide 'ui)
