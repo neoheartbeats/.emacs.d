@@ -79,7 +79,7 @@
 			(0 (prog1 ()
 					 (compose-region
 						 (match-beginning 1)
-						 (match-end 1) "▶︎"))))))
+						 (match-end 1) "•"))))))
 
 ;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)
