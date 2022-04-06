@@ -93,9 +93,7 @@
   (modus-themes-box-buttons '(flat))
   (modus-themes-prompts '(intense background))
   :config
-  (modus-themes-load-vivendi)
-  (set-face-attribute 'cursor nil
-                      :background (modus-themes-color 'green)))
+  (modus-themes-load-vivendi))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

@@ -36,16 +36,42 @@
 	    ("C-p" . company-select-previous)
 	    ("C-n" . company-select-next)))
 
-;; Use listed completion style
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Use listed completion style with `vertico'
+;;
+;; Ensure loading vertico's extensions
+(straight-use-package '(vertico
+                        :files (:defaults "extensions/*")
+                        :includes (vertico-buffer
+                                   vertico-directory
+                                   vertico-flat
+                                   vertico-indexed
+                                   vertico-mouse
+                                   vertico-quick
+                                   vertico-repeat
+                                   vertico-reverse)))
+
 (use-package vertico
   :init
-  (vertico-mode 1))
+  (vertico-mode 1)
+  :config
+  (use-package vertico-directory
+    :bind (:map vertico-map
+                ("RET" . vertico-directory-enter)
+                ("DEL" . vertico-directory-delete-char)
+                ("M-DEL" . vertico-directory-delete-word))
+    :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Use orderless completion style
 (use-package orderless
   :custom
   (completion-styles '(orderless)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Completion for parenthesis
 (use-package smartparens
   :hook
@@ -57,7 +83,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Template system
+;; Templating system
 ;;
 ;; YASnippet for snippets
 (use-package yasnippet
