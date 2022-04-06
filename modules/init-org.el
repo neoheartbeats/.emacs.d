@@ -60,12 +60,15 @@
 (defun org-icons ()
   (setq prettify-symbols-alist
 	  '(
-			 ("#+TITLE:" . "T")
-       (":PROPERTIES:" . "≡")
-       ("#+BEGIN_SRC" . "»")
-       ("#+END_SRC" . "«")
-       ("#+RESULTS:" . ":")
-       ("#+ATTR_ORG:" . "⌘")))
+			 ("#+TITLE:" . "")
+       (":PROPERTIES:" . "")
+       ("#+BEGIN_SRC" . "")
+       ("#+END_SRC" . "―")
+       ("#+RESULTS:" . "")
+       ("#+ATTR_ORG:" . "")
+			 ("[ ]" . "")
+			 ("[X]" . "")
+			 ("[-]" . "")))
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'org-icons)
 
