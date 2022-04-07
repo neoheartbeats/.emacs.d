@@ -31,7 +31,7 @@
 (setq org-adapt-indentation t)
 
 ;; Show section numbers
-;; (add-hook 'org-mode-hook 'org-num-mode)
+(add-hook 'org-mode-hook 'org-num-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -55,20 +55,17 @@
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
-  :custom (org-bullets-bullet-list '("◉")))
+  :custom (org-bullets-bullet-list '("§")))
 
 (defun org-icons ()
   (setq prettify-symbols-alist
 	  '(
-			 ("#+TITLE:" . "")
-       (":PROPERTIES:" . "")
-       ("#+BEGIN_SRC" . "")
-       ("#+END_SRC" . "―")
-       ("#+RESULTS:" . "")
-       ("#+ATTR_ORG:" . "")
-			 ("[ ]" . "")
-			 ("[X]" . "")
-			 ("[-]" . "")))
+			 ("#+TITLE:" . "T")
+       (":PROPERTIES:" . "☰")
+       ("#+BEGIN_SRC" . "⌗")
+       ("#+END_SRC" . "-")
+       ("#+RESULTS:" . ":")
+       ("#+ATTR_ORG:" . "⚙")))
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'org-icons)
 
@@ -77,9 +74,7 @@
 	'org-mode
 	'(("^ *\\([-]\\) "
 			(0 (prog1 ()
-					 (compose-region
-						 (match-beginning 1)
-						 (match-end 1) "•"))))))
+					 (compose-region (match-beginning 1) (match-end 1) "▶︎"))))))
 
 ;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)
@@ -228,7 +223,9 @@
 ;;
 ;; Mixed pitch mode
 (use-package mixed-pitch
-  :config (setq mixed-pitch-set-height t)
+  :config
+	(setq mixed-pitch-set-height t)
+	(setq mixed-pitch-variable-pitch-cursor '(bar . 1))
   :hook (org-mode . mixed-pitch-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

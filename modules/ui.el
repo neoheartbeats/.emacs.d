@@ -33,16 +33,19 @@
 ;; Frame title setup
 ;;
 ;; Show icon & full path in title bar
-(setq frame-title-format
-	'(:eval
-		 (if buffer-file-name
-			 (abbreviate-file-name buffer-file-name) "%b")))
+;; (setq frame-title-format
+;; 	'(:eval
+;; 		 (if buffer-file-name
+;; 			 (abbreviate-file-name buffer-file-name) "%b")))
+;;
+;; Hide frame title
+(setq frame-title-format nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Cursor settings
-(blink-cursor-mode -1)
 (setq-default cursor-type '(bar . 1))
+(blink-cursor-mode -1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -59,7 +62,7 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	:font "Fira Code Retina"
+	:font "Fira Code"
 	:height 145)
 
 (set-face-attribute 'variable-pitch nil
@@ -71,7 +74,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Improve the readability by increasing line spacing
-(setq-default line-spacing 0.25)
+(setq-default line-spacing 6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -95,16 +98,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Use single line as modeline
-(use-package emacs
-	:custom-face
-	(mode-line ((t (:height 0.1))))
-	(mode-line-inactive ((t (:inherit mode-line))))
-	:config (setq-default mode-line-format '("")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (use-package emacs
+;; 	:custom-face
+;; 	(mode-line ((t (:height 0.1))))
+;; 	(mode-line-inactive ((t (:inherit mode-line))))
+;; 	:config (setq-default mode-line-format '("")))
 ;;
-;; Bootstrap ALL THE ICONS
-(use-package all-the-icons
-  :if (display-graphic-p))
+;; Hide modeline
+(setq-default mode-line-format nil)
 
 (provide 'ui)
