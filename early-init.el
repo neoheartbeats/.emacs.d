@@ -21,13 +21,14 @@
 ;;
 ;; Defer garbage collection further back in the startup process
 (add-hook 'emacs-startup-hook
-  (let ((old-list file-name-handler-alist)
+  (let (
+				 (old-list file-name-handler-alist)
          (threshold (* 100 gc-cons-threshold))
          (percentage gc-cons-percentage))
     (lambda ()
-      (setq file-name-handler-alist old-list
-        gc-cons-threshold threshold
-        gc-cons-percentage percentage)
+      (setq file-name-handler-alist old-list)
+      (setq gc-cons-threshold threshold)
+      (setq gc-cons-percentage percentage)
       (garbage-collect))) t)
 
 (setq package-enable-at-startup nil)

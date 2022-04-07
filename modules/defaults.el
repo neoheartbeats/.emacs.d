@@ -106,7 +106,8 @@
 ;;
 ;; Disable these messages such ignore unused signals
 (defun filter-command-error-function (data context caller)
-  (when (not (memq (car data) '(buffer-read-only
+  (when (not (memq (car data) '(
+																 buffer-read-only
                                  beginning-of-line
                                  end-of-line
                                  beginning-of-buffer
