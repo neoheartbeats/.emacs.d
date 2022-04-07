@@ -43,7 +43,8 @@
 ;; Ensure loading vertico's extensions
 (straight-use-package '(vertico
                          :files (:defaults "extensions/*")
-                         :includes (vertico-buffer
+                         :includes (
+																		 vertico-buffer
 																		 vertico-directory
 																		 vertico-flat
 																		 vertico-indexed
