@@ -31,7 +31,7 @@
 (setq org-adapt-indentation t)
 
 ;; Show section numbers
-(add-hook 'org-mode-hook 'org-num-mode)
+;; (add-hook 'org-mode-hook 'org-num-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -55,7 +55,7 @@
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
-  :custom (org-bullets-bullet-list '("§")))
+  :custom (org-bullets-bullet-list '("◉")))
 
 (defun org-icons ()
   (setq prettify-symbols-alist
