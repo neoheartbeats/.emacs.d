@@ -144,7 +144,7 @@
   '(
 		 :foreground default
      :background "Transparent"
-     :scale 1.1
+     :scale 1.0
      :html-foreground "Black"
      :html-background "Transparent"
      :html-scale 1.0
