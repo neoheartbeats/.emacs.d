@@ -67,7 +67,6 @@
 
 (set-face-attribute 'variable-pitch nil
 	:font "FiraGo"
-	:weight 'Book
 	:height 155)
 
 (set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")

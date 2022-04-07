@@ -144,10 +144,10 @@
   '(
 		 :foreground default
      :background "Transparent"
-     :scale 1.0
+     :scale 1.05
      :html-foreground "Black"
      :html-background "Transparent"
-     :html-scale 1.0
+     :html-scale 1.05
      :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
 
 ;; Org LaTeX packages
