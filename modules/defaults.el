@@ -95,6 +95,7 @@
 
 ;; Show lambda as λ
 (global-prettify-symbols-mode 1)
+(setq prettify-symbols-unprettify-at-point t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

@@ -184,6 +184,8 @@
 (use-package org-fragtog
   :hook (org-mode . org-fragtog-mode))
 
+(setq org-highlight-latex-and-related '(latex))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org todo
