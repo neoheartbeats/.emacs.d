@@ -72,9 +72,10 @@
 ;; Display Org list prefix as dots
 (font-lock-add-keywords
 	'org-mode
-	'(("^ *\\([-]\\) "
-			(0 (prog1 ()
-					 (compose-region (match-beginning 1) (match-end 1) "▶︎"))))))
+	'(
+		 ("^ *\\([-]\\) "
+			 (0 (prog1 ()
+						(compose-region (match-beginning 1) (match-end 1) "▶︎"))))))
 
 ;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)
@@ -213,12 +214,14 @@
   :config
   (org-roam-setup)
   (setq org-roam-dailies-capture-templates ;; Preferred upper-case title tags
-    '(("d" "default" entry "* %?"
-        :target (file+head "%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d>"))))
+    '(
+			 ("d" "default" entry "* %?"
+         :target (file+head "%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d>"))))
   (setq org-roam-capture-templates
-    '(("d" "default" plain "%?"
-        :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}")
-        :unnarrowed t)))
+    '(
+			 ("d" "default" plain "%?"
+         :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}")
+         :unnarrowed t)))
   :hook (after-init . org-roam-dailies-goto-today))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
