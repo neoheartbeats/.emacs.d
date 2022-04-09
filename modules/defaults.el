@@ -62,6 +62,7 @@
 ;;
 ;; Replace "yes & no" with "y & n"
 (fset 'yes-or-no-p 'y-or-n-p)
+(define-key y-or-n-p-map [return] 'act)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -87,6 +88,7 @@
 
 ;; View the whole line
 (global-visual-line-mode 1)
+(setq word-wrap-by-category t)
 
 ;; Show line numbers in prog-mode
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)

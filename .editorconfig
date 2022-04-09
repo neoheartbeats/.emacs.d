@@ -25,3 +25,7 @@ insert_final_newline = true
 [*.el]
 indent_style = tab
 tab_width = 2
+
+[*.md]
+indent_style = tab
+tab_width = 2

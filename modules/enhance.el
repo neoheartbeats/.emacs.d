@@ -20,11 +20,14 @@
 (use-package company
   :init (global-company-mode 1)
   :custom
-  (company-minimum-prefix-length 3)
+  (company-minimum-prefix-length 2)
   (company-idle-delay 0)
   (company-echo-delay 0)
   (company-selection-wrap-around t)
   (company-tooltip-align-annotations t)
+	(company-show-numbers t)
+	(company-dabbrev-downcase nil)
+	(company-dabbrev-ignore-case nil)
   :bind
 	(
 		(:map company-active-map
@@ -91,7 +94,8 @@
   :init (yas-global-mode 1)
   :custom
   (yas-visit-from-menu t)
-  (yas-triggers-in-field t))
+  (yas-triggers-in-field t)
+	(yas-indent-line 'fixed))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -121,5 +125,10 @@
   :custom
   (magit-diff-refine-hunk t)
   (magit-section-visibility-indicator nil))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Provides only the command "restart-emacs"
+(use-package restart-emacs
+	:bind ("s-r" . restart-emacs))
 
 (provide 'enhance)
