@@ -11,7 +11,7 @@
 ;; Emacs frame UI setup.
 ;;
 ;; Code:
-
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Remove uneccessary components
@@ -33,13 +33,10 @@
 ;; Frame title setup
 ;;
 ;; Show icon & full path in title bar
-;; (setq frame-title-format
-;; 	'(:eval
-;; 		 (if buffer-file-name
-;; 			 (abbreviate-file-name buffer-file-name) "%b")))
-;;
-;; Hide frame title
-(setq frame-title-format nil)
+(setq frame-title-format
+	'(:eval
+		 (if buffer-file-name
+			 (abbreviate-file-name buffer-file-name) "%b")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -66,16 +63,16 @@
 	:height 145)
 
 (set-face-attribute 'variable-pitch nil
-	:font "FiraGo"
-	:height 155)
+	:font "Tinos"
+	:height 170)
 
-(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Improve the readability by increasing line spacing
-(setq-default line-spacing 6)
-
+;; (setq-default line-spacing 4)
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modus themes
@@ -83,28 +80,20 @@
 	:init (modus-themes-load-themes)
 	:custom
 	(modus-themes-subtle-line-numbers t)
-	(modus-themes-lang-checkers '(straight-underline))
 	(modus-themes-mode-line '(borderless))
 	(modus-themes-syntax '(green-strings))
-	(modus-themes-completions 'moderate)
 	(modus-themes-hl-line '(underline accented))
-	(modus-themes-paren-match '(underline intense))
 	(modus-themes-links '(neutral-underline))
-	(modus-themes-org-blocks 'tinted-background)
-	(modus-themes-box-buttons '(flat))
-	(modus-themes-prompts '(intense background))
-	:config (modus-themes-load-vivendi))
+	:config
+	(modus-themes-load-operandi))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Use single line as modeline
-;; (use-package emacs
-;; 	:custom-face
-;; 	(mode-line ((t (:height 0.1))))
-;; 	(mode-line-inactive ((t (:inherit mode-line))))
-;; 	:config (setq-default mode-line-format '("")))
-;;
-;; Hide modeline
-(setq-default mode-line-format nil)
+(use-package emacs
+	:custom-face
+	(mode-line ((t (:height 0.1))))
+	(mode-line-inactive ((t (:inherit mode-line))))
+	:config (setq-default mode-line-format '("")))
 
 (provide 'ui)

@@ -11,7 +11,7 @@
 ;; Enhance minibuffer & editors.
 ;;
 ;; Code:
-
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Completion
@@ -25,9 +25,22 @@
   (company-echo-delay 0)
   (company-selection-wrap-around t)
   (company-tooltip-align-annotations t)
-	(company-show-numbers t)
 	(company-dabbrev-downcase nil)
 	(company-dabbrev-ignore-case nil)
+	:config
+	(defun ispell-completion () ;; Spelling completion
+		(require 'ispell)
+		(make-local-variable 'company-backends)
+		(setq company-backends '((
+															 company-dabbrev
+															 company-yasnippet
+															 company-ispell)))
+		(setq company-ispell-dictionary ispell-dictionary)
+		(company-capf
+			'((:separate
+					company-dabbrev
+					company-yasnippet
+					company-ispell))))
   :bind
 	(
 		(:map company-active-map
@@ -37,36 +50,35 @@
 		(:map company-search-map
 			("<escape>" . company-search-abort)
 			("C-p" . company-select-previous)
-			("C-n" . company-select-next))))
+			("C-n" . company-select-next)))
+	:hook
+	(org-mode . ispell-completion))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Use listed completion style with `vertico'
-;;
-;; Ensure loading vertico's extensions
-(straight-use-package '(vertico
-                         :files (:defaults "extensions/*")
-                         :includes (
-																		 vertico-buffer
-																		 vertico-directory
-																		 vertico-flat
-																		 vertico-indexed
-																		 vertico-mouse
-																		 vertico-quick
-																		 vertico-repeat
-																		 vertico-reverse)))
-
 (use-package vertico
-  :init (vertico-mode 1)
-  :config
-  (use-package vertico-directory
-    :bind
+	:straight (
+							:files (:defaults "extensions/*")
+							:includes (
+													vertico-buffer
+													vertico-directory
+													vertico-flat
+													vertico-indexed
+													vertico-mouse
+													vertico-quick
+													vertico-repeat
+													vertico-reverse))
+	:init (vertico-mode 1)
+	:config
+	(use-package vertico-directory
+		:bind
 		(
 			(:map vertico-map
 				("RET" . vertico-directory-enter)
 				("DEL" . vertico-directory-delete-char)
 				("M-DEL" . vertico-directory-delete-word)))
-    :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)))
+		:hook (rfn-eshadow-update-overlay . vertico-directory-tidy)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -83,7 +95,7 @@
   (org-mode . smartparens-mode)
   :config
   (show-paren-mode 1)
-	(setq show-paren-style 'mixed)
+	(setq show-paren-style 'parenthesis)
   (setq show-paren-delay 0))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -126,11 +138,5 @@
   :custom
   (magit-diff-refine-hunk t)
   (magit-section-visibility-indicator nil))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Provides only the command "restart-emacs"
-(use-package restart-emacs
-	:bind ("s-r" . restart-emacs))
 
 (provide 'enhance)

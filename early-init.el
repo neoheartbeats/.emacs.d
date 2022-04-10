@@ -11,7 +11,7 @@
 ;; Code loaded before the package system and GUI is initialized.
 ;;
 ;; Code:
-
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; A big contributor to startup times is garbage collection
@@ -62,8 +62,7 @@
 (setq inhibit-startup-message t)
 
 ;; Scratch Buffer settings
-(setq initial-scratch-message
-	"Funding for this program was made possible by viewers like you.")
+(setq initial-scratch-message nil)
 
 (setq ring-bell-function 'ignore)
 (setq use-dialog-box nil)
@@ -76,11 +75,10 @@
 ;; Set the frame parameters before it's drawing
 (setq default-frame-alist
   '(
-		 (top . 95)
-     (left . 160)
-	   (width . 135)
-	   (height . 45)
-     (alpha . (90 . 65))))
+		 (top . 155)
+     (left . 320)
+	   (width . 95)
+	   (height . 40)))
 
 ;; Make UTF-8 the default coding system
 (set-language-environment "UTF-8")
