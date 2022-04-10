@@ -42,31 +42,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Use listed completion style with `vertico'
-;;
-;; Ensure loading vertico's extensions
-(straight-use-package '(vertico
-                         :files (:defaults "extensions/*")
-                         :includes (
-																		 vertico-buffer
-																		 vertico-directory
-																		 vertico-flat
-																		 vertico-indexed
-																		 vertico-mouse
-																		 vertico-quick
-																		 vertico-repeat
-																		 vertico-reverse)))
-
 (use-package vertico
-  :init (vertico-mode 1)
-  :config
-  (use-package vertico-directory
-    :bind
+	:straight (
+							:files (:defaults "extensions/*")
+							:includes (
+													vertico-buffer
+													vertico-directory
+													vertico-flat
+													vertico-indexed
+													vertico-mouse
+													vertico-quick
+													vertico-repeat
+													vertico-reverse))
+	:init (vertico-mode 1)
+	:config
+	(use-package vertico-directory
+		:bind
 		(
 			(:map vertico-map
 				("RET" . vertico-directory-enter)
 				("DEL" . vertico-directory-delete-char)
 				("M-DEL" . vertico-directory-delete-word)))
-    :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)))
+		:hook (rfn-eshadow-update-overlay . vertico-directory-tidy)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

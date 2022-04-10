@@ -196,6 +196,7 @@
 ;;
 ;; Org roam
 (use-package org-roam
+	:straight (:files (:defaults "extensions/*"))
   :init (setq org-roam-v2-ack t)
   :custom
   (org-roam-directory "~/org/")
