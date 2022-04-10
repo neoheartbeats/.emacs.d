@@ -123,7 +123,7 @@
 ;; Org LaTeX
 ;;
 ;; Install AUCTeX
-(use-package auctex :defer t)
+(use-package latex :straight auctex)
 
 ;; Setup `dvisvgm' to preview LaTeX fragments
 (setq org-preview-latex-default-process 'dvisvgm)
