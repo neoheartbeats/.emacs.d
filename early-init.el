@@ -79,8 +79,8 @@
 (setq default-frame-alist
   '(
 		 (top . 95)
-     (left . 160)
-	   (width . 135)
+     (left . 220)
+	   (width . 120)
 	   (height . 45)
      (alpha . (90 . 65))))
 
