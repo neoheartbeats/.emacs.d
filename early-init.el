@@ -12,6 +12,8 @@
 ;;
 ;; Code:
 
+(setq load-prefer-newer t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; A big contributor to startup times is garbage collection

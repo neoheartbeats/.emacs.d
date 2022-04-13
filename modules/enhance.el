@@ -25,7 +25,6 @@
   (company-echo-delay 0)
   (company-selection-wrap-around t)
   (company-tooltip-align-annotations t)
-	(company-show-numbers t)
 	(company-dabbrev-downcase nil)
 	(company-dabbrev-ignore-case nil)
   :bind
