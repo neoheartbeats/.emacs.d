@@ -33,13 +33,10 @@
 ;; Frame title setup
 ;;
 ;; Show icon & full path in title bar
-;; (setq frame-title-format
-;; 	'(:eval
-;; 		 (if buffer-file-name
-;; 			 (abbreviate-file-name buffer-file-name) "%b")))
-;;
-;; Hide frame title
-(setq frame-title-format nil)
+(setq frame-title-format
+	'(:eval
+		 (if buffer-file-name
+			 (abbreviate-file-name buffer-file-name) "%b")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -98,13 +95,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Use single line as modeline
-;; (use-package emacs
-;; 	:custom-face
-;; 	(mode-line ((t (:height 0.1))))
-;; 	(mode-line-inactive ((t (:inherit mode-line))))
-;; 	:config (setq-default mode-line-format '("")))
-;;
-;; Hide modeline
-(setq-default mode-line-format nil)
+(use-package emacs
+	:custom-face
+	(mode-line ((t (:height 0.1))))
+	(mode-line-inactive ((t (:inherit mode-line))))
+	:config (setq-default mode-line-format '("")))
 
 (provide 'ui)

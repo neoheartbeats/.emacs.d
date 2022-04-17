@@ -162,14 +162,6 @@
      ("mathrm=sym" "unicode-math" t)
      ("" "firamath-otf" t)))
 
-;; (setq org-latex-packages-alist
-;;       '(
-;;         ("" "physics" t)
-;;         ("" "mhchem" t)
-;;         ("" "gensymb" t)
-;;         ("" "siunitx" t)
-;;         ("" "txfonts" t)))
-
 ;; Direct LaTeX preview image files
 (setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
 
