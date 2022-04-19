@@ -44,7 +44,7 @@
 (global-set-key (kbd "s-n") 'find-file)
 (global-set-key (kbd "C-c p") (lambda ()
 																(interactive)
-																(find-file "~/.emacs.d/init.el")))
+																(find-file user-init-file)))
 
 ;; Disable swipe left/right to change buffer
 (global-unset-key [swipe-left])

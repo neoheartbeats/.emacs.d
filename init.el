@@ -46,7 +46,7 @@
 (require 'enhance)
 (require 'ui)
 (require 'init-org)
-(require 'term)
+;; (require 'term)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

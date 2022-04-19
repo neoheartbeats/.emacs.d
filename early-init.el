@@ -62,8 +62,7 @@
 (setq inhibit-startup-message t)
 
 ;; Scratch Buffer settings
-(setq initial-scratch-message
-	"Funding for this program was made possible by viewers like you.")
+(setq initial-scratch-message nil)
 
 (setq ring-bell-function 'ignore)
 (setq use-dialog-box nil)
@@ -76,8 +75,8 @@
 ;; Set the frame parameters before it's drawing
 (setq default-frame-alist
   '(
-		 (top . 95)
-     (left . 220)
+		 (top . 100)
+     (left . 320)
 	   (width . 120)
 	   (height . 45)
      (alpha . (90 . 65))))

@@ -59,20 +59,20 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	:font "Fira Code"
-	:height 145)
-
-(set-face-attribute 'variable-pitch nil
-	:font "FiraGo"
+	:font "PragmataPro Mono Liga"
 	:height 155)
+
+;; (set-face-attribute 'variable-pitch nil
+;; 	:font "FiraGo"
+;; 	:height 155)
 
 (set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Improve the readability by increasing line spacing
-(setq-default line-spacing 6)
-
+;; (setq-default line-spacing 6)
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modus themes
