@@ -203,9 +203,7 @@
 		("C-c n f" . org-roam-node-find)
 		("C-c n i" . org-roam-node-insert)
 		("C-c n c" . org-roam-capture)
-		("C-c n l" . org-roam-buffer-toggle)
-		("<s-up>" . org-roam-dailies-goto-previous-note)
-		("<s-down>" . org-roam-dailies-goto-next-note))
+		("C-c n l" . org-roam-buffer-toggle))
   :config
   (org-roam-setup)
 	(setq org-roam-db-gc-threshold most-positive-fixnum) ;; Performance optimization
@@ -260,6 +258,10 @@
   (org-journal-date-format "%Y-%m-%d")
 	:config ;; Open file in new frame
 	(setq org-journal-find-file 'find-file)
+	:bind
+	(
+		("<s-up>" . org-journal-previous-entry)
+		("<s-down>" . org-journal-next-entry))
 	:hook
 	(after-init . (lambda ()
 									(interactive)
