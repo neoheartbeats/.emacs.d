@@ -27,6 +27,17 @@
   (company-tooltip-align-annotations t)
 	(company-dabbrev-downcase nil)
 	(company-dabbrev-ignore-case nil)
+	:config
+	(defun ispell-completion () ;; Spelling completion
+		(require 'ispell)
+		(make-local-variable 'company-backends)
+		(setq company-backends '((
+															 company-dabbrev
+															 company-yasnippet
+															 company-ispell)))
+		(setq company-ispell-dictionary ispell-dictionary)
+		(company-capf
+			'((:separate company-capf company-dabbrev company-yasnippet company-ispell))))
   :bind
 	(
 		(:map company-active-map
@@ -36,7 +47,9 @@
 		(:map company-search-map
 			("<escape>" . company-search-abort)
 			("C-p" . company-select-previous)
-			("C-n" . company-select-next))))
+			("C-n" . company-select-next)))
+	:hook
+	(org-mode . ispell-completion))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

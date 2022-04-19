@@ -59,7 +59,7 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	:font "Unifont" ;; PragmataPro Mono Liga
+	:font "Unifont"
 	:height 155)
 
 ;; (set-face-attribute 'variable-pitch nil
