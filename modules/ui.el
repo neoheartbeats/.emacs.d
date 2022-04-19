@@ -41,7 +41,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Cursor settings
-;; (setq-default cursor-type '(bar . 1))
+(setq-default cursor-type '(bar . 1))
 (blink-cursor-mode -1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -59,15 +59,15 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	:font "Unifont"
-	:height 155)
+	:font "Source Code Pro"
+	:height 145)
 
 ;; (set-face-attribute 'variable-pitch nil
 ;; 	:font "FiraGo"
 ;; 	:height 155)
-;;
-;; (set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
-;;
+
+(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Improve the readability by increasing line spacing
@@ -83,11 +83,8 @@
 	(modus-themes-mode-line '(borderless))
 	(modus-themes-syntax '(green-strings))
 	(modus-themes-links '(neutral-underline))
-	(modus-themes-org-blocks 'tinted-background)
 	:config
-	(modus-themes-load-vivendi)
-	(set-face-attribute 'cursor nil
-		:background (modus-themes-color 'green)))
+	(modus-themes-load-vivendi))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
