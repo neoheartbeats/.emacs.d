@@ -75,7 +75,7 @@
 ;; Set the frame parameters before it's drawing
 (setq default-frame-alist
   '(
-		 (top . 100)
+		 (top . 120)
      (left . 320)
 	   (width . 120)
 	   (height . 45)

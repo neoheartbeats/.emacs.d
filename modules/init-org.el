@@ -94,6 +94,7 @@
 
 ;; Shortcut to display images
 (global-set-key (kbd "C-x p") (lambda ()
+																(interactive)
 																(org-display-inline-images)
 																(org-latex-preview)))
 
@@ -156,10 +157,10 @@
   '(
 		 :foreground default
      :background "Transparent"
-     :scale 1.2
+     :scale 1.1
      :html-foreground "Black"
      :html-background "Transparent"
-     :html-scale 1.2
+     :html-scale 1.1
      :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
 
 ;; Org LaTeX packages

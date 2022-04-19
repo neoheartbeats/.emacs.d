@@ -41,7 +41,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Cursor settings
-(setq-default cursor-type '(bar . 1))
+;; (setq-default cursor-type '(bar . 1))
 (blink-cursor-mode -1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -59,19 +59,19 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	:font "PragmataPro Mono Liga"
+	:font "Unifont" ;; PragmataPro Mono Liga
 	:height 155)
 
 ;; (set-face-attribute 'variable-pitch nil
 ;; 	:font "FiraGo"
 ;; 	:height 155)
-
-(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
-
+;;
+;; (set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Improve the readability by increasing line spacing
-;; (setq-default line-spacing 6)
+;; (setq-default line-spacing 4)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -80,17 +80,14 @@
 	:init (modus-themes-load-themes)
 	:custom
 	(modus-themes-subtle-line-numbers t)
-	(modus-themes-lang-checkers '(straight-underline))
 	(modus-themes-mode-line '(borderless))
 	(modus-themes-syntax '(green-strings))
-	(modus-themes-completions 'moderate)
-	(modus-themes-hl-line '(underline accented))
-	(modus-themes-paren-match '(underline intense))
 	(modus-themes-links '(neutral-underline))
 	(modus-themes-org-blocks 'tinted-background)
-	(modus-themes-box-buttons '(flat))
-	(modus-themes-prompts '(intense background))
-	:config (modus-themes-load-vivendi))
+	:config
+	(modus-themes-load-vivendi)
+	(set-face-attribute 'cursor nil
+		:background (modus-themes-color 'green)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
