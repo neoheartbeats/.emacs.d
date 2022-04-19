@@ -11,7 +11,7 @@
 ;; Org mode setup.
 ;;
 ;; Code:
-
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org init
@@ -75,7 +75,7 @@
 	'(
 		 ("^ *\\([-]\\) "
 			 (0 (prog1 ()
-						(compose-region (match-beginning 1) (match-end 1) "▶︎"))))))
+						(compose-region (match-beginning 1) (match-end 1) "•︎"))))))
 
 ;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)
@@ -177,19 +177,11 @@
 (use-package org-fragtog
   :hook (org-mode . org-fragtog-mode))
 
-(setq org-highlight-latex-and-related '(latex))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Org todo
-;; (setq org-todo-keywords '((sequence "TODO" "REVIEW" "DONE")))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org roam
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))
-  :init (setq org-roam-v2-ack t)
   :custom
   (org-roam-directory "~/org/")
   (org-roam-dailies-directory "dLs/")
