@@ -142,7 +142,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Provides only the command "restart-emacs"
-(use-package restart-emacs
-	:bind ("s-r" . restart-emacs))
+;; (use-package restart-emacs
+;; 	:bind ("s-r" . restart-emacs))
 
 (provide 'enhance)
