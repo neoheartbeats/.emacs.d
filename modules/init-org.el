@@ -51,9 +51,9 @@
 ;; Use unicode symbols
 (setq org-ellipsis " …")
 
-;; (use-package org-bullets
-;;   :hook (org-mode . org-bullets-mode)
-;;   :custom (org-bullets-bullet-list '("◉")))
+(use-package org-bullets
+  :hook (org-mode . org-bullets-mode)
+  :custom (org-bullets-bullet-list '("◉")))
 
 (defun org-icons ()
   (setq prettify-symbols-alist
