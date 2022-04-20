@@ -59,14 +59,14 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	:font "Source Code Pro"
+	:font "Inconsolata-g"
 	:height 145)
 
 ;; (set-face-attribute 'variable-pitch nil
 ;; 	:font "FiraGo"
 ;; 	:height 155)
 
-(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
+(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

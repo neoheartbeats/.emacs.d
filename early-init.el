@@ -78,7 +78,7 @@
 		 (top . 120)
      (left . 320)
 	   (width . 115)
-	   (height . 40)
+	   (height . 35)
      (alpha . (90 . 65))))
 
 ;; Make UTF-8 the default coding system

@@ -37,7 +37,10 @@
 															 company-ispell)))
 		(setq company-ispell-dictionary ispell-dictionary)
 		(company-capf
-			'((:separate company-capf company-dabbrev company-yasnippet company-ispell))))
+			'((:separate
+					company-dabbrev
+					company-yasnippet
+					company-ispell))))
   :bind
 	(
 		(:map company-active-map
