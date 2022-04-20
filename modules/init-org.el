@@ -51,19 +51,19 @@
 ;; Use unicode symbols
 (setq org-ellipsis " …")
 
-(use-package org-bullets
-  :hook (org-mode . org-bullets-mode)
-  :custom (org-bullets-bullet-list '("")))
+;; (use-package org-bullets
+;;   :hook (org-mode . org-bullets-mode)
+;;   :custom (org-bullets-bullet-list '("◉")))
 
 (defun org-icons ()
   (setq prettify-symbols-alist
 	  '(
 			 ("#+TITLE:" . "T")
-       (":PROPERTIES:" . "")
+       (":PROPERTIES:" . "⌘")
        ("#+BEGIN_SRC" . "⌗")
        ("#+END_SRC" . "-")
        ("#+RESULTS:" . ":")
-       ("#+ATTR_ORG:" . "")))
+       ("#+ATTR_ORG:" . "⚙︎")))
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'org-icons)
 
