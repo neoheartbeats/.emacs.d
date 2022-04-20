@@ -59,19 +59,15 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	:font "Inconsolata-g"
+	:font "FiraCode Nerd Font"
 	:height 145)
 
-;; (set-face-attribute 'variable-pitch nil
-;; 	:font "FiraGo"
-;; 	:height 155)
-
-(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
+(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Improve the readability by increasing line spacing
-;; (setq-default line-spacing 4)
+;; (setq-default line-spacing 3)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

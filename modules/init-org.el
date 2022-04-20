@@ -53,17 +53,17 @@
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
-  :custom (org-bullets-bullet-list '("◉")))
+  :custom (org-bullets-bullet-list '("")))
 
 (defun org-icons ()
   (setq prettify-symbols-alist
 	  '(
 			 ("#+TITLE:" . "T")
-       (":PROPERTIES:" . "⌘")
+       (":PROPERTIES:" . "")
        ("#+BEGIN_SRC" . "⌗")
        ("#+END_SRC" . "-")
        ("#+RESULTS:" . ":")
-       ("#+ATTR_ORG:" . "⚙")))
+       ("#+ATTR_ORG:" . "")))
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'org-icons)
 
@@ -203,7 +203,7 @@
 		("C-c n c" . org-roam-capture)
 		("C-c n l" . org-roam-buffer-toggle))
   :config
-  (org-roam-setup)
+	(org-roam-setup)
 	(setq org-roam-db-gc-threshold most-positive-fixnum) ;; Performance optimization
   ;; (setq org-roam-dailies-capture-templates ;; Preferred upper-case title tags
   ;;   '(
@@ -233,7 +233,7 @@
          :immediate-finish t
          :unnarrowed t)))
 	(cl-defmethod org-roam-node-type ((node org-roam-node))
-		"Return the TYPE of NODE."
+		"Return the TYPE of NODE"
 		(condition-case nil
       (file-name-nondirectory
 				(directory-file-name
