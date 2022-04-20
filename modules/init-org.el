@@ -18,8 +18,6 @@
 (use-package org
   :straight (:type built-in))
 
-;; (require 'org)
-
 (setq org-directory "~/org/")
 
 ;; Open org files with previewing
@@ -61,7 +59,7 @@
   (setq prettify-symbols-alist
 	  '(
 			 ("#+TITLE:" . "T")
-       (":PROPERTIES:" . "☰")
+       (":PROPERTIES:" . "⌘")
        ("#+BEGIN_SRC" . "⌗")
        ("#+END_SRC" . "-")
        ("#+RESULTS:" . ":")
@@ -104,7 +102,7 @@
 (setq org-return-follows-link t)
 (setq org-confirm-elisp-link-function nil)
 
-;; Open links in new frame
+;; Open links open up in new frame
 (setq org-link-frame-setup
 	'(
 		 (vm . vm-visit-folder-other-frame)
@@ -154,7 +152,7 @@
 			 ("dvisvgm %f -e -n -b min -c %S -o %O"))))
 
 (setq org-format-latex-options
-  '(
+  '( ;; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
 		 :foreground default
      :background "Transparent"
      :scale 1.1
