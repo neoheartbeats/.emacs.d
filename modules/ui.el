@@ -78,6 +78,7 @@
 	(modus-themes-subtle-line-numbers t)
 	(modus-themes-mode-line '(borderless))
 	(modus-themes-syntax '(green-strings))
+	(modus-themes-hl-line '(underline accented))
 	(modus-themes-links '(neutral-underline))
 	:config
 	(modus-themes-load-vivendi))
