@@ -53,7 +53,7 @@
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
-  :custom (org-bullets-bullet-list '("◉")))
+  :custom (org-bullets-bullet-list '("▼")))
 
 (defun org-icons ()
   (setq prettify-symbols-alist
@@ -90,11 +90,8 @@
 ;; Org images
 (setq org-image-actual-width nil)
 
-;; Shortcut to display images
-(global-set-key (kbd "C-x p") (lambda ()
-																(interactive)
-																(org-display-inline-images)
-																(org-latex-preview)))
+;; Shortcut to preview images in Org mode
+(global-set-key (kbd "C-x p") 'org-display-inline-images)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -182,9 +179,12 @@
   :hook (org-mode . org-cdlatex-mode))
 
 ;; Setup `org-fragtog'
-;; (use-package org-fragtog
-;;   :hook (org-mode . org-fragtog-mode))
-;;
+(use-package org-fragtog
+  :hook (org-mode . org-fragtog-mode))
+
+;; Syntax highlighting for LaTeX in Org mode
+(setq org-highlight-latex-and-related '(latex script))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org roam
