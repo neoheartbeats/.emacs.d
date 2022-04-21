@@ -28,9 +28,6 @@
 (setq org-startup-indented t)
 (setq org-adapt-indentation t)
 
-;; Show section numbers
-;; (add-hook 'org-mode-hook 'org-num-mode)
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org editor
@@ -38,12 +35,6 @@
 ;; Enhance inserting headings
 (org-insert-heading-respect-content t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Support mouse click
-;; (use-package org-mouse
-;;   :straight (:type built-in))
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org UI
@@ -82,9 +73,6 @@
 ;; Fold drawers by default
 (add-hook 'org-mode-hook 'org-hide-drawer-all)
 
-;; Hide emphasis markers
-;; (setq org-hide-emphasis-markers t)
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org images
@@ -204,11 +192,7 @@
 		("C-c n l" . org-roam-buffer-toggle))
   :config
 	(org-roam-setup)
-	(setq org-roam-db-gc-threshold most-positive-fixnum) ;; Performance optimization
-  ;; (setq org-roam-dailies-capture-templates ;; Preferred upper-case title tags
-  ;;   '(
-	;; 		 ("d" "default" entry "* %?"
-  ;;        :target (file+head "%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d>"))))
+	(setq org-roam-db-gc-threshold most-positive-fixnum) ;; Optimize performance
 	(setq org-roam-capture-templates
 		'(
 			 ("d" "default" plain "* %?"
@@ -265,30 +249,5 @@
 									(interactive)
 									(org-journal-open-current-journal-file)
 									(org-roam-db-sync))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Mixed pitch mode
-;; (use-package mixed-pitch
-;;   :config
-;; 	(setq mixed-pitch-set-height t)
-;; 	(setq mixed-pitch-variable-pitch-cursor '(bar . 1))
-;;   :hook (org-mode . mixed-pitch-mode))
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Org tables
-;;
-;; Align Org mode tables
-;; (use-package valign
-;; 	:hook (org-mode . valign-mode)
-;; 	:custom (valign-fancy-bar t))
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Spell checking
-;; (use-package ispell
-;;   :straight (:type built-in)
-;;   :hook (org-mode . flyspell-mode))
 
 (provide 'init-org)

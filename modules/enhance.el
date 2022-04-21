@@ -139,10 +139,4 @@
   (magit-diff-refine-hunk t)
   (magit-section-visibility-indicator nil))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Provides only the command "restart-emacs"
-;; (use-package restart-emacs
-;; 	:bind ("s-r" . restart-emacs))
-
 (provide 'enhance)
