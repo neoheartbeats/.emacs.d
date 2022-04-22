@@ -62,7 +62,7 @@
 	:font "Fira Code"
 	:height 145)
 
-(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
+(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
