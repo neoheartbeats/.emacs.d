@@ -44,7 +44,7 @@
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
-  :custom (org-bullets-bullet-list '("▼")))
+  :custom (org-bullets-bullet-list '("§")))
 
 (defun org-icons ()
   (setq prettify-symbols-alist
@@ -72,6 +72,9 @@
 
 ;; Fold drawers by default
 (add-hook 'org-mode-hook 'org-hide-drawer-all)
+
+;; Display chapter numbers
+(add-hook 'org-mode-hook 'org-num-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -140,10 +143,10 @@
   '( ;; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
 		 :foreground default
      :background "Transparent"
-     :scale 1.1
+     :scale 1.2
      :html-foreground "Black"
      :html-background "Transparent"
-     :html-scale 1.1
+     :html-scale 1.2
      :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
 
 ;; Org LaTeX packages
@@ -189,10 +192,18 @@
 		("C-c n f" . org-roam-node-find)
 		("C-c n i" . org-roam-node-insert)
 		("C-c n c" . org-roam-capture)
-		("C-c n l" . org-roam-buffer-toggle))
+		("C-c n j" . org-roam-dailies-goto-today)
+		("C-c n l" . org-roam-buffer-toggle)
+		("<s-up>" . org-roam-dailies-goto-previous-note)
+		("<s-down>" . org-roam-dailies-goto-next-note))
   :config
 	(org-roam-setup)
 	(setq org-roam-db-gc-threshold most-positive-fixnum) ;; Optimize performance
+	(setq org-roam-dailies-capture-templates ;; Preferred upper case title tags
+    '(("d" "default" entry
+        "* %?"
+        :target (file+head "%<%Y-%m-%d>.org"
+                  "#+TITLE: %<%Y-%m-%d>\n"))))
 	(setq org-roam-capture-templates
 		'(
 			 ("d" "default" plain "* %?"
@@ -225,30 +236,42 @@
 						(file-relative-name (org-roam-node-file node) org-roam-directory))))
 			(error "")))
 	(setq org-roam-node-display-template
-    (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag))))
+    (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+	:hook
+	(after-init . org-roam-dailies-goto-today))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org journal
-(use-package org-journal
-  :bind
-  ("C-c n j" . org-journal-new-entry)
-  :custom
-  (org-journal-date-prefix "#+TITLE: ")
-  (org-journal-file-format "%Y-%m-%d.org")
-  (org-journal-dir "~/org/book/")
-  (org-journal-date-format "%Y-%m-%d")
-	:config ;; Open file in new frame
-	(setq org-journal-find-file 'find-file)
-	:bind
-	(
-		("<s-up>" . org-journal-previous-entry)
-		("<s-down>" . org-journal-next-entry)
-		("C-c n o" . org-journal-open-current-journal-file))
-	:hook
-	(after-init . (lambda ()
-									(interactive)
-									(org-journal-open-current-journal-file)
-									(org-roam-db-sync))))
+;; (use-package org-journal
+;;   :bind
+;;   ("C-c n j" . org-journal-new-entry)
+;;   :custom
+;;   (org-journal-date-prefix "#+TITLE: ")
+;;   (org-journal-file-format "%Y-%m-%d.org")
+;;   (org-journal-dir "~/org/book/")
+;;   (org-journal-date-format "%Y-%m-%d")
+;; 	:config ;; Open file in new frame
+;; 	(setq org-journal-find-file 'find-file)
+;; 	:bind
+;; 	(
+;; 		("<s-up>" . org-journal-previous-entry)
+;; 		("<s-down>" . org-journal-next-entry)
+;; 		("C-c n o" . org-journal-open-current-journal-file))
+;; 	:hook
+;; 	(after-init . (lambda ()
+;; 									(interactive)
+;; 									(org-journal-open-current-journal-file)
+;; 									(org-roam-db-sync))))
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Mixed pitch mode
+(use-package mixed-pitch
+	:custom
+	(mixed-pitch-set-height t)
+	(mixed-pitch-variable-pitch-cursor '(bar . 1))
+  :hook
+  (org-mode . mixed-pitch-mode))
 
 (provide 'init-org)

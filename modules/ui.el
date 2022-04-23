@@ -62,7 +62,11 @@
 	:font "Fira Code"
 	:height 145)
 
-(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
+(set-face-attribute 'variable-pitch nil
+	:font "Tinos"
+	:height 170)
+
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -81,7 +85,7 @@
 	(modus-themes-hl-line '(underline accented))
 	(modus-themes-links '(neutral-underline))
 	:config
-	(modus-themes-load-vivendi))
+	(modus-themes-load-operandi))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
