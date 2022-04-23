@@ -17,42 +17,68 @@
 ;; Completion
 ;;
 ;; Company setup
-(use-package company
-  :init (global-company-mode 1)
-  :custom
-  (company-minimum-prefix-length 2)
-  (company-idle-delay 0)
-  (company-echo-delay 0)
-  (company-selection-wrap-around t)
-  (company-tooltip-align-annotations t)
-	(company-dabbrev-downcase nil)
-	(company-dabbrev-ignore-case nil)
+;; (use-package company
+;;   :init (global-company-mode 1)
+;;   :custom
+;;   (company-minimum-prefix-length 2)
+;;   (company-idle-delay 0)
+;;   (company-echo-delay 0)
+;;   (company-selection-wrap-around t)
+;;   (company-tooltip-align-annotations t)
+;; 	(company-dabbrev-downcase nil)
+;; 	(company-dabbrev-ignore-case nil)
+;; 	:config
+;; 	(defun ispell-completion () ;; Spelling completion
+;; 		(require 'ispell)
+;; 		(make-local-variable 'company-backends)
+;; 		(setq company-backends '((
+;; 															 company-dabbrev
+;; 															 company-yasnippet
+;; 															 company-ispell)))
+;; 		(setq company-ispell-dictionary ispell-dictionary)
+;; 		(company-capf
+;; 			'((:separate
+;; 					company-dabbrev
+;; 					company-yasnippet
+;; 					company-ispell))))
+;;   :bind
+;; 	(
+;; 		(:map company-active-map
+;; 			("<escape>" . company-abort)
+;; 			("C-p" . company-select-previous)
+;; 			("C-n" . company-select-next))
+;; 		(:map company-search-map
+;; 			("<escape>" . company-search-abort)
+;; 			("C-p" . company-select-previous)
+;; 			("C-n" . company-select-next)))
+;; 	:hook
+;; 	(org-mode . ispell-completion))
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Auto completion
+(use-package corfu
+	:custom
+	(corfu-cycle t)
+	(corfu-auto t)
+	(corfu-separator ?\s)
+	;;	:hook
+	;;	((prog-mode . corfu-mode)
+	;;		(org-mode . corfu-mode))
+  :init
+  (global-corfu-mode)
 	:config
-	(defun ispell-completion () ;; Spelling completion
-		(require 'ispell)
-		(make-local-variable 'company-backends)
-		(setq company-backends '((
-															 company-dabbrev
-															 company-yasnippet
-															 company-ispell)))
-		(setq company-ispell-dictionary ispell-dictionary)
-		(company-capf
-			'((:separate
-					company-dabbrev
-					company-yasnippet
-					company-ispell))))
-  :bind
-	(
-		(:map company-active-map
-			("<escape>" . company-abort)
-			("C-p" . company-select-previous)
-			("C-n" . company-select-next))
-		(:map company-search-map
-			("<escape>" . company-search-abort)
-			("C-p" . company-select-previous)
-			("C-n" . company-select-next)))
-	:hook
-	(org-mode . ispell-completion))
+	(use-package emacs
+		:init
+		(setq completion-cycle-threshold 3)
+		(setq tab-always-indent 'complete)))
+
+;; Use the `orderless' completion style
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless basic)
+    completion-category-defaults nil
+    completion-category-overrides '((file (styles . (partial-completion))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -83,9 +109,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Use orderless completion style
-(use-package orderless
-  :custom (completion-styles '(orderless)))
-
+;; (use-package orderless
+;;   :custom (completion-styles '(orderless)))
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Completion for parenthesis
