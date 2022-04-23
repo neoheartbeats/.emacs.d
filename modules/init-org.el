@@ -243,7 +243,8 @@
 	:bind
 	(
 		("<s-up>" . org-journal-previous-entry)
-		("<s-down>" . org-journal-next-entry))
+		("<s-down>" . org-journal-next-entry)
+		("C-c n o" . org-journal-open-current-journal-file))
 	:hook
 	(after-init . (lambda ()
 									(interactive)
