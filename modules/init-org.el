@@ -167,7 +167,7 @@
      ("" "mhchem" t)
      ("" "gensymb" t)
      ("" "siunitx" t)
-		 ("" "pxfonts" t)))
+		 ("" "euler" t)))
 
 ;; Direct LaTeX preview image files
 (setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
