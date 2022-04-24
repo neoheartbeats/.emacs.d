@@ -40,7 +40,7 @@
 ;; Org UI
 ;;
 ;; Use unicode symbols
-(setq org-ellipsis " …")
+(setq org-ellipsis " ¶")
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
@@ -66,13 +66,24 @@
 			 (0 (prog1 ()
 						(compose-region (match-beginning 1) (match-end 1) "•︎"))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)
 (setq org-pretty-entities-include-sub-superscripts nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Hide emphasis markers
+(setq org-hide-emphasis-markers t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Fold drawers by default
 (add-hook 'org-mode-hook 'org-hide-drawer-all)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Display chapter numbers
 (add-hook 'org-mode-hook 'org-num-mode)
 
@@ -90,14 +101,14 @@
 (setq org-return-follows-link t)
 (setq org-confirm-elisp-link-function nil)
 
-;; Open links open up in new frame
+;; Open links in new window
 (setq org-link-frame-setup
-	'(
-		 (vm . vm-visit-folder-other-frame)
-		 (vm-imap . vm-visit-imap-folder-other-frame)
-		 (gnus . org-gnus-no-new-news)
-		 (file . find-file)
-		 (wl . wl-other-frame)))
+  '(
+  	 (vm . vm-visit-folder-other-window)
+  	 (vm-imap . vm-visit-imap-folder-other-frame)
+  	 (gnus . org-gnus-no-new-news)
+  	 (file . find-file) ;; Open link in current window
+  	 (wl . wl-other-frame)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -154,9 +165,10 @@
   '(
 		 ("" "physics" t)
      ("" "mhchem" t)
+		 ("" "chemfig" t)
      ("" "gensymb" t)
      ("" "siunitx" t)
-		 ("" "pxfonts" t)))
+		 ("" "euler" t)))
 
 ;; Direct LaTeX preview image files
 (setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
@@ -178,7 +190,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Org roam
+;; Org Roam
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))
   :custom
@@ -200,46 +212,71 @@
 	(org-roam-setup)
 	(setq org-roam-db-gc-threshold most-positive-fixnum) ;; Optimize performance
 	(setq org-roam-dailies-capture-templates ;; Preferred upper case title tags
-    '(("d" "default" entry
-        "* %?"
-        :target (file+head "%<%Y-%m-%d>.org"
-                  "#+TITLE: %<%Y-%m-%d>\n"))))
+    '(
+			 ("d" "default" entry
+         "* %?"
+         :target (file+head
+									 "%<%Y-%m-%d>.org"
+                   "#+TITLE: %<%Y-%m-%d>\n"))))
 	(setq org-roam-capture-templates
 		'(
-			 ("d" "default" plain "* %?"
-         :if-new
-				 (file+head "inbox/%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d>")
+			 ("d" "default" plain "%?"
+				 :target (file+head
+									 "main/${slug}.org"
+									 "#+TITLE: ${title}")
 				 :immediate-finish t
-				 :unnarrowed t)
-			 ("m" "main" plain
-         "%?"
-         :if-new
-				 (file+head "main/${slug}.org" "#+TITLE: ${title}\n")
-         :immediate-finish t
-         :unnarrowed t)
-       ("r" "reference" plain "%?"
-         :if-new
-				 (file+head "reference/${title}.org" "#+TITLE: ${title}\n")
-         :immediate-finish t
-         :unnarrowed t)
-       ("w" "work" plain "%?"
-         :if-new
-				 (file+head "work/${title}.org" "#+TITLE: ${title}\n#+filetags: :work:\n")
-         :immediate-finish t
-         :unnarrowed t)))
-	(cl-defmethod org-roam-node-type ((node org-roam-node))
-		"Return the TYPE of NODE"
-		(condition-case nil
-      (file-name-nondirectory
-				(directory-file-name
-					(file-name-directory
-						(file-relative-name (org-roam-node-file node) org-roam-directory))))
-			(error "")))
-	(setq org-roam-node-display-template
-    (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-	:hook
-	(after-init . org-roam-dailies-goto-today))
+				 :unnarrowed t)))
+	(setq org-roam-mode-sections
+    '((org-roam-backlinks-section :unique t)
+       org-roam-reflinks-section))
 
+	;; Org Roam buffer configuration
+	(add-to-list 'display-buffer-alist
+    '("\\*org-roam\\*"
+       (display-buffer-in-side-window)
+       (side . right)
+       (slot . 0)
+       (window-width . 0.33)
+       (window-parameters . (
+															(no-other-window . t)
+                              (no-delete-other-windows . nil)))))
+	:hook
+	(after-init . (lambda ()
+									(org-roam-dailies-goto-today)
+									(org-roam-buffer-toggle))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Org Roam UI
+(use-package org-roam-ui
+  :straight
+  (
+		:host github
+		:repo "org-roam/org-roam-ui"
+		:branch "main"
+		:files ("*.el" "out"))
+  :after org-roam
+	:hook (after-init . org-roam-ui-mode)
+  :custom
+  (org-roam-ui-sync-theme t)
+  (org-roam-ui-follow t)
+  (org-roam-ui-update-on-save t)
+  (org-roam-ui-open-on-start t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Org roam buffer settings
+;;
+;; (defun org-roam-links ()
+;; 	(interactive)
+;; 	(progn
+;; 		(split-window-horizontally)
+;; 		(org-roam-buffer-toggle)))
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Org roam buffer settings
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org journal
@@ -267,11 +304,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Mixed pitch mode
-(use-package mixed-pitch
-	:custom
-	(mixed-pitch-set-height t)
-	(mixed-pitch-variable-pitch-cursor '(bar . 1))
-  :hook
-  (org-mode . mixed-pitch-mode))
+;; (use-package mixed-pitch
+;; 	:custom
+;; 	(mixed-pitch-set-height t)
+;; 	(mixed-pitch-variable-pitch-cursor '(bar . 1))
+;; 	:hook
+;; 	(org-mode . mixed-pitch-mode))
 
 (provide 'init-org)

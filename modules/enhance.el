@@ -56,29 +56,48 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Auto completion
+;; Auto completion with `corfu'
 (use-package corfu
+	:straight (
+							:files (:defaults "extensions/*")
+							:includes (corfu-history))
 	:custom
 	(corfu-cycle t)
 	(corfu-auto t)
-	(corfu-separator ?\s)
-	;;	:hook
-	;;	((prog-mode . corfu-mode)
-	;;		(org-mode . corfu-mode))
+	(corfu-auto-delay 0)
+	(corfu-auto-prefix 2)
+	:hook
+	(
+		(prog-mode . corfu-mode)
+		(org-mode . corfu-mode))
   :init
   (global-corfu-mode)
 	:config
+	(use-package corfu-history
+		:init (corfu-history-mode))
 	(use-package emacs
 		:init
 		(setq completion-cycle-threshold 3)
 		(setq tab-always-indent 'complete)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Completion At Point Extensions made for `corfu'
+(use-package cape
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+	(add-to-list 'completion-at-point-functions #'cape-ispell))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Use the `orderless' completion style
 (use-package orderless
   :init
-  (setq completion-styles '(orderless basic)
-    completion-category-defaults nil
-    completion-category-overrides '((file (styles . (partial-completion))))))
+  (setq completion-styles '(orderless basic))
+  (setq completion-category-defaults nil)
+  (setq completion-category-overrides '(
+																				 (file (styles . (partial-completion))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -86,15 +105,7 @@
 (use-package vertico
 	:straight (
 							:files (:defaults "extensions/*")
-							:includes (
-													vertico-buffer
-													vertico-directory
-													vertico-flat
-													vertico-indexed
-													vertico-mouse
-													vertico-quick
-													vertico-repeat
-													vertico-reverse))
+							:includes (vertico-directory))
 	:init (vertico-mode 1)
 	:config
 	(use-package vertico-directory
@@ -106,12 +117,6 @@
 				("M-DEL" . vertico-directory-delete-word)))
 		:hook (rfn-eshadow-update-overlay . vertico-directory-tidy)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Use orderless completion style
-;; (use-package orderless
-;;   :custom (completion-styles '(orderless)))
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Completion for parenthesis
@@ -156,6 +161,11 @@
 (set-frame-parameter (selected-frame) 'buffer-predicate
   (lambda (buf)
     (not (string-match-p "^\\(magit:\\|*\\)" (buffer-name buf)))))
+
+;; Switching windows
+(use-package ace-window
+	:init
+	(global-set-key (kbd "s-<return>") 'ace-window))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

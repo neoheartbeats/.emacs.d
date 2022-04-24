@@ -97,6 +97,21 @@
 (global-prettify-symbols-mode 1)
 (setq prettify-symbols-unprettify-at-point t)
 
+;; Disable scaling text with mouse wheel (macOS only)
+;; which related function is `mac-mouse-wheel-text-scale'
+;; (global-unset-key (kbd "C-<wheel-down>"))
+;; (global-unset-key (kbd "C-<wheel-up>"))
+(global-unset-key (kbd "<magnify-down>"))
+(global-unset-key (kbd "<magnify-up>"))
+
+;; Use `M-n' to execute `forward-word' instead
+;; (global-unset-key (kbd "M-<right>"))
+(global-set-key (kbd "M-n") 'forward-word)
+
+;; Use `M-p' to execute `backward-word' instead
+;; (global-unset-key (kbd "M-<left>"))
+(global-set-key (kbd "M-p") 'backward-word)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Font ligatures support
@@ -145,11 +160,17 @@
 (global-auto-revert-mode t)
 
 ;; Set initial buffer mode to org-mode
-(setq-default initial-major-mode 'org-mode)
-
+;; (setq-default initial-major-mode 'org-mode)
+;;
 ;; Note cursor position for each buffer
 (save-place-mode t)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Window management
+;; (setq windmove-wrap-around t)
+;; (when (fboundp 'windmove-default-keybindings)
+;;   (windmove-default-keybindings))
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Setup `dired'

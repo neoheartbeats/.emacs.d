@@ -21,7 +21,7 @@
 (let ((bootstrap-file
 	      (expand-file-name "straight/repos/straight.el/bootstrap.el"
 					user-emacs-directory))
-	     (bootstrap-version 5))
+			 (bootstrap-version 5))
 	(unless (file-exists-p bootstrap-file)
 		(with-current-buffer
 			(url-retrieve-synchronously
@@ -52,3 +52,15 @@
 ;; Setup custom file
 (setq custom-file "~/.emacs.d/modules/custom.el")
 (load custom-file 'no-error 'no-message)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Experimentally settings
+;;
+;; (set-face-background 'default "mac:windowBackgroundColor")
+;; (dolist (f (face-list)) (set-face-stipple f "alpha:40%"))
+;; (setq face-remapping-alist (append face-remapping-alist '((default my/default-blurred))))
+;; (defface my/default-blurred
+;;    '((t :inherit 'default :stipple "alpha:40%"))
+;;    "Like 'default but blurred."
+;;    :group 'my)

@@ -25,8 +25,12 @@
 ;;
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-	(message
-		"Funding for this program was made possible by viewers like you."))
+	(message "%s"(
+								 propertize
+								 "Funding for this program was made possible by viewers like you."
+								 'face
+								 '(
+										:foreground "#2FAFFF"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -47,7 +51,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Highlight lines
-(add-hook 'prog-mode-hook 'hl-line-mode)
+;; (add-hook 'prog-mode-hook 'hl-line-mode)
+(global-hl-line-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -59,14 +64,14 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	:font "Fira Code"
-	:height 145)
+	:font "Modus Mono"
+	:height 155)
 
-(set-face-attribute 'variable-pitch nil
-	:font "Tinos"
-	:height 170)
-
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+;; (set-face-attribute 'variable-pitch nil
+;; 	:font "Tinos"
+;; 	:height 170)
+;; (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'han "Heiti SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -80,12 +85,12 @@
 	:init (modus-themes-load-themes)
 	:custom
 	(modus-themes-subtle-line-numbers t)
-	(modus-themes-mode-line '(borderless))
 	(modus-themes-syntax '(green-strings))
 	(modus-themes-hl-line '(underline accented))
+	(modus-themes-mode-line '(moody accented borderless))
 	(modus-themes-links '(neutral-underline))
 	:config
-	(modus-themes-load-operandi))
+	(modus-themes-load-vivendi))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
