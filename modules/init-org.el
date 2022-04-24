@@ -50,11 +50,11 @@
   (setq prettify-symbols-alist
 	  '(
 			 ("#+TITLE:" . "T")
-       (":PROPERTIES:" . "⌗")
-       ("#+BEGIN_SRC" . "⌗")
+       (":PROPERTIES:" . "#")
+       ("#+BEGIN_SRC" . "#")
        ("#+END_SRC" . "-")
        ("#+RESULTS:" . ":")
-       ("#+ATTR_ORG:" . "⌗")))
+       ("#+ATTR_ORG:" . "#")))
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'org-icons)
 
