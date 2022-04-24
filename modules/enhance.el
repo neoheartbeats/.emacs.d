@@ -56,23 +56,43 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Auto completion
+;; Auto completion with `corfu'
 (use-package corfu
+	:straight (
+							:files (:defaults "extensions/*")
+							:includes (corfu-history))
 	:custom
 	(corfu-cycle t)
 	(corfu-auto t)
-	(corfu-separator ?\s)
-	;;	:hook
-	;;	((prog-mode . corfu-mode)
-	;;		(org-mode . corfu-mode))
+	(corfu-auto-delay 0)
+	(corfu-auto-prefix 2)
+	:hook
+	((prog-mode . corfu-mode)
+		(org-mode . corfu-mode))
   :init
   (global-corfu-mode)
 	:config
+	;; (use-package dabbrev
+	;; 	:bind (("M-/" . dabbrev-completion)
+	;; 					("s-/" . dabbrev-expand)))
+	(use-package corfu-history
+		:init (corfu-history-mode))
 	(use-package emacs
 		:init
 		(setq completion-cycle-threshold 3)
 		(setq tab-always-indent 'complete)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Completion At Point Extensions made for `corfu'
+(use-package cape
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+	(add-to-list 'completion-at-point-functions #'cape-ispell))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Use the `orderless' completion style
 (use-package orderless
   :init
@@ -86,15 +106,7 @@
 (use-package vertico
 	:straight (
 							:files (:defaults "extensions/*")
-							:includes (
-													vertico-buffer
-													vertico-directory
-													vertico-flat
-													vertico-indexed
-													vertico-mouse
-													vertico-quick
-													vertico-repeat
-													vertico-reverse))
+							:includes (vertico-directory))
 	:init (vertico-mode 1)
 	:config
 	(use-package vertico-directory

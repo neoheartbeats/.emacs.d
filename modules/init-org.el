@@ -66,13 +66,24 @@
 			 (0 (prog1 ()
 						(compose-region (match-beginning 1) (match-end 1) "•︎"))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)
 (setq org-pretty-entities-include-sub-superscripts nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Hide emphasis markers
+(setq org-hide-emphasis-markers t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Fold drawers by default
 (add-hook 'org-mode-hook 'org-hide-drawer-all)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Display chapter numbers
 (add-hook 'org-mode-hook 'org-num-mode)
 
@@ -206,37 +217,10 @@
                   "#+TITLE: %<%Y-%m-%d>\n"))))
 	(setq org-roam-capture-templates
 		'(
-			 ("d" "default" plain "* %?"
-         :if-new
-				 (file+head "inbox/%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d>")
+			 ("d" "default" plain "%?"
+				 :target (file+head "main/${slug}.org" "#+TITLE: ${title}")
 				 :immediate-finish t
-				 :unnarrowed t)
-			 ("m" "main" plain
-         "%?"
-         :if-new
-				 (file+head "main/${slug}.org" "#+TITLE: ${title}\n")
-         :immediate-finish t
-         :unnarrowed t)
-       ("r" "reference" plain "%?"
-         :if-new
-				 (file+head "reference/${title}.org" "#+TITLE: ${title}\n")
-         :immediate-finish t
-         :unnarrowed t)
-       ("w" "work" plain "%?"
-         :if-new
-				 (file+head "work/${title}.org" "#+TITLE: ${title}\n#+filetags: :work:\n")
-         :immediate-finish t
-         :unnarrowed t)))
-	(cl-defmethod org-roam-node-type ((node org-roam-node))
-		"Return the TYPE of NODE"
-		(condition-case nil
-      (file-name-nondirectory
-				(directory-file-name
-					(file-name-directory
-						(file-relative-name (org-roam-node-file node) org-roam-directory))))
-			(error "")))
-	(setq org-roam-node-display-template
-    (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+				 :unnarrowed t)))
 	:hook
 	(after-init . org-roam-dailies-goto-today))
 
@@ -267,11 +251,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Mixed pitch mode
-(use-package mixed-pitch
-	:custom
-	(mixed-pitch-set-height t)
-	(mixed-pitch-variable-pitch-cursor '(bar . 1))
-  :hook
-  (org-mode . mixed-pitch-mode))
+;; (use-package mixed-pitch
+;; 	:custom
+;; 	(mixed-pitch-set-height t)
+;; 	(mixed-pitch-variable-pitch-cursor '(bar . 1))
+;; 	:hook
+;; 	(org-mode . mixed-pitch-mode))
 
 (provide 'init-org)
