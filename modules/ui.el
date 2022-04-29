@@ -66,7 +66,7 @@
 ;; 	:font "Tinos"
 ;; 	:height 170)
 
-(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -85,7 +85,7 @@
 	(modus-themes-hl-line '(underline accented))
 	(modus-themes-links '(neutral-underline))
 	:config
-	(modus-themes-load-operandi))
+	(modus-themes-load-vivendi))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
