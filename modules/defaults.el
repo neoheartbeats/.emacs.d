@@ -97,6 +97,13 @@
 (global-prettify-symbols-mode 1)
 (setq prettify-symbols-unprettify-at-point t)
 
+;; Disable scaling text with mouse wheel (macOS only)
+;; which related function is `mac-mouse-wheel-text-scale'
+;; (global-unset-key (kbd "C-<wheel-down>"))
+;; (global-unset-key (kbd "C-<wheel-up>"))
+(global-unset-key (kbd "<magnify-down>"))
+(global-unset-key (kbd "<magnify-up>"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Font ligatures support
