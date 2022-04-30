@@ -25,8 +25,12 @@
 ;;
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-	(message
-		"Funding for this program was made possible by viewers like you."))
+	(message "%s"(
+								 propertize
+								 "Funding for this program was made possible by viewers like you."
+								 'face
+								 '(
+										:foreground "#2FAFFF"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
