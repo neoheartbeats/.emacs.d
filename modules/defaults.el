@@ -104,6 +104,14 @@
 (global-unset-key (kbd "<magnify-down>"))
 (global-unset-key (kbd "<magnify-up>"))
 
+;; Use `M-n' to execute `forward-word' instead
+;; (global-unset-key (kbd "M-<right>"))
+(global-set-key (kbd "M-n") 'forward-word)
+
+;; Use `M-p' to execute `backward-word' instead
+;; (global-unset-key (kbd "M-<left>"))
+(global-set-key (kbd "M-p") 'backward-word)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Font ligatures support
