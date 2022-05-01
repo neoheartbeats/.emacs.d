@@ -165,6 +165,7 @@
   '(
 		 ("" "physics" t)
      ("" "mhchem" t)
+		 ("" "chemfig" t)
      ("" "gensymb" t)
      ("" "siunitx" t)
 		 ("" "euler" t)))
