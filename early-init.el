@@ -79,7 +79,7 @@
      (left . 320)
 	   (width . 125)
 	   (height . 40)
-		 (alpha . (90 . 60))))
+		 (alpha . 90)))
 
 ;; Make UTF-8 the default coding system
 (set-language-environment "UTF-8")
