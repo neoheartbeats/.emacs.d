@@ -160,10 +160,16 @@
 (global-auto-revert-mode t)
 
 ;; Set initial buffer mode to org-mode
-(setq-default initial-major-mode 'org-mode)
-
+;; (setq-default initial-major-mode 'org-mode)
+;;
 ;; Note cursor position for each buffer
 (save-place-mode t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Window management
+(setq windmove-wrap-around t)
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

@@ -101,14 +101,14 @@
 (setq org-return-follows-link t)
 (setq org-confirm-elisp-link-function nil)
 
-;; Open links open up in new frame
+;; Open links in new window
 (setq org-link-frame-setup
-	'(
-		 (vm . vm-visit-folder-other-frame)
-		 (vm-imap . vm-visit-imap-folder-other-frame)
-		 (gnus . org-gnus-no-new-news)
-		 (file . find-file)
-		 (wl . wl-other-frame)))
+  '(
+  	 (vm . vm-visit-folder-other-window)
+  	 (vm-imap . vm-visit-imap-folder-other-frame)
+  	 (gnus . org-gnus-no-new-news)
+  	 (file . find-file)
+  	 (wl . wl-other-frame)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -222,9 +222,37 @@
 				 :target (file+head "main/${slug}.org" "#+TITLE: ${title}")
 				 :immediate-finish t
 				 :unnarrowed t)))
+	(setq org-roam-mode-sections
+    '((org-roam-backlinks-section :unique t)
+       org-roam-reflinks-section))
 	:hook
-	(after-init . org-roam-dailies-goto-today))
+	(after-init . (lambda ()
+									(add-to-list 'display-buffer-alist
+										'("\\*org-roam\\*"
+											 (display-buffer-in-side-window)
+											 (side . right)
+											 (slot . 0)
+											 (window-width . 0.30)
+											 (window-parameters . (
+																							(no-other-window . t)
+																							(no-delete-other-windows . t)))))
+									(org-roam-dailies-goto-today)
+									(org-roam-buffer-toggle))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Org roam buffer settings
+;;
+;; (defun org-roam-links ()
+;; 	(interactive)
+;; 	(progn
+;; 		(split-window-horizontally)
+;; 		(org-roam-buffer-toggle)))
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Org roam buffer settings
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org journal
