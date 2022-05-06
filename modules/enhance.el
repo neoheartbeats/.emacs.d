@@ -120,12 +120,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Use orderless completion style
-;; (use-package orderless
-;;   :custom (completion-styles '(orderless)))
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Completion for parenthesis
 (use-package smartparens
   :hook
@@ -168,6 +162,11 @@
 (set-frame-parameter (selected-frame) 'buffer-predicate
   (lambda (buf)
     (not (string-match-p "^\\(magit:\\|*\\)" (buffer-name buf)))))
+
+;; Switching windows
+(use-package ace-window
+	:init
+	(global-set-key (kbd "s-<return>") 'ace-window))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

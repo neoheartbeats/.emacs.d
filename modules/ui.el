@@ -45,13 +45,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Cursor settings
-;; (setq-default cursor-type '(bar . 1))
+(setq-default cursor-type '(bar . 1))
 (blink-cursor-mode -1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Highlight lines
-(add-hook 'prog-mode-hook 'hl-line-mode)
+;; (add-hook 'prog-mode-hook 'hl-line-mode)
+(global-hl-line-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -84,10 +85,10 @@
 	:init (modus-themes-load-themes)
 	:custom
 	(modus-themes-subtle-line-numbers t)
-	(modus-themes-mode-line '(borderless))
 	(modus-themes-syntax '(green-strings))
 	(modus-themes-hl-line '(underline accented))
-	(modus-themes-links '(neutral-underline no-color))
+	(modus-themes-mode-line '(moody accented borderless))
+	(modus-themes-links '(neutral-underline))
 	:config
 	(modus-themes-load-vivendi))
 

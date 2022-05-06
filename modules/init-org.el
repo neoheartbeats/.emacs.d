@@ -107,7 +107,7 @@
   	 (vm . vm-visit-folder-other-window)
   	 (vm-imap . vm-visit-imap-folder-other-frame)
   	 (gnus . org-gnus-no-new-news)
-  	 (file . find-file)
+  	 (file . find-file) ;; Open link in current window
   	 (wl . wl-other-frame)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -225,35 +225,37 @@
 	(setq org-roam-mode-sections
     '((org-roam-backlinks-section :unique t)
        org-roam-reflinks-section))
+
+	;; Org Roam buffer configuration
+	(add-to-list 'display-buffer-alist
+    '("\\*org-roam\\*"
+       (display-buffer-in-side-window)
+       (side . right)
+       (slot . 0)
+       (window-width . 0.33)
+       (window-parameters . (
+															(no-other-window . t)
+                              (no-delete-other-windows . nil)))))
 	:hook
 	(after-init . (lambda ()
-									(add-to-list 'display-buffer-alist
-										'("\\*org-roam\\*"
-											 (display-buffer-in-side-window)
-											 (side . right)
-											 (slot . 0)
-											 (window-width . 0.30)
-											 (window-parameters . (
-																							(no-other-window . t)
-																							(no-delete-other-windows . t)))))
 									(org-roam-dailies-goto-today)
 									(org-roam-buffer-toggle))))
 
-(use-package org-roam-ui
-  :straight
-  (
-		:host github
-		:repo "org-roam/org-roam-ui"
-		:branch "main"
-		:files ("*.el" "out"))
-  :after org-roam
-	:hook (after-init . org-roam-ui-mode)
-  :custom
-  (org-roam-ui-sync-theme t)
-  (org-roam-ui-follow t)
-  (org-roam-ui-update-on-save t)
-  (org-roam-ui-open-on-start t))
-
+;; (use-package org-roam-ui
+;;   :straight
+;;   (
+;; 		:host github
+;; 		:repo "org-roam/org-roam-ui"
+;; 		:branch "main"
+;; 		:files ("*.el" "out"))
+;;   :after org-roam
+;; 	:hook (after-init . org-roam-ui-mode)
+;;   :custom
+;;   (org-roam-ui-sync-theme t)
+;;   (org-roam-ui-follow t)
+;;   (org-roam-ui-update-on-save t)
+;;   (org-roam-ui-open-on-start t))
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org roam buffer settings
