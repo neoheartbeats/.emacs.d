@@ -167,10 +167,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Window management
-(setq windmove-wrap-around t)
-(when (fboundp 'windmove-default-keybindings)
-  (windmove-default-keybindings))
-
+;; (setq windmove-wrap-around t)
+;; (when (fboundp 'windmove-default-keybindings)
+;;   (windmove-default-keybindings))
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Setup `dired'

@@ -212,14 +212,18 @@
 	(org-roam-setup)
 	(setq org-roam-db-gc-threshold most-positive-fixnum) ;; Optimize performance
 	(setq org-roam-dailies-capture-templates ;; Preferred upper case title tags
-    '(("d" "default" entry
-        "* %?"
-        :target (file+head "%<%Y-%m-%d>.org"
-                  "#+TITLE: %<%Y-%m-%d>\n"))))
+    '(
+			 ("d" "default" entry
+         "* %?"
+         :target (file+head
+									 "%<%Y-%m-%d>.org"
+                   "#+TITLE: %<%Y-%m-%d>\n"))))
 	(setq org-roam-capture-templates
 		'(
 			 ("d" "default" plain "%?"
-				 :target (file+head "main/${slug}.org" "#+TITLE: ${title}")
+				 :target (file+head
+									 "main/${slug}.org"
+									 "#+TITLE: ${title}")
 				 :immediate-finish t
 				 :unnarrowed t)))
 	(setq org-roam-mode-sections

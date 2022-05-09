@@ -67,14 +67,12 @@
 	(corfu-auto-delay 0)
 	(corfu-auto-prefix 2)
 	:hook
-	((prog-mode . corfu-mode)
+	(
+		(prog-mode . corfu-mode)
 		(org-mode . corfu-mode))
   :init
   (global-corfu-mode)
 	:config
-	;; (use-package dabbrev
-	;; 	:bind (("M-/" . dabbrev-completion)
-	;; 					("s-/" . dabbrev-expand)))
 	(use-package corfu-history
 		:init (corfu-history-mode))
 	(use-package emacs
@@ -96,9 +94,10 @@
 ;; Use the `orderless' completion style
 (use-package orderless
   :init
-  (setq completion-styles '(orderless basic)
-    completion-category-defaults nil
-    completion-category-overrides '((file (styles . (partial-completion))))))
+  (setq completion-styles '(orderless basic))
+  (setq completion-category-defaults nil)
+  (setq completion-category-overrides '(
+																				 (file (styles . (partial-completion))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
