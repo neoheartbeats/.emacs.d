@@ -190,7 +190,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Org roam
+;; Org Roam
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))
   :custom
@@ -245,21 +245,24 @@
 									(org-roam-dailies-goto-today)
 									(org-roam-buffer-toggle))))
 
-;; (use-package org-roam-ui
-;;   :straight
-;;   (
-;; 		:host github
-;; 		:repo "org-roam/org-roam-ui"
-;; 		:branch "main"
-;; 		:files ("*.el" "out"))
-;;   :after org-roam
-;; 	:hook (after-init . org-roam-ui-mode)
-;;   :custom
-;;   (org-roam-ui-sync-theme t)
-;;   (org-roam-ui-follow t)
-;;   (org-roam-ui-update-on-save t)
-;;   (org-roam-ui-open-on-start t))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Org Roam UI
+(use-package org-roam-ui
+  :straight
+  (
+		:host github
+		:repo "org-roam/org-roam-ui"
+		:branch "main"
+		:files ("*.el" "out"))
+  :after org-roam
+	:hook (after-init . org-roam-ui-mode)
+  :custom
+  (org-roam-ui-sync-theme t)
+  (org-roam-ui-follow t)
+  (org-roam-ui-update-on-save t)
+  (org-roam-ui-open-on-start t))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org roam buffer settings
