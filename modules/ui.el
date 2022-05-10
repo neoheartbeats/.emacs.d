@@ -64,7 +64,7 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	:font "PragmataPro Mono Liga"
+	:font "Modus Mono"
 	:height 155)
 
 ;; (set-face-attribute 'variable-pitch nil
