@@ -75,6 +75,13 @@
 	:config
 	(use-package corfu-history
 		:init (corfu-history-mode))
+
+	;; Icon support
+	(use-package kind-icon
+		:custom
+		(kind-icon-default-face 'corfu-default)
+		:config
+		(add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 	(use-package emacs
 		:init
 		(setq completion-cycle-threshold 3)
