@@ -125,6 +125,12 @@
 		 (shell . t)
 		 (python . t)))
 
+;; Hide unwanted shell warning messages
+(advice-add 'sh-set-shell :around
+  (lambda (orig-fun &rest args)
+    (cl-letf (((symbol-function 'message) #'ignore))
+      (apply orig-fun args))))
+
 ;; Determine Python execution program
 (setq org-babel-python-command "python3")
 
