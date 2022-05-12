@@ -25,12 +25,12 @@
 ;;
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-	(message "%s"(
-								 propertize
-								 "Funding for this program was made possible by viewers like you."
-								 'face
-								 '(
-										:foreground "#2FAFFF"))))
+	(message
+		"%s"(propertize
+					"Funding for this program was made possible by viewers like you."
+					'face
+					'(
+						 :foreground "#2FAFFF"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -64,15 +64,15 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	:font "Modus Mono"
-	:height 155)
+	:font "Fira Code"
+	:height 145)
 
 ;; (set-face-attribute 'variable-pitch nil
 ;; 	:font "Tinos"
 ;; 	:height 170)
-;; (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
-(set-fontset-font "fontset-default" 'han "Heiti SC")
-
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+;;(set-fontset-font "fontset-default" 'han "Heiti SC")
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Improve the readability by increasing line spacing
