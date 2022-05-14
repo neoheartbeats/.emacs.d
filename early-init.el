@@ -75,10 +75,10 @@
 ;; Set the frame parameters before it's drawing
 (setq default-frame-alist
   '(
-		 (top . 120)
-     (left . 60)
+		 (top . 90)
+     (left . 120)
 	   (width . 150)
-	   (height . 45)
+	   (height . 40)
 		 (alpha . 93)))
 
 ;; Make UTF-8 the default coding system

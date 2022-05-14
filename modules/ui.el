@@ -64,14 +64,14 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	:font "Fira Code"
-	:height 145)
+	:font "Modus Mono"
+	:height 155)
 
 ;; (set-face-attribute 'variable-pitch nil
 ;; 	:font "Tinos"
 ;; 	:height 170)
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
-;;(set-fontset-font "fontset-default" 'han "Heiti SC")
+;; (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'han "Heiti SC")
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
