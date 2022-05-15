@@ -254,6 +254,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Org Roam BibTeX
+(use-package org-roam-bibtex
+  :config
+  (use-package org-ref))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Org Roam UI
 ;; (use-package org-roam-ui
 ;;   :straight
@@ -317,5 +324,11 @@
 ;; 	(mixed-pitch-variable-pitch-cursor '(bar . 1))
 ;; 	:hook
 ;; 	(org-mode . mixed-pitch-mode))
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org Todos
+(setq org-todo-keywords
+	'(
+		 (sequence "TODO" "REVIEW" "|" "DONE" "CANCELLED")))
 
 (provide 'init-org)
