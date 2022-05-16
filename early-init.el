@@ -21,15 +21,14 @@
 ;;
 ;; Defer garbage collection further back in the startup process
 (add-hook 'emacs-startup-hook
-  (let (
-				 (old-list file-name-handler-alist)
-         (threshold (* 100 gc-cons-threshold))
-         (percentage gc-cons-percentage))
-    (lambda ()
-      (setq file-name-handler-alist old-list)
-      (setq gc-cons-threshold threshold)
-      (setq gc-cons-percentage percentage)
-      (garbage-collect))) t)
+          (let ((old-list file-name-handler-alist)
+                (threshold (* 100 gc-cons-threshold))
+                (percentage gc-cons-percentage))
+            (lambda ()
+              (setq file-name-handler-alist old-list)
+              (setq gc-cons-threshold threshold)
+              (setq gc-cons-percentage percentage)
+              (garbage-collect))) t)
 
 (setq package-enable-at-startup nil)
 (setq file-name-handler-alist nil)
@@ -74,12 +73,11 @@
 ;;
 ;; Set the frame parameters before it's drawing
 (setq default-frame-alist
-  '(
-		 (top . 90)
-     (left . 120)
-	   (width . 150)
-	   (height . 40)
-		 (alpha . 93)))
+      '((top . 90)
+        (left . 120)
+	      (width . 150)
+	      (height . 40)
+		    (alpha . 93)))
 
 ;; Make UTF-8 the default coding system
 (set-language-environment "UTF-8")
