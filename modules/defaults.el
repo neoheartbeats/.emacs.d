@@ -124,12 +124,11 @@
 ;;
 ;; Disable these messages such ignore unused signals
 (defun filter-command-error-function (data context caller)
-  (when (not (memq (car data) '(
-																 buffer-read-only
-                                 beginning-of-line
-                                 end-of-line
-                                 beginning-of-buffer
-                                 end-of-buffer)))
+  (when (not (memq (car data) '(buffer-read-only
+                                beginning-of-line
+                                end-of-line
+                                beginning-of-buffer
+                                end-of-buffer)))
     (command-error-default-function data context caller)))
 
 (setq command-error-function #'filter-command-error-function)

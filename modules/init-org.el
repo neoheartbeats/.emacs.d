@@ -48,23 +48,21 @@
 
 (defun org-icons ()
   (setq prettify-symbols-alist
-	  '(
-			 ("#+TITLE:" . "T")
-       (":PROPERTIES:" . "⌗")
-       ("#+BEGIN_SRC" . "⌗")
-       ("#+END_SRC" . "-")
-       ("#+RESULTS:" . ":")
-       ("#+ATTR_ORG:" . "⌗")))
+	      '(("#+TITLE:" . "T")
+          (":PROPERTIES:" . "⌗")
+          ("#+BEGIN_SRC" . "⌗")
+          ("#+END_SRC" . "-")
+          ("#+RESULTS:" . ":")
+          ("#+ATTR_ORG:" . "⌗")))
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'org-icons)
 
 ;; Display Org list prefix as dots
 (font-lock-add-keywords
-	'org-mode
-	'(
-		 ("^ *\\([-]\\) "
-			 (0 (prog1 ()
-						(compose-region (match-beginning 1) (match-end 1) "•︎"))))))
+ 'org-mode
+ '(("^ *\\([-]\\) "
+		(0 (prog1 ()
+				 (compose-region (match-beginning 1) (match-end 1) "•︎"))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -103,12 +101,11 @@
 
 ;; Open links in new window
 (setq org-link-frame-setup
-  '(
-  	 (vm . vm-visit-folder-other-window)
-  	 (vm-imap . vm-visit-imap-folder-other-frame)
-  	 (gnus . org-gnus-no-new-news)
-  	 (file . find-file) ;; Open link in current window
-  	 (wl . wl-other-frame)))
+      '((vm . vm-visit-folder-other-window)
+  	    (vm-imap . vm-visit-imap-folder-other-frame)
+  	    (gnus . org-gnus-no-new-news)
+  	    (file . find-file) ;; Open link in current window
+  	    (wl . wl-other-frame)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -120,16 +117,15 @@
 
 ;; Load languages
 (org-babel-do-load-languages 'org-babel-load-languages
-	'(
-		 (emacs-lisp . t)
-		 (shell . t)
-		 (python . t)))
+	                           '((emacs-lisp . t)
+		                           (shell . t)
+		                           (python . t)))
 
 ;; Hide unwanted shell warning messages
 (advice-add 'sh-set-shell :around
-  (lambda (orig-fun &rest args)
-    (cl-letf (((symbol-function 'message) #'ignore))
-      (apply orig-fun args))))
+            (lambda (orig-fun &rest args)
+              (cl-letf (((symbol-function 'message) #'ignore))
+                (apply orig-fun args))))
 
 ;; Determine Python execution program
 (setq org-babel-python-command "python3")
@@ -145,37 +141,35 @@
 (setq org-preview-latex-default-process 'dvisvgm)
 
 (setq org-preview-latex-process-alist
-  '(
-		 (dvisvgm
-			 :programs ("xelatex" "dvisvgm")
-			 :description "xdv > svg"
-			 :image-input-type "xdv"
-			 :image-output-type "svg"
-			 :image-size-adjust (1.7 . 1.5)
-			 :latex-compiler ;; Default `xelatex' as the process previewing LaTeX fragments
-			 ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
-			 :image-converter ;; Set `dvisvgm' with --exact option
-			 ("dvisvgm %f -e -n -b min -c %S -o %O"))))
+      '((dvisvgm
+			   :programs ("xelatex" "dvisvgm")
+			   :description "xdv > svg"
+			   :image-input-type "xdv"
+			   :image-output-type "svg"
+			   :image-size-adjust (1.7 . 1.5)
+			   :latex-compiler ;; Default `xelatex' as the process previewing LaTeX fragments
+			   ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+			   :image-converter ;; Set `dvisvgm' with --exact option
+			   ("dvisvgm %f -e -n -b min -c %S -o %O"))))
 
 (setq org-format-latex-options
-  '( ;; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
-		 :foreground default
-     :background "Transparent"
-     :scale 1.2
-     :html-foreground "Black"
-     :html-background "Transparent"
-     :html-scale 1.2
-     :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
+      '( ;; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
+		    :foreground default
+        :background "Transparent"
+        :scale 1.2
+        :html-foreground "Black"
+        :html-background "Transparent"
+        :html-scale 1.2
+        :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
-  '(
-		 ("" "physics" t)
-     ("" "mhchem" t)
-		 ("" "chemfig" t)
-     ("" "gensymb" t)
-     ("" "siunitx" t)
-		 ("" "pxfonts" t)))
+      '(("" "physics" t)
+	      ("" "mhchem" t)
+	      ("" "chemfig" t)
+	      ("" "gensymb" t)
+	      ("" "siunitx" t)
+	      ("" "pxfonts" t)))
 
 ;; Direct LaTeX preview image files
 (setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
@@ -193,8 +187,8 @@
   :hook (org-mode . org-fragtog-mode))
 
 ;; Syntax highlighting for LaTeX in Org mode
-(setq org-highlight-latex-and-related '(latex script))
-
+;; (setq org-highlight-latex-and-related '(latex script))
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org Roam
@@ -205,48 +199,44 @@
   (org-roam-dailies-directory "book/")
   (org-roam-completion-everywhere t)
   :bind
-	(
-		("C-c n n" . org-id-get-create)
-		("C-c n a" . org-roam-alias-add)
-		("C-c n f" . org-roam-node-find)
-		("C-c n i" . org-roam-node-insert)
-		("C-c n c" . org-roam-capture)
-		("C-c n j" . org-roam-dailies-goto-today)
-		("C-c n l" . org-roam-buffer-toggle)
-		("<s-up>" . org-roam-dailies-goto-previous-note)
-		("<s-down>" . org-roam-dailies-goto-next-note))
+	(("C-c n n" . org-id-get-create)
+	 ("C-c n a" . org-roam-alias-add)
+	 ("C-c n f" . org-roam-node-find)
+	 ("C-c n i" . org-roam-node-insert)
+	 ("C-c n c" . org-roam-capture)
+	 ("C-c n j" . org-roam-dailies-goto-today)
+	 ("C-c n l" . org-roam-buffer-toggle)
+	 ("<s-up>" . org-roam-dailies-goto-previous-note)
+	 ("<s-down>" . org-roam-dailies-goto-next-note))
   :config
 	(org-roam-setup)
 	(setq org-roam-db-gc-threshold most-positive-fixnum) ;; Optimize performance
 	(setq org-roam-dailies-capture-templates ;; Preferred upper case title tags
-    '(
-			 ("d" "default" entry
-         "* %?"
-         :target (file+head
-									 "%<%Y-%m-%d>.org"
-                   "#+TITLE: %<%Y-%m-%d>\n"))))
+        '(("d" "default" entry
+           "* %?"
+           :target (file+head
+		                "%<%Y-%m-%d>.org"
+		                "#+TITLE: %<%Y-%m-%d>\n"))))
 	(setq org-roam-capture-templates
-		'(
-			 ("d" "default" plain "%?"
-				 :target (file+head
-									 "main/${slug}.org"
-									 "#+TITLE: ${title}")
-				 :immediate-finish t
-				 :unnarrowed t)))
+		    '(("d" "default" plain "%?"
+			     :target (file+head
+			              "main/${slug}.org"
+			              "#+TITLE: ${title}")
+			     :immediate-finish t
+			     :unnarrowed t)))
 	(setq org-roam-mode-sections
-    '((org-roam-backlinks-section :unique t)
-       org-roam-reflinks-section))
+        '((org-roam-backlinks-section :unique t)
+          org-roam-reflinks-section))
 
 	;; Org Roam buffer configuration
 	(add-to-list 'display-buffer-alist
-    '("\\*org-roam\\*"
-       (display-buffer-in-side-window)
-       (side . right)
-       (slot . 0)
-       (window-width . 0.33)
-       (window-parameters . (
-															(no-other-window . t)
-                              (no-delete-other-windows . nil)))))
+               '("\\*org-roam\\*"
+                 (display-buffer-in-side-window)
+                 (side . right)
+                 (slot . 0)
+                 (window-width . 0.33)
+                 (window-parameters . ((no-other-window . t)
+		                                   (no-delete-other-windows . nil)))))
 	:hook
 	(after-init . (lambda ()
 									(org-roam-dailies-goto-today)
@@ -256,8 +246,12 @@
 ;;
 ;; Org Roam BibTeX
 (use-package org-roam-bibtex
-  :config
-  (use-package org-ref))
+  :config (use-package org-ref))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org Todos
+(setq org-todo-keywords
+	    '((sequence "TODO" "REVIEW" "|" "DONE" "CANCELLED")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -270,7 +264,7 @@
 ;; 		:branch "main"
 ;; 		:files ("*.el" "out"))
 ;;   :after org-roam
-;; 	:hook (after-init . org-roam-ui-mode)
+;; 	 :hook (after-init . org-roam-ui-mode)
 ;;   :custom
 ;;   (org-roam-ui-sync-theme t)
 ;;   (org-roam-ui-follow t)
@@ -324,11 +318,5 @@
 ;; 	(mixed-pitch-variable-pitch-cursor '(bar . 1))
 ;; 	:hook
 ;; 	(org-mode . mixed-pitch-mode))
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Org Todos
-(setq org-todo-keywords
-	'(
-		 (sequence "TODO" "REVIEW" "|" "DONE" "CANCELLED")))
 
 (provide 'init-org)
