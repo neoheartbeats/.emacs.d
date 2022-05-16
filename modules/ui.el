@@ -26,11 +26,10 @@
 ;; Default startup message
 (defun display-startup-echo-area-message ()
 	(message
-		"%s"(propertize
-					"Funding for this program was made possible by viewers like you."
-					'face
-					'(
-						 :foreground "#2FAFFF"))))
+	 "%s"(propertize
+				"Funding for this program was made possible by viewers like you."
+				'face
+				'(:foreground "#2FAFFF"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -38,9 +37,9 @@
 ;;
 ;; Show icon & full path in title bar
 (setq frame-title-format
-	'(:eval
-		 (if buffer-file-name
-			 (abbreviate-file-name buffer-file-name) "%b")))
+	    '(:eval
+		    (if buffer-file-name
+			      (abbreviate-file-name buffer-file-name) "%b")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -64,14 +63,15 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	:font "Modus Mono"
-	:height 155)
+	                  :font "Modus Mono"
+	                  :height 155)
+(set-fontset-font "fontset-default" 'han "Heiti SC")
 
 ;; (set-face-attribute 'variable-pitch nil
 ;; 	:font "Tinos"
 ;; 	:height 170)
 ;; (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
-(set-fontset-font "fontset-default" 'han "Heiti SC")
+;;
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

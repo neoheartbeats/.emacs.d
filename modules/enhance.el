@@ -58,18 +58,16 @@
 ;;
 ;; Auto completion with `corfu'
 (use-package corfu
-	:straight (
-							:files (:defaults "extensions/*")
-							:includes (corfu-history))
+	:straight (:files (:defaults "extensions/*")
+                    :includes (corfu-history))
 	:custom
 	(corfu-cycle t)
 	(corfu-auto t)
 	(corfu-auto-delay 0)
 	(corfu-auto-prefix 2)
 	:hook
-	(
-		(prog-mode . corfu-mode)
-		(org-mode . corfu-mode))
+	((prog-mode . corfu-mode)
+	 (org-mode . corfu-mode))
   :init
   (global-corfu-mode)
 	:config
@@ -103,25 +101,22 @@
   :init
   (setq completion-styles '(orderless basic))
   (setq completion-category-defaults nil)
-  (setq completion-category-overrides '(
-																				 (file (styles . (partial-completion))))))
+  (setq completion-category-overrides '((file (styles . (partial-completion))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Use listed completion style with `vertico'
 (use-package vertico
-	:straight (
-							:files (:defaults "extensions/*")
-							:includes (vertico-directory))
+	:straight (:files (:defaults "extensions/*")
+						        :includes (vertico-directory))
 	:init (vertico-mode 1)
 	:config
 	(use-package vertico-directory
 		:bind
-		(
-			(:map vertico-map
-				("RET" . vertico-directory-enter)
-				("DEL" . vertico-directory-delete-char)
-				("M-DEL" . vertico-directory-delete-word)))
+		((:map vertico-map
+				   ("RET" . vertico-directory-enter)
+				   ("DEL" . vertico-directory-delete-char)
+				   ("M-DEL" . vertico-directory-delete-word)))
 		:hook (rfn-eshadow-update-overlay . vertico-directory-tidy)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -155,10 +150,9 @@
 ;; Consult setup
 (use-package consult
   :bind
-  (
-		("C-s" . consult-line)
-		("M-s" . consult-ripgrep)
-		("s-b" . consult-buffer)))
+  (("C-s" . consult-line)
+	 ("M-s" . consult-ripgrep)
+	 ("s-b" . consult-buffer)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -166,8 +160,8 @@
 ;;
 ;; Ignore buffers start with "*" & "magit:" while moving to previous or next buffer
 (set-frame-parameter (selected-frame) 'buffer-predicate
-  (lambda (buf)
-    (not (string-match-p "^\\(magit:\\|*\\)" (buffer-name buf)))))
+                     (lambda (buf)
+                       (not (string-match-p "^\\(magit:\\|*\\)" (buffer-name buf)))))
 
 ;; Switching windows
 (use-package ace-window

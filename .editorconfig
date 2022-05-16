@@ -22,7 +22,7 @@ trim_trailing_whitespace = true
 charset = utf-8
 
 [*.el]
-indent_style = tab
+indent_style = space
 tab_width = 2
 
 [*.md]
