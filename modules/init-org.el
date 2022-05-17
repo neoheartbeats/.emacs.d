@@ -69,7 +69,7 @@
 ;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)
 (setq org-pretty-entities-include-sub-superscripts nil)
-
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Hide emphasis markers
@@ -164,12 +164,12 @@
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
-      '(("" "physics" t)
+      '(;;("" "physics" t)
 	      ("" "mhchem" t)
-	      ("" "chemfig" t)
-	      ("" "gensymb" t)
+	      ;; ("" "chemfig" t)
+	      ;; ("" "gensymb" t)
 	      ("" "siunitx" t)
-	      ("" "pxfonts" t)))
+        ("" "pxfonts" t)))
 
 ;; Direct LaTeX preview image files
 (setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
@@ -240,7 +240,8 @@
 	:hook
 	(after-init . (lambda ()
 									(org-roam-dailies-goto-today)
-									(org-roam-buffer-toggle))))
+									;; (org-roam-buffer-toggle)
+                  )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -318,5 +319,13 @@
 ;; 	(mixed-pitch-variable-pitch-cursor '(bar . 1))
 ;; 	:hook
 ;; 	(org-mode . mixed-pitch-mode))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Pixel tables
+(use-package valign
+  :hook
+  (org-mode . valign-mode)
+  :config
+  (setq valign-fancy-bar t))
 
 (provide 'init-org)
