@@ -56,11 +56,53 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Experimentally settings
+(use-package pdf-tools
+  :config
+  (setq pdf-view-use-scaling t))
+
+;; (setq org-latex-pdf-process
+;;       '("pdflatex -interaction nonstopmode -output-directory %o %f"
+;;         "bibtex %b"
+;;         "pdflatex -interaction nonstopmode -output-directory %o %f"
+;;         "pdflatex -interaction nonstopmode -output-directory %o %f"))
 ;;
-;; (set-face-background 'default "mac:windowBackgroundColor")
-;; (dolist (f (face-list)) (set-face-stipple f "alpha:40%"))
-;; (setq face-remapping-alist (append face-remapping-alist '((default my/default-blurred))))
-;; (defface my/default-blurred
-;;    '((t :inherit 'default :stipple "alpha:40%"))
-;;    "Like 'default but blurred."
-;;    :group 'my)
+;; (use-package ebib)
+(use-package org-ref
+  :init
+  (setq bibtex-completion-bibliography
+        '("~/org/labs/latex/OverleafExample/sample.bib")
+	      bibtex-completion-library-path '("~/org/labs/latex/OverleafExample/"
+                                         "~/org/works/7BTeX/")
+	      ;; bibtex-completion-notes-path "~/org/labs/latex/OverleafExample/"
+	      ;; bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n"
+
+        bibtex-completion-additional-search-fields '(keywords)
+	      bibtex-completion-display-formats
+	      '((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
+	        (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
+	        (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+	        (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+	        (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))
+	      bibtex-completion-pdf-open-function
+	      (lambda (fpath)
+	        (call-process "open" nil 0 nil fpath)))
+  (setq bibtex-autokey-year-length 4
+        bibtex-autokey-name-year-separator "-"
+        bibtex-autokey-year-title-separator "-"
+        bibtex-autokey-titleword-separator "-"
+        bibtex-autokey-titlewords 2
+        bibtex-autokey-titlewords-stretch 1
+        bibtex-autokey-titleword-length 5)
+  (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
+  (add-hook 'org-ref-clean-bibtex-entry-hook 'org-ref-replace-nonascii))
+
+(setq org-latex-pdf-process ("latexmk -bibtex -f -pdf -%latex -interaction=nonstopmode -output-directory=%o %f"))
+;; (setq org-latex-to-pdf-process '("xelatex %f && bibtex %f && xelatex %f && xelatex %f"))
+;;
+;; (setq org-latex-pdf-process
+;;       '("pdflatex -interaction nonstopmode -output-directory %o %f"
+;; 	"bibtex %b"
+;; 	"pdflatex -interaction nonstopmode -output-directory %o %f"
+;; 	"pdflatex -interaction nonstopmode -output-directory %o %f"))
+
+(setq bibtex-dialect 'biblatex)
