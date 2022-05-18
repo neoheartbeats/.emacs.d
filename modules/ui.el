@@ -63,10 +63,11 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	                  :font "Modus Mono"
+	                  :font "Sarasa Mono SC"
 	                  :height 155)
-(set-fontset-font "fontset-default" 'han "Heiti SC")
 
+;; (set-fontset-font "fontset-default" 'han "Heiti SC")
+;;
 ;; (set-face-attribute 'variable-pitch nil
 ;; 	:font "Tinos"
 ;; 	:height 170)

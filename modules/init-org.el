@@ -169,7 +169,7 @@
 	      ;; ("" "chemfig" t)
 	      ;; ("" "gensymb" t)
 	      ("" "siunitx" t)
-        ("" "pxfonts" t)))
+        ("" "txfonts" t)))
 
 ;; Direct LaTeX preview image files
 (setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
@@ -256,6 +256,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Pixel tables
+(use-package valign
+  :hook
+  (org-mode . valign-mode)
+  :config
+  (setq valign-fancy-bar t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Org Roam UI
 ;; (use-package org-roam-ui
 ;;   :straight
@@ -319,13 +328,5 @@
 ;; 	(mixed-pitch-variable-pitch-cursor '(bar . 1))
 ;; 	:hook
 ;; 	(org-mode . mixed-pitch-mode))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Pixel tables
-(use-package valign
-  :hook
-  (org-mode . valign-mode)
-  :config
-  (setq valign-fancy-bar t))
 
 (provide 'init-org)
