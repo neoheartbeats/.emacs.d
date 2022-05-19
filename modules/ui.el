@@ -63,10 +63,11 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	                  :font "Sarasa Mono SC"
+	                  :font "Iosevka"
 	                  :height 155)
 
-;; (set-fontset-font "fontset-default" 'han "Heiti SC")
+(set-fontset-font "fontset-default" 'han "Noto Serif SC")
+(set-fontset-font "fontset-default" 'kana "Noto Serif JP")
 ;;
 ;; (set-face-attribute 'variable-pitch nil
 ;; 	:font "Tinos"
