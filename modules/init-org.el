@@ -169,7 +169,9 @@
 	      ;; ("" "chemfig" t)
 	      ;; ("" "gensymb" t)
 	      ("" "siunitx" t)
-        ("" "txfonts" t)))
+        ("T1" "fontenc" t)
+        ("" "newpxtext" t)
+        ("" "eulerpx" t)))
 
 ;; Direct LaTeX preview image files
 (setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
