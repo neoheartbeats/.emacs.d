@@ -63,7 +63,7 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	                  :font "Iosevka"
+	                  :font "PragmataPro Mono Liga"
 	                  :height 155)
 
 (set-fontset-font "fontset-default" 'han "Noto Serif SC")

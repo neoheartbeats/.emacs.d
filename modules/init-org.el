@@ -132,67 +132,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Org LaTeX
-;;
-;; Install AUCTeX
-(use-package latex :straight auctex)
-
-;; Setup `dvisvgm' to preview LaTeX fragments
-(setq org-preview-latex-default-process 'dvisvgm)
-
-(setq org-preview-latex-process-alist
-      '((dvisvgm
-			   :programs ("xelatex" "dvisvgm")
-			   :description "xdv > svg"
-			   :image-input-type "xdv"
-			   :image-output-type "svg"
-			   :image-size-adjust (1.7 . 1.5)
-			   :latex-compiler ;; Default `xelatex' as the process previewing LaTeX fragments
-			   ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
-			   :image-converter ;; Set `dvisvgm' with --exact option
-			   ("dvisvgm %f -e -n -b min -c %S -o %O"))))
-
-(setq org-format-latex-options
-      '( ;; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
-		    :foreground default
-        :background "Transparent"
-        :scale 1.2
-        :html-foreground "Black"
-        :html-background "Transparent"
-        :html-scale 1.2
-        :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
-
-;; Org LaTeX packages
-(setq org-latex-packages-alist
-      '(;;("" "physics" t)
-	      ("" "mhchem" t)
-	      ;; ("" "chemfig" t)
-	      ;; ("" "gensymb" t)
-	      ("" "siunitx" t)
-        ("T1" "fontenc" t)
-        ("" "newpxtext" t)
-        ("" "eulerpx" t)))
-
-;; Direct LaTeX preview image files
-(setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Better LaTeX editor for Org mode
-;;
-;; Setup `CDLaTeX'
-(use-package cdlatex
-  :hook (org-mode . org-cdlatex-mode))
-
-;; Setup `org-fragtog'
-(use-package org-fragtog
-  :hook (org-mode . org-fragtog-mode))
-
-;; Syntax highlighting for LaTeX in Org mode
-;; (setq org-highlight-latex-and-related '(latex script))
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Org Roam
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))
@@ -241,9 +180,7 @@
 		                                   (no-delete-other-windows . nil)))))
 	:hook
 	(after-init . (lambda ()
-									(org-roam-dailies-goto-today)
-									;; (org-roam-buffer-toggle)
-                  )))
+									(org-roam-dailies-goto-today))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -255,15 +192,6 @@
 ;; Org Todos
 (setq org-todo-keywords
 	    '((sequence "TODO" "REVIEW" "|" "DONE" "CANCELLED")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Pixel tables
-(use-package valign
-  :hook
-  (org-mode . valign-mode)
-  :config
-  (setq valign-fancy-bar t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -282,53 +210,5 @@
 ;;   (org-roam-ui-follow t)
 ;;   (org-roam-ui-update-on-save t)
 ;;   (org-roam-ui-open-on-start t))
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Org roam buffer settings
-;;
-;; (defun org-roam-links ()
-;; 	(interactive)
-;; 	(progn
-;; 		(split-window-horizontally)
-;; 		(org-roam-buffer-toggle)))
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Org roam buffer settings
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Org journal
-;; (use-package org-journal
-;;   :bind
-;;   ("C-c n j" . org-journal-new-entry)
-;;   :custom
-;;   (org-journal-date-prefix "#+TITLE: ")
-;;   (org-journal-file-format "%Y-%m-%d.org")
-;;   (org-journal-dir "~/org/book/")
-;;   (org-journal-date-format "%Y-%m-%d")
-;; 	:config ;; Open file in new frame
-;; 	(setq org-journal-find-file 'find-file)
-;; 	:bind
-;; 	(
-;; 		("<s-up>" . org-journal-previous-entry)
-;; 		("<s-down>" . org-journal-next-entry)
-;; 		("C-c n o" . org-journal-open-current-journal-file))
-;; 	:hook
-;; 	(after-init . (lambda ()
-;; 									(interactive)
-;; 									(org-journal-open-current-journal-file)
-;; 									(org-roam-db-sync))))
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Mixed pitch mode
-;; (use-package mixed-pitch
-;; 	:custom
-;; 	(mixed-pitch-set-height t)
-;; 	(mixed-pitch-variable-pitch-cursor '(bar . 1))
-;; 	:hook
-;; 	(org-mode . mixed-pitch-mode))
 
 (provide 'init-org)
