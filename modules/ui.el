@@ -66,14 +66,13 @@
 	                  :font "PragmataPro Mono Liga"
 	                  :height 155)
 
+(set-fontset-font "fontset-default" 'unicode "PragmataPro Liga")
 (set-fontset-font "fontset-default" 'han "Noto Serif SC")
 (set-fontset-font "fontset-default" 'kana "Noto Serif JP")
-;;
+
 ;; (set-face-attribute 'variable-pitch nil
-;; 	:font "Tinos"
-;; 	:height 170)
-;; (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
-;;
+;;                     :font "PragmataPro Liga"
+;;                     :height 170)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

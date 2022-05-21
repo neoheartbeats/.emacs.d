@@ -90,10 +90,8 @@
 (global-visual-line-mode 1)
 (setq word-wrap-by-category t)
 
-;; Show line numbers in prog-mode
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-(add-hook 'org-mode-hook 'display-line-numbers-mode)
-(add-hook 'LaTeX-mode-hook 'display-line-numbers-mode)
+;; Show line numbers
+(global-display-line-numbers-mode 1)
 
 ;; Show lambda as λ
 (global-prettify-symbols-mode 1)
