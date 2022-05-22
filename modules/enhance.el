@@ -17,74 +17,71 @@
 ;; Completion
 ;;
 ;; Company setup
-;; (use-package company
-;;   :init (global-company-mode 1)
-;;   :custom
-;;   (company-minimum-prefix-length 2)
-;;   (company-idle-delay 0)
-;;   (company-echo-delay 0)
-;;   (company-selection-wrap-around t)
-;;   (company-tooltip-align-annotations t)
-;; 	(company-dabbrev-downcase nil)
-;; 	(company-dabbrev-ignore-case nil)
-;; 	:config
-;; 	(defun ispell-completion () ;; Spelling completion
-;; 		(require 'ispell)
-;; 		(make-local-variable 'company-backends)
-;; 		(setq company-backends '((
-;; 															 company-dabbrev
-;; 															 company-yasnippet
-;; 															 company-ispell)))
-;; 		(setq company-ispell-dictionary ispell-dictionary)
-;; 		(company-capf
-;; 			'((:separate
-;; 					company-dabbrev
-;; 					company-yasnippet
-;; 					company-ispell))))
-;;   :bind
-;; 	(
-;; 		(:map company-active-map
-;; 			("<escape>" . company-abort)
-;; 			("C-p" . company-select-previous)
-;; 			("C-n" . company-select-next))
-;; 		(:map company-search-map
-;; 			("<escape>" . company-search-abort)
-;; 			("C-p" . company-select-previous)
-;; 			("C-n" . company-select-next)))
-;; 	:hook
-;; 	(org-mode . ispell-completion))
-;;
+(use-package company
+  :init (global-company-mode 1)
+  :custom
+  (company-minimum-prefix-length 2)
+  (company-idle-delay 0)
+  (company-echo-delay 0)
+  (company-selection-wrap-around t)
+  (company-tooltip-align-annotations t)
+	(company-dabbrev-downcase nil)
+	(company-dabbrev-ignore-case nil)
+	:config
+	(defun ispell-completion () ;; Spelling completion
+		(require 'ispell)
+		(make-local-variable 'company-backends)
+		(setq company-backends '((company-dabbrev
+															company-yasnippet
+															company-ispell)))
+		(setq company-ispell-dictionary ispell-dictionary)
+		(company-capf
+		 '((:separate company-dabbrev
+				          company-yasnippet
+				          company-ispell))))
+  :bind
+	((:map company-active-map
+			   ("<escape>" . company-abort)
+			   ("C-p" . company-select-previous)
+			   ("C-n" . company-select-next))
+	 (:map company-search-map
+			   ("<escape>" . company-search-abort)
+			   ("C-p" . company-select-previous)
+			   ("C-n" . company-select-next)))
+	:hook
+	(org-mode . ispell-completion))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Auto completion with `corfu'
-(use-package corfu
-	:straight (:files (:defaults "extensions/*")
-                    :includes (corfu-history))
-	:custom
-	(corfu-cycle t)
-	(corfu-auto t)
-	(corfu-auto-delay 0)
-	(corfu-auto-prefix 2)
-	:hook
-	((prog-mode . corfu-mode)
-	 (org-mode . corfu-mode))
-  :init
-  (global-corfu-mode)
-	:config
-	(use-package corfu-history
-		:init (corfu-history-mode))
-
-	;; Icon support
-	(use-package kind-icon
-		:custom
-		(kind-icon-default-face 'corfu-default)
-		:config
-		(add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
-	(use-package emacs
-		:init
-		(setq completion-cycle-threshold 3)
-		(setq tab-always-indent 'complete)))
-
+;; (use-package corfu
+;; 	:straight (:files (:defaults "extensions/*")
+;;                     :includes (corfu-history))
+;; 	:custom
+;; 	(corfu-cycle t)
+;; 	(corfu-auto t)
+;; 	(corfu-auto-delay 0)
+;; 	(corfu-auto-prefix 2)
+;; 	:hook
+;; 	((prog-mode . corfu-mode)
+;; 	 (org-mode . corfu-mode))
+;;   :init
+;;   (global-corfu-mode)
+;; 	:config
+;; 	(use-package corfu-history
+;; 		:init (corfu-history-mode))
+;;
+;;;;;; Icon support
+;; 	(use-package kind-icon
+;; 		:custom
+;; 		(kind-icon-default-face 'corfu-default)
+;; 		:config
+;; 		(add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+;; 	(use-package emacs
+;; 		:init
+;; 		(setq completion-cycle-threshold 3)
+;; 		(setq tab-always-indent 'complete)))
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Completion At Point Extensions made for `corfu'
