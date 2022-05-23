@@ -61,6 +61,7 @@
 	(corfu-cycle t)
 	(corfu-auto t)
   (corfu-quit-at-boundary t)
+  (corfu-quit-no-match t)
 	(corfu-auto-delay 0)
 	(corfu-auto-prefix 2)
 	:hook
@@ -184,9 +185,18 @@
 (use-package which-key
   :init
   (which-key-mode 1)
-  (which-key-setup-minibuffer)
   :config
   (setq which-key-idle-delay 0)
   (setq which-key-idle-secondary-delay 0))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Project management with `projectile'
+(use-package projectile
+  :init
+  (projectile-mode 1)
+  :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (setq projectile-project-search-path '("~/org/" "~/.emacs.d/" ("~/GitHub/" . 1))))
 
 (provide 'enhance)
