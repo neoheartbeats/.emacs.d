@@ -46,6 +46,7 @@
 (require 'enhance)
 (require 'ui)
 (require 'init-org)
+(require 'init-lsp)
 (require 'init-tex)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -53,7 +54,3 @@
 ;; Setup custom file
 (setq custom-file "~/.emacs.d/modules/custom.el")
 (load custom-file 'no-error 'no-message)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Experimentally settings

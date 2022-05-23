@@ -67,8 +67,8 @@
 	                  :height 155)
 
 (set-fontset-font "fontset-default" 'unicode "PragmataPro Liga")
-(set-fontset-font "fontset-default" 'han "Noto Serif SC")
-(set-fontset-font "fontset-default" 'kana "Noto Serif JP")
+(set-fontset-font "fontset-default" 'han "Noto Sans SC")
+(set-fontset-font "fontset-default" 'kana "Noto Sans JP")
 
 ;; (set-face-attribute 'variable-pitch nil
 ;;                     :font "PragmataPro Liga"

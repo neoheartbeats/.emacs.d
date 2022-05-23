@@ -18,3 +18,5 @@
 /url/
 /.cache/
 /games/
+/.lsp-session-v1
+/projectile-bookmarks.eld
