@@ -179,4 +179,7 @@
   (dired-use-ls-dired nil) ;; Fix error "ls does not support --dired"
   (dired-kill-when-opening-new-dired-buffer t))
 
+;; Gamegrid settings
+(setq gamegrid-user-score-file-directory "~/org/games/")
+
 (provide 'defaults)
