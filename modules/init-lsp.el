@@ -48,11 +48,7 @@
 ;; LaTeX
 (use-package lsp-latex
   :hook
-  (latex-mode-hook . (lambda ()
-                       (require 'lsp-latex)
-                       (lsp)))
-  (bibtex-mode-hook . (lambda ()
-                        (require 'lsp-latex)
-                        (lsp))))
+  (latex-mode . lsp)
+  (bibtex-mode . lsp)
 
-(provide 'init-lsp)
+  (provide 'init-lsp)
