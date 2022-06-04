@@ -49,8 +49,7 @@
 (setq org-latex-packages-alist
       '(("" "mhchem" t)
 	      ("" "siunitx" t)
-        ("" "newtxtext" t)
-        ("" "newtxmath" t)))
+        ("" "pxfonts" t)))
 
 ;; Direct LaTeX preview image files
 (setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")

@@ -48,6 +48,7 @@
 ;; LaTeX
 (use-package lsp-latex
   :hook
+  (tex-mode . lsp)
   (latex-mode . lsp)
   (bibtex-mode . lsp)
 
