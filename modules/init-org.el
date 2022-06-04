@@ -228,4 +228,11 @@
 ;;   (org-roam-ui-update-on-save t)
 ;;   (org-roam-ui-open-on-start t))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Org LaTeX bridge
+;;
+;; Direct LaTeX preview image files
+(setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
+
 (provide 'init-org)

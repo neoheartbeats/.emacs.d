@@ -51,9 +51,6 @@
 	      ("" "siunitx" t)
         ("" "pxfonts" t)))
 
-;; Direct LaTeX preview image files
-(setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Better Org LaTeX editor for Org mode
