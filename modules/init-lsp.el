@@ -50,6 +50,6 @@
   :hook
   (tex-mode . lsp)
   (latex-mode . lsp)
-  (bibtex-mode . lsp)
+  (bibtex-mode . lsp))
 
-  (provide 'init-lsp)
+(provide 'init-lsp)

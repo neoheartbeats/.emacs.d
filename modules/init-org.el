@@ -54,6 +54,8 @@
           (":PROPERTIES:" . "")
           ("#+BEGIN_SRC" . "")
           ("#+END_SRC" . "-")
+          ("#+BEGIN_QUOTE" . "")
+          ("#+END_QUOTE" . "")
           ("#+RESULTS:" . "")
           ("#+ATTR_ORG:" . "")
           ("#+ATTR_LATEX:" . "")
@@ -200,9 +202,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org Roam BibTeX
-(use-package org-roam-bibtex
-  :config (use-package org-ref))
-
+;; (use-package org-roam-bibtex
+;;   :config (use-package org-ref))
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Org Todos
 (setq org-todo-keywords
