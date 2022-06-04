@@ -54,6 +54,8 @@
           (":PROPERTIES:" . "")
           ("#+BEGIN_SRC" . "")
           ("#+END_SRC" . "-")
+          ("#+BEGIN_QUOTE" . "")
+          ("#+END_QUOTE" . "")
           ("#+RESULTS:" . "")
           ("#+ATTR_ORG:" . "")
           ("#+ATTR_LATEX:" . "")
@@ -200,9 +202,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org Roam BibTeX
-(use-package org-roam-bibtex
-  :config (use-package org-ref))
-
+;; (use-package org-roam-bibtex
+;;   :config (use-package org-ref))
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Org Todos
 (setq org-todo-keywords
@@ -225,5 +227,12 @@
 ;;   (org-roam-ui-follow t)
 ;;   (org-roam-ui-update-on-save t)
 ;;   (org-roam-ui-open-on-start t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Org LaTeX bridge
+;;
+;; Direct LaTeX preview image files
+(setq org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
 
 (provide 'init-org)
