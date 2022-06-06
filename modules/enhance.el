@@ -16,43 +16,6 @@
 ;;
 ;; Completion
 ;;
-;; Company setup
-;; (use-package company
-;;   :init (global-company-mode 1)
-;;   :custom
-;;   (company-minimum-prefix-length 2)
-;;   (company-idle-delay 0)
-;;   (company-echo-delay 0)
-;;   (company-selection-wrap-around t)
-;;   (company-tooltip-align-annotations t)
-;; 	(company-dabbrev-downcase nil)
-;; 	(company-dabbrev-ignore-case nil)
-;; 	:config
-;; 	(defun ispell-completion () ;; Spelling completion
-;; 		(require 'ispell)
-;; 		(make-local-variable 'company-backends)
-;; 		(setq company-backends '((company-dabbrev
-;; 															company-yasnippet
-;; 															company-ispell)))
-;; 		(setq company-ispell-dictionary ispell-dictionary)
-;; 		(company-capf
-;; 		 '((:separate company-dabbrev
-;; 				          company-yasnippet
-;; 				          company-ispell))))
-;;   :bind
-;; 	((:map company-active-map
-;; 			   ("<escape>" . company-abort)
-;; 			   ("C-p" . company-select-previous)
-;; 			   ("C-n" . company-select-next))
-;; 	 (:map company-search-map
-;; 			   ("<escape>" . company-search-abort)
-;; 			   ("C-p" . company-select-previous)
-;; 			   ("C-n" . company-select-next)))
-;; 	:hook
-;; 	(org-mode . ispell-completion))
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Auto completion with `corfu'
 (use-package corfu
 	:straight (:files (:defaults "extensions/*")
@@ -106,8 +69,39 @@
 ;; Use listed completion style with `vertico'
 (use-package vertico
 	:straight (:files (:defaults "extensions/*")
-						        :includes (vertico-directory))
-	:init (vertico-mode 1)
+                    :includes (vertico-directory
+                               vertico-mouse))
+	:init
+  (vertico-mode)
+
+  ;; Persist history over Emacs restarts.
+  (use-package savehist
+    :init
+    (savehist-mode))
+  (use-package emacs
+    :init
+    ;; Add prompt indicator to `completing-read-multiple'.
+    (defun crm-indicator (args)
+      (cons (format "[CRM%s] %s"
+                    (replace-regexp-in-string
+                     "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                     crm-separator)
+                    (car args))
+            (cdr args)))
+    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+    ;; Do not allow the cursor in the minibuffer prompt
+    (setq minibuffer-prompt-properties
+          '(read-only t cursor-intangible t face minibuffer-prompt))
+    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+    ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+    ;; Vertico commands are hidden in normal buffers.
+    (setq read-extended-command-predicate
+          #'command-completion-default-include-p)
+
+    ;; Enable recursive minibuffers
+    (setq enable-recursive-minibuffers t))
 	:config
 	(use-package vertico-directory
 		:bind
@@ -115,7 +109,10 @@
 				   ("RET" . vertico-directory-enter)
 				   ("DEL" . vertico-directory-delete-char)
 				   ("M-DEL" . vertico-directory-delete-word)))
-		:hook (rfn-eshadow-update-overlay . vertico-directory-tidy)))
+		:hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+  ;; Support for scrolling and candidate selection
+  (use-package vertico-mouse
+    :init (vertico-mouse-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -153,10 +150,10 @@
 	 ("s-b" . consult-buffer)))
 
 ;; Annotation for minibuffer with `marginalia'
-(use-package marginalia
-  :init
-  (marginalia-mode 1))
-
+;; (use-package marginalia
+;;   :init
+;;   (marginalia-mode 1))
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Window management
