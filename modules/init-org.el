@@ -154,7 +154,7 @@
 	:straight (:files (:defaults "extensions/*"))
   :custom
   (org-roam-directory "~/org/")
-  (org-roam-dailies-directory "book/")
+  (org-roam-dailies-directory "daily/")
   (org-roam-completion-everywhere t)
   :bind
 	(("C-c n n" . org-id-get-create)
