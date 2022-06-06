@@ -63,8 +63,8 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	                  :font "Fira Code"
-	                  :height 145)
+	                  :font "Modus Mono"
+	                  :height 155)
 
 (set-fontset-font "fontset-default" 'unicode "PragmataPro Liga")
 (set-fontset-font "fontset-default" 'han "Noto Sans SC")
