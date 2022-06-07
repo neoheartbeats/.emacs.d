@@ -63,7 +63,7 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	                  :font "Modus Mono"
+	                  :font "PragmataPro Mono Liga"
 	                  :height 155)
 
 (set-fontset-font "fontset-default" 'unicode "PragmataPro Liga")
