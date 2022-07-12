@@ -76,7 +76,8 @@
       '((top . 96)
         (left . 390)
 	      (width . 99)
-	      (height . 45)))
+	      (height . 45)
+        (alpha . (85 . 50))))
 
 ;; Make UTF-8 the default coding system
 (set-language-environment "UTF-8")

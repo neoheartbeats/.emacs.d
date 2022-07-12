@@ -179,13 +179,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Using `which-key' for keymap nevigation
-(use-package which-key
-  :init
-  (which-key-mode 1)
-  :config
-  (setq which-key-idle-delay 0)
-  (setq which-key-idle-secondary-delay 0))
-
+;; (use-package which-key
+;;   :init
+;;   (which-key-mode 1)
+;;   :config
+;;   (setq which-key-idle-delay 0)
+;;   (setq which-key-idle-secondary-delay 0))
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Project management with `projectile'
