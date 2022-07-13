@@ -90,5 +90,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; macOS key mapping
-(setq mac-command-modifier 'super)
-(setq mac-option-modifier 'meta)
+;; (setq mac-command-modifier 'super)
+;; (setq mac-option-modifier 'meta)
