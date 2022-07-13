@@ -163,11 +163,6 @@
                      (lambda (buf)
                        (not (string-match-p "^\\(magit:\\|*\\)" (buffer-name buf)))))
 
-;; Switching windows
-;; (use-package ace-window
-;; 	:init
-;; 	(global-set-key (kbd "s-<return>") 'ace-window))
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Excellent git client
@@ -175,25 +170,5 @@
   :custom
   (magit-diff-refine-hunk t)
   (magit-section-visibility-indicator nil))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Using `which-key' for keymap nevigation
-;; (use-package which-key
-;;   :init
-;;   (which-key-mode 1)
-;;   :config
-;;   (setq which-key-idle-delay 0)
-;;   (setq which-key-idle-secondary-delay 0))
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Project management with `projectile'
-;; (use-package projectile
-;;   :init
-;;   (projectile-mode 1)
-;;   :config
-;;   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-;;   (setq projectile-project-search-path '("~/org/" "~/.emacs.d/" ("~/GitHub/" . 1))))
 
 (provide 'enhance)
