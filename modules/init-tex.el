@@ -39,7 +39,7 @@
       '( ;; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
 		    :foreground default
         :background "Transparent"
-        :scale 0.85
+        :scale 1.2
         :html-foreground "Black"
         :html-background "Transparent"
         :html-scale 1.2

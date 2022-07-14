@@ -24,12 +24,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Default startup message
-;; (defun display-startup-echo-area-message ()
-;; 	(message
-;; 	 "%s"(propertize
-;; 				"Funding for this program was made possible by viewers like you."
-;; 				'face
-;; 				'(:foreground "#6be4b9"))))
 (defun display-startup-echo-area-message ()
   (message
    "Funding for this program was made possible by viewers like you."))
@@ -79,23 +73,17 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Improve the readability by increasing line spacing
-;; (setq-default line-spacing 4)
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Modus themes
-;; (use-package modus-themes
-;; 	:init (modus-themes-load-themes)
-;; 	:custom
-;; 	(modus-themes-subtle-line-numbers t)
-;; 	(modus-themes-syntax '(green-strings))
-;; 	(modus-themes-hl-line '(underline accented))
-;; 	;; (modus-themes-mode-line '(moody accented borderless))
-;; 	(modus-themes-links '(neutral-underline))
-;; 	:config
-;; 	(modus-themes-load-operandi))
-;;
+(use-package modus-themes
+	:init (modus-themes-load-themes)
+	:custom
+	(modus-themes-subtle-line-numbers t)
+	(modus-themes-syntax '(green-strings))
+	(modus-themes-hl-line '(underline accented))
+	(modus-themes-links '(neutral-underline))
+	:config
+	(modus-themes-load-vivendi))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Use single line as mode line
