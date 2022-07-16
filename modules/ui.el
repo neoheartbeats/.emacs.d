@@ -60,17 +60,13 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	                  :font "Input Mono"
+	                  :font "Fira Code"
 	                  :height 140)
 
 ;; (set-fontset-font "fontset-default" 'unicode "PragmataPro Mono Liga")
 (set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
 (set-fontset-font "fontset-default" 'kana "Noto Sans CJK JP")
 
-;; (set-face-attribute 'variable-pitch nil
-;;                     :font "PragmataPro Liga"
-;;                     :height 170)
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modus themes
