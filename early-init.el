@@ -46,7 +46,7 @@
 ;;
 ;; Compile external packages for GccEmacs
 ;; (setq package-native-compile t)
-
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Prevent `package.el' loading packages prior to init-file loading
