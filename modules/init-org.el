@@ -172,12 +172,6 @@
 									(org-roam-dailies-goto-today))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Org Roam BibTeX
-;; (use-package org-roam-bibtex
-;;   :config (use-package org-ref))
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Org Todos
 (setq org-todo-keywords
 	    '((sequence "TODO" "REVIEW" "|" "DONE" "CANCELLED")))
