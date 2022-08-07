@@ -64,8 +64,8 @@
 	                  :height 140)
 
 ;; (set-fontset-font "fontset-default" 'unicode "PragmataPro Mono Liga")
-(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
-(set-fontset-font "fontset-default" 'kana "Noto Sans CJK JP")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'kana "Noto Serif CJK JP")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
