@@ -83,13 +83,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Use single line as mode line
-;; (use-package emacs
-;; 	:custom-face
-;; 	(mode-line ((t (:height 0.1))))
-;; 	(mode-line-inactive ((t (:inherit mode-line))))
-;; 	:config (setq-default mode-line-format '("")))
-;;
+(use-package emacs
+	:custom-face
+	(mode-line ((t (:height 0.1))))
+	(mode-line-inactive ((t (:inherit mode-line))))
+	:config (setq-default mode-line-format '("")))
+
 ;; Hide mode line
-(setq-default mode-line-format nil)
+;;(setq-default mode-line-format nil)
 
 (provide 'ui)
