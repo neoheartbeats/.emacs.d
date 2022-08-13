@@ -26,7 +26,7 @@
   (corfu-quit-at-boundary t)
   (corfu-quit-no-match t)
 	(corfu-auto-delay 0)
-	(corfu-auto-prefix 2)
+	(corfu-auto-prefix 1)
 	:hook
 	((prog-mode . corfu-mode)
 	 (org-mode . corfu-mode))
