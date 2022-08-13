@@ -115,16 +115,6 @@
 ;; Org Roam
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))
-  :init
-  ;; (defun org-roam-dedicated-other-window ()
-  ;;   (if (= (current-buffer) "")))
-  (global-set-key (kbd "C-x o")
-                  (lambda ()
-                    (interactive)
-                    (if (equal (prin1-to-string (current-buffer))
-                               "#<buffer *org-roam*>")
-                        (call-interactively 'other-window)
-                      (select-window (get-buffer-window "*org-roam*")))))
   :custom
   (org-roam-directory "~/神寂/")
   (org-roam-dailies-directory "./")
@@ -138,7 +128,15 @@
 	 ("C-c n j" . org-roam-dailies-goto-today)
 	 ("C-c n l" . org-roam-buffer-toggle)
 	 ("<s-up>" . org-roam-dailies-goto-previous-note)
-	 ("<s-down>" . org-roam-dailies-goto-next-note))
+	 ("<s-down>" . org-roam-dailies-goto-next-note)
+   ("C-x o" . (lambda ()
+                (interactive)
+                (if (equal (prin1-to-string (current-buffer))
+                           "#<buffer *org-roam*>")
+                    (call-interactively 'other-window)
+                  (select-window (get-buffer-window "*org-roam*")))))
+   (:map org-roam-mode-map
+         ("<mouse-1>" . org-roam-preview-visit)))
   :config
 	(org-roam-setup)
 	(setq org-roam-db-gc-threshold most-positive-fixnum) ;; Optimize performance
