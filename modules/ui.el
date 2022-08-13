@@ -305,7 +305,6 @@
           (bg-diff-focus-removed . "#6f0f39")
           (fg-diff-focus-removed . "#eebdba")))
 	:custom
-  (modus-themes-variable-pitch-ui t)
   (modus-themes-subtle-line-numbers t)
   (modus-themes-syntax '(green-strings))
   (modus-themes-mode-line '(borderless))

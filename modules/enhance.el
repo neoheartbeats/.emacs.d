@@ -163,6 +163,9 @@
                      (lambda (buf)
                        (not (string-match-p "^\\(magit:\\|*\\)" (buffer-name buf)))))
 
+;; Navigating window & frames
+(use-package icicles)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Excellent git client

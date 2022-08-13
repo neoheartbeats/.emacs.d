@@ -46,18 +46,6 @@
   :hook (org-mode . org-bullets-mode)
   :custom (org-bullets-bullet-list '("§")))
 
-;; Prettify symbols
-(defun org-icons ()
-  (setq prettify-symbols-alist
-        '(("#+TITLE:" . "T")
-          (":PROPERTIES:" . "≡")
-          ("#+BEGIN_SRC" . "»")
-          ("#+END_SRC" . "«")
-          ("#+RESULTS:" . "⌘")
-          ("#+ATTR_ORG:" . "⌘")))
-  (prettify-symbols-mode))
-(add-hook 'org-mode-hook 'org-icons)
-
 ;; Display Org list prefix as dots
 (font-lock-add-keywords
  'org-mode
@@ -189,8 +177,6 @@
 (setq org-todo-keywords
 	    '((sequence "TODO" "REVIEW" "|" "DONE" "CANCELLED")))
 
-(add-hook 'org-mode-hook 'org-icons)
-
 ;; Display Org list prefix as dots
 (font-lock-add-keywords
  'org-mode
@@ -314,7 +300,8 @@
 		                                   (no-delete-other-windows . nil)))))
 	:hook
 	(after-init . (lambda ()
-									(org-roam-dailies-goto-today))))
+									(org-roam-dailies-goto-today)
+                  (org-roam-buffer-toggle))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Emms support

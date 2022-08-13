@@ -166,12 +166,6 @@
 (save-place-mode t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Window management
-;; (setq windmove-wrap-around t)
-;; (when (fboundp 'windmove-default-keybindings)
-;;   (windmove-default-keybindings))
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Setup `dired'
 (use-package dired
