@@ -91,8 +91,7 @@
 (setq word-wrap-by-category t)
 
 ;; Show line numbers
-;; (global-display-line-numbers-mode 1)
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(global-display-line-numbers-mode 1)
 
 ;; Show lambda as λ
 (global-prettify-symbols-mode 1)
