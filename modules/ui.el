@@ -60,10 +60,10 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	                  :font "Fira Code"
-	                  :height 140)
+	                  :font "Courier New"
+	                  :height 145
+                    :weight 'Bold)
 
-;; (set-fontset-font "fontset-default" 'unicode "PragmataPro Mono Liga")
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 (set-fontset-font "fontset-default" 'kana "Noto Serif CJK JP")
 

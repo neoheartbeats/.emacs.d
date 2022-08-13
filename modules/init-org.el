@@ -18,7 +18,7 @@
 (use-package org
   :straight (:type built-in))
 
-(setq org-directory "~/Nextcloud/sarinWine/")
+(setq org-directory "~/sarinWine/")
 
 ;; Open org files with previewing
 (setq org-startup-with-inline-images t)
@@ -137,7 +137,7 @@
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))
   :custom
-  (org-roam-directory "~/Nextcloud/sarinWine/")
+  (org-roam-directory "~/sarinWine/")
   (org-roam-dailies-directory "wine/")
   (org-roam-completion-everywhere t)
   :bind
@@ -179,6 +179,7 @@
                  (window-width . 0.33)
                  (window-parameters . ((no-other-window . t)
 		                                   (no-delete-other-windows . nil)))))
+
 	:hook
 	(after-init . (lambda ()
 									(org-roam-dailies-goto-today))))
