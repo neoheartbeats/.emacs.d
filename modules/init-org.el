@@ -25,9 +25,9 @@
 (setq org-startup-with-latex-preview t)
 
 ;; Use org-indent mode
-(setq org-startup-indented t)
-(setq org-adapt-indentation t)
-
+;; (setq org-startup-indented t)
+;; (setq org-adapt-indentation t)
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org editor
@@ -120,10 +120,17 @@
 (setq org-babel-python-command "python3")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Org Roam
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))
+  :init
+  ;; (defun org-roam-dedicated-other-window ()
+  ;;   (if (= (current-buffer) "")))
+  (global-set-key (kbd "C-x o") (lambda ()
+                                  (interactive)
+                                  (if (equal (prin1-to-string (current-buffer)) "#<buffer *org-roam*>")
+                                      (call-interactively 'other-window)
+                                    (select-window (get-buffer-window "*org-roam*")))))
   :custom
   (org-roam-directory "~/sarinWine/")
   (org-roam-dailies-directory "wine/")
