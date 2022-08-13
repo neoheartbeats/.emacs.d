@@ -47,8 +47,7 @@
 (require 'ui)
 (require 'init-org)
 (require 'init-tex)
-;; (require 'init-lsp)
-;;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Setup custom file
