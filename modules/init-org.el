@@ -18,16 +18,12 @@
 (use-package org
   :straight (:type built-in))
 
-(setq org-directory "~/sarinWine/")
+(setq org-directory "~/神寂/")
 
 ;; Open org files with previewing
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
-;; Use org-indent mode
-;; (setq org-startup-indented t)
-;; (setq org-adapt-indentation t)
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org editor
@@ -58,7 +54,7 @@
 ;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)
 (setq org-pretty-entities-include-sub-superscripts nil)
-;;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Hide emphasis markers
@@ -120,20 +116,23 @@
 (setq org-babel-python-command "python3")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Org Roam
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))
   :init
   ;; (defun org-roam-dedicated-other-window ()
   ;;   (if (= (current-buffer) "")))
-  (global-set-key (kbd "C-x o") (lambda ()
-                                  (interactive)
-                                  (if (equal (prin1-to-string (current-buffer)) "#<buffer *org-roam*>")
-                                      (call-interactively 'other-window)
-                                    (select-window (get-buffer-window "*org-roam*")))))
+  (global-set-key (kbd "C-x o")
+                  (lambda ()
+                    (interactive)
+                    (if (equal (prin1-to-string (current-buffer))
+                               "#<buffer *org-roam*>")
+                        (call-interactively 'other-window)
+                      (select-window (get-buffer-window "*org-roam*")))))
   :custom
-  (org-roam-directory "~/sarinWine/")
-  (org-roam-dailies-directory "wine/")
+  (org-roam-directory "~/神寂/")
+  (org-roam-dailies-directory "./")
   (org-roam-completion-everywhere t)
   :bind
 	(("C-c n n" . org-id-get-create)
@@ -177,7 +176,8 @@
 
 	:hook
 	(after-init . (lambda ()
-									(org-roam-dailies-goto-today))))
+									(org-roam-dailies-goto-today)
+                  (org-roam-buffer-toggle))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Org Todos
@@ -258,82 +258,12 @@
 (setq org-babel-python-command "python3")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Org Roam
-(use-package org-roam
-	:straight (:files (:defaults "extensions/*"))
-  :custom
-  (org-roam-directory "~/sarinWine/")
-  (org-roam-dailies-directory "wine/")
-  (org-roam-completion-everywhere t)
-  :bind
-	(("C-c n n" . org-id-get-create)
-	 ("C-c n a" . org-roam-alias-add)
-	 ("C-c n f" . org-roam-node-find)
-	 ("C-c n i" . org-roam-node-insert)
-	 ("C-c n c" . org-roam-capture)
-	 ("C-c n j" . org-roam-dailies-goto-today)
-	 ("C-c n l" . org-roam-buffer-toggle)
-	 ("<s-up>" . org-roam-dailies-goto-previous-note)
-	 ("<s-down>" . org-roam-dailies-goto-next-note))
-  :config
-	(org-roam-setup)
-	(setq org-roam-db-gc-threshold most-positive-fixnum) ;; Optimize performance
-	(setq org-roam-dailies-capture-templates ;; Preferred upper case title tags
-        '(("d" "default" entry
-           "* %?"
-           :target (file+head
-		                "%<%Y-%m-%d>.org"
-		                "#+TITLE: %<%Y-%m-%d>\n"))))
-	(setq org-roam-capture-templates
-		    '(("d" "default" plain "%?"
-			     :target (file+head
-			              "main/${slug}.org"
-			              "#+TITLE: ${title}")
-			     :immediate-finish t
-			     :unnarrowed t)))
-	(setq org-roam-mode-sections
-        '((org-roam-backlinks-section :unique t)
-          org-roam-reflinks-section))
-
-	;; Org Roam buffer configuration
-	(add-to-list 'display-buffer-alist
-               '("\\*org-roam\\*"
-                 (display-buffer-in-side-window)
-                 (side . right)
-                 (slot . 0)
-                 (window-width . 0.33)
-                 (window-parameters . ((no-other-window . t)
-		                                   (no-delete-other-windows . nil)))))
-	:hook
-	(after-init . (lambda ()
-									(org-roam-dailies-goto-today)
-                  (org-roam-buffer-toggle))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Emms support
 (use-package emms
   :init
   (emms-all)
   (emms-default-players))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Org Roam UI
-;; (use-package org-roam-ui
-;;   :straight
-;;   (
-;; 	 :host github
-;; 	 :repo "org-roam/org-roam-ui"
-;; 	 :branch "main"
-;; 	 :files ("*.el" "out"))
-;; 	:hook (after-init . org-roam-ui-mode)
-;;   :custom
-;;   (org-roam-ui-sync-theme t)
-;;   (org-roam-ui-follow t)
-;;   (org-roam-ui-update-on-save t)
-;;   (org-roam-ui-open-on-start t))
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org LaTeX bridge
