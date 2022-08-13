@@ -18,7 +18,7 @@
 (use-package org
   :straight (:type built-in))
 
-(setq org-directory "~/org/")
+(setq org-directory "~/Nextcloud/sarinWine/")
 
 ;; Open org files with previewing
 (setq org-startup-with-inline-images t)
@@ -137,8 +137,8 @@
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))
   :custom
-  (org-roam-directory "~/org/")
-  (org-roam-dailies-directory "dailies/")
+  (org-roam-directory "~/Nextcloud/sarinWine/")
+  (org-roam-dailies-directory "wine/")
   (org-roam-completion-everywhere t)
   :bind
 	(("C-c n n" . org-id-get-create)
@@ -269,8 +269,8 @@
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))
   :custom
-  (org-roam-directory "~/org/")
-  (org-roam-dailies-directory "dailies/")
+  (org-roam-directory "~/sarinWine/")
+  (org-roam-dailies-directory "wine/")
   (org-roam-completion-everywhere t)
   :bind
 	(("C-c n n" . org-id-get-create)
@@ -328,12 +328,11 @@
 ;; (use-package org-roam-ui
 ;;   :straight
 ;;   (
-;; 		:host github
-;; 		:repo "org-roam/org-roam-ui"
-;; 		:branch "main"
-;; 		:files ("*.el" "out"))
-;;   :after org-roam
-;; 	 :hook (after-init . org-roam-ui-mode)
+;; 	 :host github
+;; 	 :repo "org-roam/org-roam-ui"
+;; 	 :branch "main"
+;; 	 :files ("*.el" "out"))
+;; 	:hook (after-init . org-roam-ui-mode)
 ;;   :custom
 ;;   (org-roam-ui-sync-theme t)
 ;;   (org-roam-ui-follow t)
