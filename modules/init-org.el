@@ -67,13 +67,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Display chapter numbers
-(add-hook 'org-mode-hook 'org-num-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Org images
-(setq org-image-actual-width nil)
+(setq org-image-actual-width '150)
 
 ;; Shortcut to preview images in Org mode
 (global-set-key (kbd "C-x p") 'org-display-inline-images)
@@ -173,6 +168,11 @@
                  (window-width . 0.33)
                  (window-parameters . ((no-other-window . t)
 		                                   (no-delete-other-windows . nil)))))
+  ;; Preview LaTeX fragments in Org Roam window
+  (add-hook 'org-roam-buffer-postrender-functions
+            (lambda ()
+              (org--latex-preview-region (point-min) (point-max))
+              (org-display-inline-images)))
 
 	:hook
 	(after-init . (lambda ()
@@ -180,88 +180,17 @@
                   (org-roam-buffer-toggle))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Org Todos
 (setq org-todo-keywords
 	    '((sequence "TODO" "REVIEW" "|" "DONE" "CANCELLED")))
 
-;; Display Org list prefix as dots
-(font-lock-add-keywords
- 'org-mode
- '(("^ *\\([-]\\) "
-		(0 (prog1 ()
-				 (compose-region (match-beginning 1) (match-end 1) "•︎"))))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Setup pretty entities for unicode math symbols
-(setq org-pretty-entities t)
-(setq org-pretty-entities-include-sub-superscripts nil)
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Hide emphasis markers
-(setq org-hide-emphasis-markers t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Fold drawers by default
-(add-hook 'org-mode-hook 'org-hide-drawer-all)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Display chapter numbers
-(add-hook 'org-mode-hook 'org-num-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Org images
-(setq org-image-actual-width nil)
-
-;; Shortcut to preview images in Org mode
-(global-set-key (kbd "C-x p") 'org-display-inline-images)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Org links
-(setq org-return-follows-link t)
-(setq org-confirm-elisp-link-function nil)
-
-;; Open links in new window
-(setq org-link-frame-setup
-      '((vm . vm-visit-folder-other-window)
-  	    (vm-imap . vm-visit-imap-folder-other-frame)
-  	    (gnus . org-gnus-no-new-news)
-  	    (file . find-file) ;; Open link in current window
-  	    (wl . wl-other-frame)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Org src blocks
-(setq org-confirm-babel-evaluate nil)
-(setq org-src-preserve-indentation t)
-(setq org-src-fontify-natively t)
-(setq org-src-tab-acts-natively t)
-
-;; Load languages
-(org-babel-do-load-languages 'org-babel-load-languages
-	                           '((emacs-lisp . t)
-		                           (shell . t)
-		                           (python . t)))
-
-;; Hide unwanted shell warning messages
-(advice-add 'sh-set-shell :around
-            (lambda (orig-fun &rest args)
-              (cl-letf (((symbol-function 'message) #'ignore))
-                (apply orig-fun args))))
-
-;; Determine Python execution program
-(setq org-babel-python-command "python3")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Emms support
 (use-package emms
   :init
-  (emms-all)
+  (emms-minimalistic)
   (emms-default-players))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
