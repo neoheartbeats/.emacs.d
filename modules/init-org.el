@@ -18,7 +18,7 @@
 (use-package org
   :straight (:type built-in))
 
-(setq org-directory "~/神寂/")
+(setq org-directory "~/Deusilence/")
 
 ;; Open org files with previewing
 (setq org-startup-with-inline-images t)
@@ -111,7 +111,7 @@
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))
   :custom
-  (org-roam-directory "~/神寂/")
+  (org-roam-directory "~/Deusilence/")
   (org-roam-dailies-directory "./")
   (org-roam-completion-everywhere t)
   :bind
