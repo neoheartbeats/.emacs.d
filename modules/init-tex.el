@@ -59,10 +59,6 @@
 (use-package cdlatex
   :hook (org-mode . org-cdlatex-mode))
 
-;; Setup `org-fragtog'
-(use-package org-fragtog
-  :hook (org-mode . org-fragtog-mode))
-
 ;; Syntax highlighting for LaTeX in Org mode
 (setq org-highlight-latex-and-related '(latex script entities))
 

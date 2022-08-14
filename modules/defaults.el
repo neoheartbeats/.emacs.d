@@ -42,6 +42,7 @@
 
 ;; File management
 (global-set-key (kbd "s-n") 'find-file)
+(global-set-key (kbd "s-p") 'org-latex-preview)
 (global-set-key (kbd "C-c p") (lambda ()
 																(interactive)
 																(find-file user-init-file)))

@@ -18,7 +18,7 @@
 (use-package org
   :straight (:type built-in))
 
-(setq org-directory "~/Deusilence/")
+(setq org-directory "~/deusilence/")
 
 ;; Open org files with previewing
 (setq org-startup-with-inline-images t)
@@ -93,8 +93,12 @@
 ;; Load languages
 (org-babel-do-load-languages 'org-babel-load-languages
 	                           '((emacs-lisp . t)
+                               (scheme . t)
 		                           (shell . t)
 		                           (python . t)))
+
+;; Scheme-specific packages
+(use-package geiser)
 
 ;; Hide unwanted shell warning messages
 (advice-add 'sh-set-shell :around
@@ -111,7 +115,7 @@
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))
   :custom
-  (org-roam-directory "~/Deusilence/")
+  (org-roam-directory "~/deusilence/")
   (org-roam-dailies-directory "./")
   (org-roam-completion-everywhere t)
   :bind
@@ -144,7 +148,7 @@
 	(setq org-roam-capture-templates
 		    '(("d" "default" plain "%?"
 			     :target (file+head
-			              "main/${slug}.org"
+			              "box/${slug}.org"
 			              "#+TITLE: ${title}")
 			     :immediate-finish t
 			     :unnarrowed t)))
