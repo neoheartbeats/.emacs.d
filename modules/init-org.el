@@ -38,9 +38,9 @@
 ;; Use unicode symbols
 (setq org-ellipsis " ¶")
 
-(use-package org-bullets
-  :hook (org-mode . org-bullets-mode)
-  :custom (org-bullets-bullet-list '("§")))
+;; (use-package org-bullets
+;;   :hook (org-mode . org-bullets-mode)
+;;   :custom (org-bullets-bullet-list '("§")))
 
 ;; Display Org list prefix as dots
 (font-lock-add-keywords
