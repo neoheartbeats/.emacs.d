@@ -38,10 +38,6 @@
 ;; Use unicode symbols
 (setq org-ellipsis " ¶")
 
-;; (use-package org-bullets
-;;   :hook (org-mode . org-bullets-mode)
-;;   :custom (org-bullets-bullet-list '("§")))
-
 ;; Display Org list prefix as dots
 (font-lock-add-keywords
  'org-mode
@@ -64,9 +60,6 @@
 ;;
 ;; Org images
 (setq org-image-actual-width '150)
-
-;; Shortcut to preview images in Org mode
-(global-set-key (kbd "C-x p") 'org-display-inline-images)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -96,9 +89,6 @@
                                (scheme . t)
 		                           (shell . t)
 		                           (python . t)))
-
-;; Scheme-specific packages
-(use-package geiser)
 
 ;; Hide unwanted shell warning messages
 (advice-add 'sh-set-shell :around

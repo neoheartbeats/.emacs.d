@@ -42,10 +42,15 @@
 
 ;; File management
 (global-set-key (kbd "s-n") 'find-file)
-(global-set-key (kbd "s-p") 'org-latex-preview)
 (global-set-key (kbd "C-c p") (lambda ()
 																(interactive)
 																(find-file user-init-file)))
+
+;; Shortcut to preview LaTeX fragment & images in Org mode
+(global-set-key (kbd "s-p") (lambda ()
+                              (interactive)
+                              (org-latex-preview)
+                              (org-display-inline-images)))
 
 ;; Disable swipe left/right to change buffer
 (global-unset-key [swipe-left])
@@ -175,6 +180,6 @@
   (dired-kill-when-opening-new-dired-buffer t))
 
 ;; Gamegrid settings
-(setq gamegrid-user-score-file-directory "~/org/games/")
+(setq gamegrid-user-score-file-directory "~/deusilence/gms/")
 
 (provide 'defaults)
