@@ -36,6 +36,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Set the frame parameters before it's drawing
+(setq default-frame-alist
+      '((top . 150)
+        (left . 300)
+	      (width . 150)
+	      (height . 45)
+        (internal-border-width . 3)
+        (alpha . (95 . 95))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Load modules
 ;;
 ;; Load path

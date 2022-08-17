@@ -20,7 +20,7 @@
 
 (setq org-directory "~/deusilence/")
 
-;; Open org files with previewing
+;; Open Org files with previewing
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
@@ -33,10 +33,67 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Org UI
+;; Setup pretty entities for unicode math symbols
+(setq org-pretty-entities t)
+(setq org-pretty-entities-include-sub-superscripts nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Use unicode symbols
-(setq org-ellipsis " ¶")
+;; Prettify Org mode (Org mode UI setup)
+;;
+;; Org modern
+(use-package org-modern
+  :custom
+  ;; Org modern settings
+  (org-modern-star nil)
+  (org-modern-priority nil)
+  (org-modern-list nil)
+  (org-modern-checkbox nil)
+  (org-modern-todo nil)
+  (org-modern-keyword nil)
+
+  ;; Editor settings
+  (org-auto-align-tags nil)
+  (org-tags-column 0)
+  (org-catch-invisible-edits 'show-and-error)
+  (org-special-ctrl-a/e t)
+  :config
+  (global-org-modern-mode 1))
+
+;; Org mode icons
+(setq org-ellipsis " ")
+
+;; Hide emphasis markders
+(setq org-hide-emphasis-markers t)
+
+(use-package org-bullets
+  :custom
+  (org-bullets-bullet-list '(""))
+  :hook
+  (org-mode . (lambda ()
+                (org-bullets-mode 1)))
+  (org-mode . (lambda ()
+                (setq prettify-symbols-alist
+                      '(("lambda"  . ?λ)
+                        (":PROPERTIES:" . ?)
+                        (":ID:" . ?)
+                        (":END:" . ?)
+                        ("#+TITLE:" . ?)
+                        ("TITLE:" . ?)
+                        ("#+AUTHOR" . ?)
+                        ("#+BEGIN_QUOTE" . ?)
+                        ("#+END_QUOTE" . ?)
+                        ("#+RESULTS:" . ?)
+                        ("[ ]" . ?)
+                        ("[-]" . ?)
+                        ("[X]" . ?)
+                        ("[#A]" . ?🅐)
+                        ("[#B]" . ?🅑)
+                        ("[#C]" . ?🅒)))
+                (prettify-symbols-mode))))
+
+;; Org Todos
+(setq org-todo-keywords '((sequence "     " "     ")))
 
 ;; Display Org list prefix as dots
 (font-lock-add-keywords
@@ -44,12 +101,6 @@
  '(("^ *\\([-]\\) "
 		(0 (prog1 ()
 				 (compose-region (match-beginning 1) (match-end 1) "•︎"))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Setup pretty entities for unicode math symbols
-(setq org-pretty-entities t)
-(setq org-pretty-entities-include-sub-superscripts nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -98,6 +149,11 @@
 
 ;; Determine Python execution program
 (setq org-babel-python-command "python3")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Org tables
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -168,17 +224,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Org Todos
-(setq org-todo-keywords
-	    '((sequence "TODO" "REVIEW" "|" "DONE" "CANCELLED")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Emms support
 (use-package emms
   :init
   (emms-minimalistic)
-  (emms-default-players))
+  (emms-default-players)
+  :custom
+  (emms-mode-line-format " [  EMMS ] ")
+  (emms-mode-line-mode t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

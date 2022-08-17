@@ -33,10 +33,13 @@
 ;; Frame title setup
 ;;
 ;; Show icon & full path in title bar
-(setq frame-title-format
-	    '(:eval
-		    (if buffer-file-name
-			      (abbreviate-file-name buffer-file-name) "%b")))
+;; (setq frame-title-format
+;; 	    '(:eval
+;; 		    (if buffer-file-name
+;; 			      (abbreviate-file-name buffer-file-name) "%b")))
+;;
+;; Hide title
+(setq frame-title-format nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -60,10 +63,13 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	                  :font "Courier New"
-	                  :height 145
-                    :weight 'Bold)
+	                  :font "PragmataPro Mono Liga"
+	                  :height 145)
+(set-face-attribute 'variable-pitch nil
+                    :font "Noto Serif CJK SC")
 
+(set-fontset-font "fontset-default" 'unicode "PragmataPro")
+(set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 (set-fontset-font "fontset-default" 'kana "Noto Serif CJK JP")
 
@@ -305,24 +311,33 @@
           (bg-diff-focus-removed . "#6f0f39")
           (fg-diff-focus-removed . "#eebdba")))
 	:custom
+  (modus-themes-variable-pitch-ui t)
   (modus-themes-subtle-line-numbers t)
   (modus-themes-syntax '(green-strings))
-  (modus-themes-mode-line '(borderless))
   (modus-themes-hl-line '(underline accented))
   (modus-themes-links '(neutral-underline))
+  (modus-themes-prompts '(background bold))
 	:config
-  (modus-themes-load-vivendi))
+  (modus-themes-load-operandi))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Use single line as mode line
-(use-package emacs
-	:custom-face
-	(mode-line ((t (:height 0.1))))
-	(mode-line-inactive ((t (:inherit mode-line))))
-	:config (setq-default mode-line-format '("")))
+;; (use-package emacs
+;; 	:custom-face
+;; 	(mode-line ((t (:height 0.1))))
+;; 	(mode-line-inactive ((t (:inherit mode-line))))
+;; 	:config (setq-default mode-line-format '("")))
 
-;; Hide mode line
-;; (setq-default mode-line-format nil)
+(setq-default mode-line-format
+              '("    "
+                mode-line-mule-info
+                mode-line-modified
+                mode-line-remote
+                " "
+                global-mode-string
+                mode-line-buffer-identification))
+
+(set-face-background 'mode-line-inactive (face-attribute 'default :background))
 
 (provide 'ui)
