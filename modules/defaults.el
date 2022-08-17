@@ -97,11 +97,7 @@
 (setq word-wrap-by-category t)
 
 ;; Show line numbers
-(global-display-line-numbers-mode 1)
-
-;; Show lambda as λ
-(global-prettify-symbols-mode 1)
-(setq prettify-symbols-unprettify-at-point t)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 ;; Disable scaling text with mouse wheel (macOS only)
 ;; which related function is `mac-mouse-wheel-text-scale'

@@ -69,16 +69,6 @@
 (setq pop-up-windows nil)
 (setq save-silently t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Set the frame parameters before it's drawing
-(setq default-frame-alist
-      '((top . 180)
-        (left . 390)
-	      (width . 145)
-	      (height . 45)
-        (alpha . (95 . 95))))
-
 ;; Make UTF-8 the default coding system
 (set-language-environment "UTF-8")
 

@@ -149,11 +149,11 @@
 	 ("M-s" . consult-ripgrep)
 	 ("s-b" . consult-buffer)))
 
-;; Annotation for minibuffer with `marginalia'
-;; (use-package marginalia
-;;   :init
-;;   (marginalia-mode 1))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;;Show lambda as λ
+(global-prettify-symbols-mode 1)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Window management
