@@ -77,7 +77,7 @@
                 (org-bullets-mode 1)))
   (org-mode . (lambda ()
                 (setq prettify-symbols-alist
-                      '(("lambda"  . ?λ)
+                      '(("lambda" . ?λ)
                         (":PROPERTIES:" . ?)
                         (":ID:" . ?)
                         (":END:" . ?)
