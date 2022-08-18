@@ -31,6 +31,9 @@
 ;; Enhance inserting headings
 (org-insert-heading-respect-content t)
 
+;; Enable mouse click events
+(require 'org-mouse)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Setup pretty entities for unicode math symbols
@@ -79,7 +82,6 @@
                         (":ID:" . ?)
                         (":END:" . ?)
                         ("#+TITLE:" . ?)
-                        ("TITLE:" . ?)
                         ("#+AUTHOR" . ?)
                         ("#+BEGIN_QUOTE" . ?)
                         ("#+END_QUOTE" . ?)
@@ -149,11 +151,6 @@
 
 ;; Determine Python execution program
 (setq org-babel-python-command "python3")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Org tables
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
