@@ -82,7 +82,7 @@
                         (":ID:" . ?)
                         (":END:" . ?)
                         ("#+TITLE:" . ?)
-                        ("#+AUTHOR" . ?)
+                        ("#+AUTHOR:" . ?)
                         ("#+BEGIN_QUOTE" . ?)
                         ("#+END_QUOTE" . ?)
                         ("#+RESULTS:" . ?)
