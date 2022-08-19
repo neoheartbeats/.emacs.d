@@ -1,4 +1,4 @@
-;; init.el --- Credits: loading first -*- lexical-binding: t -*-
+;; init.el --- Credits: Lyrith -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -8,7 +8,7 @@
 ;;
 ;; Commentary:
 ;;
-;; Essentials must be loaded first.
+;; This file provides the basis & structure that draws Emacs configuration.
 ;;
 ;; Code:
 ;;
@@ -38,12 +38,10 @@
 ;;
 ;; Set the frame parameters before it's drawing
 (setq default-frame-alist
-      '((top . 150)
-        (left . 300)
-	      (width . 150)
-	      (height . 45)
-        (internal-border-width . 3)
-        (alpha . (95 . 95))))
+      '((top . 145)
+        (left . 275)
+	      (width . 145)
+	      (height . 40)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -53,11 +51,13 @@
 (add-to-list 'load-path "~/.emacs.d/modules/")
 
 ;; Load components
-(require 'defaults)
-(require 'enhance)
-(require 'ui)
+(require 'init-utils)
+(require 'init-defaults)
+(require 'init-enhance)
+(require 'init-gui)
 (require 'init-org)
 (require 'init-tex)
+(require 'init-ox)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

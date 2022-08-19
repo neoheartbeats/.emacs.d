@@ -1,4 +1,4 @@
-;; init-org.el --- Credits: loading first -*- lexical-binding: t -*-
+;; init-org.el --- Credits: Lyrith -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -109,7 +109,8 @@
 ;;
 ;; Org LaTeX exportation process setup
 (setq org-latex-pdf-process
-      ("latexmk -bibtex -f -pdf -%latex -interaction=nonstopmode -output-directory=%o %f"))
+      ("latexmk -bibtex -f -pdf -%latex -interaction=nonstopmode
+-output-directory=%o %f"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

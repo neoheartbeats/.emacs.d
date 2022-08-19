@@ -1,0 +1,21 @@
+# -*- mode: snippet -*-
+# name: lisp-head
+# key: lisph
+# --
+;; $1.el --- Credits: Lyrith -*- lexical-binding: t -*-
+;;
+;; Copyright © 2022 Ilya.w
+;;
+;; Author: Ilya.w <ilya.w@icloud.com>
+;;
+;; This file is not part of GNU Emacs.
+;;
+;; Commentary:
+;;
+;; $2
+;;
+;; Code:
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+$0

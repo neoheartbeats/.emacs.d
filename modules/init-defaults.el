@@ -1,4 +1,4 @@
-;; defaults.el --- Credits: loading first -*- lexical-binding: t -*-
+;; init-defaults.el --- Credits: Lyrith -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -151,7 +151,7 @@
 (tooltip-mode -1)
 
 ;; Remove cursor in inactive windows
-(setq cursor-in-non-selected-windows nil)
+(setq-default cursor-in-non-selected-windows nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -175,7 +175,4 @@
   (dired-use-ls-dired nil) ;; Fix error "ls does not support --dired"
   (dired-kill-when-opening-new-dired-buffer t))
 
-;; Gamegrid settings
-(setq gamegrid-user-score-file-directory "~/deusilence/gms/")
-
-(provide 'defaults)
+(provide 'init-defaults)
