@@ -80,6 +80,7 @@
                       '(("lambda" . ?λ)
                         (":PROPERTIES:" . ?)
                         (":ID:" . ?)
+                        (":ROAM_ALIASES:" . ?)
                         (":END:" . ?)
                         ("#+TITLE:" . ?)
                         ("#+AUTHOR:" . ?)
