@@ -56,12 +56,12 @@
 	                  :font "Source Code Pro"
 	                  :height 140)
 (set-face-attribute 'variable-pitch nil
-                    :font "Noto Serif CJK SC")
+                    :font "Gill Sans")
 
 (set-fontset-font "fontset-default" 'unicode "PragmataPro")
 (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
-(set-fontset-font "fontset-default" 'kana "Noto Serif CJK JP")
+(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
+(set-fontset-font "fontset-default" 'kana "Noto Sans CJK JP")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -303,12 +303,30 @@
 	:custom
   (modus-themes-variable-pitch-ui t)
   (modus-themes-subtle-line-numbers t)
+  (modus-themes-inhibit-reload t)
+  (modus-themes-fringes 'subtle)
+  (modus-themes-intense-mouseovers t)
+  (modus-themes-markup '(bold background intense))
+  (modus-themes-paren-match '(underline intense))
   (modus-themes-syntax '(green-strings))
   (modus-themes-hl-line '(underline accented))
   (modus-themes-links '(neutral-underline))
   (modus-themes-prompts '(background bold))
+  (modus-themes-completions '((matches . (semibold intense))
+                              (selection . (semibold intense underline))
+                              (popup . (semibold intense))))
+  (modus-themes-headings
+   '((0 . (background variable-pitch))
+     (1 . (overline))
+     (2 . (rainbow))
+     (3 . (rainbow))
+     (t . (monochrome))))
 	:config
-  (modus-themes-load-vivendi))
+  (modus-themes-load-vivendi)
+
+  ;; Cursor format
+  (set-face-attribute 'cursor nil
+                      :background (modus-themes-color-alts 'blue 'red)))
 
 (setq-default mode-line-format
               '("    "
