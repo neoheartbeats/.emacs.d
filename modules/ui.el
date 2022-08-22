@@ -63,8 +63,8 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	                  :font "PragmataPro Mono Liga"
-	                  :height 145)
+	                  :font "Source Code Pro"
+	                  :height 140)
 (set-face-attribute 'variable-pitch nil
                     :font "Noto Serif CJK SC")
 

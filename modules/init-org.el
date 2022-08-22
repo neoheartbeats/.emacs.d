@@ -48,11 +48,9 @@
 (use-package org-modern
   :custom
   ;; Org modern settings
-  (org-modern-star nil)
-  (org-modern-priority nil)
+  (org-modern-star '("" "" ""))
   (org-modern-list nil)
   (org-modern-checkbox nil)
-  (org-modern-todo nil)
   (org-modern-keyword nil)
 
   ;; Editor settings
@@ -61,20 +59,8 @@
   (org-catch-invisible-edits 'show-and-error)
   (org-special-ctrl-a/e t)
   :config
-  (global-org-modern-mode 1))
-
-;; Org mode icons
-(setq org-ellipsis " ")
-
-;; Hide emphasis markders
-(setq org-hide-emphasis-markers t)
-
-(use-package org-bullets
-  :custom
-  (org-bullets-bullet-list '(""))
+  (global-org-modern-mode 1)
   :hook
-  (org-mode . (lambda ()
-                (org-bullets-mode 1)))
   (org-mode . (lambda ()
                 (setq prettify-symbols-alist
                       '(("lambda" . ?λ)
@@ -84,19 +70,17 @@
                         (":END:" . ?)
                         ("#+TITLE:" . ?)
                         ("#+AUTHOR:" . ?)
-                        ("#+BEGIN_QUOTE" . ?)
-                        ("#+END_QUOTE" . ?)
                         ("#+RESULTS:" . ?)
                         ("[ ]" . ?)
                         ("[-]" . ?)
-                        ("[X]" . ?)
-                        ("[#A]" . ?🅐)
-                        ("[#B]" . ?🅑)
-                        ("[#C]" . ?🅒)))
+                        ("[X]" . ?)))
                 (prettify-symbols-mode))))
 
-;; Org Todos
-(setq org-todo-keywords '((sequence "     " "     ")))
+;; Org mode icons
+(setq org-ellipsis " ")
+
+;; Hide emphasis markders
+(setq org-hide-emphasis-markers t)
 
 ;; Display Org list prefix as dots
 (font-lock-add-keywords
