@@ -28,17 +28,7 @@
   (message
    "Funding for this program was made possible by viewers like you."))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Frame title setup
-;;
-;; Show icon & full path in title bar
-;; (setq frame-title-format
-;; 	    '(:eval
-;; 		    (if buffer-file-name
-;; 			      (abbreviate-file-name buffer-file-name) "%b")))
-;;
-;; Hide title
+;; Hide frame title
 (setq frame-title-format nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -318,7 +308,7 @@
   (modus-themes-links '(neutral-underline))
   (modus-themes-prompts '(background bold))
 	:config
-  (modus-themes-load-operandi))
+  (modus-themes-load-vivendi))
 
 (setq-default mode-line-format
               '("    "

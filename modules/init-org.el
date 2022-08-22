@@ -18,7 +18,7 @@
 (use-package org
   :straight (:type built-in))
 
-(setq org-directory "~/deusilence/")
+(setq org-directory "~/fairy-stage/")
 
 ;; Open Org files with previewing
 (setq org-startup-with-inline-images t)
@@ -124,7 +124,6 @@
 ;; Load languages
 (org-babel-do-load-languages 'org-babel-load-languages
 	                           '((emacs-lisp . t)
-                               (scheme . t)
 		                           (shell . t)
 		                           (python . t)))
 
@@ -143,8 +142,8 @@
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))
   :custom
-  (org-roam-directory "~/deusilence/")
-  (org-roam-dailies-directory "./")
+  (org-roam-directory "~/fairy-stage/")
+  (org-roam-dailies-directory "stages/")
   (org-roam-completion-everywhere t)
   :bind
 	(("C-c n n" . org-id-get-create)
@@ -156,6 +155,8 @@
 	 ("C-c n l" . org-roam-buffer-toggle)
 	 ("<s-up>" . org-roam-dailies-goto-previous-note)
 	 ("<s-down>" . org-roam-dailies-goto-next-note)
+
+   ;; Select window with `other-window'
    ("C-x o" . (lambda ()
                 (interactive)
                 (if (equal (prin1-to-string (current-buffer))
@@ -168,37 +169,79 @@
 	(org-roam-setup)
 	(setq org-roam-db-gc-threshold most-positive-fixnum) ;; Optimize performance
 	(setq org-roam-dailies-capture-templates ;; Preferred upper case title tags
-        '(("d" "default" entry
-           "* %?"
+        '(("d" "default" entry "\n* %?"
            :target (file+head
 		                "%<%Y-%m-%d>.org"
-		                "#+TITLE: %<%Y-%m-%d>\n"))))
-	(setq org-roam-capture-templates
-		    '(("d" "default" plain "%?"
-			     :target (file+head
-			              "box/${slug}.org"
-			              "#+TITLE: ${title}")
-			     :immediate-finish t
-			     :unnarrowed t)))
-	(setq org-roam-mode-sections
-        '((org-roam-backlinks-section :unique t)
-          org-roam-reflinks-section))
+		                "#+TITLE: %<%Y-%m-%d>\n")
+           :empty-lines 1)))
 
-	;; Org Roam buffer configuration
+  ;; Collect nodes in determined format
+	(setq org-roam-capture-templates
+		    '(("d" "default" entry "\n* %?"
+			     :target (file+head
+			              "fairies/${slug}.org"
+			              "#+TITLE: ${title}\n")
+           :empty-lines 1
+			     :immediate-finish t
+           :kill-buffer t)))
+
+  ;; Objects displayed in Org Roam
+  (setq org-roam-mode-sections
+        '((org-roam-backlinks-section :unique t)
+          org-roam-reflinks-section
+          org-roam-unlinked-references-section))
+
+  ;; Org Roam buffer configuration
 	(add-to-list 'display-buffer-alist
                '("\\*org-roam\\*"
-                 (display-buffer-in-side-window)
-                 (side . right)
-                 (slot . 0)
+                 (display-buffer-in-direction)
+                 (direction . right)
                  (window-width . 0.33)
-                 (window-parameters . ((no-other-window . t)
-		                                   (no-delete-other-windows . nil)))))
-  ;; Preview LaTeX fragments in Org Roam window
+                 (window-height . fit-window-to-buffer)))
+
+  ;; Preview LaTeX & images in Org Roam window
   (add-hook 'org-roam-buffer-postrender-functions
             (lambda ()
               (org--latex-preview-region (point-min) (point-max))
               (org-display-inline-images)))
 
+  ;; Open links in other windows
+  (defun org-roam-preview-visit (file point &optional other-window)
+    (setq other-window t) ;; Always preview in other window
+    (interactive (list (org-roam-buffer-file-at-point 'assert)
+                       (oref (magit-current-section) point)
+                       current-prefix-arg))
+    (let ((buf (find-file-noselect file))
+          (display-buffer-fn (if other-window
+                                 #'switch-to-buffer-other-window
+                               #'pop-to-buffer-same-window)))
+      (funcall display-buffer-fn buf)
+      (with-current-buffer buf
+        (widen)
+        (goto-char point))
+      (when (org-invisible-p) (org-show-context))
+      buf))
+
+  (defun org-roam-grep-visit (file &optional other-window row col)
+    (setq other-window t) ;; Always preview in other window
+    (interactive (list (org-roam-buffer-file-at-point t)
+                       current-prefix-arg
+                       (oref (magit-current-section) row)
+                       (oref (magit-current-section) col)))
+    (let ((buf (find-file-noselect file))
+          (display-buffer-fn (if other-window
+                                 #'switch-to-buffer-other-window
+                               #'pop-to-buffer-same-window)))
+      (funcall display-buffer-fn buf)
+      (with-current-buffer buf
+        (widen)
+        (goto-char (point-min))
+        (when row
+          (forward-line (1- row)))
+        (when col
+          (forward-char (1- col))))
+      (when (org-invisible-p) (org-show-context))
+      buf))
 	:hook
 	(after-init . (lambda ()
 									(org-roam-dailies-goto-today)
