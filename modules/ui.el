@@ -310,7 +310,7 @@
   (modus-themes-paren-match '(underline intense))
   (modus-themes-syntax '(green-strings))
   (modus-themes-hl-line '(underline accented))
-  (modus-themes-links '(neutral-underline))
+  (modus-themes-links '(neutral-underline no-color))
   (modus-themes-prompts '(background bold))
   (modus-themes-completions '((matches . (semibold intense))
                               (selection . (semibold intense underline))
