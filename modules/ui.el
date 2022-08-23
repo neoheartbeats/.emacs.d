@@ -328,14 +328,32 @@
   (set-face-attribute 'cursor nil
                       :background (modus-themes-color-alts 'blue 'red)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Mode line configuration
 (setq-default mode-line-format
-              '("    "
-                mode-line-mule-info
-                mode-line-modified
-                mode-line-remote
-                " "
-                global-mode-string
-                mode-line-buffer-identification))
+              '("    "
+                "    [  "
+                mode-line-buffer-identification
+                " ]    [  "
+                mode-name
+                " ]"))
+
+(add-hook 'org-mode-hook (lambda ()
+                           (setq mode-line-format
+                                 '("    "
+                                   "    [  "
+                                   mode-line-buffer-identification
+                                   " ]    [  "
+                                   mode-name
+                                   " ]"))))
+
+(add-hook 'org-roam-mode-hook (lambda ()
+                                (setq mode-line-format
+                                      '("    "
+                                        "    [  "
+                                        mode-name
+                                        " ]"))))
 
 (set-face-background 'mode-line-inactive (face-attribute 'default :background))
 
