@@ -355,6 +355,11 @@
                                         mode-name
                                         " ]"))))
 
+(add-hook 'org-agenda-mode-hook (lambda ()
+                                  (setq mode-line-format
+                                        '("    "
+                                          "    [  Org AgendA ]"))))
+
 (set-face-background 'mode-line-inactive (face-attribute 'default :background))
 
 (provide 'ui)
