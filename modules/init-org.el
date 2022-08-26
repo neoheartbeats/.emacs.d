@@ -138,26 +138,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Org Calender view
-;;
-;; Org Agenda
-(use-package org-agenda
-  :straight (:type built-in)
-  :config
-  (setq org-agenda-files (list (concat org-directory
-			                                 "stages/")))
-  (setq org-agenda-breadcrumbs-separator "  "
-        org-agenda-current-time-string ""
-        org-agenda-time-grid '((weekly today require-timed)
-                               (800 1000 1200 1400 1600 1800 2000)
-                               " " "")
-        org-agenda-overriding-header "\n")
-  (setq org-cycle-separator-lines 2)
-  :custom
-  (org-deadline-warning-days 2))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Org Roam
 (use-package org-roam
 	:straight (:files (:defaults "extensions/*"))

@@ -55,12 +55,12 @@
 	                  :font "Source Code Pro"
 	                  :height 140)
 (set-face-attribute 'variable-pitch nil
-                    :font "Gill Sans")
+                    :font "Noto Serif CJK SC")
 
 (set-fontset-font "fontset-default" 'unicode "PragmataPro")
 (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
-(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
-(set-fontset-font "fontset-default" 'kana "Noto Sans CJK JP")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'kana "Noto Serif CJK JP")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
