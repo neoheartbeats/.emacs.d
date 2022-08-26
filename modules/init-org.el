@@ -16,7 +16,16 @@
 ;;
 ;; Org init
 (use-package org
-  :straight (:type built-in))
+  :straight (:type built-in)
+  :hook
+  (org-mode . (lambda ()
+                (setq mode-line-format
+                      '("    "
+                        "    [  "
+                        mode-line-buffer-identification
+                        " ]    [  "
+                        mode-name
+                        " ]")))))
 
 (setq org-directory "~/fairy-stage/")
 
@@ -316,7 +325,13 @@
 	:hook
 	(after-init . (lambda ()
 									(org-roam-dailies-goto-today)
-                  (org-roam-buffer-toggle))))
+                  (org-roam-buffer-toggle)))
+  (org-roam-mode . (lambda ()
+                     (setq mode-line-format
+                           '("    "
+                             "    [  "
+                             mode-name
+                             " ]")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

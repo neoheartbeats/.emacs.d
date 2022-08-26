@@ -338,27 +338,6 @@
                 mode-name
                 " ]"))
 
-(add-hook 'org-mode-hook (lambda ()
-                           (setq mode-line-format
-                                 '("    "
-                                   "    [  "
-                                   mode-line-buffer-identification
-                                   " ]    [  "
-                                   mode-name
-                                   " ]"))))
-
-(add-hook 'org-roam-mode-hook (lambda ()
-                                (setq mode-line-format
-                                      '("    "
-                                        "    [  "
-                                        mode-name
-                                        " ]"))))
-
-(add-hook 'org-agenda-mode-hook (lambda ()
-                                  (setq mode-line-format
-                                        '("    "
-                                          "    [  Org AgendA ]"))))
-
 (set-face-background 'mode-line-inactive (face-attribute 'default :background))
 
 (provide 'ui)
