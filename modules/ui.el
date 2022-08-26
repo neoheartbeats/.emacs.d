@@ -303,17 +303,17 @@
   (modus-themes-variable-pitch-ui t)
   (modus-themes-subtle-line-numbers t)
   (modus-themes-inhibit-reload t)
-  (modus-themes-fringes 'subtle)
-  (modus-themes-intense-mouseovers t)
-  (modus-themes-markup '(bold background intense))
+  ;; (modus-themes-fringes 'subtle)
+  ;; (modus-themes-intense-mouseovers t)
+  ;; (modus-themes-markup '(bold background intense))
   (modus-themes-paren-match '(underline intense))
   (modus-themes-syntax '(green-strings))
   (modus-themes-hl-line '(underline accented))
   (modus-themes-links '(neutral-underline no-color))
   (modus-themes-prompts '(background bold))
-  (modus-themes-completions '((matches . (semibold intense))
-                              (selection . (semibold intense underline))
-                              (popup . (semibold intense))))
+  ;; (modus-themes-completions '((matches . (semibold intense))
+  ;;                             (selection . (semibold intense underline))
+  ;;                             (popup . (semibold intense))))
   (modus-themes-headings
    '((0 . (background variable-pitch))
      (1 . (overline))
@@ -321,7 +321,7 @@
      (3 . (rainbow))
      (t . (monochrome))))
 	:config
-  (modus-themes-load-vivendi)
+  (modus-themes-load-operandi)
 
   ;; Cursor format
   (set-face-attribute 'cursor nil
@@ -330,6 +330,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Mode line configuration
+(set-face-background 'mode-line-inactive (face-attribute 'default :background))
+
 (setq-default mode-line-format
               '("    "
                 "    [  "
@@ -337,7 +339,5 @@
                 " ]    [  "
                 mode-name
                 " ]"))
-
-(set-face-background 'mode-line-inactive (face-attribute 'default :background))
 
 (provide 'ui)
