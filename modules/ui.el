@@ -52,15 +52,15 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	                  :font "Source Code Pro"
-	                  :height 140)
+	                  :font "Fantasque Sans Mono"
+	                  :height 155)
 (set-face-attribute 'variable-pitch nil
-                    :font "Noto Serif CJK SC")
+                    :font "Hannotate SC")
 
 (set-fontset-font "fontset-default" 'unicode "PragmataPro")
 (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
-(set-fontset-font "fontset-default" 'kana "Noto Serif CJK JP")
+(set-fontset-font "fontset-default" 'han "Hannotate SC")
+;; (set-fontset-font "fontset-default" 'kana "Noto Serif CJK JP")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -315,7 +315,7 @@
   ;;                             (selection . (semibold intense underline))
   ;;                             (popup . (semibold intense))))
   (modus-themes-headings
-   '((0 . (background variable-pitch))
+   '((0 . (background))
      (1 . (overline))
      (2 . (rainbow))
      (3 . (rainbow))
