@@ -199,8 +199,7 @@
   ;; Objects displayed in Org Roam
   (setq org-roam-mode-sections
         '((org-roam-backlinks-section :unique t)
-          org-roam-reflinks-section
-          org-roam-unlinked-references-section))
+          org-roam-reflinks-section))
 
   ;; Org Roam buffer configuration
 	(add-to-list 'display-buffer-alist
@@ -268,60 +267,6 @@
            :properties (org-roam-backlink-properties backlink)))
         (insert ?\n))))
 
-  (defun org-roam-unlinked-references-section (node)
-    (when (and (executable-find "rg")
-               (not
-                (string-match
-                 "PCRE2 is not available"
-                 (shell-command-to-string "rg --pcre2-version"))))
-      (let*
-          ((titles
-            (cons (org-roam-node-title node)
-                  (org-roam-node-aliases node)))
-           (rg-command
-            (concat
-             "rg -L -o --vimgrep -P -i "
-             (mapconcat (lambda (glob)
-                          (concat "-g " glob))
-                        (org-roam--list-files-search-globs org-roam-file-extensions)
-                        " ")
-             (format
-              " '\\[([^[]]++|(?R))*\\]%s' "
-              (mapconcat (lambda (title)
-                           (format
-                            "|(\\b%s\\b)"
-                            (shell-quote-argument title)))
-                         titles ""))
-             org-roam-directory))
-           (results (split-string (shell-command-to-string rg-command) "\n"))
-           f row col match)
-        (magit-insert-section (unlinked-references)
-          (magit-insert-heading "\n[  UNLINKED MENTIONS ] ") ;; Use icon instead
-          (dolist (line results)
-            (save-match-data
-              (when (string-match org-roam-unlinked-references-result-re line)
-                (setq f (match-string 1 line)
-                      row (string-to-number (match-string 2 line))
-                      col (string-to-number (match-string 3 line))
-                      match (match-string 4 line))
-                (when (and match
-                           (not (file-equal-p (org-roam-node-file node) f))
-                           (member (downcase match) (mapcar #'downcase titles)))
-                  (magit-insert-section section (org-roam-grep-section)
-                    (oset section file f)
-                    (oset section row row)
-                    (oset section col col)
-                    (insert
-                     (propertize
-                      (format
-                       "%s:%s:%s"
-                       (truncate-string-to-width (file-name-base f) 15 nil nil t)
-                       row col) 'font-lock-face 'org-roam-dim)
-                     " "
-                     (org-roam-fontify-like-in-org-mode
-                      (org-roam-unlinked-references-preview-line f row))
-                     "\n"))))))
-          (insert ?\n)))))
 	:hook
 	(after-init . (lambda ()
 									(org-roam-dailies-goto-today)
