@@ -284,10 +284,7 @@
 (use-package emms
   :init
   (emms-minimalistic)
-  (emms-default-players)
-  :custom
-  (emms-mode-line-format " [  EMMS ] ")
-  (emms-mode-line-mode t))
+  (emms-default-players))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
