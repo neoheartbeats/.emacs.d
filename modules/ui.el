@@ -34,7 +34,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Cursor settings
-(setq-default cursor-type '(bar . 1))
+;; (setq-default cursor-type '(bar . 1))
 (blink-cursor-mode -1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -317,6 +317,10 @@
      (t . (monochrome))))
 	:config
   (modus-themes-load-operandi))
+
+;; Cursor setup with Modus Themes palette
+(set-face-attribute 'cursor nil
+                    :background (modus-themes-color-alts 'green 'red))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
