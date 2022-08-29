@@ -308,6 +308,7 @@
   (modus-themes-completions '((matches . (intense))
                               (selection . (intense underline))
                               (popup . (intense))))
+  (modus-themes-region '(bg-only no-extend))
   (modus-themes-headings
    '((0 . (background))
      (1 . (overline))
@@ -320,7 +321,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Mode line configuration
-(set-face-background 'mode-line-inactive (face-attribute 'default :background))
+(set-face-background 'mode-line-inactive
+                     (face-attribute 'default
+                                     :background))
 
 (setq-default mode-line-format
               '("  "
