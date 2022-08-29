@@ -301,6 +301,7 @@
   (modus-themes-variable-pitch-ui t)
   (modus-themes-inhibit-reload t)
   (modus-themes-paren-match '(underline intense))
+  (modus-themes-mode-line '(borderless))
   (modus-themes-syntax '(green-strings))
   (modus-themes-hl-line '(underline accented))
   (modus-themes-links '(neutral-underline no-color))

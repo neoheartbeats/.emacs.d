@@ -69,6 +69,15 @@
   (org-special-ctrl-a/e t)
   :config
   (global-org-modern-mode 1)
+  (modify-all-frames-parameters
+   '((right-divider-width . 4)
+     (internal-border-width . 4)))
+  (dolist (face '(window-divider
+                  window-divider-first-pixel
+                  window-divider-last-pixel))
+    (face-spec-reset-face face)
+    (set-face-foreground face (face-attribute 'default :background)))
+  (set-face-background 'fringe (face-attribute 'default :background))
   :hook
   (org-mode . (lambda ()
                 (setq prettify-symbols-alist
