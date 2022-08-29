@@ -20,8 +20,8 @@
   :hook
   (org-mode . (lambda ()
                 (setq mode-line-format
-                      '("    "
-                        "    [  "
+                      '("  "
+                        "  [  "
                         mode-line-buffer-identification
                         " ]    [  "
                         mode-name
@@ -273,8 +273,8 @@
                   (org-roam-buffer-toggle)))
   (org-roam-mode . (lambda ()
                      (setq mode-line-format
-                           '("    "
-                             "    [  "
+                           '("  "
+                             "  [  "
                              mode-name
                              " ]")))))
 

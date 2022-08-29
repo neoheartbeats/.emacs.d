@@ -321,8 +321,8 @@
 (set-face-background 'mode-line-inactive (face-attribute 'default :background))
 
 (setq-default mode-line-format
-              '("    "
-                "    [  "
+              '("  "
+                "  [  "
                 mode-line-buffer-identification
                 " ]    [  "
                 mode-name
