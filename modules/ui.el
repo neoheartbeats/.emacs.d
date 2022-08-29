@@ -54,8 +54,6 @@
 (set-face-attribute 'default nil
 	                  :font "PragmataPro Mono Liga"
 	                  :height 155)
-(set-face-attribute 'variable-pitch nil
-                    :font "HarmonyOS Sans SC")
 
 (set-fontset-font "fontset-default" 'unicode "PragmataPro")
 (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
@@ -69,19 +67,17 @@
 	:init
   (modus-themes-load-themes)
 	:custom
-  (modus-themes-variable-pitch-ui t)
   (modus-themes-subtle-line-numbers t)
-  (modus-themes-inhibit-reload t)
   (modus-themes-paren-match '(underline intense))
   (modus-themes-syntax '(green-strings))
   (modus-themes-hl-line '(underline accented))
   (modus-themes-links '(neutral-underline no-color))
   (modus-themes-prompts '(background bold))
-  (modus-themes-completions '((matches . (semibold intense))
-                              (selection . (semibold intense underline))
-                              (popup . (semibold intense))))
+  (modus-themes-completions '((matches . (intense))
+                              (selection . (intense underline))
+                              (popup . (intense))))
   (modus-themes-headings
-   '((0 . (background variable-pitch))
+   '((0 . (background))
      (1 . (overline))
      (2 . (rainbow))
      (3 . (rainbow))
