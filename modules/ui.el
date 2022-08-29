@@ -52,8 +52,8 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	                  :font "Fira Code"
-	                  :height 140)
+	                  :font "PragmataPro Mono Liga"
+	                  :height 155)
 (set-face-attribute 'variable-pitch nil
                     :font "HarmonyOS Sans SC")
 
