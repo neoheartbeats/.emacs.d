@@ -65,24 +65,6 @@
 ;; Modus themes
 (use-package modus-themes
 	:init
-  (modus-themes-load-themes)
-	:custom
-  (modus-themes-subtle-line-numbers t)
-  (modus-themes-paren-match '(underline intense))
-  (modus-themes-syntax '(green-strings))
-  (modus-themes-hl-line '(underline accented))
-  (modus-themes-links '(neutral-underline no-color))
-  (modus-themes-prompts '(background bold))
-  (modus-themes-completions '((matches . (intense))
-                              (selection . (intense underline))
-                              (popup . (intense))))
-  (modus-themes-headings
-   '((0 . (background))
-     (1 . (overline))
-     (2 . (rainbow))
-     (3 . (rainbow))
-     (t . (monochrome))))
-	:config
   (setq modus-themes-operandi-color-overrides
         '((bg-main . "#fff0f2")
           (bg-dim . "#fbe6ef")
@@ -313,6 +295,26 @@
           (fg-diff-focus-changed . "#d0daaf")
           (bg-diff-focus-removed . "#6f0f39")
           (fg-diff-focus-removed . "#eebdba")))
+  (modus-themes-load-themes)
+	:custom
+  (modus-themes-subtle-line-numbers t)
+  (modus-themes-variable-pitch-ui t)
+  (modus-themes-inhibit-reload t)
+  (modus-themes-paren-match '(underline intense))
+  (modus-themes-syntax '(green-strings))
+  (modus-themes-hl-line '(underline accented))
+  (modus-themes-links '(neutral-underline no-color))
+  (modus-themes-prompts '(background bold))
+  (modus-themes-completions '((matches . (intense))
+                              (selection . (intense underline))
+                              (popup . (intense))))
+  (modus-themes-headings
+   '((0 . (background))
+     (1 . (overline))
+     (2 . (rainbow))
+     (3 . (rainbow))
+     (t . (monochrome))))
+	:config
   (modus-themes-load-operandi))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
