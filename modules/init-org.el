@@ -15,6 +15,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org init
+;;
+;; Org installation & mode line configuration
 (use-package org
   :straight (:type built-in)
   :hook
@@ -27,6 +29,7 @@
                         mode-name
                         " ]")))))
 
+;; Org default directory
 (setq org-directory "~/fairy-stage/")
 
 ;; Open Org files with previewing
@@ -63,6 +66,8 @@
   :custom
   ;; Org modern settings
   (org-modern-star '("" "" ""))
+
+  ;; Using modern icons from `PragmataPro' instead of the built-in unicodes
   (org-modern-list nil)
   (org-modern-checkbox nil)
   (org-modern-keyword nil)
@@ -74,9 +79,13 @@
   (org-special-ctrl-a/e t)
   :config
   (global-org-modern-mode 1)
+
+  ;; Set frame border width
   (modify-all-frames-parameters
    '((right-divider-width . 5)
      (internal-border-width . 5)))
+
+  ;; Disable showing the window dividing line
   (dolist (face '(window-divider
                   window-divider-first-pixel
                   window-divider-last-pixel))
@@ -84,7 +93,7 @@
     (set-face-foreground face (face-attribute 'default :background)))
   (set-face-background 'fringe (face-attribute 'default :background))
   :hook
-  (org-mode . (lambda ()
+  (org-mode . (lambda () ;; Perform `prettify-symbols-mode' in Org mode
                 (setq prettify-symbols-alist
                       '(("lambda" . ?λ)
                         (":PROPERTIES:" . ?)
@@ -99,7 +108,7 @@
                         ("[X]" . ?)))
                 (prettify-symbols-mode))))
 
-;; Org mode icons
+;; Setup Org ellipsis
 (setq org-ellipsis " ")
 
 ;; Hide emphasis markders
@@ -246,34 +255,13 @@
       (when (org-invisible-p) (org-show-context))
       buf))
 
-  (defun org-roam-grep-visit (file &optional other-window row col)
-    (setq other-window t) ;; Always preview in other window
-    (interactive (list (org-roam-buffer-file-at-point t)
-                       current-prefix-arg
-                       (oref (magit-current-section) row)
-                       (oref (magit-current-section) col)))
-    (let ((buf (find-file-noselect file))
-          (display-buffer-fn (if other-window
-                                 #'switch-to-buffer-other-window
-                               #'pop-to-buffer-same-window)))
-      (funcall display-buffer-fn buf)
-      (with-current-buffer buf
-        (widen)
-        (goto-char (point-min))
-        (when row
-          (forward-line (1- row)))
-        (when col
-          (forward-char (1- col))))
-      (when (org-invisible-p) (org-show-context))
-      buf))
-
   ;; Styling Org Roam window
   (cl-defun org-roam-backlinks-section (node &key (unique nil))
     (when-let ((backlinks
                 (seq-sort #'org-roam-backlinks-sort
                           (org-roam-backlinks-get node :unique unique))))
       (magit-insert-section (org-roam-backlinks)
-        (magit-insert-heading "\n[  LINKED MENTIONS ] ") ;; Use icon instead
+        (magit-insert-heading "\n[  LINKED MENTIONS ] ") ;; Using icon instead
         (dolist (backlink backlinks)
           (org-roam-node-insert-section
            :source-node (org-roam-backlink-source-node backlink)
