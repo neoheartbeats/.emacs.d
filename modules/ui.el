@@ -321,7 +321,7 @@
 
 ;; Cursor setup with Modus Themes palette
 (set-face-attribute 'cursor nil
-                    :background (modus-themes-color-alts 'green 'red))
+                    :background (modus-themes-color-alts 'green 'green-intense-bg))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

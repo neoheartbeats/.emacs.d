@@ -40,6 +40,11 @@
 ;; Enhance inserting headings
 (org-insert-heading-respect-content t)
 
+;; Enhance literate writing
+(use-package powerthesaurus
+  :bind
+  ("C-x p" . powerthesaurus-lookup-synonyms-dwim))
+
 ;; Enable mouse click events
 (require 'org-mouse)
 
