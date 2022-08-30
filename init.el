@@ -8,7 +8,7 @@
 ;;
 ;; Commentary:
 ;;
-;; Essentials must be loaded first.
+;; This file provides the basis & structure that draws Emacs configuration.
 ;;
 ;; Code:
 ;;
