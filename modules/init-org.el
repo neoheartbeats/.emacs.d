@@ -75,8 +75,8 @@
   :config
   (global-org-modern-mode 1)
   (modify-all-frames-parameters
-   '((right-divider-width . 4)
-     (internal-border-width . 4)))
+   '((right-divider-width . 5)
+     (internal-border-width . 5)))
   (dolist (face '(window-divider
                   window-divider-first-pixel
                   window-divider-last-pixel))
