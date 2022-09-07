@@ -52,16 +52,16 @@
 ;;
 ;; Font settings
 (set-face-attribute 'default nil
-	                  :font "r300k"
+	                  :font "PragmataPro Mono Liga"
 	                  :height 145)
 
 (set-face-attribute 'variable-pitch nil
-                    :font "Heiti SC")
+                    :font "HarmonyOS Sans SC")
 
 (set-fontset-font "fontset-default" 'unicode "PragmataPro")
 (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
-(set-fontset-font "fontset-default" 'han "Heiti SC")
-(set-fontset-font "fontset-default" 'kana "Heiti SC")
+(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
+(set-fontset-font "fontset-default" 'kana "HarmonyOS Sans SC")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
