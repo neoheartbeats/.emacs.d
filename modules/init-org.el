@@ -272,6 +272,7 @@
 	:hook
 	(after-init . (lambda ()
 									(org-roam-dailies-goto-today)
+                  (end-of-buffer)
                   (org-roam-buffer-toggle)))
   (org-roam-mode . (lambda ()
                      (setq mode-line-format
