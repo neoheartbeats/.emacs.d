@@ -30,7 +30,7 @@
                         " ]")))))
 
 ;; Org default directory
-(setq org-directory "~/fairy-stage/")
+(setq org-directory "~/FairyStage/")
 
 ;; Open Org files with previewing
 (setq org-startup-with-inline-images t)
@@ -109,7 +109,7 @@
                 (prettify-symbols-mode))))
 
 ;; Setup Org ellipsis
-(setq org-ellipsis " ")
+(setq org-ellipsis " ")
 
 ;; Hide emphasis markders
 (setq org-hide-emphasis-markers t)
@@ -175,7 +175,7 @@
 	:straight (:files (:defaults "extensions/*"))
   :custom
   (org-roam-directory org-directory)
-  (org-roam-dailies-directory "stages/")
+  (org-roam-dailies-directory "dailies/")
   (org-roam-completion-everywhere t)
   :bind
 	(("C-c n n" . org-id-get-create)
@@ -213,7 +213,7 @@
 	(setq org-roam-capture-templates
 		    '(("d" "default" entry "\n* %?"
 			     :target (file+head
-			              "fairies/${slug}.org"
+			              "main/${slug}.org"
 			              "#+TITLE: ${title}\n")
            :empty-lines 1
 			     :immediate-finish t
