@@ -38,10 +38,10 @@
 ;;
 ;; Set the frame parameters before it's drawing
 (setq default-frame-alist
-      '((top . 115)
-        (left . 270)
+      '((top . 105)
+        (left . 255)
 	      (width . 145)
-	      (height . 40)))
+	      (height . 42)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
