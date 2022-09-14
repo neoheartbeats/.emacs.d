@@ -1,4 +1,4 @@
-;; init.el --- Credits: loading first -*- lexical-binding: t -*-
+;; init.el --- Credits: Lyrith -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -38,11 +38,10 @@
 ;;
 ;; Set the frame parameters before it's drawing
 (setq default-frame-alist
-      '((top . 105)
+      '((top . 145)
         (left . 275)
 	      (width . 145)
-	      (height . 42)
-        (alpha . (95 . 95))))
+	      (height . 45)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -52,10 +51,12 @@
 (add-to-list 'load-path "~/.emacs.d/modules/")
 
 ;; Load components
-(require 'defaults)
-(require 'enhance)
-(require 'ui)
+(require 'init-utils)
+(require 'init-defaults)
+(require 'init-enhance)
+(require 'init-gui)
 (require 'init-org)
+(require 'init-ox)
 (require 'init-tex)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

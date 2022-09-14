@@ -1,4 +1,4 @@
-;; init-lsp.el --- Credits: loading first -*- lexical-binding: t -*-
+;; init-lsp.el --- Credits: Lyrith -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;

@@ -1,4 +1,4 @@
-;; enhance.el --- Credits: loading first -*- lexical-binding: t -*-
+;; init-enhance.el --- Credits: Lyrith -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -171,4 +171,4 @@
   (magit-diff-refine-hunk t)
   (magit-section-visibility-indicator nil))
 
-(provide 'enhance)
+(provide 'init-enhance)

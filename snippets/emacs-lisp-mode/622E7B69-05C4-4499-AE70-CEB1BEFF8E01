@@ -1,4 +1,8 @@
-;; init-ox.el --- Credits: Lyrith -*- lexical-binding: t -*-
+# -*- mode: snippet -*-
+# name: lisp-head
+# key: lisph
+# --
+;; $1.el --- Credits: Lyrith -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -8,11 +12,10 @@
 ;;
 ;; Commentary:
 ;;
-;; This file provides the functions used to export Org files.
+;; $2
 ;;
 ;; Code:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Setup `ox-hugo'
-(use-package ox-hugo)
+$0

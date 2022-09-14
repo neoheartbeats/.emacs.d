@@ -1,4 +1,4 @@
-;; init-org.el --- Credits: loading first -*- lexical-binding: t -*-
+;; init-org.el --- Credits: Lyrith -*- lexical-binding: t -*-
 ;;
 ;; Copyright © 2022 Ilya.w
 ;;
@@ -30,7 +30,7 @@
                         " ]")))))
 
 ;; Org default directory
-(setq org-directory "~/FairyStage/")
+(setq org-directory "~/OrgLyrith/")
 
 ;; Open Org files with previewing
 (setq org-startup-with-inline-images t)
@@ -175,7 +175,7 @@
 	:straight (:files (:defaults "extensions/*"))
   :custom
   (org-roam-directory org-directory)
-  (org-roam-dailies-directory "dailies/")
+  (org-roam-dailies-directory "stages/")
   (org-roam-completion-everywhere t)
   :bind
 	(("C-c n n" . org-id-get-create)
