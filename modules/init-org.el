@@ -48,6 +48,11 @@
   :bind
   ("C-x p" . powerthesaurus-lookup-synonyms-dwim))
 
+;; Check spelling with `flyspell-mode'
+(require 'ispell)
+(add-hook 'org-mode-hook 'flyspell-mode)
+
+
 ;; Enable mouse click events
 (require 'org-mouse)
 
@@ -65,7 +70,7 @@
 (use-package org-modern
   :custom
   ;; Org modern settings
-  (org-modern-star '("" "" ""))
+  (org-modern-star '("" "" "" "" "" ""))
 
   ;; Using modern icons from `PragmataPro' instead of the built-in unicodes
   (org-modern-list nil)
