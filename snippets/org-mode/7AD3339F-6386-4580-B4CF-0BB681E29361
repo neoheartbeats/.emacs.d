@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: music
-# key: music
-# --
-
-[[elisp:(emms-play-file \"../resources/musics/$1\")$2[]] EMMS$0
