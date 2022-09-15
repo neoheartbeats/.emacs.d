@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: <p
-# key: <p
-# --
-#+BEGIN_SRC python :results output
-$1
-#+END_SRC
-$0

@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: c
-# key: c
-# --
-\ce{$1}$0

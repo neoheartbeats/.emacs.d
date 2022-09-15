@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: <s
-# key: <s
-# --
-#+BEGIN_SRC $1
-$2
-#+END_SRC
-$0

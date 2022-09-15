@@ -1,66 +1,56 @@
-;; init.el --- Credits: Lyrith -*- lexical-binding: t -*-
-;;
-;; Copyright © 2022 Ilya.w
-;;
-;; Author: Ilya.w <ilya.w@icloud.com>
-;;
-;; This file is not part of GNU Emacs.
-;;
-;; Commentary:
-;;
-;; This file provides the basis & structure that draws Emacs configuration.
-;;
-;; Code:
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Package pre-loaded process
-;;
-;; Bootstrap `straight.el'
-(defvar bootstrap-version)
-(let ((bootstrap-file
-	     (expand-file-name "straight/repos/straight.el/bootstrap.el"
-					               user-emacs-directory))
-			(bootstrap-version 5))
-	(unless (file-exists-p bootstrap-file)
-		(with-current-buffer
-			  (url-retrieve-synchronously
-				 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-				 'silent 'inhibit-cookies)
-			(goto-char (point-max))
-			(eval-print-last-sexp)))
-	(load bootstrap-file nil 'nomessage))
+;;; init.el --- Load the full configuration  -*- lexical-binding: t -*-
+;;; Commentary:
 
-(straight-use-package 'use-package)
-(setq straight-use-package-by-default t)
+;; This file bootstraps the configuration, which is divided into
+;; number of other files.
+;; This file is inspired by https://github.com/purcell/emacs.d/.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Set the frame parameters before it's drawing
-(setq default-frame-alist
-      '((top . 145)
-        (left . 275)
-	      (width . 145)
-	      (height . 40)))
+;;; Code:
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Load modules
-;;
-;; Load path
-(add-to-list 'load-path "~/.emacs.d/modules/")
+
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(require 'init-benchmarking) ;; Measure startup time
 
-;; Load components
+
+;; Adjust garbage collection thresholds during startup, and thereafter
+(let ((normal-gc-cons-threshold (* 20 1024 1024))
+      (init-gc-cons-threshold (* 128 1024 1024)))
+  (setq gc-cons-threshold init-gc-cons-threshold)
+  (add-hook 'emacs-startup-hook
+            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+
+
+;;; Bootstrap config
+;; Setup `custom.el'
+(setq custom-file (locate-user-emacs-file "custom.el"))
+
+;; Load basic components
 (require 'init-utils)
-(require 'init-defaults)
-(require 'init-enhance)
-(require 'init-gui)
+(require 'init-straight)
+
+;; Load configs for specific features and modes
+(straight-use-package 'diminish)
+(require 'init-exec-path) ;; Set up $PATH
+
+
+;; Load components
+(require 'init-macos-keys)
+(require 'init-fonts)
+(require 'init-themes)
+(require 'init-gui-frames)
+(require 'init-dired)
+(require 'init-uniquify)
+(require 'init-minibuff)
+(require 'init-corfu)
+(require 'init-window)
+(require 'init-editing-utils)
 (require 'init-org)
 (require 'init-tex)
-(require 'init-ox)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Setup custom file
-(setq custom-file "~/.emacs.d/modules/custom.el")
-(load custom-file 'no-error 'no-message)
+
+;; Hide the mode line
+(setq-default mode-line-format nil)
+
+
+(provide 'init)
+;;; init.el ends here

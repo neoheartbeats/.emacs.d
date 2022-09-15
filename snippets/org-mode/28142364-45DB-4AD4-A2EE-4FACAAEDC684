@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: dd
-# key: dd
-# --
-\\frac{\\mathrm{d}$1}{\\mathrm{d}$2}$0
