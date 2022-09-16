@@ -33,8 +33,8 @@
   (add-to-list 'initial-frame-alist no-border))
 
 
-;; Using `M-f' to toggle fullscreen
-(global-set-key (kbd "M-ƒ") 'toggle-frame-fullscreen)
+;; Using `C-c C-f' to toggle fullscreen
+(global-set-key (kbd "C-c f") 'toggle-frame-fullscreen)
 
 
 ;;; Title bar settings
