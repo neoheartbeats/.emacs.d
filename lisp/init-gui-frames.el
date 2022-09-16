@@ -27,10 +27,9 @@
   (set-scroll-bar-mode nil))
 (menu-bar-mode -1)
 (let ((no-border '(internal-border-width . 0)))
-  (add-to-list 'default-frame-alist no-border)
+  (add-to-list 'default-frame-alist '(top . 175))
   (add-to-list 'default-frame-alist '(width . 105))
-  (add-to-list 'default-frame-alist '(height . 40))
-  (add-to-list 'initial-frame-alist no-border))
+  (add-to-list 'default-frame-alist '(height . 35)))
 
 
 ;; Using `C-c C-f' to toggle fullscreen

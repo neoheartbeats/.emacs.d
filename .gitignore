@@ -4,6 +4,7 @@
 /auto-save-list/
 /eln-cache/
 /packages/
+/org-persist/
 /org-roam.db
 /transient/
 /.org-id-locations
