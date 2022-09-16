@@ -35,5 +35,16 @@
 	((prog-mode org-mode) . corfu-mode))
 
 
+;; Add extensions
+(use-package cape
+  :init
+  ;; Add `completion-at-point-functions', used by `completion-at-point'.
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-history)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-ispell))
+
+
 (provide 'init-corfu)
 ;;; init-corfu.el ends here
