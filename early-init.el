@@ -5,13 +5,26 @@
 
 ;;; Code:
 
+
+;; Defer garbage collection further back in the startup process
+(setq gc-cons-threshold most-positive-fixnum)
+
+;; Faster to disable these here (before they've been initialized)
+(push '(menu-bar-lines . 0) default-frame-alist)
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
+
+;; Enhance the performance when font is not configured as system default
+(setq frame-inhibit-implied-resize t)
+
+
 ;; Prevent `package.el' loading packages prior to their init-file loading
 ;; This procedure is related to
 ;; https://github.com/radian-software/straight.el/
 (setq package-enable-at-startup nil)
 
 
-;;; Config related to GccEmacs
+;; Config related to GccEmacs
 ;; Prevent unwanted runtime compilation for GccEmacs
 (setq native-comp-deferred-compilation nil)
 

@@ -11,21 +11,23 @@
 (add-hook 'after-init-hook 'electric-indent-mode)
 
 
-;;; Some basic preferences
+;; Some basic preferences
 (setq-default
  bookmark-default-file (locate-user-emacs-file ".bookmarks.el")
- buffers-menu-max-size 30
  case-fold-search t
  column-number-mode t
  confirm-nonexistent-file-or-buffer nil
+ create-lockfiles nil
  cursor-in-non-selected-windows nil
  ediff-split-window-function 'split-window-horizontally
  ediff-window-setup-function 'ediff-setup-windows-plain
+ fill-column 75 ;; Default is 70
  indent-tabs-mode nil
- create-lockfiles nil
+ line-spacing 0.25
  auto-save-default nil
  make-backup-files nil
  mouse-yank-at-point t
+ ring-bell-function 'ignore
  save-interprogram-paste-before-kill t
  save-place-mode t
  scroll-preserve-screen-position 'always
@@ -59,6 +61,13 @@
 (global-set-key (kbd "s-<return>") 'sanityinc/newline-at-end-of-line)
 
 
+;; The nano style for truncated long lines
+(setq auto-hscroll-mode 'current-line)
+
+;; Disable auto vertical scroll for tall lines
+(setq auto-window-vscroll nil)
+
+
 (when (fboundp 'display-line-numbers-mode)
   (setq-default display-line-numbers-width 3)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode))
@@ -70,8 +79,19 @@
 
 
 ;; Settings for cursors
-(set-face-attribute 'cursor nil :background "#217a3c")
+;; Make the cursor solid
 (blink-cursor-mode -1)
+
+
+;; Improve display
+(setq display-raw-bytes-as-hex t
+      redisplay-skip-fontification-on-input t)
+
+;; Fancy condition indication
+(use-package beacon
+  :diminish
+  :config
+  (beacon-mode 1))
 
 
 ;; Show lambda as unicode
@@ -80,6 +100,7 @@
 
 ;; Formatting code by EditorConfig
 (use-package editorconfig
+  :diminish
   :config
   (editorconfig-mode 1))
 

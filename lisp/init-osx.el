@@ -1,4 +1,4 @@
-;;; init-macos-keys.el --- Configure keys specific to macOS -*- lexical-binding: t -*-
+;;; init-osx.el --- Configure keys specific to macOS -*- lexical-binding: t -*-
 ;;; Commentary:
 
 ;; macOS specific settings.
@@ -60,5 +60,5 @@
 (global-unset-key [swipe-right])
 
 
-(provide 'init-macos-keys)
-;;; init-macos-keys.el ends here
+(provide 'init-osx)
+;;; init-osx.el ends here

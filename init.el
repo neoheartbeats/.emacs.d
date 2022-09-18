@@ -7,7 +7,6 @@
 
 ;;; Code:
 
-
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (require 'init-benchmarking) ;; Measure startup time
 
@@ -19,8 +18,14 @@
   (add-hook 'emacs-startup-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
+;; Increase how much is read from processes in a single chunk
+(setq read-process-output-max (* 4 1024 1024))
+
+;; --debug-init implies `debug-on-error'
+(setq debug-on-error init-file-debug)
+
 
-;;; Bootstrap config
+;; Bootstrap config
 ;; Setup `custom.el'
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
@@ -34,22 +39,15 @@
 
 
 ;; Load components
-(require 'init-macos-keys)
+(require 'init-osx)
 (require 'init-fonts)
 (require 'init-themes)
 (require 'init-gui-frames)
-(require 'init-dired)
-(require 'init-uniquify)
 (require 'init-minibuff)
 (require 'init-corfu)
-(require 'init-window)
 (require 'init-editing-utils)
 (require 'init-org)
 (require 'init-tex)
-
-
-;; Hide the mode line
-(setq-default mode-line-format nil)
 
 
 (provide 'init)

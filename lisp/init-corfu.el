@@ -12,9 +12,9 @@
   :init
   (setq-default corfu-auto t)
   (setq-default corfu-quit-no-match 'separator)
-  :custom
-  (corfu-auto-delay 0)
-  (corfu-auto-prefix 1)
+  ;; :custom
+  ;; (corfu-auto-delay 0)
+  ;; (corfu-auto-prefix 1)
   :config
   ;; Remember the latest choice
   (use-package corfu-history
