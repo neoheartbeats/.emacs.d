@@ -41,7 +41,7 @@
 
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-  (message "Welcome to Emacs!"))
+  (message "欢迎来到爱丽丝的童话库!"))
 
 ;; Always show the pointer's position
 (setq make-pointer-invisible nil)
