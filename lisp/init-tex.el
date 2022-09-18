@@ -32,8 +32,7 @@
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
       '(("" "mhchem" t)
-	      ("" "siunitx" t)
-        ("" "pxfonts" t)))
+	      ("" "siunitx" t)))
 
 
 

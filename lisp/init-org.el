@@ -28,7 +28,7 @@
           ("[X]" . ?􀃳)))
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'org-icons)
-(setq org-ellipsis "􀰛")
+(setq org-ellipsis " 􀰛")
 
 ;; Org Modern
 (use-package org-modern
@@ -70,7 +70,7 @@
  'org-mode
  '(("^ *\\([-]\\) "
 		(0 (prog1 ()
-				 (compose-region (match-beginning 1) (match-end 1) "•︎"))))))
+				 (compose-region (match-beginning 1) (match-end 1) "􁉃"))))))
 
 
 ;; Fold drawers by default

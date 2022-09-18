@@ -11,25 +11,22 @@
 
 
 ;; Suppress GUI features
-(setq use-file-dialog nil)
-(setq use-dialog-box nil)
-(setq inhibit-startup-screen t)
-(setq visible-bell t)
+(setq use-file-dialog nil
+      use-dialog-box nil
+      inhibit-x-resources t
+      inhibit-default-init t
+      inhibit-startup-screen t
+      inhibit-startup-message t
+      inhibit-startup-buffer-menu t)
 
 
-;; Window size and features
-(setq-default
- window-resize-pixelwise t
- frame-resize-pixelwise t)
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-(when (fboundp 'set-scroll-bar-mode)
-  (set-scroll-bar-mode nil))
-(menu-bar-mode -1)
-(let ((no-border '(internal-border-width . 0)))
-  (add-to-list 'default-frame-alist '(top . 175))
-  (add-to-list 'default-frame-alist '(width . 105))
-  (add-to-list 'default-frame-alist '(height . 35)))
+;; Pixelwise resize windows
+(setq window-resize-pixelwise t
+      frame-resize-pixelwise t)
+
+(add-to-list 'default-frame-alist '(top . 155))
+(add-to-list 'default-frame-alist '(width . 105))
+(add-to-list 'default-frame-alist '(height . 35))
 
 
 ;; Using `C-c C-f' to toggle fullscreen
@@ -44,8 +41,7 @@
 
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-  (message
-   "欢迎回来!"))
+  (message "Welcome to Emacs!"))
 
 ;; Always show the pointer's position
 (setq make-pointer-invisible nil)

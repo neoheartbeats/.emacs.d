@@ -3,16 +3,20 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	                  :font "LXGW Wenkai Mono"
+	                  :font "Myosotis"
 	                  :height 155)
 
 (set-face-attribute 'variable-pitch nil
-                    :font "LXGW Wenkai")
+                    :font "OPPOSans")
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
-(set-fontset-font "fontset-default" 'han "LXGW Wenkai Mono")
-(set-fontset-font "fontset-default" 'kana "LXGW Wenkai Mono")
+(set-fontset-font "fontset-default" 'han "OPPOSans")
+(set-fontset-font "fontset-default" 'kana "OPPOSans")
+
+
+;; No gc for font caches
+(setq inhibit-compacting-font-caches t)
 
 
 (provide 'init-fonts)
