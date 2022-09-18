@@ -182,8 +182,7 @@
               (org-display-inline-images)))
   :hook
   (after-init . (lambda ()
-                  (org-roam-dailies-goto-today)
-                  (end-of-buffer))))
+                  (org-roam-dailies-goto-today))))
 
 
 ;; Org LaTeX bridge
