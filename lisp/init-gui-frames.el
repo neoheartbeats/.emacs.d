@@ -12,17 +12,17 @@
 
 ;; Suppress GUI features
 (setq use-file-dialog nil
-      use-dialog-box nil
-      inhibit-x-resources t
-      inhibit-default-init t
-      inhibit-startup-screen t
-      inhibit-startup-message t
-      inhibit-startup-buffer-menu t)
+  use-dialog-box nil
+  inhibit-x-resources t
+  inhibit-default-init t
+  inhibit-startup-screen t
+  inhibit-startup-message t
+  inhibit-startup-buffer-menu t)
 
 
 ;; Pixelwise resize windows
 (setq window-resize-pixelwise t
-      frame-resize-pixelwise t)
+  frame-resize-pixelwise t)
 
 (add-to-list 'default-frame-alist '(top . 155))
 (add-to-list 'default-frame-alist '(width . 105))
@@ -31,12 +31,6 @@
 
 ;; Using `C-c C-f' to toggle fullscreen
 (global-set-key (kbd "C-c f") 'toggle-frame-fullscreen)
-
-
-;;; Title bar settings
-;; Using modern title bar faces
-(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-(add-to-list 'default-frame-alist '(ns-appearance . light))
 
 
 ;; Default startup message
@@ -55,10 +49,10 @@
 ;; Disable these messages such ignore unused signals
 (defun filter-command-error-function (data context caller)
   (when (not (memq (car data) '(buffer-read-only
-                                beginning-of-line
-                                end-of-line
-                                beginning-of-buffer
-                                end-of-buffer)))
+                                 beginning-of-line
+                                 end-of-line
+                                 beginning-of-buffer
+                                 end-of-buffer)))
     (command-error-default-function data context caller)))
 (setq command-error-function #'filter-command-error-function)
 
@@ -75,8 +69,8 @@
 ;; Non-zero values for `line-spacing' can mess up ansi-term and co
 ;; so we zero it explicitly in those cases
 (add-hook 'term-mode-hook
-          (lambda ()
-            (setq line-spacing 0)))
+  (lambda ()
+    (setq line-spacing 0)))
 
 
 (provide 'init-gui-frames)

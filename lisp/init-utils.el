@@ -15,20 +15,20 @@
     (add-to-list 'auto-mode-alist (cons pattern mode))))
 
 ;; Like diminish, but for major modes
-(defun lyrith/set-major-mode-name (name)
+(defun my/set-major-mode-name (name)
   "Override the major mode NAME in this buffer."
   (setq-local mode-name name))
-(defun lyrith/major-mode-lighter (mode name)
+(defun my/major-mode-lighter (mode name)
   (add-hook (derived-mode-hook-name mode)
-            (apply-partially 'lyrith/set-major-mode-name name)))
+    (apply-partially 'my/set-major-mode-name name)))
 
 
 ;; String utilities missing from core emacs
-(defun lyrith/string-all-matches (regex str &optional group)
+(defun my/string-all-matches (regex str &optional group)
   "Find all matches for `REGEX' within `STR', returning the full match string or group `GROUP'."
   (let ((result nil)
-        (pos 0)
-        (group (or group 0)))
+         (pos 0)
+         (group (or group 0)))
     (while (string-match regex str pos)
       (push (match-string group str) result)
       (setq pos (match-end group)))
@@ -42,7 +42,7 @@
   (unless (buffer-file-name)
     (error "No file is currently being edited"))
   (when (yes-or-no-p (format "Really delete '%s'?"
-                             (file-name-nondirectory buffer-file-name)))
+                       (file-name-nondirectory buffer-file-name)))
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
 
@@ -52,7 +52,7 @@
   "Renames both current buffer and file it's visiting to NEW-NAME."
   (interactive "sNew name: ")
   (let ((name (buffer-name))
-        (filename (buffer-file-name)))
+         (filename (buffer-file-name)))
     (unless filename
       (error "Buffer '%s' is not visiting a file!" name))
     (progn

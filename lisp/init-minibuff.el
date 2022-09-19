@@ -7,7 +7,7 @@
 
 (use-package vertico
   :straight (:files (:defaults "extensions/*")
-                    :includes (vertico-directory))
+              :includes (vertico-directory))
   :custom
   (vertico-count 6)
   (vertico-cycle t)
@@ -16,9 +16,9 @@
   (use-package vertico-directory
 		:bind
 		((:map vertico-map
-				   ("RET" . vertico-directory-enter)
-				   ("DEL" . vertico-directory-delete-char)
-				   ("M-DEL" . vertico-directory-delete-word)))
+			 ("RET" . vertico-directory-enter)
+			 ("DEL" . vertico-directory-delete-char)
+			 ("M-DEL" . vertico-directory-delete-word)))
 		:hook ; Correct file path when changed
     (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
@@ -41,8 +41,28 @@
   (global-set-key [remap goto-line] 'consult-goto-line)
   :bind
   (("C-s" . consult-line)
-	 ("M-s" . consult-ripgrep)
-	 ("s-b" . consult-buffer)))
+	  ("M-s" . consult-ripgrep)
+	  ("s-b" . consult-buffer)))
+
+
+(use-package embark
+  :bind
+  (("C-." . embark-act)
+    ("M-." . embark-dwim)
+    ("C-h B" . embark-bindings))
+  :init ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+  :config ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+    '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+       nil
+       (window-parameters (mode-line-format . none)))))
+
+(use-package embark-consult
+  :after (embark consult)
+  :demand t
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 
 (provide 'init-minibuff)

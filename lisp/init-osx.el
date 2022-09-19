@@ -6,22 +6,28 @@
 ;;; Code:
 
 
-;;; Setup modifier keys
+;; Setup modifier keys
 ;; macOS specified key mapping
 (setq mac-command-modifier 'super)
 (setq mac-option-modifier 'meta)
 
-;;; Enable scrolling smooth
+;; Enable scrolling smooth
 ;; Make scrolling less jerky
 (setq mouse-wheel-scroll-amount '(1
-                                  ((shift) . 5)
-                                  ((control))))
+                                   ((shift) . 5)
+                                   ((control))))
 (dolist (multiple '("" "double-" "triple-"))
   (dolist (direction '("right" "left"))
     (global-set-key (read-kbd-macro (concat "<" multiple "wheel-" direction ">")) 'ignore)))
 
 ;; Using `pixel-scroll-precision-mode'
 (pixel-scroll-precision-mode 1)
+
+
+;; Set up exec-path to help Emacs find programs
+(use-package exec-path-from-shell
+  :init
+  (exec-path-from-shell-initialize))
 
 
 ;;; macOS styled keybindings

@@ -18,20 +18,22 @@
 ;; Org icons
 (defun org-icons ()
   (setq prettify-symbols-alist
-        '(("lambda" . ?λ)
-          (":PROPERTIES:" . ?􀙭)
-          ("#+TITLE:" . ?􀎟)
-          ("#+AUTHOR:" . ?􀉪)
-          ("#+RESULTS:" . ?􀎛)
-          ("[ ]" . ?􀂒)
-          ("[-]" . ?􀃟)
-          ("[X]" . ?􀃳)))
+    '(("lambda" . ?λ)
+       (":PROPERTIES:" . ?􀙭)
+       ("#+TITLE:" . ?􀎟)
+       ("#+AUTHOR:" . ?􀉪)
+       ("#+RESULTS:" . ?􀎛)
+       ("[ ]" . ?􀂒)
+       ("[-]" . ?􀃟)
+       ("[X]" . ?􀃳)))
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'org-icons)
 (setq org-ellipsis " 􀰛")
 
 ;; Org Modern
 (use-package org-modern
+  :after org
+  :diminish
   :custom ;; Org modern settings
   (org-modern-star '("􀥳" "􀥳􀥳" "􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳􀥳􀥳"))
   (org-modern-list nil)
@@ -48,8 +50,8 @@
 
   ;; Set frame border width
   (modify-all-frames-parameters
-   '((right-divider-width . 5)
-     (internal-border-width . 5))))
+    '((right-divider-width . 5)
+       (internal-border-width . 5))))
 
 
 ;; Enable mouse click events
@@ -67,10 +69,10 @@
 
 ;; Display Org list prefix as dots
 (font-lock-add-keywords
- 'org-mode
- '(("^ *\\([-]\\) "
-		(0 (prog1 ()
-				 (compose-region (match-beginning 1) (match-end 1) "􁉃"))))))
+  'org-mode
+  '(("^ *\\([-]\\) "
+		  (0 (prog1 ()
+				   (compose-region (match-beginning 1) (match-end 1) "􁉃"))))))
 
 
 ;; Fold drawers by default
@@ -92,11 +94,11 @@
 
 ;; Open links in new window
 (setq org-link-frame-setup
-      '((vm . vm-visit-folder-other-window)
-  	    (vm-imap . vm-visit-imap-folder-other-frame)
-  	    (gnus . org-gnus-no-new-news)
-  	    (file . find-file) ;; Open link in current window
-  	    (wl . wl-other-frame)))
+  '((vm . vm-visit-folder-other-window)
+  	 (vm-imap . vm-visit-imap-folder-other-frame)
+  	 (gnus . org-gnus-no-new-news)
+  	 (file . find-file) ;; Open link in current window
+  	 (wl . wl-other-frame)))
 
 
 ;; Org src blocks
@@ -107,15 +109,15 @@
 
 ;; Load languages
 (org-babel-do-load-languages 'org-babel-load-languages
-	                           '((emacs-lisp . t)
-		                           (shell . t)
-		                           (python . t)))
+	'((emacs-lisp . t)
+		 (shell . t)
+		 (python . t)))
 
 ;; Hide unwanted shell warning messages
 (advice-add 'sh-set-shell :around
-            (lambda (orig-fun &rest args)
-              (cl-letf (((symbol-function 'message) #'ignore))
-                (apply orig-fun args))))
+  (lambda (orig-fun &rest args)
+    (cl-letf (((symbol-function 'message) #'ignore))
+      (apply orig-fun args))))
 
 ;; Determine Python execution program
 (setq org-babel-python-command "python3")
@@ -123,6 +125,7 @@
 
 ;; Configure Org Roam
 (use-package org-roam
+  :after org
   :diminish
   :custom
   (org-roam-directory org-directory)
@@ -130,56 +133,56 @@
   (org-roam-completion-everywhere t)
   :bind
 	(("C-c n n" . org-id-get-create)
-	 ("C-c n a" . org-roam-alias-add)
-	 ("C-c n f" . org-roam-node-find)
-	 ("C-c n i" . org-roam-node-insert)
-	 ("C-c n c" . org-roam-capture)
-	 ("C-c n j" . org-roam-dailies-goto-today)
-	 ("C-c n l" . org-roam-buffer-toggle)
-	 ("<s-up>" . org-roam-dailies-goto-previous-note)
-	 ("<s-down>" . org-roam-dailies-goto-next-note)
+	  ("C-c n a" . org-roam-alias-add)
+	  ("C-c n f" . org-roam-node-find)
+	  ("C-c n i" . org-roam-node-insert)
+	  ("C-c n c" . org-roam-capture)
+	  ("C-c n j" . org-roam-dailies-goto-today)
+	  ("C-c n l" . org-roam-buffer-toggle)
+	  ("<s-up>" . org-roam-dailies-goto-previous-note)
+	  ("<s-down>" . org-roam-dailies-goto-next-note)
 
-   ;; Open link from Org Roam window with mouse click
-   (:map org-roam-mode-map
-         ("<mouse-1>" . org-roam-preview-visit)))
+    ;; Open link from Org Roam window with mouse click
+    (:map org-roam-mode-map
+      ("<mouse-1>" . org-roam-preview-visit)))
   :config
 	(org-roam-setup)
 	(setq org-roam-db-gc-threshold most-positive-fixnum) ;; Optimize performance
 	(setq org-roam-dailies-capture-templates ;; Preferred upper case title tags
-        '(("d" "default" entry "\n* %?"
-           :target (file+head
-		                "%<%Y-%m-%d>.org"
-		                "#+TITLE: %<%Y-%m-%d>\n")
-           :empty-lines 1)))
+    '(("d" "default" entry "\n* %?"
+        :target (file+head
+		              "%<%Y-%m-%d>.org"
+		              "#+TITLE: %<%Y-%m-%d>\n")
+        :empty-lines 1)))
 
   ;; Collect nodes in determined format
 	(setq org-roam-capture-templates
-		    '(("d" "default" entry "\n* %?"
-			     :target (file+head
-			              "main/${slug}.org"
-			              "#+TITLE: ${title}\n")
-           :empty-lines 1
-			     :immediate-finish t
-           :kill-buffer t)))
+		'(("d" "default" entry "\n* %?"
+			  :target (file+head
+			            "main/${slug}.org"
+			            "#+TITLE: ${title}\n")
+        :empty-lines 1
+			  :immediate-finish t
+        :kill-buffer t)))
 
   ;; Objects displayed in Org Roam
   (setq org-roam-mode-sections
-        '((org-roam-backlinks-section :unique t)
-          org-roam-reflinks-section))
+    '((org-roam-backlinks-section :unique t)
+       org-roam-reflinks-section))
 
   ;; Org Roam buffer configuration
 	(add-to-list 'display-buffer-alist
-               '("\\*org-roam\\*"
-                 (display-buffer-in-direction)
-                 (direction . right)
-                 (window-width . 0.33)
-                 (window-height . fit-window-to-buffer)))
+    '("\\*org-roam\\*"
+       (display-buffer-in-direction)
+       (direction . right)
+       (window-width . 0.33)
+       (window-height . fit-window-to-buffer)))
 
   ;; Preview LaTeX & images in Org Roam window
   (add-hook 'org-roam-buffer-postrender-functions
-            (lambda ()
-              (org--latex-preview-region (point-min) (point-max))
-              (org-display-inline-images)))
+    (lambda ()
+      (org--latex-preview-region (point-min) (point-max))
+      (org-display-inline-images)))
   :hook
   (after-init . (lambda ()
                   (org-roam-dailies-goto-today))))

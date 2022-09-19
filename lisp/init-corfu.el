@@ -8,13 +8,10 @@
 
 (use-package corfu
   :straight (:files (:defaults "extensions/*")
-                    :includes (corfu-history))
+              :includes (corfu-history))
   :init
   (setq-default corfu-auto t)
   (setq-default corfu-quit-no-match 'separator)
-  ;; :custom
-  ;; (corfu-auto-delay 0)
-  ;; (corfu-auto-prefix 1)
   :config
   ;; Remember the latest choice
   (use-package corfu-history
@@ -26,11 +23,11 @@
 		(kind-icon-default-face 'corfu-default)
 		:config
 		(add-to-list 'corfu-margin-formatters
-                 #'kind-icon-margin-formatter))
+      #'kind-icon-margin-formatter))
   :bind
   (:map corfu-map
-        ("<down>" . corfu-next)
-        ("<escape>" . corfu-quit))
+    ("<down>" . corfu-next)
+    ("<escape>" . corfu-quit))
   :hook
 	((prog-mode org-mode) . corfu-mode))
 

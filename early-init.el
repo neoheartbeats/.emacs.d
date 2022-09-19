@@ -13,6 +13,8 @@
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
+(push '(ns-transparent-titlebar . t) default-frame-alist)
+(push '(ns-appearance . dark) default-frame-alist)
 
 ;; Enhance the performance when font is not configured as system default
 (setq frame-inhibit-implied-resize t)
@@ -29,6 +31,7 @@
 (setq native-comp-deferred-compilation nil)
 
 ;; Compile external packages for GccEmacs
+(setq native-comp-async-report-warnings-errors nil)
 (setq package-native-compile t)
 
 
