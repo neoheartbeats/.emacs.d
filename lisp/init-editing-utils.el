@@ -23,7 +23,7 @@
  ediff-window-setup-function 'ediff-setup-windows-plain
  fill-column 75 ;; Default is 70
  indent-tabs-mode nil
- line-spacing 0.25
+ line-spacing 0.15
  auto-save-default nil
  make-backup-files nil
  mouse-yank-at-point t
