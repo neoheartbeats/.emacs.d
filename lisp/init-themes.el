@@ -6,6 +6,8 @@
 ;;; Code:
 
 (use-package ef-themes
+  :custom
+  (ef-themes-variable-pitch-ui t)
   :config ;; Disable loading all other themes
   (mapc #'disable-theme custom-enabled-themes)
   (load-theme 'ef-dark :no-confirm))

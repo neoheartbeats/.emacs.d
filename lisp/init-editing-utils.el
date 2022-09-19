@@ -13,34 +13,36 @@
 
 ;; Some basic preferences
 (setq-default
- bookmark-default-file (locate-user-emacs-file ".bookmarks.el")
- case-fold-search t
- column-number-mode t
- confirm-nonexistent-file-or-buffer nil
- create-lockfiles nil
- cursor-in-non-selected-windows nil
- ediff-split-window-function 'split-window-horizontally
- ediff-window-setup-function 'ediff-setup-windows-plain
- fill-column 75 ;; Default is 70
- indent-tabs-mode nil
- line-spacing 0.15
- auto-save-default nil
- make-backup-files nil
- mouse-yank-at-point t
- ring-bell-function 'ignore
- save-interprogram-paste-before-kill t
- save-place-mode t
- scroll-preserve-screen-position 'always
- set-mark-command-repeat-pop t
- tooltip-delay 1.5
- truncate-lines nil
- truncate-partial-width-windows nil)
+  bookmark-default-file (locate-user-emacs-file ".bookmarks.el")
+  case-fold-search t
+  column-number-mode t
+  confirm-nonexistent-file-or-buffer nil
+  create-lockfiles nil
+  cursor-in-non-selected-windows nil
+  ediff-split-window-function 'split-window-horizontally
+  ediff-window-setup-function 'ediff-setup-windows-plain
+  fill-column 75
+  indent-tabs-mode nil
+  auto-save-default nil
+  make-backup-files nil
+  mark-even-if-inactive nil
+  mouse-yank-at-point t
+  require-final-newline t
+  ring-bell-function 'ignore
+  save-interprogram-paste-before-kill t
+  save-silently t
+  scroll-preserve-screen-position 'always
+  set-mark-command-repeat-pop t
+  tooltip-delay 1.5
+  truncate-lines nil
+  truncate-partial-width-windows nil)
 
 
 (delete-selection-mode 1)
 (global-hl-line-mode 1)
 (global-auto-revert-mode 1)
 (transient-mark-mode 1)
+(save-place-mode 1)
 
 
 ;; Replace "yes & no" with "y & n"
@@ -48,17 +50,24 @@
 (define-key y-or-n-p-map [return] 'act)
 
 
+;; Useful keys
 (global-set-key (kbd "s-d") 'kill-line)
+(global-set-key (kbd "M-<up>") 'beginning-of-buffer)
+(global-set-key (kbd "M-<down>") 'end-of-buffer)
+
+
+;; Delete trailing whitespace on save
+(add-hook 'write-file-hooks 'delete-trailing-whitespace nil t)
 
 
 ;; Newline behaviour
 (global-set-key (kbd "RET") 'newline-and-indent)
-(defun sanityinc/newline-at-end-of-line ()
+(defun my/newline-at-end-of-line ()
   "Move to end of line, enter a newline, and reindent."
   (interactive)
   (move-end-of-line 1)
   (newline-and-indent))
-(global-set-key (kbd "s-<return>") 'sanityinc/newline-at-end-of-line)
+(global-set-key (kbd "s-<return>") 'my/newline-at-end-of-line)
 
 
 ;; The nano style for truncated long lines
@@ -85,7 +94,7 @@
 
 ;; Improve display
 (setq display-raw-bytes-as-hex t
-      redisplay-skip-fontification-on-input t)
+  redisplay-skip-fontification-on-input t)
 
 ;; Fancy condition indication
 (use-package beacon
