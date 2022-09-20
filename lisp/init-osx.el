@@ -81,5 +81,9 @@
 (global-unset-key [swipe-right])
 
 
+(when (string= system-type "darwin")       
+  (setq dired-use-ls-dired nil))
+
+
 (provide 'init-osx)
 ;;; init-osx.el ends here
