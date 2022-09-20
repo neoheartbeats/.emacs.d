@@ -3,16 +3,16 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	:font "Myosotis"
+	:font "LXGW Wenkai Mono"
 	:height 155)
 
 (set-face-attribute 'variable-pitch nil
-  :font "Futura")
+  :font "LXGW Wenkai")
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
-(set-fontset-font "fontset-default" 'kana "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'han "LXGW Wenkai")
+(set-fontset-font "fontset-default" 'kana "LXGW Wenkai")
 
 
 ;; No gc for font caches

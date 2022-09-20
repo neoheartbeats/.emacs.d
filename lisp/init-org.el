@@ -184,7 +184,7 @@
   ;; Preview LaTeX & images in Org Roam window
   (add-hook 'org-roam-buffer-postrender-functions
     (lambda ()
-      (org--latex-preview-region (point-min) (point-max))
+      (org-latex-preview)
       (org-display-inline-images)))
   :hook
   (after-init . (lambda ()

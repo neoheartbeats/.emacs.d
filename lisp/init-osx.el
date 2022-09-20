@@ -6,13 +6,12 @@
 ;;; Code:
 
 
-;; Setup modifier keys
 ;; macOS specified key mapping
 (setq mac-command-modifier 'super)
 (setq mac-option-modifier 'meta)
 
 
-;; Mouse settings
+;;; Mouse settings
 ;; Make scrolling smooth
 (setq mouse-wheel-scroll-amount
   '(1

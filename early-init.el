@@ -13,23 +13,21 @@
 (setq frame-inhibit-implied-resize t)
 
 (dolist (var '(default-frame-alist initial-frame-alist))
-  (add-to-list var '(width . (text-pixels . 1920)))
-  ;; The height should be 1080, but the panel and the window's
-  ;; deocrations reduce the effective value. If I set 1080 here, Emacs
-  ;; maximises the frame regardless of the width value, which I do not
-  ;; want.
-  (add-to-list var '(height . (text-pixels . 1080))))
-
-
-;; Defer garbage collection further back in the startup process
-(setq gc-cons-threshold most-positive-fixnum)
+  (add-to-list var '(width . (text-pixels . 950)))
+  (add-to-list var '(height . (text-pixels . 750)))
+  (add-to-list var '(left . 275))
+  (add-to-list var '(top . 105)))
 
 ;; Faster to disable these here (before they've been initialized)
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
 (push '(ns-transparent-titlebar . t) default-frame-alist)
-(push '(ns-appearance . dark) default-frame-alist)
+(push '(ns-appearance . light) default-frame-alist)
+
+
+;; Defer garbage collection further back in the startup process
+(setq gc-cons-threshold most-positive-fixnum)
 
 
 ;; Prevent `package.el' loading packages prior to their init-file loading
