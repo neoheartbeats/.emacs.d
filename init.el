@@ -7,9 +7,6 @@
 
 ;;; Code:
 
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-(require 'init-benchmarking) ;; Measure startup time
-
 
 ;; Adjust garbage collection thresholds during startup, and thereafter
 (let ((normal-gc-cons-threshold (* 20 1024 1024))
@@ -25,18 +22,18 @@
 (setq debug-on-error init-file-debug)
 
 
-;; Bootstrap config
+;;; Bootstrap process
 ;; Setup `custom.el'
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
-;; Load basic components
+;; Load path
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+
+;; Load essential components
 (require 'init-utils)
 (require 'init-straight)
-
-;; Load configs for specific features and modes
 (straight-use-package 'diminish)
 
-
 ;; Load components
 (require 'init-osx)
 (require 'init-fonts)
@@ -45,6 +42,7 @@
 (require 'init-minibuff)
 (require 'init-corfu)
 (require 'init-editing-utils)
+(require 'init-yasnippet)
 (require 'init-org)
 (require 'init-tex)
 

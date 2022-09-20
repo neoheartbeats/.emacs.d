@@ -34,11 +34,14 @@
 (use-package org-modern
   :after org
   :diminish
-  :custom ;; Org modern settings
+  :custom
+
+  ;; Org modern settings
   (org-modern-star '("􀥳" "􀥳􀥳" "􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳􀥳􀥳"))
   (org-modern-list nil)
   (org-modern-checkbox nil)
   (org-modern-keyword nil)
+  (org-modern-horizontal-rule nil)
 
   ;; Editor settings
   (org-auto-align-tags nil)
