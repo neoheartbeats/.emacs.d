@@ -1,6 +1,7 @@
 ;;; init-org.el --- Org mode configuration  -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
+
 (use-package org)
 
 ;; Org default directory
@@ -24,8 +25,8 @@
        ("#+AUTHOR:" . ?􀉪)
        ("#+RESULTS:" . ?􀎛)
        ("[ ]" . ?􀂒)
-       ("[-]" . ?􀃟)
-       ("[X]" . ?􀃳)))
+       ("[-]" . ?􀃞)
+       ("[X]" . ?􀃲)))
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'org-icons)
 (setq org-ellipsis " 􀰛")
@@ -35,7 +36,6 @@
   :after org
   :diminish
   :custom
-
   ;; Org modern settings
   (org-modern-star '("􀥳" "􀥳􀥳" "􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳􀥳􀥳"))
   (org-modern-list nil)
@@ -184,7 +184,7 @@
   ;; Preview LaTeX & images in Org Roam window
   (add-hook 'org-roam-buffer-postrender-functions
     (lambda ()
-      (org--latex-preview-region (point-min) (point-max))
+      (org-latex-preview)
       (org-display-inline-images)))
   :hook
   (after-init . (lambda ()
