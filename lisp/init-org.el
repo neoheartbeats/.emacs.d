@@ -1,6 +1,7 @@
 ;;; init-org.el --- Org mode configuration  -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
+
 (use-package org)
 
 ;; Org default directory
@@ -35,7 +36,6 @@
   :after org
   :diminish
   :custom
-
   ;; Org modern settings
   (org-modern-star '("􀥳" "􀥳􀥳" "􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳􀥳􀥳"))
   (org-modern-list nil)

@@ -98,6 +98,7 @@
 ;;; Settings for cursors & clipboard
 ;; Make the cursor solid
 (blink-cursor-mode -1)
+(set-cursor-color "#217a3c")
 
 ;; Fancy cursor condition indication
 (use-package beacon
