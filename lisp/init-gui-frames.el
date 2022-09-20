@@ -10,23 +10,9 @@
 (global-set-key (kbd "C-z") 'suspend-frame)
 
 
-;; Suppress GUI features
-(setq use-file-dialog nil
-  use-dialog-box nil
-  inhibit-x-resources t
-  inhibit-default-init t
-  inhibit-startup-screen t
-  inhibit-startup-message t
-  inhibit-startup-buffer-menu t)
-
-
-;; Pixelwise resize windows
-(setq window-resize-pixelwise t
-  frame-resize-pixelwise t)
-
-(add-to-list 'default-frame-alist '(top . 155))
-(add-to-list 'default-frame-alist '(width . 105))
-(add-to-list 'default-frame-alist '(height . 35))
+;; (add-to-list 'default-frame-alist '(top . 155))
+;; (add-to-list 'default-frame-alist '(width . 105))
+;; (add-to-list 'default-frame-alist '(height . 35))
 
 
 ;; Using `C-c C-f' to toggle fullscreen
@@ -35,7 +21,7 @@
 
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-  (message "欢迎来到爱丽丝的童话库!"))
+  (message "欢迎来到童话库!"))
 
 ;; Always show the pointer's position
 (setq make-pointer-invisible nil)

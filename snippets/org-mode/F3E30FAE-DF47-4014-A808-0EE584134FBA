@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: int
+# key: int
+# --
+\int$1\,\mathrm{d}$0

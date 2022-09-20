@@ -5,6 +5,21 @@
 
 ;;; Code:
 
+;;; Pixelwise resize windows
+(setq window-resize-pixelwise t
+  frame-resize-pixelwise t)
+
+;; Do not resize the frame at this early stage.
+(setq frame-inhibit-implied-resize t)
+
+(dolist (var '(default-frame-alist initial-frame-alist))
+  (add-to-list var '(width . (text-pixels . 1920)))
+  ;; The height should be 1080, but the panel and the window's
+  ;; deocrations reduce the effective value. If I set 1080 here, Emacs
+  ;; maximises the frame regardless of the width value, which I do not
+  ;; want.
+  (add-to-list var '(height . (text-pixels . 1080))))
+
 
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
@@ -15,9 +30,6 @@
 (push '(vertical-scroll-bars) default-frame-alist)
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
-
-;; Enhance the performance when font is not configured as system default
-(setq frame-inhibit-implied-resize t)
 
 
 ;; Prevent `package.el' loading packages prior to their init-file loading
@@ -30,9 +42,32 @@
 ;; Prevent unwanted runtime compilation for GccEmacs
 (setq native-comp-deferred-compilation nil)
 
+;; Initialise installed packages
+(setq package-enable-at-startup t)
+
+;; Allow loading from the package cache
+(setq package-quickstart t)
+
 ;; Compile external packages for GccEmacs
-(setq native-comp-async-report-warnings-errors nil)
 (setq package-native-compile t)
+
+
+;; Disable GUI elements
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+
+;; Suppress GUI features
+(setq inhibit-splash-screen t)
+(setq use-dialog-box nil)
+(setq use-file-dialog nil)
+(setq inhibit-startup-echo-area-message user-login-name)
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-buffer-menu t)
+(setq inhibit-x-resources t)
+(setq inhibit-default-init t)
+(setq inhibit-startup-buffer-menu t)
+(setq native-comp-async-report-warnings-errors 'silent)
 
 
 (provide 'early-init)

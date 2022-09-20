@@ -11,17 +11,32 @@
 (setq mac-command-modifier 'super)
 (setq mac-option-modifier 'meta)
 
-;; Enable scrolling smooth
-;; Make scrolling less jerky
-(setq mouse-wheel-scroll-amount '(1
-                                   ((shift) . 5)
-                                   ((control))))
-(dolist (multiple '("" "double-" "triple-"))
-  (dolist (direction '("right" "left"))
-    (global-set-key (read-kbd-macro (concat "<" multiple "wheel-" direction ">")) 'ignore)))
+
+;; Mouse settings
+;; Make scrolling smooth
+(setq mouse-wheel-scroll-amount
+  '(1
+     ((shift) . 5)
+     ((meta) . 0.5)
+     ((control) . text-scale)))
+(setq mouse-wheel-progressive-speed t)
+(setq mouse-wheel-follow-mouse t)
 
-;; Using `pixel-scroll-precision-mode'
+;; These four come from the C source code.
+(setq-default scroll-preserve-screen-position t)
+(setq-default scroll-conservatively 1)
+(setq-default scroll-margin 0)
+(setq-default next-screen-context-lines 0)
+
+;; Disable auto copying
+(setq mouse-drag-copy-region nil)
+
+;; Enable `pixel-scroll-precision-mode'
 (pixel-scroll-precision-mode 1)
+
+;; Disabe default key for scaling text
+(global-unset-key (kbd "C-<wheel-up>"))
+(global-unset-key (kbd "C-<wheel-down>"))
 
 
 ;; Set up exec-path to help Emacs find programs
