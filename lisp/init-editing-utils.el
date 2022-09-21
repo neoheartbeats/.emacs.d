@@ -18,7 +18,6 @@
   column-number-mode t
   confirm-nonexistent-file-or-buffer nil
   create-lockfiles nil
-  cursor-in-non-selected-windows nil
   ediff-split-window-function 'split-window-horizontally
   ediff-window-setup-function 'ediff-setup-windows-plain
   fill-column 75
@@ -39,7 +38,10 @@
 
 
 ;; Enable those features
-(dolist (c '(narrow-to-region narrow-to-page upcase-region downcase-region))
+(dolist (c '(narrow-to-region
+              narrow-to-page
+              upcase-region
+              downcase-region))
   (put c 'disabled nil))
 (put 'overwrite-mode 'disabled t)
 
@@ -55,11 +57,8 @@
 ;; Useful keys
 (global-set-key (kbd "s-d") 'kill-line)
 (global-set-key (kbd "M-<up>") 'beginning-of-buffer)
-(global-set-key (kbd "M-<down>") 'end-of-buffer)
-
-
-;; Delete trailing whitespace on save
-(add-hook 'write-file-hooks 'delete-trailing-whitespace nil t)
+(global-set-key (kbd "M-<down>") (lambda ()
+                                   (goto-char (point-max))))
 
 
 ;; Newline behaviour
@@ -101,10 +100,15 @@
 (set-cursor-color "#217a3c")
 
 ;; Fancy cursor condition indication
+;; This function can also help correct displaying
+;; `prettify-symbols-mode'
 (use-package beacon
   :diminish
   :config
   (beacon-mode 1))
+
+;; Hide cursor in inactive windows
+(setq cursor-in-non-selected-windows nil)
 
 ;; Preserve contents of system clipboard
 (setq save-interprogram-paste-before-kill t)
