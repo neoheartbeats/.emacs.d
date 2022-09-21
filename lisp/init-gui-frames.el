@@ -10,11 +10,6 @@
 (global-set-key (kbd "C-z") 'suspend-frame)
 
 
-;; (add-to-list 'default-frame-alist '(top . 155))
-;; (add-to-list 'default-frame-alist '(width . 105))
-;; (add-to-list 'default-frame-alist '(height . 35))
-
-
 ;; Using `C-c C-f' to toggle fullscreen
 (global-set-key (kbd "C-c f") 'toggle-frame-fullscreen)
 

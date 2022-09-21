@@ -16,19 +16,6 @@
 (org-insert-heading-respect-content t)
 
 
-;; Org icons
-(defun org-icons ()
-  (setq prettify-symbols-alist
-    '(("lambda" . ?λ)
-       (":PROPERTIES:" . ?􀙭)
-       ("#+TITLE:" . ?􀎟)
-       ("#+AUTHOR:" . ?􀉪)
-       ("#+RESULTS:" . ?􀎛)
-       ("[ ]" . ?􀂒)
-       ("[-]" . ?􀃞)
-       ("[X]" . ?􀃲)))
-  (prettify-symbols-mode))
-(add-hook 'org-mode-hook 'org-icons)
 (setq org-ellipsis " 􀰛")
 
 ;; Org Modern
@@ -54,7 +41,19 @@
   ;; Set frame border width
   (modify-all-frames-parameters
     '((right-divider-width . 5)
-       (internal-border-width . 5))))
+       (internal-border-width . 5)))
+  :hook
+  (org-mode . (lambda ()
+                (setq prettify-symbols-alist
+                  '(("lambda" . ?λ)
+                     (":PROPERTIES:" . ?􀙭)
+                     ("#+TITLE:" . ?􀎟)
+                     ("#+AUTHOR:" . ?􀉪)
+                     ("#+RESULTS:" . ?􀎛)
+                     ("[ ]" . ?􀂒)
+                     ("[-]" . ?􀃞)
+                     ("[X]" . ?􀃲)))
+                (prettify-symbols-mode 1))))
 
 
 ;; Enable mouse click events
@@ -75,7 +74,7 @@
   'org-mode
   '(("^ *\\([-]\\) "
 		  (0 (prog1 ()
-				   (compose-region (match-beginning 1) (match-end 1) "􁉃"))))))
+				   (compose-region (match-beginning 1) (match-end 1) "􀰑"))))))
 
 
 ;; Fold drawers by default
@@ -92,7 +91,7 @@
 
 ;; Org links
 (setq org-return-follows-link t)
-(setq org-confirm-elisp-link-function nil)
+(setq org-link-elisp-confirm-function nil)
 
 
 ;; Open links in new window
@@ -149,7 +148,7 @@
     (:map org-roam-mode-map
       ("<mouse-1>" . org-roam-preview-visit)))
   :config
-	(org-roam-setup)
+	(org-roam-db-autosync-enable)
 	(setq org-roam-db-gc-threshold most-positive-fixnum) ;; Optimize performance
 	(setq org-roam-dailies-capture-templates ;; Preferred upper case title tags
     '(("d" "default" entry "\n* %?"
@@ -188,7 +187,8 @@
       (org-display-inline-images)))
   :hook
   (after-init . (lambda ()
-                  (org-roam-dailies-goto-today))))
+                  (org-roam-dailies-goto-today)
+                  (goto-char (point-max)))))
 
 
 ;; Org LaTeX bridge

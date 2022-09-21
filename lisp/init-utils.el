@@ -10,7 +10,8 @@
 
 ;; Handier way to add modes to auto-mode-alist
 (defun add-auto-mode (mode &rest patterns)
-  "Add entries to `auto-mode-alist' to use `MODE' for all given file `PATTERNS'."
+  "Add entries to `auto-mode-alist' to use `MODE'
+for all given file `PATTERNS'."
   (dolist (pattern patterns)
     (add-to-list 'auto-mode-alist (cons pattern mode))))
 
@@ -25,7 +26,8 @@
 
 ;; String utilities missing from core emacs
 (defun my/string-all-matches (regex str &optional group)
-  "Find all matches for `REGEX' within `STR', returning the full match string or group `GROUP'."
+  "Find all matches for `REGEX' within `STR',
+returning the full match string or group `GROUP'."
   (let ((result nil)
          (pos 0)
          (group (or group 0)))

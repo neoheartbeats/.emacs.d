@@ -25,3 +25,4 @@
 /emms/
 /eshell/
 .bookmarks.el
+*.elc
