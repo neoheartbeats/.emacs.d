@@ -126,7 +126,6 @@
   :custom
   (modus-themes-variable-pitch-ui t)
   (modus-themes-inhibit-reload t)
-  (modus-themes-mode-line '(borderless))
   (modus-themes-links '(neutral-underline no-color))
   (modus-themes-headings '((t . (rainbow))))
   :config
