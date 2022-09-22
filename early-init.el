@@ -15,7 +15,7 @@
 (dolist (var '(default-frame-alist initial-frame-alist))
   (add-to-list var '(width . (text-pixels . 950)))
   (add-to-list var '(height . (text-pixels . 750)))
-  (add-to-list var '(left . 275))
+  (add-to-list var '(left . 295))
   (add-to-list var '(top . 105)))
 
 ;; Faster to disable these here (before they've been initialized)
@@ -23,7 +23,7 @@
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
 (push '(ns-transparent-titlebar . t) default-frame-alist)
-(push '(ns-appearance . light) default-frame-alist)
+(push '(ns-appearance . dark) default-frame-alist)
 
 
 ;; Defer garbage collection further back in the startup process

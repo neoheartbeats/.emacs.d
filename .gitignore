@@ -26,3 +26,4 @@
 /eshell/
 .bookmarks.el
 *.elc
+custom.el

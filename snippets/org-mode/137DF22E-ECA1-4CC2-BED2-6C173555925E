@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: img
+# key: img
+# --
+#+ATTR_ORG: :width $1
+[[../resources/$2]]$0

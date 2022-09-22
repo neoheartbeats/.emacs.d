@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: vect
+# key: vect
+# --
+\begin{align*}
+\vec{\mathbf{$1}}&=\begin{bmatrix}
+$2\\
+$3
+$0
+\end{bmatrix}
+\end{align*}

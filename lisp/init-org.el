@@ -16,7 +16,7 @@
 (org-insert-heading-respect-content t)
 
 
-(setq org-ellipsis " 􀰛")
+(setq org-ellipsis " 􀰌")
 
 ;; Org Modern
 (use-package org-modern
@@ -24,7 +24,7 @@
   :diminish
   :custom
   ;; Org modern settings
-  (org-modern-star '("􀥳" "􀥳􀥳" "􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳􀥳􀥳"))
+  (org-modern-star '("􀄩" "􀄩􀄩" "􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩􀄩"))
   (org-modern-list nil)
   (org-modern-checkbox nil)
   (org-modern-keyword nil)
@@ -45,11 +45,11 @@
   :hook
   (org-mode . (lambda ()
                 (setq prettify-symbols-alist
-                  '(("lambda" . ?λ)
-                     (":PROPERTIES:" . ?􀙭)
-                     ("#+TITLE:" . ?􀎟)
-                     ("#+AUTHOR:" . ?􀉪)
-                     ("#+RESULTS:" . ?􀎛)
+                  '((":PROPERTIES:" . ?􀬚)
+                     ("#+TITLE:" . ?􀈣)
+                     ("#+AUTHOR:" . ?􀉩)
+                     ("#+RESULTS:" . ?􀎚)
+                     ("#+ATTR_ORG:" . ?􀌞)
                      ("[ ]" . ?􀂒)
                      ("[-]" . ?􀃞)
                      ("[X]" . ?􀃲)))
@@ -82,7 +82,7 @@
 
 
 ;; Org images
-(setq org-image-actual-width '240)
+(setq org-image-actual-width nil)
 (global-set-key (kbd "s-p") (lambda ()
                               (interactive)
                               (org-latex-preview)
@@ -179,12 +179,6 @@
        (direction . right)
        (window-width . 0.33)
        (window-height . fit-window-to-buffer)))
-
-  ;; Preview LaTeX & images in Org Roam window
-  (add-hook 'org-roam-buffer-postrender-functions
-    (lambda ()
-      (org-latex-preview)
-      (org-display-inline-images)))
   :hook
   (after-init . (lambda ()
                   (org-roam-dailies-goto-today)
