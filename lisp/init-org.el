@@ -49,6 +49,7 @@
                      ("#+TITLE:" . ?􀈣)
                      ("#+AUTHOR:" . ?􀉩)
                      ("#+RESULTS:" . ?􀎚)
+                     ("#+ATTR_ORG:" . ?􀌞)
                      ("[ ]" . ?􀂒)
                      ("[-]" . ?􀃞)
                      ("[X]" . ?􀃲)))
@@ -81,7 +82,7 @@
 
 
 ;; Org images
-(setq org-image-actual-width '240)
+(setq org-image-actual-width nil)
 (global-set-key (kbd "s-p") (lambda ()
                               (interactive)
                               (org-latex-preview)
@@ -178,12 +179,6 @@
        (direction . right)
        (window-width . 0.33)
        (window-height . fit-window-to-buffer)))
-
-  ;; Preview LaTeX & images in Org Roam window
-  (add-hook 'org-roam-buffer-postrender-functions
-    (lambda ()
-      (org-latex-preview)
-      (org-display-inline-images)))
   :hook
   (after-init . (lambda ()
                   (org-roam-dailies-goto-today)
