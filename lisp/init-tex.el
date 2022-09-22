@@ -50,10 +50,11 @@
 	   ("" "siunitx" t)))
 
 
-;; Better Org LaTeX editor for Org mode
+;;; Better LaTeX editor for Org mode
 ;; Setup `CDLaTeX'
 (use-package cdlatex
-  :hook (org-mode . org-cdlatex-mode))
+  :hook
+  (org-mode . org-cdlatex-mode))
 
 ;; Syntax highlighting for LaTeX in Org mode
 (setq org-highlight-latex-and-related '(latex script entities))

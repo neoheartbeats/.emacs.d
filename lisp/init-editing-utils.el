@@ -97,7 +97,8 @@
 ;;; Settings for cursors & clipboard
 ;; Make the cursor solid
 (blink-cursor-mode -1)
-(set-cursor-color "#217a3c")
+(setq-default cursor-type 'bar)
+;; (set-cursor-color "#217a3c")
 
 ;; Fancy cursor condition indication
 ;; This function can also help correct displaying

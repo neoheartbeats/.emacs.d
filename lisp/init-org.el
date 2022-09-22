@@ -16,7 +16,7 @@
 (org-insert-heading-respect-content t)
 
 
-(setq org-ellipsis " 􀰛")
+(setq org-ellipsis " 􀰌")
 
 ;; Org Modern
 (use-package org-modern
@@ -24,7 +24,7 @@
   :diminish
   :custom
   ;; Org modern settings
-  (org-modern-star '("􀥳" "􀥳􀥳" "􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳􀥳" "􀥳􀥳􀥳􀥳􀥳􀥳"))
+  (org-modern-star '("􀄩" "􀄩􀄩" "􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩􀄩"))
   (org-modern-list nil)
   (org-modern-checkbox nil)
   (org-modern-keyword nil)
@@ -45,11 +45,10 @@
   :hook
   (org-mode . (lambda ()
                 (setq prettify-symbols-alist
-                  '(("lambda" . ?λ)
-                     (":PROPERTIES:" . ?􀙭)
-                     ("#+TITLE:" . ?􀎟)
-                     ("#+AUTHOR:" . ?􀉪)
-                     ("#+RESULTS:" . ?􀎛)
+                  '((":PROPERTIES:" . ?􀬚)
+                     ("#+TITLE:" . ?􀈣)
+                     ("#+AUTHOR:" . ?􀉩)
+                     ("#+RESULTS:" . ?􀎚)
                      ("[ ]" . ?􀂒)
                      ("[-]" . ?􀃞)
                      ("[X]" . ?􀃲)))
