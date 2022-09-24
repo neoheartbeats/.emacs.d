@@ -16,7 +16,7 @@
 
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-  (message "欢迎来到童话库!"))
+  (message "Funding for this program was made possible by viewers like you."))
 
 ;; Always show the pointer's position
 (setq make-pointer-invisible nil)
