@@ -124,6 +124,10 @@
 ;; Determine Python execution program
 (setq org-babel-python-command "python3")
 
+;; Ignore the warnings
+(setq python-indent-guess-indent-offset t)  
+(setq python-indent-guess-indent-offset-verbose nil)
+
 
 ;; Configure Org Roam
 (use-package org-roam
