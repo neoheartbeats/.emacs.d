@@ -9,7 +9,7 @@
 (setq window-resize-pixelwise t
   frame-resize-pixelwise t)
 
-;; Do not resize the frame at this early stage.
+;; Do not resize the frame at this early stage
 (setq frame-inhibit-implied-resize t)
 
 (dolist (var '(default-frame-alist initial-frame-alist))

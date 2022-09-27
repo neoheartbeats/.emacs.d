@@ -103,7 +103,6 @@
 ;; This function also helps correct displaying
 ;; `prettify-symbols-mode'
 (use-package beacon
-  :diminish
   :config
   (beacon-mode 1))
 

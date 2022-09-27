@@ -32,7 +32,6 @@
 ;; Load essential components
 (require 'init-utils)
 (require 'init-straight)
-(straight-use-package 'diminish)
 
 ;; Load components
 (require 'init-osx)
