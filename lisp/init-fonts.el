@@ -3,7 +3,7 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	:font "Akasha"
+	:font "qliph Mono"
 	:height 150)
 
 (set-face-attribute 'variable-pitch nil
