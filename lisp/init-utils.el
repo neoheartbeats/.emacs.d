@@ -15,14 +15,6 @@ for all given file `PATTERNS'."
   (dolist (pattern patterns)
     (add-to-list 'auto-mode-alist (cons pattern mode))))
 
-;; Like diminish, but for major modes
-(defun my/set-major-mode-name (name)
-  "Override the major mode NAME in this buffer."
-  (setq-local mode-name name))
-(defun my/major-mode-lighter (mode name)
-  (add-hook (derived-mode-hook-name mode)
-    (apply-partially 'my/set-major-mode-name name)))
-
 
 ;; String utilities missing from core emacs
 (defun my/string-all-matches (regex str &optional group)

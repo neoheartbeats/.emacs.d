@@ -21,7 +21,6 @@
 ;; Org Modern
 (use-package org-modern
   :after org
-  :diminish
   :custom
   ;; Org modern settings
   (org-modern-star '("􀄩" "􀄩􀄩" "􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩􀄩"))
@@ -132,7 +131,6 @@
 ;; Configure Org Roam
 (use-package org-roam
   :after org
-  :diminish
   :custom
   (org-roam-directory org-directory)
   (org-roam-dailies-directory "stages/")
