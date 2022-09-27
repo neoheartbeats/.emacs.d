@@ -98,10 +98,9 @@
 ;; Make the cursor solid
 (blink-cursor-mode -1)
 (setq-default cursor-type '(bar . 1))
-;; (set-cursor-color "#217a3c")
 
 ;; Fancy cursor condition indication
-;; This function can also help correct displaying
+;; This function also helps correct displaying
 ;; `prettify-symbols-mode'
 (use-package beacon
   :diminish
