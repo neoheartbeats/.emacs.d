@@ -12,7 +12,7 @@
   :custom
   (org-roam-database-connector 'sqlite-builtin)
   (org-roam-directory org-directory)
-  (org-roam-dailies-directory "credits/")
+  (org-roam-dailies-directory "inbox/")
   (org-roam-completion-everywhere t)
   (org-roam-db-gc-threshold most-positive-fixnum)
   :bind
@@ -21,10 +21,7 @@
 	  ("C-c n f" . org-roam-node-find)
 	  ("C-c n i" . org-roam-node-insert)
 	  ("C-c n c" . org-roam-capture)
-	  ("C-c n j" . (lambda ()
-                   (interactive)
-                   (org-roam-dailies-goto-today)
-                   (goto-char (point-max))))
+	  ("C-c n j" . org-roam-dailies-goto-today)
 	  ("C-c n l" . org-roam-buffer-toggle)
 
     ;; Key-bindings for `org-roam-dailies'
@@ -104,14 +101,20 @@
     '("\\*org-roam\\*"
        (display-buffer-in-direction)
        (direction . right)
-       (window-width . 0.33)
+       (window-width . 0.35)
        (window-height . fit-window-to-buffer)))
 
+  ;; Preview LaTeX & images in Org Roam window
+  (add-hook 'org-roam-buffer-postrender-functions
+    (lambda ()
+      (goto-line 5)
+      (insert "\n")
+      (org--latex-preview-region (point-min) (point-max))
+      (org-display-inline-images)))
   :hook
-  (after-init . (lambda ()
-                  (org-roam-dailies-goto-today)
-                  (goto-char (point-max))
-                  (org-roam-buffer-toggle))))
+  ((after-init . (lambda ()
+                   (org-roam-dailies-goto-today)
+                   (org-roam-buffer-toggle)))))
 
 
 (provide 'init-org-roam)
