@@ -3,4 +3,4 @@
 # key: img
 # --
 #+ATTR_ORG: :width $1
-[[../resources/$2]]$0
+[[/Users/ilyaw39/Dropbox/org/resources/$2]]$0

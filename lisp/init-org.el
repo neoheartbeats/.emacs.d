@@ -6,7 +6,7 @@
   :straight (:type built-in))
 
 ;; Org default directory
-(setq org-directory "~/.github/org/")
+(setq org-directory "~/Dropbox/org/")
 
 ;; Open Org files with previewing
 (setq org-startup-with-inline-images t)

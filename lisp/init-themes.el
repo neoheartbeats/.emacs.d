@@ -16,7 +16,7 @@
   (modus-themes-intense-mouseovers t)
   (modus-themes-fringes nil)
   (modus-themes-syntax '(green-strings))
-  (modus-themes-links '(neutral-underline))
+  (modus-themes-links '(neutral-underline no-color))
   (modus-themes-prompts '(intense bold))
   (modus-themes-region '(bg-only no-extend))
   (modus-themes-hl-line '(underline accented))
