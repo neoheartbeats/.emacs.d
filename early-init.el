@@ -14,7 +14,8 @@
 
 (dolist (var '(default-frame-alist initial-frame-alist))
   (add-to-list var '(width . (text-pixels . 1920)))
-  (add-to-list var '(height . (text-pixels . 990))))
+  (add-to-list var '(height . (text-pixels . 990)))
+  (add-to-list vat '(alpha . (95 . 95))))
 
 ;; Faster to disable these here (before they've been initialized)
 (push '(menu-bar-lines . 0) default-frame-alist)
