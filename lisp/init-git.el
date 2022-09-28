@@ -10,6 +10,8 @@
 (use-package magit
   :init
   (setq-default magit-diff-refine-hunk t)
+  :custom
+  (magit-section-visibility-indicator nil)
   :bind
   (("C-x g" . magit-status)
     ("C-x M-g" . magit-dispatch))

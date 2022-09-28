@@ -109,6 +109,7 @@
     (lambda ()
       (goto-line 5)
       (insert "\n")
+      (visual-line-mode 1)
       (org--latex-preview-region (point-min) (point-max))
       (org-display-inline-images)))
   :hook
