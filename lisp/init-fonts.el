@@ -4,10 +4,10 @@
 
 (set-face-attribute 'default nil
 	:font "qliph Mono"
-	:height 150)
+	:height 140)
 
 (set-face-attribute 'variable-pitch nil
-  :font "Futura")
+  :font "HarmonyOS Sans SC")
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")

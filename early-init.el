@@ -13,10 +13,8 @@
 (setq frame-inhibit-implied-resize t)
 
 (dolist (var '(default-frame-alist initial-frame-alist))
-  (add-to-list var '(width . (text-pixels . 950)))
-  (add-to-list var '(height . (text-pixels . 750)))
-  (add-to-list var '(left . 295))
-  (add-to-list var '(top . 105)))
+  (add-to-list var '(width . (text-pixels . 1920)))
+  (add-to-list var '(height . (text-pixels . 990))))
 
 ;; Faster to disable these here (before they've been initialized)
 (push '(menu-bar-lines . 0) default-frame-alist)

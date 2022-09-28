@@ -6,10 +6,6 @@
 ;;; Code:
 
 
-;; Stop C-z from minimizing windows under macOS
-(global-set-key (kbd "C-z") 'suspend-frame)
-
-
 ;; Using `C-c C-f' to toggle fullscreen
 (global-set-key (kbd "C-c f") 'toggle-frame-fullscreen)
 
@@ -18,14 +14,30 @@
 (defun display-startup-echo-area-message ()
   (message "Funding for this program was made possible by viewers like you."))
 
-;; Always show the pointer's position
-(setq make-pointer-invisible nil)
-
 
 ;; Cleanup the text & icons
 (setq ns-use-proxy-icon nil)
 (setq frame-title-format nil)
 
+
+;; Disable showing window diviers
+(dolist (face '(window-divider
+                 window-divider-first-pixel
+                 window-divider-last-pixel))
+  (face-spec-reset-face face)
+  (set-face-foreground face (face-attribute 'default :background)))
+(set-face-background 'fringe (face-attribute 'default :background))
+
+;; Set frame border width
+(modify-all-frames-parameters
+  '((right-divider-width . 5)
+     (internal-border-width . 5)))
+
+;; Stop showing fringe bitmaps
+(setf (cdr (assq 'continuation fringe-indicator-alist))
+  '(nil nil))
+
+
 ;;; Diminish prompt messages
 ;; Disable these messages such ignore unused signals
 (defun filter-command-error-function (data context caller)
@@ -45,13 +57,6 @@
 (put 'erase-buffer 'disabled nil)
 (put 'scroll-left 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
-
-
-;; Non-zero values for `line-spacing' can mess up ansi-term and co
-;; so we zero it explicitly in those cases
-(add-hook 'term-mode-hook
-  (lambda ()
-    (setq line-spacing 0)))
 
 
 (provide 'init-gui-frames)

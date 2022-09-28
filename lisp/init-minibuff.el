@@ -27,12 +27,6 @@
     :config
     (savehist-mode 1)))
 
-(use-package orderless
-  :custom
-  (completion-styles '(orderless partial-completion))
-  (completion-category-defaults nil)
-  (completion-cycle-threshold 3))
-
 (use-package consult
   :config
   (global-set-key [remap switch-to-buffer] 'consult-buffer)

@@ -1,10 +1,15 @@
-;;; init.el --- LaTeX configuration -*- lexical-binding: t -*-
+;;; init-tex.el --- LaTeX configuration -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 
 ;; Install AUCTeX
-(use-package latex :straight auctex)
+(use-package latex
+  :straight auctex)
 
+
+(setq-default org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
+
+
 ;; Setup `dvisvgm' to preview LaTeX fragments
 (setq org-preview-latex-default-process 'dvisvgm)
 (setq org-preview-latex-process-alist
@@ -14,6 +19,8 @@
 			:image-input-type "xdv"
 			:image-output-type "svg"
 			:image-size-adjust (1.7 . 1.5)
+      :post-clean nil
+      :latex-header nil
 			:latex-compiler ;; Default `xelatex' as the process previewing LaTeX fragments
 			("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
 			:image-converter ;; Set `dvisvgm' with --exact option
@@ -44,6 +51,12 @@
 
 ;; Syntax highlighting for LaTeX in Org mode
 (setq org-highlight-latex-and-related '(latex script entities))
+
+
+(use-package ox-latex
+  :straight (:type built-in))
+
+(setq-default org-latex-compiler "xelatex")
 
 
 (provide 'init-tex)
