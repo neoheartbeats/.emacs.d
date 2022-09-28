@@ -1,17 +1,29 @@
 ;;; init-themes.el --- Defaults for themes -*- lexical-binding: t -*-
 ;;; Commentary:
 
-;; This file configured Ef Themes.
+;; This file configured Modus Themes.
 
 ;;; Code:
 
-(use-package ef-themes
+(use-package modus-themes
+  :init
+  (modus-themes-load-themes)
   :custom
-  (ef-themes-headings '((0 . (variable-pitch))))
-  (ef-themes-variable-pitch-ui t)
+  (modus-themes-bold-constructs t)
+  (modus-themes-tabs-accented t)
+  (modus-themes-inhibit-reload t)
+  (modus-themes-subtle-line-numbers t)
+  (modus-themes-intense-mouseovers t)
+  (modus-themes-fringes nil)
+  (modus-themes-syntax '(green-strings))
+  (modus-themes-links '(neutral-underline))
+  (modus-themes-prompts '(intense bold))
+  (modus-themes-region '(bg-only no-extend))
+  (modus-themes-hl-line '(underline accented))
+  (modus-themes-mode-line '(borderless accented))
+  (modus-themes-headings '((t . (rainbow))))
   :config
-  (mapc #'disable-theme custom-enabled-themes)
-  (load-theme 'ef-dark :no-confirm))
+  (modus-themes-load-vivendi))
 
 
 (provide 'init-themes)

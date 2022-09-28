@@ -12,29 +12,26 @@
 
 
 ;; Some basic preferences
-(setq-default
-  bookmark-default-file (locate-user-emacs-file ".bookmarks.el")
-  case-fold-search t
-  column-number-mode t
-  confirm-nonexistent-file-or-buffer nil
-  create-lockfiles nil
-  ediff-split-window-function 'split-window-horizontally
-  ediff-window-setup-function 'ediff-setup-windows-plain
-  fill-column 75
-  indent-tabs-mode nil
-  auto-save-default nil
-  make-backup-files nil
-  mark-even-if-inactive nil
-  mouse-yank-at-point t
-  ring-bell-function 'ignore
-  save-interprogram-paste-before-kill t
-  save-silently t
-  scroll-preserve-screen-position 'always
-  set-mark-command-repeat-pop t
-  tooltip-delay 1.5
-  truncate-lines nil
-  truncate-partial-width-windows nil
-  use-short-answers t)
+(setq-default bookmark-default-file (locate-user-emacs-file ".bookmarks.el"))
+(setq-default case-fold-search t)
+(setq-default confirm-nonexistent-file-or-buffer nil)
+(setq-default create-lockfiles nil)
+(setq-default ediff-split-window-function 'split-window-horizontally)
+(setq-default ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq-default fill-column 95)
+(setq-default indent-tabs-mode nil)
+(setq-default auto-save-default nil)
+(setq-default make-backup-files nil)
+(setq-default mark-even-if-inactive nil)
+(setq-default ring-bell-function 'ignore)
+(setq-default save-interprogram-paste-before-kill t)
+(setq-default save-silently t)
+(setq-default scroll-preserve-screen-position 'always)
+(setq-default set-mark-command-repeat-pop t)
+(setq-default tooltip-delay 1.5)
+(setq-default truncate-lines nil)
+(setq-default truncate-partial-width-windows nil)
+(setq-default use-short-answers t)
 
 
 ;; Enable those features
@@ -56,7 +53,8 @@
 
 ;; Useful keys
 (global-set-key (kbd "s-d") 'kill-line)
-(global-set-key (kbd "M-<up>") 'beginning-of-buffer)
+(global-set-key (kbd "M-<up>") (lambda ()
+                                 (goto-char (point-min))))
 (global-set-key (kbd "M-<down>") (lambda ()
                                    (goto-char (point-max))))
 
@@ -90,6 +88,7 @@
 
 ;; Use rainbow delimiters
 (use-package rainbow-delimiters
+  :diminish
   :hook
   ((prog-mode org-mode) . rainbow-delimiters-mode))
 
@@ -99,15 +98,19 @@
 (blink-cursor-mode -1)
 (setq-default cursor-type '(bar . 1))
 
+;; Always show the pointer's position
+(setq make-pointer-invisible nil)
+
 ;; Fancy cursor condition indication
 ;; This function also helps correct displaying
 ;; `prettify-symbols-mode'
 (use-package beacon
+  :diminish
   :config
   (beacon-mode 1))
 
 ;; Hide cursor in inactive windows
-(setq cursor-in-non-selected-windows nil)
+(setq-default cursor-in-non-selected-windows nil)
 
 ;; Preserve contents of system clipboard
 (setq save-interprogram-paste-before-kill t)
