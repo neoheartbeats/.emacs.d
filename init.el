@@ -31,7 +31,6 @@
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 ;; Load essential components
-(require 'init-utils)
 (require 'init-straight)
 (straight-use-package 'diminish)
 
