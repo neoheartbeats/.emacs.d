@@ -10,10 +10,8 @@
   (modus-themes-load-themes)
   :custom
   (modus-themes-bold-constructs t)
-  (modus-themes-tabs-accented t)
   (modus-themes-inhibit-reload t)
   (modus-themes-subtle-line-numbers t)
-  (modus-themes-intense-mouseovers t)
   (modus-themes-fringes nil)
   (modus-themes-syntax '(green-strings))
   (modus-themes-links '(neutral-underline no-color))
