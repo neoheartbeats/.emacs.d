@@ -14,6 +14,7 @@
 ;; Some basic preferences
 (setq-default bookmark-default-file (locate-user-emacs-file ".bookmarks.el"))
 (setq-default case-fold-search t)
+(setq-default column-number-mode t)
 (setq-default confirm-nonexistent-file-or-buffer nil)
 (setq-default create-lockfiles nil)
 (setq-default ediff-split-window-function 'split-window-horizontally)
