@@ -105,6 +105,7 @@
        (window-height . fit-window-to-buffer)))
 
   ;; Preview LaTeX & images in Org Roam window
+  ;; Note this function is defined interactivity
   (add-hook 'org-roam-buffer-postrender-functions
     (lambda ()
       (goto-line 5)

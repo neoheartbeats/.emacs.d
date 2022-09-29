@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package yasnippet
+  :diminish (yas-minor-mode)
   :custom
   (yas-triggers-in-field t)
   (yas-visit-from-menu t)
