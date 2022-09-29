@@ -53,10 +53,6 @@
 
 ;; Useful keys
 (global-set-key (kbd "s-d") 'kill-line)
-(global-set-key (kbd "M-<up>") (lambda ()
-                                 (goto-char (point-min))))
-(global-set-key (kbd "M-<down>") (lambda ()
-                                   (goto-char (point-max))))
 
 
 ;; Newline behaviour
@@ -101,7 +97,7 @@
 ;; Always show the pointer's position
 (setq make-pointer-invisible nil)
 
-;; Fancy cursor condition indication
+;; Fancy cursor position indication
 ;; This function also helps correct displaying
 ;; `prettify-symbols-mode'
 (use-package beacon
