@@ -65,7 +65,7 @@
 
   ;;; Org Roam buffer configuration
   ;; Overwrite this function to let `org-roam-preview-visit' always
-  ;; opens in other window
+  ;; open in other window
   (defun org-roam-preview-visit (file point &optional other-window)
     (setq other-window t) ; By setting this variable to `t'
     (interactive (list (org-roam-buffer-file-at-point 'assert)
@@ -119,5 +119,4 @@
 
 
 (provide 'init-org-roam)
-
 ;;; init-org-roam.el ends here
