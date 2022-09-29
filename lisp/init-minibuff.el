@@ -44,9 +44,9 @@
   (("C-." . embark-act)
     ("M-." . embark-dwim)
     ("C-h B" . embark-bindings))
-  :init ;; Optionally replace the key help with a completing-read interface
+  :init ; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
-  :config ;; Hide the mode line of the Embark live/completions buffers
+  :config ; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
     '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
        nil
@@ -57,6 +57,16 @@
   :demand t
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
+
+
+;; Enable rich annotations
+(use-package marginalia
+  :init
+  
+  ;; Must be in the `:init' section of `use-package' such that the mode gets
+  ;; enabled right away.
+  ;; Note this forces loading the package.
+  (marginalia-mode 1))
 
 
 (provide 'init-minibuff)
