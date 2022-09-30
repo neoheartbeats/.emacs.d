@@ -51,7 +51,7 @@
   'org-mode
   '(("^ *\\([-]\\) "
 		  (0 (prog1 ()
-				   (compose-region (match-beginning 1) (match-end 1) "●"))))))
+				   (compose-region (match-beginning 1) (match-end 1) "􀄫"))))))
 
 
 ;; Enable mouse click events

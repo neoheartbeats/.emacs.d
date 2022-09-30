@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: f
+# key: f
+# --
+\frac{$1}{$2}$0
