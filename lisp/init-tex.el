@@ -39,7 +39,8 @@
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
-  '(("" "mhchem" t)
+  '(("" "mathtools" t)
+     ("" "mhchem" t)
 	   ("" "siunitx" t)))
 
 
