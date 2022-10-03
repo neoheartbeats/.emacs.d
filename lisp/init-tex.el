@@ -24,7 +24,7 @@
 			:latex-compiler ; Default `xelatex' as the process previewing LaTeX fragments
 			("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
 			:image-converter ; Set `dvisvgm' with --exact option
-			("dvisvgm %f -n -b min -e -c %S -o %O"))))
+			("dvisvgm %f -n -e -b min -c %S -o %O"))))
 
 (setq org-format-latex-options
   '( ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
