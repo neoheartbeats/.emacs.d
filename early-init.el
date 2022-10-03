@@ -14,8 +14,7 @@
 
 (dolist (var '(default-frame-alist initial-frame-alist))
   (add-to-list var '(width . (text-pixels . 1920)))
-  (add-to-list var '(height . (text-pixels . 990)))
-  (add-to-list var '(alpha . (90 . 90))))
+  (add-to-list var '(height . (text-pixels . 990))))
 
 ;; Faster to disable these here (before they've been initialized)
 (push '(menu-bar-lines . 0) default-frame-alist)
@@ -48,12 +47,6 @@
 ;; Compile external packages for GccEmacs
 (setq package-native-compile t)
 
-
-;; Disable GUI elements
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-
 ;; Suppress GUI features
 (setq inhibit-splash-screen t)
 (setq use-dialog-box nil)
@@ -63,7 +56,6 @@
 (setq inhibit-startup-buffer-menu t)
 (setq inhibit-x-resources t)
 (setq inhibit-default-init t)
-(setq inhibit-startup-buffer-menu t)
 (setq native-comp-async-report-warnings-errors 'silent)
 
 
