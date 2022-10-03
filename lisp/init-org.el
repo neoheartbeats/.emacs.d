@@ -6,7 +6,7 @@
   :straight (:type built-in))
 
 ;; Org default directory
-(setq org-directory "~/Dropbox/org/")
+(setq org-directory "~/Dropbox/大家好/")
 
 ;; Open Org files with previewing
 (setq org-startup-with-inline-images t)
@@ -29,7 +29,6 @@
   (org-modern-list nil)
   (org-modern-checkbox nil)
   (org-modern-keyword nil)
-  (org-modern-horizontal-rule nil)
   :config
   (global-org-modern-mode 1)
   :hook
@@ -37,6 +36,8 @@
                 (setq prettify-symbols-alist
                   '((":PROPERTIES:" . ?􀈭)
                      ("#+TITLE:" . ?􀈣)
+                     ("#+FILETAGS:" . ?􀈭)
+                     ("#+IDENTIFIER:" . ?􀈭)
                      ("#+AUTHOR:" . ?􀉚)
                      ("#+RESULTS:" . ?􀎚)
                      ("#+ATTR_ORG:" . ?􀌞)

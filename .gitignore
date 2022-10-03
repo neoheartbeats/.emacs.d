@@ -27,3 +27,4 @@
 .bookmarks.el
 *.elc
 custom.el
+recentf

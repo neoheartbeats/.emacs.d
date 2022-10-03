@@ -1,4 +1,4 @@
-;;; init.el --- Load the full configuration  -*- lexical-binding: t -*-
+;;; init.el --- Load the full configuration -*- lexical-binding: t -*-
 ;;; Commentary:
 
 ;; This file bootstraps the configuration, which is divided into
@@ -46,8 +46,8 @@
 (require 'init-yasnippet)
 (require 'init-git)
 (require 'init-org)
-(require 'init-org-roam)
 (require 'init-tex)
+(require 'init-denote)
 
 
 (provide 'init)
