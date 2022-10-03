@@ -29,7 +29,6 @@
 (setq-default save-silently t)
 (setq-default scroll-preserve-screen-position 'always)
 (setq-default set-mark-command-repeat-pop t)
-(setq-default tooltip-delay 1.5)
 (setq-default truncate-lines nil)
 (setq-default truncate-partial-width-windows nil)
 (setq-default use-short-answers t)
@@ -52,10 +51,6 @@
 (save-place-mode 1)
 
 
-;; Useful keys
-(global-set-key (kbd "s-d") 'kill-line)
-
-
 ;; Newline behaviour
 (global-set-key (kbd "RET") 'newline-and-indent)
 (defun my/newline-at-end-of-line ()
@@ -64,6 +59,11 @@
   (move-end-of-line 1)
   (newline-and-indent))
 (global-set-key (kbd "s-<return>") 'my/newline-at-end-of-line)
+
+
+;; Scrolling in current window
+(global-set-key (kbd "M-p") 'scroll-down)
+(global-set-key (kbd "M-n") 'scroll-up)
 
 
 ;;; Improve displaying

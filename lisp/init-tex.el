@@ -21,13 +21,13 @@
 			:image-size-adjust (1.7 . 1.5)
       :post-clean nil
       :latex-header nil
-			:latex-compiler ;; Default `xelatex' as the process previewing LaTeX fragments
+			:latex-compiler ; Default `xelatex' as the process previewing LaTeX fragments
 			("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
-			:image-converter ;; Set `dvisvgm' with --exact option
+			:image-converter ; Set `dvisvgm' with --exact option
 			("dvisvgm %f -n -b min -e -c %S -o %O"))))
 
 (setq org-format-latex-options
-  '( ;; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
+  '( ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
 		 :foreground default
      :background "Transparent"
      :scale 3.5

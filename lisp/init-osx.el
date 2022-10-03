@@ -21,7 +21,17 @@
 (setq mouse-wheel-progressive-speed t)
 (setq mouse-wheel-follow-mouse t)
 
-;; These four come from the C source code.
+;; Enable `pixel-scroll-precision-mode'
+(pixel-scroll-precision-mode 1)
+
+
+;; Set up `exec-path' to help Emacs find programs
+(use-package exec-path-from-shell
+  :init
+  (exec-path-from-shell-initialize))
+
+
+;; Modify these four come from the C source code
 (setq-default scroll-preserve-screen-position t)
 (setq-default scroll-conservatively 1)
 (setq-default scroll-margin 0)
@@ -30,18 +40,9 @@
 ;; Disable auto copying
 (setq mouse-drag-copy-region nil)
 
-;; Enable `pixel-scroll-precision-mode'
-(pixel-scroll-precision-mode 1)
-
 ;; Disabe default key for scaling text
 (global-unset-key (kbd "C-<wheel-up>"))
 (global-unset-key (kbd "C-<wheel-down>"))
-
-
-;; Set up exec-path to help Emacs find programs
-(use-package exec-path-from-shell
-  :init
-  (exec-path-from-shell-initialize))
 
 
 ;;; macOS styled keybindings
@@ -54,19 +55,15 @@
 (global-set-key (kbd "S-s-z") 'undo-redo)
 (global-set-key (kbd "s-i") 'indent-region)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-(global-set-key (kbd "<s-d>") 'backward-kill-sentence)
 
 ;; Buffer specified
 (global-set-key (kbd "s-s") 'save-buffer)
 (global-set-key (kbd "s-q") 'save-buffers-kill-emacs)
-(global-set-key (kbd "s-w") (lambda ()
+(global-set-key (kbd "s-d") (lambda ()
 															(interactive)
 															(kill-buffer (current-buffer))))
 (global-set-key (kbd "<s-right>") 'next-buffer)
 (global-set-key (kbd "<s-left>") 'previous-buffer)
-
-;; Window & frame specified
-(global-set-key (kbd "s-e") 'delete-window)
 
 ;; File management specified
 (global-set-key (kbd "s-n") 'find-file)
@@ -75,9 +72,10 @@
 																(find-file user-init-file)))
 
 
-;; Disable swipe left/right to change buffer
+;; Disable these keys
 (global-unset-key [swipe-left])
 (global-unset-key [swipe-right])
+(global-unset-key (kbd "C-z"))
 
 
 (when (string= system-type "darwin")       
