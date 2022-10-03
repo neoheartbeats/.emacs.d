@@ -59,7 +59,7 @@
 ;; Buffer specified
 (global-set-key (kbd "s-s") 'save-buffer)
 (global-set-key (kbd "s-q") 'save-buffers-kill-emacs)
-(global-set-key (kbd "s-d") (lambda ()
+(global-set-key (kbd "s-w") (lambda ()
 															(interactive)
 															(kill-buffer (current-buffer))))
 (global-set-key (kbd "<s-right>") 'next-buffer)

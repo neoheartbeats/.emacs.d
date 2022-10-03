@@ -9,7 +9,7 @@
   :straight (:files (:defaults "extensions/*")
               :includes (vertico-directory))
   :custom
-  (vertico-count 6)
+  (vertico-count 5)
   (vertico-cycle t)
   :config
   (vertico-mode 1)
@@ -30,6 +30,7 @@
 (use-package consult
   :config
   (global-set-key [remap switch-to-buffer] 'consult-buffer)
+  (global-unset-key (kbd "C-x b")) ; Use `s-b' instead
   (global-set-key [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
   (global-set-key [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
   (global-set-key [remap goto-line] 'consult-goto-line)

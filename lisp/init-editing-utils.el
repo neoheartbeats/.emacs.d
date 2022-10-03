@@ -45,10 +45,10 @@
 
 ;; Enable the fundamental modes
 (delete-selection-mode 1)
-(global-hl-line-mode 1)
 (global-auto-revert-mode 1)
 (transient-mark-mode 1)
 (save-place-mode 1)
+(global-hl-line-mode 1)
 
 
 ;; Newline behaviour
