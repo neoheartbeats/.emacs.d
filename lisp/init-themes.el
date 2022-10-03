@@ -18,10 +18,10 @@
   (modus-themes-prompts '(intense bold))
   (modus-themes-region '(bg-only no-extend))
   (modus-themes-hl-line '(accented))
-  (modus-themes-mode-line '(borderless accented))
+  (modus-themes-mode-line '(borderless))
   (modus-themes-headings '((t . (rainbow))))
   :config
-  (modus-themes-load-vivendi))
+  (modus-themes-load-operandi))
 
 
 (provide 'init-themes)
