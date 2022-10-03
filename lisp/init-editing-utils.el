@@ -99,8 +99,8 @@
 (setq make-pointer-invisible nil)
 
 ;; Fancy cursor position indication
-;; This function also helps correct displaying
-;; `prettify-symbols-mode'
+;; This function also helps correct rendering
+;; while startup
 (use-package beacon
   :diminish
   :config

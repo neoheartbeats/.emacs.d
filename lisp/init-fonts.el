@@ -4,7 +4,7 @@
 
 (set-face-attribute 'default nil
 	:font "qliph Mono"
-	:height 160)
+	:height 140)
 
 (set-face-attribute 'variable-pitch nil
   :font "Noto Serif CJK SC")
