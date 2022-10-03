@@ -86,7 +86,6 @@
 (setq org-return-follows-link t)
 (setq org-link-elisp-confirm-function nil)
 
-
 ;; Open file links in current window
 (setq org-link-frame-setup
   '((vm . vm-visit-folder-other-window)

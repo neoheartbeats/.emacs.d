@@ -17,7 +17,7 @@
   (denote-known-keywords '("篝火" "图书馆之梦" "里彭大圣堂" "项目"))
   (denote-infer-keywords t)
   (denote-sort-keywords t)
-  (denote-prompts '(title keywords))
+  (denote-prompts '(title subdirectory keywords))
   (denote-date-prompt-use-org-read-date t) ; Pick dates with Org's interface
   (denote-link-fontify-backlinks t)
   (denote-dired-directories
@@ -37,11 +37,22 @@
     (denote title ; format like "Sunday 2022-07-10"
       '("篝火") nil ; By default the file type is that of Org mode
       (thread-last denote-directory (expand-file-name "dates")) date nil))
+  (global-set-key (kbd "C-c n") #'my/denote-date)
   :bind
-  (("s-d" . denote)))
-
-(setq initial-buffer-choice
-  "/Users/ilyaw39/Dropbox/大家好/dates/20221004T005520--tuesday-2022-10-04__篝火.org")
+  (("s-d" . denote)
+    ("C-c j" . (lambda ()
+                 (interactive)
+                 (denote-open-or-create
+                   (concat
+                     denote-directory
+                     "dates/20221004T005520--tuesday-2022-10-04__篝火.org")))))
+  :hook
+  (after-init . (lambda ()
+                  (interactive)
+                  (denote-open-or-create
+                    (concat
+                      denote-directory
+                      "dates/20221004T005520--tuesday-2022-10-04__篝火.org")))))
 
 
 (provide 'init-denote)
