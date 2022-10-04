@@ -61,11 +61,6 @@
 (global-set-key (kbd "s-<return>") 'my/newline-at-end-of-line)
 
 
-;; Scrolling in current window
-(global-set-key (kbd "M-p") 'scroll-down)
-(global-set-key (kbd "M-n") 'scroll-up)
-
-
 ;;; Improve displaying
 ;; The nano style for truncated long lines
 (setq auto-hscroll-mode 'current-line)
@@ -128,7 +123,7 @@
 ;; Literature writing helpers
 (use-package powerthesaurus
   :bind
-  (("C-x p" . powerthesaurus-lookup-synonyms-dwim)))
+  (("M-p" . powerthesaurus-lookup-synonyms-dwim)))
 
 
 (provide 'init-editing-utils)
