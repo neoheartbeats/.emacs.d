@@ -124,8 +124,11 @@
   :config
   (editorconfig-mode 1))
 
-;; Newline characters for file ending
-(setq mode-require-final-newline 'visit-save)
+
+;; Literature writing helpers
+(use-package powerthesaurus
+  :bind
+  (("C-x p" . powerthesaurus-lookup-synonyms-dwim)))
 
 
 (provide 'init-editing-utils)
