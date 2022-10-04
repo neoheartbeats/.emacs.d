@@ -14,7 +14,7 @@
     "#+TITLE: %1$s\n#+FILETAGS: %3$s\n#+IDENTIFIER: %4$s\n\n")
   :custom
   (denote-directory "/Users/ilyaw39/Dropbox/大家好/")
-  (denote-known-keywords '("篝火" "图书馆之梦" "里彭大圣堂" "项目"))
+  (denote-known-keywords '("篝火" "图书馆之梦" "里彭大圣堂" "计时塔"))
   (denote-infer-keywords t)
   (denote-sort-keywords t)
   (denote-prompts '(title subdirectory keywords))
@@ -29,6 +29,7 @@
   :config
   (add-hook 'dired-mode-hook #'dired-hide-details-mode)
   (add-hook 'dired-mode-hook #'denote-dired-mode)
+  
   (defun my/denote-date ()
     "Create an entry tagged '篝火' with the `date' as its title."
     (interactive)
@@ -37,10 +38,20 @@
     (denote title ; format like "Sunday 2022-07-10"
       '("篝火") nil ; By default the file type is that of Org mode
       (thread-last denote-directory (expand-file-name "dates")) date nil))
-  (global-set-key (kbd "C-c n") #'my/denote-date)
+  (global-set-key (kbd "C-c j") #'my/denote-date)
+  
+  (defun my/denote-note ()
+    "Create an entry tagged '计时塔' with the `date' as its title."
+    (interactive)
+    (setq date (format-time-string "%Y-%m-%d"))
+    (setq title "Drafts")
+    (denote title ; format like "Sunday 2022-07-10"
+      '("计时塔") nil ; By default the file type is that of Org mode
+      (thread-last denote-directory (expand-file-name "notes")) date nil))
+  (global-set-key (kbd "s-m") #'my/denote-note)
   :bind
   (("s-d" . denote)
-    ("C-c j" . (lambda ()
+    ("C-c n" . (lambda ()
                  (interactive)
                  (denote-open-or-create
                    (concat

@@ -6,13 +6,13 @@
 ;;; Code:
 
 (use-package org-roam
-  :after org
+  :defer t
   :init
   (use-package emacsql-sqlite-builtin)
   :custom
   (org-roam-database-connector 'sqlite-builtin)
   (org-roam-directory org-directory)
-  (org-roam-dailies-directory "inbox/")
+  (org-roam-dailies-directory "dates/")
   (org-roam-completion-everywhere t)
   (org-roam-db-gc-threshold most-positive-fixnum)
   :bind
@@ -45,15 +45,15 @@
     '(("d" "default" entry "\n* %?"
         :target (file+head
 		              "%<%Y-%m-%d>.org"
-		              "#+TITLE: %<%Y-%m-%d>\n")
+		              "#+TITLE: %<%Y-%m-%d>\n\n")
         :empty-lines 1)))
 
   ;; Default capture template
 	(setq org-roam-capture-templates
 		'(("d" "default" entry "\n* %?"
         :target (file+head
-                  "%<%Y%m%d%H%M%S>-${slug}.org"
-			            "#+TITLE: ${title}\n")
+                  "notes/${slug}.org"
+			            "#+TITLE: ${title}\n\n")
         :empty-lines 1
         :immediate-finish t
         :kill-buffer t)))
@@ -115,7 +115,8 @@
       (org-display-inline-images)))
   :hook
   ((after-init . (lambda ()
-                   (org-roam-dailies-goto-today)))))
+                   (org-roam-dailies-goto-today)
+                   (org-roam-buffer-toggle)))))
 
 
 (provide 'init-org-roam)
