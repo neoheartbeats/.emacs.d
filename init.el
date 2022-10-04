@@ -37,7 +37,6 @@
 ;; Load components
 (require 'init-osx)
 (require 'init-fonts)
-(require 'init-windows)
 (require 'init-themes)
 (require 'init-gui-frames)
 (require 'init-minibuff)
