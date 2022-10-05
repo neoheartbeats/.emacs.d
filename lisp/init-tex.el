@@ -26,11 +26,23 @@
 			:image-converter ; Set `dvisvgm' with --exact option
 			("dvisvgm %f -n -e -b 1 -c %S -o %O"))))
 
+;; (setq org-preview-latex-process-alist
+;;   '((dvisvgm :programs
+;;       ("latex" "dvisvgm")
+;;       :description "dvi > svg"
+;;       :image-input-type "dvi"
+;;       :image-output-type "svg"
+;;       :image-size-adjust (1.7 . 1.5)
+;;       :latex-compiler
+;;       ("latex -interaction nonstopmode -output-directory %o %f")
+;;       :image-converter
+;;       ("dvisvgm %f -n -e -b 1 -c %S -o %O"))))
+
 (setq org-format-latex-options
   '( ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
 		 :foreground default
      :background "Transparent"
-     :scale 3.5
+     :scale 3.0
      :html-foreground "Black"
      :html-background "Transparent"
      :html-scale 1.2
@@ -40,8 +52,10 @@
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
   '(("" "mathtools" t)
+     ("" "physics" t)
      ("" "mhchem" t)
-	   ("" "siunitx" t)))
+	   ("" "siunitx" t)
+     ("" "tikz" t)))
 
 
 ;;; Better LaTeX editor for Org mode
