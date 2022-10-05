@@ -108,7 +108,8 @@
 (org-babel-do-load-languages 'org-babel-load-languages
 	'((emacs-lisp . t)
 		 (shell . t)
-		 (python . t)))
+		 (python . t)
+     (latex . t)))
 
 ;; Hide unwanted shell warning messages
 (advice-add 'sh-set-shell :around

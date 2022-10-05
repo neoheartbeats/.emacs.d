@@ -60,7 +60,7 @@
 
   ;; Objects displayed in Org Roam
   (setq org-roam-mode-sections
-    '((org-roam-backlinks-section :unique t)
+    '((org-roam-backlinks-section) ; Remove the `:unique' section
        org-roam-reflinks-section))
 
   ;;; Org Roam buffer configuration
