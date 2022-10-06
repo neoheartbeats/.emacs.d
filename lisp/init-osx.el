@@ -22,7 +22,7 @@
 (setq mouse-wheel-follow-mouse t)
 
 ;; Enable `pixel-scroll-precision-mode'
-(pixel-scroll-precision-mode 1)
+;; (pixel-scroll-precision-mode 1)
 
 
 ;; Set up `exec-path' to help Emacs find programs
