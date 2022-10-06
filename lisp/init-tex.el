@@ -42,14 +42,15 @@
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
-  '(("" "mathtools" t)
+  '(("" "unicode-math" t)
+     ("" "mathtools" t)
      ("" "physics" t)
      ("" "mhchem" t)
-	   ("" "siunitx" t)
-     ("" "tikz" t)))
-(eval-after-load "preview"
-  '(add-to-list 'preview-default-preamble
-     "\\PreviewEnvironment{tikzpicture}" t))
+	   ("" "siunitx" t)))
+
+;; Set default math font
+(setq org-format-latex-header
+  (concat org-format-latex-header "\n\\setmathfont{TeX Gyre Bonum Math}"))
 
 
 ;;; Better LaTeX editor for Org mode
