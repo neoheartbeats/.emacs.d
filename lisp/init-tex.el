@@ -46,7 +46,8 @@
      ("" "mathtools" t)
      ("" "physics" t)
      ("" "mhchem" t)
-	   ("" "siunitx" t)))
+	   ("" "siunitx" t)
+     ("" "upgreek" t)))
 
 ;; Set default math font
 (setq org-format-latex-header
