@@ -7,10 +7,10 @@
 
 (use-package org-roam
   :defer t
-  ;; :init
-  ;; (use-package emacsql-sqlite-builtin)
+  :init
+  (use-package emacsql-sqlite-builtin)
   :custom
-  ;; (org-roam-database-connector 'sqlite-builtin)
+  (org-roam-database-connector 'sqlite-builtin)
   (org-roam-directory org-directory)
   (org-roam-dailies-directory "dates/")
   (org-roam-completion-everywhere t)

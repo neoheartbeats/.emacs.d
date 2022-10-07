@@ -42,16 +42,10 @@
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
-  '(("" "unicode-math" t)
-     ("" "mathtools" t)
+  '(("" "mathtools" t)
      ("" "physics" t)
      ("" "mhchem" t)
-	   ("" "siunitx" t)
-     ("" "upgreek" t)))
-
-;; Set default math font
-(setq org-format-latex-header
-  (concat org-format-latex-header "\n\\setmathfont{TeX Gyre Bonum Math}"))
+	   ("" "siunitx" t)))
 
 
 ;;; Better LaTeX editor for Org mode

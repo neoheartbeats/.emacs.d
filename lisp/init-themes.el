@@ -21,7 +21,7 @@
   (modus-themes-hl-line '(intense))
   (modus-themes-headings '((t . (rainbow))))
   :config
-  (modus-themes-load-operandi))
+  (modus-themes-load-vivendi))
 
 
 (provide 'init-themes)
