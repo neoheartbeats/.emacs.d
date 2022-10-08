@@ -14,7 +14,7 @@
   (modus-themes-subtle-line-numbers t)
   (modus-themes-fringes nil)
   (modus-themes-syntax '(green-strings))
-  (modus-themes-links '(neutral-underline no-color))
+  (modus-themes-links '(neutral-underline))
   (modus-themes-prompts '(intense bold))
   (modus-themes-region '(bg-only no-extend))
   (modus-themes-mode-line '(borderless))

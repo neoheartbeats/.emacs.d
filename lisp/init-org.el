@@ -6,7 +6,7 @@
   :straight (:type built-in))
 
 ;; Org default directory
-(setq org-directory "/Users/ilyaw39/Dropbox/大家好/")
+(setq org-directory "/Users/ilyaw39/Dropbox/regrets/")
 
 ;; Open Org files with previewing
 (setq org-startup-with-inline-images t)

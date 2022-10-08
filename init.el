@@ -32,7 +32,9 @@
 
 ;; Load essential components
 (require 'init-straight)
-(use-package diminish)
+(use-package diminish
+  :config
+  (diminish 'eldoc-mode))
 
 ;; Load components
 (require 'init-osx)
@@ -45,8 +47,8 @@
 (require 'init-yasnippet)
 (require 'init-git)
 (require 'init-org)
-(require 'init-org-roam)
 (require 'init-tex)
+(require 'init-denote)
 
 
 (provide 'init)
