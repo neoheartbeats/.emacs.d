@@ -31,7 +31,6 @@
   (org-modern-keyword nil)
   (org-modern-label nil)
   (org-modern-tag nil)
-  (org-modern-horizontal-rule nil)
   :config
   (global-org-modern-mode 1)
   :hook

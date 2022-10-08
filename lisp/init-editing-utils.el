@@ -69,9 +69,7 @@
 (setq auto-window-vscroll nil)
 
 ;; Display line numbers while in `prog-mode'
-(when (fboundp 'display-line-numbers-mode)
-  (setq-default display-line-numbers-width 3)
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode))
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 ;; Enhance the performace of display
 (setq display-raw-bytes-as-hex t
