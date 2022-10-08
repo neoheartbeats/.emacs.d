@@ -1,6 +1,0 @@
-#+BEGIN_SRC emacs-lisp
-(expand-file-name "dates" denote-directory)
-#+END_SRC
-
-#+RESULTS:
-: /Users/ilyaw39/notes/dates
