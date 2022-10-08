@@ -45,7 +45,6 @@
 (require 'init-corfu)
 (require 'init-editing-utils)
 (require 'init-yasnippet)
-(require 'init-git)
 (require 'init-org)
 (require 'init-tex)
 (require 'init-denote)

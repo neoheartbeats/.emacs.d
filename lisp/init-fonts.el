@@ -7,12 +7,12 @@
 	:height 140)
 
 (set-face-attribute 'variable-pitch nil
-  :font "Noto Serif CJK SC")
+  :font "HarmonyOS Sans SC")
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
-(set-fontset-font "fontset-default" 'kana "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
+(set-fontset-font "fontset-default" 'kana "HarmonyOS Sans SC")
 
 
 ;; No gc for font caches
