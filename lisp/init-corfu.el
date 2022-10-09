@@ -22,12 +22,12 @@
     (corfu-history-mode 1))
 
   ;; Icon support
-	(use-package kind-icon
-		:custom
-		(kind-icon-default-face 'corfu-default)
-		:config
-		(add-to-list 'corfu-margin-formatters
-      #'kind-icon-margin-formatter))
+	;; (use-package kind-icon
+	;; 	:custom
+	;; 	(kind-icon-default-face 'corfu-default)
+	;; 	:config
+	;; 	(add-to-list 'corfu-margin-formatters
+  ;;     #'kind-icon-margin-formatter))
   :bind
   (:map corfu-map
     ("<down>" . corfu-next)
