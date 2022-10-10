@@ -34,6 +34,11 @@
 (setq-default use-short-answers t)
 
 
+;; Diable showing line numbers & column in mode line
+(setq line-number-mode nil)
+(setq column-number-mode nil)
+
+
 ;; Enable those features
 (dolist (c '(narrow-to-region
               narrow-to-page

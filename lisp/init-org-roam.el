@@ -115,8 +115,7 @@
       (org-display-inline-images)))
   :hook
   ((after-init . (lambda ()
-                   (org-roam-dailies-goto-today)
-                   (org-roam-buffer-toggle)))))
+                   (org-roam-dailies-goto-today)))))
 
 
 (provide 'init-org-roam)

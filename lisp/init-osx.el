@@ -26,9 +26,9 @@
 
 
 ;; Set up `exec-path' to help Emacs find programs
-;; (use-package exec-path-from-shell
-;;   :init
-;;   (exec-path-from-shell-initialize))
+(use-package exec-path-from-shell
+  :init
+  (exec-path-from-shell-initialize))
 
 
 ;; Modify these four come from the C source code

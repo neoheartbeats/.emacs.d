@@ -46,8 +46,8 @@
 (require 'init-editing-utils)
 (require 'init-yasnippet)
 (require 'init-org)
+(require 'init-org-roam)
 (require 'init-tex)
-(require 'init-denote)
 
 
 (provide 'init)
