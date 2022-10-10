@@ -28,7 +28,7 @@
                           ("Agenda for the coming week:" . "􀧞 Schedule")))
   :config
   (defun dashboard-insert-custom (list-size)
-    (insert "\nFunding for this program was made possible by viewers like you."))
+    (insert "\nSpikemacs: Funding for this program was made possible by viewers like you."))
   (add-to-list 'dashboard-item-generators  '(custom . dashboard-insert-custom))
   (add-to-list 'dashboard-items '(custom) t)
   (dashboard-setup-startup-hook)
