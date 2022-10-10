@@ -3,11 +3,11 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	:font "Pumpin' Junkies"
-	:height 140)
+	            :font "Pumpin' Junkies"
+	            :height 140)
 
 (set-face-attribute 'variable-pitch nil
-  :font "HarmonyOS Sans SC")
+                    :font "HarmonyOS Sans SC")
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")

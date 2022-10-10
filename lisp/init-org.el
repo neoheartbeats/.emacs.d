@@ -6,61 +6,54 @@
   :straight (:type built-in))
 
 ;; Org default directory
-(setq org-directory "/Users/ilyaw39/Dropbox/regrets/")
+(setq-default org-directory "/Users/ilyaw39/Dropbox/大家好/")
+(setq-default bookmark-default-file (concat org-directory ".bookmarks.el"))
 
 ;; Open Org files with previewing
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
 
-;; Better experiences inserting headings
-(org-insert-heading-respect-content t)
-
-
-(setq org-ellipsis " 􀍠")
+(setq org-ellipsis " 􀄪")
 
 ;; Org Modern
 (use-package org-modern
-  :after org
-  :custom
-  
-  ;; Org modern settings
+  :custom ;; Org modern settings
   (org-modern-star '("􀄩" "􀄩􀄩" "􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩􀄩"))
   (org-modern-list nil)
   (org-modern-checkbox nil)
+  (org-modern-todo nil)
   (org-modern-keyword nil)
   (org-modern-label nil)
   (org-modern-tag nil)
+  (org-modern-horizontal-rule nil)
   :config
   (global-org-modern-mode 1)
   :hook
   (org-mode . (lambda ()
                 (setq prettify-symbols-alist
-                  '((":PROPERTIES:" . ?􀈭)
-                     ("#+TITLE:" . ?􀈣)
-                     ("#+FILETAGS:" . ?􀈭)
-                     ("#+IDENTIFIER:" . ?􀈭)
-                     ("#+AUTHOR:" . ?􀉚)
-                     ("#+RESULTS:" . ?􀎚)
-                     ("#+ATTR_ORG:" . ?􀌞)
-                     ("[ ]" . ?􀂒)
-                     ("[-]" . ?􀃞)
-                     ("[X]" . ?􀃲)))
+                      '((":PROPERTIES:" . ?􀈭)
+                        ("#+TITLE:" . ?􀉚)
+                        ("#+AUTHOR:" . ?􀉩)
+                        ("#+RESULTS:" . ?􀄩)
+                        ("#+ATTR_ORG:" . ?􀏅)
+                        ("[ ]" . ?􀂒)
+                        ("[-]" . ?􀃞)
+                        ("[X]" . ?􀃲)))
                 (prettify-symbols-mode 1))))
 
 
 ;; Display Org list prefix as dots
 (font-lock-add-keywords
-  'org-mode
-  '(("^ *\\([-]\\) "
-		  (0 (prog1 ()
-				   (compose-region (match-beginning 1) (match-end 1) "􀄫"))))))
+ 'org-mode
+ '(("^ *\\([-]\\) "
+    (0 (prog1 ()
+	 (compose-region (match-beginning 1) (match-end 1) "􀄫"))))))
 
 
 ;; Enable mouse click events
 (use-package org-mouse
-  :straight (:type built-in)
-  :after org)
+  :straight (:type built-in))
 
 
 ;; Setup pretty entities for unicode math symbols
@@ -90,11 +83,11 @@
 
 ;; Open file links in current window
 (setq org-link-frame-setup
-  '((vm . vm-visit-folder-other-window)
-  	 (vm-imap . vm-visit-imap-folder-other-frame)
-  	 (gnus . org-gnus-no-new-news)
-  	 (file . find-file)
-  	 (wl . wl-other-frame)))
+      '((vm . vm-visit-folder-other-window)
+  	(vm-imap . vm-visit-imap-folder-other-frame)
+  	(gnus . org-gnus-no-new-news)
+  	(file . find-file)
+  	(wl . wl-other-frame)))
 
 
 ;; Org src blocks
@@ -105,16 +98,16 @@
 
 ;; Load languages
 (org-babel-do-load-languages 'org-babel-load-languages
-	'((emacs-lisp . t)
-		 (shell . t)
-		 (python . t)
-     (latex . t)))
+	                     '((emacs-lisp . t)
+		               (shell . t)
+		               (python . t)
+                               (latex . t)))
 
 ;; Hide unwanted shell warning messages
 (advice-add 'sh-set-shell :around
-  (lambda (orig-fun &rest args)
-    (cl-letf (((symbol-function 'message) #'ignore))
-      (apply orig-fun args))))
+            (lambda (orig-fun &rest args)
+              (cl-letf (((symbol-function 'message) #'ignore))
+                (apply orig-fun args))))
 
 ;; Determine Python execution program
 (setq org-babel-python-command "python3")
@@ -122,6 +115,10 @@
 ;; Ignore the warnings
 (setq python-indent-guess-indent-offset t)  
 (setq python-indent-guess-indent-offset-verbose nil)
+
+
+;;; Setup Org Agenda
+(setq org-agenda-files '("/Users/ilyaw39/Dropbox/大家好/dates/"))
 
 
 (provide 'init-org)

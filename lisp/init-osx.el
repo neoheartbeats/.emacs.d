@@ -14,15 +14,15 @@
 ;;; Mouse settings
 ;; Make scrolling smooth
 (setq mouse-wheel-scroll-amount
-  '(1
-     ((shift) . 5)
-     ((meta) . 0.5)
-     ((control) . text-scale)))
+      '(1
+        ((shift) . 5)
+        ((meta) . 0.5)
+        ((control) . text-scale)))
 (setq mouse-wheel-progressive-speed t)
 (setq mouse-wheel-follow-mouse t)
 
 ;; Enable `pixel-scroll-precision-mode'
-;; (pixel-scroll-precision-mode 1)
+(pixel-scroll-precision-mode 1)
 
 
 ;; Set up `exec-path' to help Emacs find programs
@@ -61,16 +61,16 @@
 (global-set-key (kbd "s-q") 'save-buffers-kill-emacs)
 (global-set-key (kbd "s-e") 'delete-window)
 (global-set-key (kbd "s-w") (lambda ()
-															(interactive)
-															(kill-buffer (current-buffer))))
+			      (interactive)
+			      (kill-buffer (current-buffer))))
 (global-set-key (kbd "<s-right>") 'next-buffer)
 (global-set-key (kbd "<s-left>") 'previous-buffer)
 
 ;; File management specified
 (global-set-key (kbd "s-n") 'find-file)
 (global-set-key (kbd "C-c p") (lambda ()
-																(interactive)
-																(find-file user-init-file)))
+				(interactive)
+				(find-file user-init-file)))
 
 
 ;; Disable these keys

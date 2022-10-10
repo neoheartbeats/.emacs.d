@@ -7,7 +7,7 @@
 
 ;;; Pixelwise resize windows
 (setq window-resize-pixelwise t
-  frame-resize-pixelwise t)
+      frame-resize-pixelwise t)
 
 ;; Do not resize the frame at this early stage
 (setq frame-inhibit-implied-resize t)
@@ -23,7 +23,7 @@
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
 (push '(ns-transparent-titlebar . t) default-frame-alist)
-(push '(ns-appearance . dark) default-frame-alist)
+(push '(ns-appearance . light) default-frame-alist)
 
 
 ;; Defer garbage collection further back in the startup process
@@ -59,6 +59,11 @@
 (setq inhibit-x-resources t)
 (setq inhibit-default-init t)
 (setq native-comp-async-report-warnings-errors 'silent)
+
+
+;;; Byte compiled files
+;; (setq load-prefer-newer t)
+;; (setq byte-compile-warnings '(cl-functions))
 
 
 (provide 'early-init)

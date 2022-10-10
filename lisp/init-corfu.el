@@ -9,7 +9,7 @@
 
 (use-package corfu
   :straight (:files (:defaults "extensions/*")
-              :includes (corfu-history))
+                    :includes (corfu-history))
   :custom
   (corfu-auto t)
   (corfu-quit-no-match t)
@@ -18,22 +18,22 @@
   
   ;; Remember the latest choice
   (use-package corfu-history
-		:config
+    :config
     (corfu-history-mode 1))
 
   ;; Icon support
-	;; (use-package kind-icon
-	;; 	:custom
-	;; 	(kind-icon-default-face 'corfu-default)
-	;; 	:config
-	;; 	(add-to-list 'corfu-margin-formatters
-  ;;     #'kind-icon-margin-formatter))
+  (use-package kind-icon
+    :custom
+    (kind-icon-default-face 'corfu-default)
+    :config
+    (add-to-list 'corfu-margin-formatters
+                 #'kind-icon-margin-formatter))
   :bind
   (:map corfu-map
-    ("<down>" . corfu-next)
-    ("<escape>" . corfu-quit))
+        ("<down>" . corfu-next)
+        ("<escape>" . corfu-quit))
   :hook
-	((prog-mode org-mode) . corfu-mode))
+  ((prog-mode org-mode) . corfu-mode))
 
 
 ;; Add extensions

@@ -12,7 +12,7 @@
 
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-  (message "Funding for this program was made possible by viewers like you."))
+  (message ""))
 
 
 ;; Cleanup the text & icons

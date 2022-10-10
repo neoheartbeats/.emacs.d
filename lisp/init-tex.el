@@ -14,52 +14,45 @@
 
 
 ;; Setup `dvisvgm' to preview LaTeX fragments
-(setq org-preview-latex-default-process 'imagemagick)
+(setq org-preview-latex-default-process 'dvisvgm)
 (setq org-preview-latex-process-alist
-  '((imagemagick
-      :programs ("xelatex" "convert")
-      :description "pdf > png"
-      :image-input-type "pdf"
-      :image-output-type "png"
-      :image-size-adjust (1.0 . 1.0)
-      :latex-compiler
-      ("xelatex -interaction nonstopmode -output-directory %o %f")
-      :image-converter
-      ("convert -density %D -trim -antialias %f -quality 100 %O"))))
+      '((dvisvgm
+         :programs ("xelatex" "dvisvgm")
+         :description "xdv > svg"
+         :image-input-type "xdv"
+         :image-output-type "svg"
+         :image-size-adjust (1.7 . 1.5)
+         :latex-compiler ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+         :image-converter ("dvisvgm %f -e -n -b 1 -c %S -o %O"))))
 
 (setq org-format-latex-options
-  '( ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
-		 :foreground default
-     :background "Transparent"
-     :scale 1.0
-     :html-foreground "Black"
-     :html-background "Transparent"
-     :html-scale 1.2
-     :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
+      '( ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
+	:foreground default
+        :background "Transparent"
+        :scale 3.5
+        :html-foreground "Black"
+        :html-background "Transparent"
+        :html-scale 1.2
+        :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
 
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
-  '(("" "mathtools" t)
-     ("" "physics" t)
-     ("" "mhchem" t)
-	   ("" "siunitx" t)
-     ("" "unicode-math" t)
-     ("" "upgreek" t)))
-
-;; LaTeX format options
-(setq org-format-latex-header
-  (concat org-format-latex-header "\n\\setmathfont{TeX Gyre Bonum Math}"))
+      '(("" "mathtools" t)
+        ("" "physics" t)
+        ("" "mhchem" t)
+	("" "siunitx" t)))
 
 
 ;;; Better LaTeX editor for Org mode
 ;; Setup `CDLaTeX'
 (use-package cdlatex
   :hook
-  (org-mode . org-cdlatex-mode))
+  ((LaTeX-mode . turn-on-cdlatex)
+   (org-mode . turn-on-org-cdlatex)))
 
 ;; Syntax highlighting for LaTeX in Org mode
-(setq org-highlight-latex-and-related '(latex script entities))
+(setq org-highlight-latex-and-related '(entities))
 
 
 (use-package ox-latex
