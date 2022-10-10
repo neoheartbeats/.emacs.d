@@ -119,6 +119,14 @@
 
 ;;; Setup Org Agenda
 (setq org-agenda-files '("/Users/ilyaw39/Dropbox/大家好/dates/"))
+(setq org-log-done t)
+(setq org-edit-timestamp-down-means-later t)
+(setq org-catch-invisible-edits 'show)
+(setq org-export-coding-system 'utf-8)
+(setq org-fast-tag-selection-single-key 'expert)
+(setq org-html-validation-link nil)
+(setq org-export-kill-product-buffer-when-displayed t)
+(setq org-tags-column 80)
 
 
 (provide 'init-org)
