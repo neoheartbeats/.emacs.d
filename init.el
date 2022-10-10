@@ -8,13 +8,18 @@
 ;;; Code:
 
 
+;; Personal information
+(setq user-full-name "Ilya.w") ; I love ya. windbell
+(setq user-mail-address "ilyaw3939@gmail.com")
+
+
 ;; Adjust garbage collection thresholds during startup
 (let ((normal-gc-cons-threshold (* 20 1024 1024))
-       (init-gc-cons-threshold (* 128 1024 1024)))
+      (init-gc-cons-threshold (* 128 1024 1024)))
   (setq gc-cons-threshold init-gc-cons-threshold)
   (add-hook 'emacs-startup-hook
-    (lambda ()
-      (setq gc-cons-threshold normal-gc-cons-threshold))))
+            (lambda ()
+              (setq gc-cons-threshold normal-gc-cons-threshold))))
 
 ;; Increase how much is read from processes in a single chunk
 (setq read-process-output-max (* 4 1024 1024))
@@ -45,9 +50,11 @@
 (require 'init-corfu)
 (require 'init-editing-utils)
 (require 'init-yasnippet)
+(require 'init-git)
 (require 'init-org)
 (require 'init-org-roam)
 (require 'init-tex)
+(require 'init-display)
 
 
 (provide 'init)

@@ -14,7 +14,7 @@
   (magit-section-visibility-indicator nil)
   :bind
   (("C-x g" . magit-status)
-    ("C-x M-g" . magit-dispatch))
+   ("C-x M-g" . magit-dispatch))
   :config
   (with-eval-after-load 'magit
     (define-key magit-status-mode-map (kbd "C-M-<up>") 'magit-section-up)))

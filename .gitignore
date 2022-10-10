@@ -28,3 +28,4 @@
 *.elc
 custom.el
 recentf
+resources/.DS_Store

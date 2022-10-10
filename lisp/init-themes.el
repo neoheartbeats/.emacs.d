@@ -1,10 +1,12 @@
 ;;; init-themes.el --- Defaults for themes -*- lexical-binding: t -*-
 ;;; Commentary:
 
-;; This file configured Modus Themes.
+;; This file configured Modus/Ef Themes.
 
 ;;; Code:
 
+
+;;; Modus Themes
 (use-package modus-themes
   :init
   (modus-themes-load-themes)
@@ -21,6 +23,13 @@
   (modus-themes-hl-line '(intense))
   :config
   (modus-themes-load-vivendi))
+
+
+;;; Ef Themes
+;; (use-package ef-themes
+;;   :config
+;;   (mapc #'disable-theme custom-enabled-themes)
+;;   (load-theme 'ef-bio :no-confirm))
 
 
 (provide 'init-themes)

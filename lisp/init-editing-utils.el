@@ -12,7 +12,6 @@
 
 
 ;; Some basic preferences
-(setq-default bookmark-default-file (locate-user-emacs-file ".bookmarks.el"))
 (setq-default case-fold-search t)
 (setq-default column-number-mode t)
 (setq-default confirm-nonexistent-file-or-buffer nil)
@@ -41,9 +40,9 @@
 
 ;; Enable those features
 (dolist (c '(narrow-to-region
-              narrow-to-page
-              upcase-region
-              downcase-region))
+             narrow-to-page
+             upcase-region
+             downcase-region))
   (put c 'disabled nil))
 (put 'overwrite-mode 'disabled t)
 
@@ -54,6 +53,12 @@
 (transient-mark-mode 1)
 (save-place-mode 1)
 (global-hl-line-mode 1)
+
+;; Auto breaking lines
+(auto-fill-mode 1)
+
+;; Recording the changes between windows
+(winner-mode 1)
 
 
 ;; Newline behaviour
@@ -78,14 +83,14 @@
 
 ;; Enhance the performace of display
 (setq display-raw-bytes-as-hex t
-  redisplay-skip-fontification-on-input t)
+      redisplay-skip-fontification-on-input t)
 
 
 ;; Use rainbow delimiters
 (use-package rainbow-delimiters
   :diminish
   :hook
-  ((prog-mode org-mode) . rainbow-delimiters-mode))
+  (prog-mode . rainbow-delimiters-mode))
 
 
 ;;; Settings for cursors & clipboard
@@ -96,14 +101,6 @@
 ;; Always show the pointer's position
 (setq make-pointer-invisible nil)
 
-;; Fancy cursor position indication
-;; This function also helps correct rendering
-;; while startup
-(use-package beacon
-  :diminish
-  :config
-  (beacon-mode 1))
-
 ;; Hide cursor in inactive windows
 (setq-default cursor-in-non-selected-windows nil)
 
@@ -113,14 +110,6 @@
 
 ;; Show lambda as unicode
 (global-prettify-symbols-mode 1)
-
-
-;;; Auto editing settings
-;; Formatting code by EditorConfig
-(use-package editorconfig
-  :diminish
-  :config
-  (editorconfig-mode 1))
 
 
 ;; Literature writing helpers
