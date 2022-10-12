@@ -21,14 +21,14 @@
 (setq mouse-wheel-progressive-speed t)
 (setq mouse-wheel-follow-mouse t)
 
-;; Enable `pixel-scroll-precision-mode'
-(pixel-scroll-precision-mode 1)
+;; Enable `pixel-scroll-precision-mode' (only in Emacs@29)
+;; (pixel-scroll-precision-mode 1)
 
 
 ;; Set up `exec-path' to help Emacs find programs
-(use-package exec-path-from-shell
-  :init
-  (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell
+;;   :init
+;;   (exec-path-from-shell-initialize))
 
 
 ;; Modify these four come from the C source code

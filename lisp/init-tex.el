@@ -7,7 +7,14 @@
   :straight auctex
   :init
   (setq-default TeX-engine 'xetex)
-  (setq-default TeX-PDF-mode t))
+  (setq-default TeX-PDF-mode t)
+  (setq-default TeX-master nil)
+  (setq reftex-plug-into-AUCTeX t)
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  :hook
+  ((LaTeX-mode-hook . LaTeX-math-mode)
+   (LaTeX-mode-hook . turn-on-reftex)))
 
 
 (setq-default org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
@@ -41,7 +48,14 @@
       '(("" "mathtools" t)
         ("" "physics" t)
         ("" "mhchem" t)
-	("" "siunitx" t)))
+	("" "siunitx" t)
+        ("" "unicode-math" t)))
+
+
+;; Org LaTeX headers
+(setq org-format-latex-header
+      (concat org-format-latex-header
+              "\n\setmathfont[math-style=ISO,bold-style=ISO]{TeX Gyre Bonum Math}"))
 
 
 ;;; Better LaTeX editor for Org mode
