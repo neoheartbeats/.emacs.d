@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: d
-# key: d
+# name: dd
+# key: dd
 # --
-\mathrm{d}
+\dv{$1}{$2}$0
