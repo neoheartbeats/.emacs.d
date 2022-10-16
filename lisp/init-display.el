@@ -19,18 +19,14 @@
   (dashboard-set-footer nil)
   (dashboard-items '((recents  . 3)
                      (bookmarks . 3)
-                     (agenda . 5)))
-  (dashboard-item-names '(("Recent Files:" . "􀐫 Recent")
+                     (projects . 3)))
+  (dashboard-item-names '(("Recent Files:" . "􀐫 Recents")
                           ("Bookmarks:" . "􀊴 Bookmarks")
                           ("Registers:" . "􀉩 Registers")
                           ("Projects:" . "􀤞 Projects")
                           ("Agenda for today:" . "􀉉 Today")
                           ("Agenda for the coming week:" . "􀧞 Schedule")))
   :config
-  (defun dashboard-insert-custom (list-size)
-    (insert "\nSpikemacs: Funding for this program was made possible by viewers like you."))
-  (add-to-list 'dashboard-item-generators  '(custom . dashboard-insert-custom))
-  (add-to-list 'dashboard-items '(custom) t)
   (dashboard-setup-startup-hook)
 
   ;; Buttons

@@ -18,29 +18,36 @@
 
 ;; Org Modern
 (use-package org-modern
-  :custom ;; Org modern settings
+  :custom ;; Too much `svg' files declines the performance
   (org-modern-star '("􀄩" "􀄩􀄩" "􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩􀄩"))
   (org-modern-list nil)
   (org-modern-checkbox nil)
   (org-modern-todo nil)
+  (org-modern-priority nil)
+  (org-modern-timestamp nil)
   (org-modern-keyword nil)
   (org-modern-label nil)
   (org-modern-tag nil)
   (org-modern-horizontal-rule nil)
+  (org-modern-block-name nil)
+  (org-modern-block-fringe nil)
   :config
   (global-org-modern-mode 1)
-  :hook
-  (org-mode . (lambda ()
-                (setq prettify-symbols-alist
-                      '((":PROPERTIES:" . ?􀈭)
-                        ("#+TITLE:" . ?􀉚)
-                        ("#+AUTHOR:" . ?􀉩)
-                        ("#+RESULTS:" . ?􀄩)
-                        ("#+ATTR_ORG:" . ?􀏅)
-                        ("[ ]" . ?􀂒)
-                        ("[-]" . ?􀃞)
-                        ("[X]" . ?􀃲)))
-                (prettify-symbols-mode 1))))
+  (defun org-icons ()
+    (setq prettify-symbols-alist
+          '((":PROPERTIES:" . ?􀈭)
+            ("#+TITLE:" . ?􀉚)
+            ("#+AUTHOR:" . ?􀉩)
+            ("#+BEGIN_SRC" . ?􀄫)
+            ("#+END_SRC" . ?􀅽)
+            ("#+RESULTS:" . ?􀆀)
+            ("#+ATTR_ORG:" . ?􀏅)
+            ("SCHEDULED:" . ?􀐫)
+            ("[ ]" . ?􀂒)
+            ("[-]" . ?􀃞)
+            ("[X]" . ?􀃲)))
+    (prettify-symbols-mode 1))
+  (add-hook 'org-mode-hook 'org-icons))
 
 
 ;; Display Org list prefix as dots
