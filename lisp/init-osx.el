@@ -53,7 +53,6 @@
 (global-set-key (kbd "s-x") 'kill-region)
 (global-set-key (kbd "s-z") 'undo)
 (global-set-key (kbd "S-s-z") 'undo-redo)
-(global-set-key (kbd "s-i") 'indent-region)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 ;; Buffer specified
