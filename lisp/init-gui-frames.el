@@ -15,6 +15,12 @@
   (message ""))
 
 
+;; Display color at point
+(use-package rainbow-mode
+  :bind
+  ("C-c c" . rainbow-mode))
+
+
 ;; Cleanup the text & icons
 (setq ns-use-proxy-icon nil)
 (setq frame-title-format nil)
@@ -22,30 +28,30 @@
 
 ;; Disable showing window diviers
 (dolist (face '(window-divider
-                 window-divider-first-pixel
-                 window-divider-last-pixel))
+                window-divider-first-pixel
+                window-divider-last-pixel))
   (face-spec-reset-face face)
   (set-face-foreground face (face-attribute 'default :background)))
 (set-face-background 'fringe (face-attribute 'default :background))
 
 ;; Set frame border width
 (modify-all-frames-parameters
-  '((right-divider-width . 5)
-     (internal-border-width . 5)))
+ '((right-divider-width . 5)
+   (internal-border-width . 5)))
 
 ;; Stop showing fringe bitmaps
 (setf (cdr (assq 'continuation fringe-indicator-alist))
-  '(nil nil))
+      '(nil nil))
 
 
 ;;; Diminish prompt messages
 ;; Disable these messages such ignore unused signals
 (defun filter-command-error-function (data context caller)
   (when (not (memq (car data) '(buffer-read-only
-                                 beginning-of-line
-                                 end-of-line
-                                 beginning-of-buffer
-                                 end-of-buffer)))
+                                beginning-of-line
+                                end-of-line
+                                beginning-of-buffer
+                                end-of-buffer)))
     (command-error-default-function data context caller)))
 (setq command-error-function #'filter-command-error-function)
 

@@ -97,6 +97,17 @@
 ;; Make the cursor solid
 (blink-cursor-mode -1)
 (setq-default cursor-type '(bar . 1))
+(set-cursor-color "#78bf78")
+
+;; The package `beacon.el' also helps refresh the current frame
+(use-package beacon
+  :custom
+  (beacon-color "#78bf78")
+  (beacon-lighter "")
+  (beacon-size 35)
+  :config
+  (beacon-mode 1)
+  (add-hook 'after-save-hook 'beacon-blink))
 
 ;; Always show the pointer's position
 (setq make-pointer-invisible nil)
@@ -110,6 +121,14 @@
 
 ;; Show lambda as unicode
 (global-prettify-symbols-mode 1)
+
+
+;; Formatting buffers
+(defun indent-buffer ()
+  (interactive)
+  (save-excursion
+    (indent-region (point-min) (point-max) nil)))
+(global-set-key (kbd "s-i") 'indent-buffer)
 
 
 ;; Literature writing helpers
