@@ -13,17 +13,16 @@
 (setq frame-inhibit-implied-resize t)
 
 (dolist (var '(default-frame-alist initial-frame-alist))
-  (add-to-list var '(width . (text-pixels . 790)))
-  (add-to-list var '(height . (text-pixels . 750)))
-  (add-to-list var '(left . 450))
-  (add-to-list var '(top . 105)))
+  (add-to-list var '(width . (text-pixels . 1920)))
+  (add-to-list var '(height . (text-pixels . 990)))
+  (add-to-list var '(alpha . (90 . 90))))
 
 ;; Faster to disable these here (before they've been initialized)
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
-;; (push '(ns-transparent-titlebar . t) default-frame-alist)
-;; (push '(ns-appearance . dark) default-frame-alist)
+(push '(ns-transparent-titlebar . t) default-frame-alist)
+(push '(ns-appearance . light) default-frame-alist)
 
 
 ;; Defer garbage collection further back in the startup process
@@ -62,8 +61,8 @@
 
 
 ;;; Byte compiled files
-;; (setq load-prefer-newer t)
-;; (setq byte-compile-warnings '(cl-functions))
+(setq load-prefer-newer t)
+(setq byte-compile-warnings '(cl-functions))
 
 
 (provide 'early-init)
