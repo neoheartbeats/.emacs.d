@@ -22,8 +22,8 @@
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
-;; (push '(ns-transparent-titlebar . t) default-frame-alist)
-;; (push '(ns-appearance . dark) default-frame-alist)
+(push '(ns-transparent-titlebar . t) default-frame-alist)
+(push '(ns-appearance . light) default-frame-alist)
 
 
 ;; Defer garbage collection further back in the startup process
@@ -62,8 +62,8 @@
 
 
 ;;; Byte compiled files
-;; (setq load-prefer-newer t)
-;; (setq byte-compile-warnings '(cl-functions))
+(setq load-prefer-newer t)
+(setq byte-compile-warnings '(cl-functions))
 
 
 (provide 'early-init)

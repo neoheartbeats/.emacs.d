@@ -22,7 +22,7 @@
   (modus-themes-mode-line '(borderless))
   (modus-themes-hl-line '(intense))
   :config
-  (modus-themes-load-vivendi))
+  (modus-themes-load-operandi))
 
 
 ;;; Ef Themes

@@ -11,7 +11,7 @@
 
 ;; Open Org files with previewing
 (setq org-startup-with-inline-images t)
-(setq org-startup-with-latex-preview t)
+;; (setq org-startup-with-latex-preview t)
 
 
 (setq org-ellipsis " 􀄪")
