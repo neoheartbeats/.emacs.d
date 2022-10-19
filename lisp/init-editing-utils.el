@@ -120,7 +120,7 @@
 
 
 ;; Show lambda as unicode
-(global-prettify-symbols-mode 1)
+(add-hook 'prog-mode-hook 'prettify-symbols-mode)
 
 
 ;; Formatting buffers

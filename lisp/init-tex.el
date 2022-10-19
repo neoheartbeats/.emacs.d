@@ -17,20 +17,22 @@
    (LaTeX-mode-hook . turn-on-reftex)))
 
 
-(setq-default org-latex-preview-ltxpng-directory "~/.emacs.d/ltximg/")
+(setq-default org-latex-preview-ltxpng-directory
+              (expand-file-name "ltximg/" user-emacs-directory))
 
 
 ;; Setup `imagemagick' to preview LaTeX fragments
-(setq org-preview-latex-default-process 'imagemagick)
+(setq org-preview-latex-default-process 'dvisvgm)
 (setq org-preview-latex-process-alist
-      '((imagemagick
-         :programs ("xelatex" "convert")
-         :description "pdf > png"
-         :image-input-type "pdf"
-         :image-output-type "png"
-         :image-size-adjust (1.0 . 1.0)
-         :latex-compiler ("xelatex -interaction nonstopmode -output-directory %o %f")
-         :image-converter ("convert -density %D -trim -antialias %f -quality 100 %O"))))
+      '((dvisvgm
+         :programs ("latex" "dvisvgm")
+         :description "dvi > svg"
+         :image-input-type "dvi"
+         :image-output-type "svg"
+         :image-size-adjust (1.7 . 1.5)
+         :post-clean (".dvi" ".tex" ".aux" ".svg" ".png" ".jpg" ".jpeg" ".out")
+         :latex-compiler ("latex -interaction nonstopmode -output-directory %o '\\PassOptionsToPackage{active,tightpage,auctex}{preview}\\input{%f}' %f")
+         :image-converter ("dvisvgm %f -e -n -b 1 -c %S -o %O"))))
 
 (setq org-format-latex-options
       '( ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
@@ -47,8 +49,9 @@
 (setq org-latex-packages-alist
       '(("" "mathtools" t)
         ("" "physics" t)
-        ("" "mhchem" t)
-        ("" "siunitx" t)))
+        ("version=4" "mhchem" t)
+        ("" "siunitx" t)
+        ("displaymath,floats,graphics,textmath,footnotes" "preview" t)))
 
 
 ;;; Better LaTeX editor for Org mode
@@ -67,36 +70,40 @@
 
 (setq-default org-latex-compiler "xelatex")
 
+(setq temporary-file-directory
+      (expand-file-name "tmp" user-emacs-directory))
+
 
-(defun my/org-latex--get-tex-string ()
-  "Return the content of the LaTeX fragment at point."
-  (let ((datum (org-element-context)))
-    (org-element-property :value datum)))
+(require 'preview)
 
-(defun my/latex-fragment-superscript-p ()
-  "Return `t' if '^' in current LaTeX fragment."
-  (memq 94 (string-to-list (my/org-latex--get-tex-string))))
-
-(defun my/latex-fragment-subscript-p ()
-  "Return `t' if '_' in current LaTeX fragment."
-  (memq 95 (string-to-list (my/org-latex--get-tex-string))))
-
-(defun my/latex-fragment-script-p ()
-  "Return `t' if both '_' &  '^' in current LaTeX fragment."
-  (and (memq 94 (string-to-list (my/org-latex--get-tex-string)))
-       (memq 95 (string-to-list (my/org-latex--get-tex-string)))))
+(defun my/org--match-text-baseline-ascent ()
+  (let* ((tmp (file-name-with-extension "tmp" "log"))
+         (regexp-string "^! Preview:.*\(\\([0-9]*?\\)\\+\\([0-9]*?\\)x\\([0-9]*\\))")
+         logfile ascent bbox)
+    (if (eq (car (directory-files temporary-file-directory t "orgtex\.\*\\\.log")) nil)
+        (setq-local ascent 'center)
+      (progn
+        (setq logfile (car (directory-files temporary-file-directory t "orgtex\.\*\\\.log"))))
+      (with-temp-file tmp
+        (insert-file-contents-literally logfile)
+        (goto-char (point-max))
+        (if (re-search-backward regexp-string nil t)
+            (progn
+              (setq log (match-string 0))
+              (setq bbox (mapcar #'(lambda (x)
+                                     (* (preview-get-magnification)
+                                        (string-to-number x)))
+                                 (list (match-string 1)
+                                       (match-string 2)
+                                       (match-string 3)))))))
+      (delete-file tmp)
+      (setq-local ascent (preview-ascent-from-bb (preview-TeX-bb bbox))))))
 
 (defun org--make-preview-overlay (beg end image &optional imagetype)
   "Build an overlay between BEG and END using IMAGE file.
 Argument IMAGETYPE is the extension of the displayed image,
 as a string.  It defaults to \"png\"."
-  (setq my/position 'center)
-  (cond ((my/latex-fragment-script-p)
-         (setq my/position 'center))
-        ((my/latex-fragment-superscript-p)
-         (setq my/position 100))
-        ((my/latex-fragment-subscript-p)
-         (setq my/position 70)))
+  (my/org--match-text-baseline-ascent)
   (let ((ov (make-overlay beg end))
 	(imagetype (or (intern imagetype) 'png)))
     (overlay-put ov 'org-overlay-type 'org-latex-overlay)
@@ -107,7 +114,7 @@ as a string.  It defaults to \"png\"."
 			 (delete-overlay o))))
     (overlay-put ov
 		 'display
-		 (list 'image :type imagetype :file image :ascent my/position))))
+		 (list 'image :type imagetype :file image :ascent ascent))))
 
 
 (provide 'init-tex)

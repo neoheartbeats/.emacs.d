@@ -55,7 +55,6 @@
 (require 'init-org-roam)
 (require 'init-tex)
 
-
 
 (provide 'init)
 ;;; init.el ends here

@@ -30,3 +30,5 @@ custom.el
 recentf
 resources/.DS_Store
 lisp/.DS_Store
+tmp/.DS_Store
+*.log
