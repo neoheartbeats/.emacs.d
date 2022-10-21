@@ -45,10 +45,6 @@
 (require 'init-osx)
 (require 'init-fonts)
 (require 'init-themes)
-
-(setq-default temporary-file-directory
-              (expand-file-name "tmp" user-emacs-directory))
-
 (require 'init-gui-frames)
 (require 'init-minibuff)
 (require 'init-corfu)
