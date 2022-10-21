@@ -68,5 +68,9 @@
   (setq dired-use-ls-dired nil))
 
 
+;; Speedup `regexp' searching
+(setq xref-search-program 'ripgrep)
+
+
 (provide 'init-osx)
 ;;; init-osx.el ends here

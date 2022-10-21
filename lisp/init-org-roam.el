@@ -110,7 +110,10 @@
               (org--latex-preview-region (point-min) (point-max))
               (org-display-inline-images)))
   :hook
-  ((after-init . org-roam-dailies-goto-today)))
+  ((after-init . (lambda ()
+                   (interactive)
+                   (org-roam-dailies-goto-today)
+                   (org-roam-buffer-toggle)))))
 
 
 (provide 'init-org-roam)
