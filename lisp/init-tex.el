@@ -81,9 +81,7 @@ as a string.  It defaults to \"png\"."
       '(("" "mathtools" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
-        ("" "siunitx" t)
-        ("" "unicode-math" t)
-        ("" "txfonts" t)))
+        ("" "siunitx" t)))
 
 
 (setq org-format-latex-options
