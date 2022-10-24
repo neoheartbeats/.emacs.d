@@ -5,8 +5,13 @@
 
 ;;; Code:
 
+(use-package emacsql-sqlite-builtin :defer t)
+
 (use-package org-roam
+  :defer t
   :custom
+  (org-roam-database-connector 'sqlite-builtin)
+  (org-roam-db-location (expand-file-name "org-roam.db" org-directory))
   (org-roam-directory org-directory)
   (org-roam-dailies-directory "dates/")
   (org-roam-completion-everywhere t)
@@ -27,7 +32,7 @@
    ;; Open link from Org Roam window with mouse click
    (:map org-roam-mode-map
          ("<mouse-1>" . org-roam-preview-visit)))
-  
+
   :config
   (org-roam-db-autosync-enable)
 
@@ -41,7 +46,7 @@
         '(("d" "default" entry "\n* %?"
            :target (file+head
 		    "%<%Y-%m-%d>.org"
-		    "#+TITLE: %<%Y-%m-%d>\n\n")
+		    "#+TITLE: %<%A-%Y-%m-%d>.\n\n\n")
            :empty-lines 1)))
 
   ;; Default capture template
@@ -83,14 +88,14 @@
     (when-let ((backlinks (seq-sort #'org-roam-backlinks-sort
                                     (org-roam-backlinks-get node :unique unique))))
       (magit-insert-section (org-roam-backlinks)
-                            (magit-insert-heading "\n LINKED REFERENCES")
-                            (insert "\n")
-                            (dolist (backlink backlinks)
-                              (org-roam-node-insert-section
-                               :source-node (org-roam-backlink-source-node backlink)
-                               :point (org-roam-backlink-point backlink)
-                               :properties (org-roam-backlink-properties backlink)))
-                            (insert ?\n))))
+        (magit-insert-heading "\n􀉣 LINKED REFERENCES")
+        (insert "\n")
+        (dolist (backlink backlinks)
+          (org-roam-node-insert-section
+           :source-node (org-roam-backlink-source-node backlink)
+           :point (org-roam-backlink-point backlink)
+           :properties (org-roam-backlink-properties backlink)))
+        (insert ?\n))))
 
   ;; Org Roam buffer frame setup
   (add-to-list 'display-buffer-alist
@@ -104,7 +109,7 @@
   ;; Note this function is defined interactivity
   (add-hook 'org-roam-buffer-postrender-functions
             (lambda ()
-              (goto-line 5)
+              (forward-line 5)
               (insert "\n")
               (visual-line-mode 1)
               (org--latex-preview-region (point-min) (point-max))
@@ -113,7 +118,9 @@
   ((after-init . (lambda ()
                    (interactive)
                    (org-roam-dailies-goto-today)
-                   (goto-char (point-max))))))
+                   (goto-char (point-max))
+                   (indent-buffer)
+                   (save-buffer)))))
 
 
 (provide 'init-org-roam)

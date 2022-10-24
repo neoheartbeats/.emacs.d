@@ -6,20 +6,20 @@
 ;;; Code:
 
 (use-package vertico
-  :straight (:files (:defaults "extensions/*")
-                    :includes (vertico-directory))
+  :straight (:files (:defaults "extensions/*.el"))
   :custom
   (vertico-count 5)
   (vertico-cycle t)
   :config
   (vertico-mode 1)
   (use-package vertico-directory
+    :straight nil
     :bind
     ((:map vertico-map
 	   ("RET" . vertico-directory-enter)
 	   ("DEL" . vertico-directory-delete-char)
 	   ("M-DEL" . vertico-directory-delete-word)))
-    :hook ; Correct file path when changed
+    :hook ;; Correct file path when changed
     (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
   ;; Persist history over Emacs restarts.
@@ -28,26 +28,26 @@
     (savehist-mode 1)))
 
 (use-package consult
+  :defer t
   :config
   (global-set-key [remap switch-to-buffer] 'consult-buffer)
-  (global-unset-key (kbd "C-x b")) ; Use `s-b' instead
   (global-set-key [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
   (global-set-key [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
   (global-set-key [remap goto-line] 'consult-goto-line)
   :bind
   (("C-s" . consult-line)
-   ("M-s" . consult-ripgrep)
-   ("s-b" . consult-buffer)))
+   ("M-s" . consult-ripgrep)))
 
 
 (use-package embark
+  :defer t
   :bind
   (("C-." . embark-act)
    ("M-." . embark-dwim)
    ("C-h B" . embark-bindings))
-  :init ; Optionally replace the key help with a completing-read interface
+  :init ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
-  :config ; Hide the mode line of the Embark live/completions buffers
+  :config ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
@@ -63,10 +63,6 @@
 ;; Enable rich annotations
 (use-package marginalia
   :init
-  
-  ;; Must be in the `:init' section of `use-package' such that the mode gets
-  ;; enabled right away.
-  ;; Note this forces loading the package.
   (marginalia-mode 1))
 
 

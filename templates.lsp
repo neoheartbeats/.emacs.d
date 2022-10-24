@@ -29,6 +29,8 @@ org-mode
 (sc "#+BEGIN_SRC " p n> r> n> "#+END_SRC" :post (org-edit-src-code))
 (elisp "#+BEGIN_SRC emacs-lisp" n> r> n "#+END_SRC" :post (org-edit-src-code))
 
+(img "#+ATTR_ORG: :width " q)
+
 ;; Local Variables:
 ;; mode: lisp-data
 ;; outline-regexp: "[a-z]"

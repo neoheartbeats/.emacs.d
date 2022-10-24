@@ -79,6 +79,7 @@ as a string.  It defaults to \"png\"."
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
       '(("" "mathtools" t)
+        ("" "empheq" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
         ("" "siunitx" t)
@@ -89,7 +90,7 @@ as a string.  It defaults to \"png\"."
       '( ;; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
 	:foreground default
         :background "Transparent"
-        :scale 1.0
+        :scale 3.5
         :html-foreground default
         :html-background "Transparent"
         :html-scale 1.2
@@ -104,7 +105,7 @@ as a string.  It defaults to \"png\"."
    (org-mode . turn-on-org-cdlatex)))
 
 ;; Syntax highlighting for LaTeX in Org mode
-(setq org-highlight-latex-and-related '(script))
+(setq org-highlight-latex-and-related '(latex script))
 
 
 (use-package ox-latex
