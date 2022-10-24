@@ -42,7 +42,6 @@
 
 (global-display-fill-column-indicator-mode 1)
 
-(require 'modus-themes)
 (modus-themes-with-colors
   (custom-set-faces
    `(fill-column-indicator ((,class :foreground ,bg-active)))))
@@ -157,8 +156,8 @@
 
 ;; Highlight selected contents
 (use-package highlight-thing
-  :config
-  (global-highlight-thing-mode 1))
+  :hook
+  (prog-mode . highlight-thing-mode))
 
 
 ;;; Literature writing helpers
