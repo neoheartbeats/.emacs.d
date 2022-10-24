@@ -14,13 +14,13 @@
   (modus-themes-bold-constructs t)
   (modus-themes-inhibit-reload t)
   (modus-themes-subtle-line-numbers t)
-  (modus-themes-fringes nil)
+  (modus-themes-fringes 'subtle)
   (modus-themes-syntax '(green-strings))
   (modus-themes-links '(neutral-underline no-color))
   (modus-themes-prompts '(intense bold))
   (modus-themes-region '(bg-only no-extend))
   (modus-themes-mode-line '(borderless))
-  (modus-themes-hl-line '(intense))
+  (modus-themes-hl-line '(accented underline))
   :config
   (modus-themes-load-vivendi))
 

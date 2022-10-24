@@ -39,7 +39,17 @@
 
 
 (setq-default fill-column 95)
+
 (global-display-fill-column-indicator-mode 1)
+
+(require 'modus-themes)
+(modus-themes-with-colors
+  (custom-set-faces
+   `(fill-column-indicator ((,class :foreground ,bg-active)))))
+(modus-themes-with-colors
+  (custom-set-faces
+   `(fill-column-indicator
+     ((,class :height 1.0 :background ,bg-inactive :foreground ,bg-inactive)))))
 
 
 ;; Enable those features

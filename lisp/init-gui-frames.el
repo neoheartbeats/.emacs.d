@@ -32,7 +32,7 @@
                 window-divider-last-pixel))
   (face-spec-reset-face face)
   (set-face-foreground face (face-attribute 'default :background)))
-(set-face-background 'fringe (face-attribute 'default :background))
+;; (set-face-background 'fringe (face-attribute 'default :background))
 
 ;; Set frame border width
 (modify-all-frames-parameters

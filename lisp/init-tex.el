@@ -79,6 +79,7 @@ as a string.  It defaults to \"png\"."
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
       '(("" "mathtools" t)
+        ("" "braket" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
         ("" "siunitx" t)
@@ -104,7 +105,7 @@ as a string.  It defaults to \"png\"."
    (org-mode . turn-on-org-cdlatex)))
 
 ;; Syntax highlighting for LaTeX in Org mode
-(setq org-highlight-latex-and-related '(script))
+(setq org-highlight-latex-and-related '(latex script))
 
 
 (use-package ox-latex
