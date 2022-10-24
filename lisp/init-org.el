@@ -24,25 +24,26 @@
   (org-modern-checkbox nil)
   (org-modern-keyword nil)
   :config
-  (global-org-modern-mode 1)
-  (defun org-icons ()
-    (setq prettify-symbols-alist
-          '((":PROPERTIES:" . ?􀈭)
-            ("#+TITLE:" . ?􀉚)
-            ("#+AUTHOR:" . ?􀉩)
-            ("#+FILETAGS:" ?􀙬)
-            ("#+OPTIONS:" ?􀩚)
-            ("#+BEGIN_SRC" . ?􀄫)
-            ("#+END_SRC" . ?􀅽)
-            ("#+RESULTS:" . ?􀆀)
-            ("#+ATTR_ORG:" . ?􀈏)
-            ("#+ATTR_HTML:" . ?􀈏)
-            ("SCHEDULED:" . ?􀐫)
-            ("[ ]" . ?􀂒)
-            ("[-]" . ?􀃞)
-            ("[X]" . ?􀃲)))
-    (prettify-symbols-mode 1))
-  (add-hook 'org-mode-hook 'org-icons))
+  (global-org-modern-mode 1))
+
+(defun my/org--icons-toggle ()
+  (setq prettify-symbols-alist
+        '((":PROPERTIES:" . ?􀈭)
+          ("#+TITLE:" . ?􀉚)
+          ("#+AUTHOR:" . ?􀉩)
+          ("#+FILETAGS:" ?􀙬)
+          ("#+OPTIONS:" ?􀩚)
+          ("#+BEGIN_SRC" . ?􀄫)
+          ("#+END_SRC" . ?􀅽)
+          ("#+RESULTS:" . ?􀆀)
+          ("#+ATTR_ORG:" . ?􀈏)
+          ("#+ATTR_HTML:" . ?􀈏)
+          ("SCHEDULED:" . ?􀐫)
+          ("[ ]" . ?􀂒)
+          ("[-]" . ?􀃞)
+          ("[X]" . ?􀃲)))
+  (prettify-symbols-mode 1))
+(add-hook 'org-mode-hook 'my/org--icons-toggle)
 
 
 ;; Display Org list prefix as dots
@@ -66,7 +67,6 @@
 ;; Hide emphasis markders
 (setq org-hide-emphasis-markers t)
 
-
 ;; Fold drawers by default
 (add-hook 'org-mode-hook 'org-hide-drawer-all)
 
@@ -92,11 +92,13 @@
   	(wl . wl-other-frame)))
 
 
-;; Org src blocks
-(setq org-confirm-babel-evaluate nil)
-(setq org-src-preserve-indentation t)
-(setq org-src-fontify-natively t)
-(setq org-src-tab-acts-natively t)
+;; Org source code blocks
+(setq-default org-confirm-babel-evaluate nil)
+(setq-default org-src-preserve-indentation t)
+(setq-default org-src-fontify-natively t)
+(setq-default org-src-tab-acts-natively t)
+(setq-default org-edit-src-content-indentation 0) ; No relative indentation for code blocks
+(setq-default org-fontify-whole-block-delimiter-line t) ; Fontify whole block
 
 ;; Load languages
 (org-babel-do-load-languages 'org-babel-load-languages
@@ -128,6 +130,11 @@
 (setq org-html-validation-link nil)
 (setq org-export-kill-product-buffer-when-displayed t)
 (setq org-tags-column 80)
+
+
+;;; Org mode text edition
+;; Number of empty lines needed to keep an empty line between collapsed trees
+(setq-default org-cycle-separator-lines 2)
 
 
 (provide 'init-org)

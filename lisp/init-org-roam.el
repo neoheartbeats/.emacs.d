@@ -48,7 +48,7 @@
   (setq org-roam-capture-templates
 	'(("d" "default" entry "\n* %?"
            :target (file+head
-                    "notes/${slug}.org"
+                    "notes/%<%Y%m%d%H%M%S>-${slug}.org"
 		    "#+TITLE: ${title}\n\n")
            :empty-lines 1
            :immediate-finish t
@@ -83,14 +83,14 @@
     (when-let ((backlinks (seq-sort #'org-roam-backlinks-sort
                                     (org-roam-backlinks-get node :unique unique))))
       (magit-insert-section (org-roam-backlinks)
-        (magit-insert-heading "\n LINKED REFERENCES")
-        (insert "\n")
-        (dolist (backlink backlinks)
-          (org-roam-node-insert-section
-           :source-node (org-roam-backlink-source-node backlink)
-           :point (org-roam-backlink-point backlink)
-           :properties (org-roam-backlink-properties backlink)))
-        (insert ?\n))))
+                            (magit-insert-heading "\n LINKED REFERENCES")
+                            (insert "\n")
+                            (dolist (backlink backlinks)
+                              (org-roam-node-insert-section
+                               :source-node (org-roam-backlink-source-node backlink)
+                               :point (org-roam-backlink-point backlink)
+                               :properties (org-roam-backlink-properties backlink)))
+                            (insert ?\n))))
 
   ;; Org Roam buffer frame setup
   (add-to-list 'display-buffer-alist
@@ -113,7 +113,7 @@
   ((after-init . (lambda ()
                    (interactive)
                    (org-roam-dailies-goto-today)
-                   (org-roam-buffer-toggle)))))
+                   (goto-char (point-max))))))
 
 
 (provide 'init-org-roam)
