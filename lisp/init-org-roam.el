@@ -83,14 +83,14 @@
     (when-let ((backlinks (seq-sort #'org-roam-backlinks-sort
                                     (org-roam-backlinks-get node :unique unique))))
       (magit-insert-section (org-roam-backlinks)
-                            (magit-insert-heading "\n LINKED REFERENCES")
-                            (insert "\n")
-                            (dolist (backlink backlinks)
-                              (org-roam-node-insert-section
-                               :source-node (org-roam-backlink-source-node backlink)
-                               :point (org-roam-backlink-point backlink)
-                               :properties (org-roam-backlink-properties backlink)))
-                            (insert ?\n))))
+        (magit-insert-heading "\n􀉣 LINKED REFERENCES")
+        (insert "\n")
+        (dolist (backlink backlinks)
+          (org-roam-node-insert-section
+           :source-node (org-roam-backlink-source-node backlink)
+           :point (org-roam-backlink-point backlink)
+           :properties (org-roam-backlink-properties backlink)))
+        (insert ?\n))))
 
   ;; Org Roam buffer frame setup
   (add-to-list 'display-buffer-alist
