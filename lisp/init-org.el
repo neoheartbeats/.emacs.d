@@ -18,7 +18,6 @@
 
 ;; Org Modern
 (use-package org-modern
-  :defer t
   :custom ;; Too much `svg' files declines the performance
   (org-modern-star '("􀄩" "􀄩􀄩" "􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩􀄩"))
   (org-modern-list nil)

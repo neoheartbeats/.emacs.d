@@ -12,7 +12,7 @@
                     :includes (corfu-history))
   :custom
   (corfu-auto t)
-  (corfu-quit-no-match t)
+  (corfu-quit-no-match 'separator)
   (corfu-cycle t)
   :config
   
