@@ -5,8 +5,13 @@
 
 ;;; Code:
 
+(use-package emacsql-sqlite-builtin :defer t)
+
 (use-package org-roam
+  :defer t
   :custom
+  (org-roam-database-connector 'sqlite-builtin)
+  (org-roam-db-location (expand-file-name "org-roam.db" org-directory))
   (org-roam-directory org-directory)
   (org-roam-dailies-directory "dates/")
   (org-roam-completion-everywhere t)

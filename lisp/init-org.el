@@ -18,6 +18,7 @@
 
 ;; Org Modern
 (use-package org-modern
+  :defer t
   :custom ;; Too much `svg' files declines the performance
   (org-modern-star '("􀄩" "􀄩􀄩" "􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩􀄩"))
   (org-modern-list nil)
@@ -55,8 +56,8 @@
 
 
 ;; Enable mouse click events
-(use-package org-mouse
-  :straight (:type built-in))
+;; (use-package org-mouse
+;;   :straight (:type built-in))
 
 
 ;; Setup pretty entities for unicode math symbols
@@ -122,14 +123,14 @@
 
 
 ;;; Setup Org Agenda
-(setq org-agenda-files '("/Users/ilyaw39/Dropbox/大家好/dates/"))
-(setq org-edit-timestamp-down-means-later t)
-(setq org-catch-invisible-edits 'show)
-(setq org-export-coding-system 'utf-8)
-(setq org-fast-tag-selection-single-key 'expert)
-(setq org-html-validation-link nil)
-(setq org-export-kill-product-buffer-when-displayed t)
-(setq org-tags-column 80)
+;; (setq org-agenda-files '("/Users/ilyaw39/Dropbox/大家好/dates/"))
+;; (setq org-edit-timestamp-down-means-later t)
+;; (setq org-catch-invisible-edits 'show)
+;; (setq org-export-coding-system 'utf-8)
+;; (setq org-fast-tag-selection-single-key 'expert)
+;; (setq org-html-validation-link nil)
+;; (setq org-export-kill-product-buffer-when-displayed t)
+;; (setq org-tags-column 80)
 
 
 ;;; Org mode text edition

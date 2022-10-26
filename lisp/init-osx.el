@@ -17,10 +17,10 @@
 
 
 ;; Set up `exec-path' to help Emacs find programs
-(cond ((version= emacs-version "29.0.50")
-       (use-package exec-path-from-shell
-         :init
-         (exec-path-from-shell-initialize))))
+;; (cond ((version= emacs-version "29.0.50")
+;;        (use-package exec-path-from-shell
+;;          :init
+;;          (exec-path-from-shell-initialize))))
 
 
 ;; Disable auto copying

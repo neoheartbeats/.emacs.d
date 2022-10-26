@@ -42,14 +42,6 @@
 
 (global-display-fill-column-indicator-mode 1)
 
-(modus-themes-with-colors
-  (custom-set-faces
-   `(fill-column-indicator ((,class :foreground ,bg-active)))))
-(modus-themes-with-colors
-  (custom-set-faces
-   `(fill-column-indicator
-     ((,class :height 1.0 :background ,bg-inactive :foreground ,bg-inactive)))))
-
 
 ;; Enable those features
 (dolist (c '(narrow-to-region
@@ -124,6 +116,7 @@
 
 ;; The package `beacon.el' also helps refresh the current frame
 (use-package beacon
+  :diminish
   :custom
   (beacon-color "#78bf78")
   (beacon-lighter "")

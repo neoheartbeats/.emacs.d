@@ -41,6 +41,11 @@
   :config
   (diminish 'eldoc-mode))
 
+(use-package benchmark-init
+  :init (benchmark-init/activate)
+  :hook
+  (after-init-hook . benchmark-init/deactivate))
+
 ;; Load components
 (require 'init-osx)
 (require 'init-fonts)

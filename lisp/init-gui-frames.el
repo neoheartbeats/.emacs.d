@@ -17,6 +17,7 @@
 
 ;; Display color at point
 (use-package rainbow-mode
+  :defer t
   :bind
   ("C-c c" . rainbow-mode))
 

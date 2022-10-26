@@ -28,6 +28,7 @@
     (savehist-mode 1)))
 
 (use-package consult
+  :defer t
   :config
   (global-set-key [remap switch-to-buffer] 'consult-buffer)
   (global-unset-key (kbd "C-x b")) ; Use `s-b' instead
@@ -41,6 +42,7 @@
 
 
 (use-package embark
+  :defer t
   :bind
   (("C-." . embark-act)
    ("M-." . embark-dwim)
