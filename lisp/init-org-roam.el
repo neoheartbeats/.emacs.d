@@ -109,7 +109,7 @@
   ;; Note this function is defined interactivity
   (add-hook 'org-roam-buffer-postrender-functions
             (lambda ()
-              (goto-line 5)
+              (forward-line 5)
               (insert "\n")
               (visual-line-mode 1)
               (org--latex-preview-region (point-min) (point-max))

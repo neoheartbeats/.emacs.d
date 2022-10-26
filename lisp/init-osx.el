@@ -22,7 +22,7 @@
 ;;          :init
 ;;          (exec-path-from-shell-initialize))))
 
-
+
 ;; Disable auto copying
 (setq mouse-drag-copy-region nil)
 

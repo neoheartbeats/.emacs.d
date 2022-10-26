@@ -19,6 +19,7 @@
   (load bootstrap-file nil 'nomessage))
 
 ;; Install then config `use-package' to format code
+(straight-use-package 'bind-key)
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
 
