@@ -66,7 +66,7 @@
 (transient-mark-mode 1)
 (save-place-mode 1)
 (global-hl-line-mode 1)
-(add-hook 'org-mode-hook 'auto-fill-mode) ; Auto breaking lines
+(add-hook 'org-mode-hook 'visual-line-mode)
 
 
 ;;; Deleting
