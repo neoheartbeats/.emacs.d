@@ -148,7 +148,7 @@
 
 ;;; Literature related
 (setq save-abbrevs 'silent)
-(abbrev-mode 1)
+(add-hook 'org-mode-hook 'abbrev-mode)
 
 
 (provide 'init-editing-utils)
