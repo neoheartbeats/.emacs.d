@@ -13,7 +13,6 @@
 
 ;; Some basic preferences
 (setq-default case-fold-search t)
-(setq-default column-number-mode t)
 (setq-default confirm-nonexistent-file-or-buffer nil)
 (setq-default create-lockfiles nil)
 (setq-default ediff-split-window-function 'split-window-horizontally)
@@ -25,22 +24,32 @@
 (setq-default ring-bell-function 'ignore)
 (setq-default save-interprogram-paste-before-kill t)
 (setq-default save-silently t)
-(setq-default scroll-preserve-screen-position 'always)
 (setq-default set-mark-command-repeat-pop t)
+(setq-default sentence-end-double-space nil) ; Sentences show end with one space
 (setq-default truncate-lines nil)
 (setq-default truncate-partial-width-windows nil)
 (setq-default use-short-answers t)
-(setq-default line-spacing 0.15)
+(setq-default help-window-select t) ; Use `q' to close the help window
 
 
-;; Diable showing line numbers & column in mode line
-(setq line-number-mode nil)
-(setq column-number-mode nil)
+;; Essential key bindings
+(global-set-key (kbd "s-a") 'mark-whole-buffer)
+(global-set-key (kbd "s-c") 'kill-ring-save)
+(global-set-key (kbd "s-v") 'yank)
+(global-set-key (kbd "s-x") 'kill-region)
+(global-set-key (kbd "s-<backspace>") 'kill-whole-line)
 
 
+;;; Formatting files
+;; Add a new line in the end of buffer while saving
+(setq-default require-final-newline t)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
 (setq-default fill-column 95)
 
-(global-display-fill-column-indicator-mode 1)
+
+(global-set-key (kbd "s-z") 'undo)
+(global-set-key (kbd "S-s-z") 'undo-redo)
 
 
 ;; Enable those features
@@ -57,12 +66,7 @@
 (transient-mark-mode 1)
 (save-place-mode 1)
 (global-hl-line-mode 1)
-
-;; Auto breaking lines
-(auto-fill-mode 1)
-
-;; Recording the changes between windows
-(winner-mode 1)
+(add-hook 'org-mode-hook 'auto-fill-mode) ; Auto breaking lines
 
 
 ;;; Deleting
@@ -97,8 +101,8 @@
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 ;; Enhance the performace of display
-(setq display-raw-bytes-as-hex t
-      redisplay-skip-fontification-on-input t)
+(setq display-raw-bytes-as-hex t)
+(setq redisplay-skip-fontification-on-input t)
 
 
 ;; Use rainbow delimiters
@@ -113,17 +117,6 @@
 (blink-cursor-mode -1)
 (setq-default cursor-type '(bar . 1))
 (set-cursor-color "#78bf78")
-
-;; The package `beacon.el' also helps refresh the current frame
-(use-package beacon
-  :diminish
-  :custom
-  (beacon-color "#78bf78")
-  (beacon-lighter "")
-  (beacon-size 35)
-  :config
-  (beacon-mode 1)
-  (add-hook 'after-save-hook 'beacon-blink))
 
 ;; Always show the pointer's position
 (setq make-pointer-invisible nil)
@@ -153,10 +146,9 @@
   (prog-mode . highlight-thing-mode))
 
 
-;;; Literature writing helpers
-(use-package powerthesaurus
-  :bind
-  (("M-p" . powerthesaurus-lookup-synonyms-dwim)))
+;;; Literature related
+(setq save-abbrevs 'silent)
+(abbrev-mode 1)
 
 
 (provide 'init-editing-utils)

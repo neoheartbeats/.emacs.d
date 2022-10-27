@@ -72,7 +72,7 @@
 
 
 ;; Org images
-(setq org-image-actual-width nil)
+(setq org-image-actual-width '(240)) ; Fallback to `240'
 (global-set-key (kbd "s-p") (lambda ()
                               (interactive)
                               (org-latex-preview)
@@ -117,7 +117,7 @@
 (setq org-babel-python-command "python3")
 
 ;; Ignore the warnings
-(setq python-indent-guess-indent-offset t)  
+(setq python-indent-guess-indent-offset t)
 (setq python-indent-guess-indent-offset-verbose nil)
 
 

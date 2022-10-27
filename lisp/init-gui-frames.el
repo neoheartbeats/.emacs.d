@@ -15,6 +15,15 @@
   (message "Funding for this program was made possible by viewers like you."))
 
 
+;; Better Emacs help and documentation
+(use-package helpful
+  :defer t
+  :bind
+  (("C-h f" . helpful-callable)
+   ("C-h v" . helpful-variable)
+   ("C-h k" . helpful-key)))
+
+
 ;; Display color at point
 (use-package rainbow-mode
   :defer t
@@ -33,7 +42,7 @@
                 window-divider-last-pixel))
   (face-spec-reset-face face)
   (set-face-foreground face (face-attribute 'default :background)))
-;; (set-face-background 'fringe (face-attribute 'default :background))
+(set-face-background 'fringe (face-attribute 'default :background))
 
 ;; Set frame border width
 (modify-all-frames-parameters

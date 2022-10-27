@@ -13,7 +13,7 @@
   :custom
   (tempel-path (expand-file-name "templates.lsp" user-emacs-directory))
   :config
-  (defun my/tab-maybe-expand ()
+  (defun my/tempel-maybe-expand ()
     "Try to `org-cycle', `tempel-expand' at current cursor position.
   If all failed, try to complete the common part with `indent-for-tab-command'."
     (interactive)
@@ -32,7 +32,7 @@
           (indent-for-tab-command)))))
   :bind
   ((:map org-mode-map
-         ("<tab>" . my/tab-maybe-expand)
+         ("<tab>" . my/tempel-maybe-expand)
          ("s-." . tempel-insert))))
 
 

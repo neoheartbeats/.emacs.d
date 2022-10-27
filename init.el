@@ -42,7 +42,7 @@
   (diminish 'eldoc-mode))
 
 ;; Load components
-(require 'init-osx)
+(require 'init-macos)
 (require 'init-fonts)
 (require 'init-themes)
 (require 'init-gui-frames)

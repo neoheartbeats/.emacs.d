@@ -32,7 +32,7 @@
    ;; Open link from Org Roam window with mouse click
    (:map org-roam-mode-map
          ("<mouse-1>" . org-roam-preview-visit)))
-  
+
   :config
   (org-roam-db-autosync-enable)
 
@@ -46,7 +46,7 @@
         '(("d" "default" entry "\n* %?"
            :target (file+head
 		    "%<%Y-%m-%d>.org"
-		    "#+TITLE: %<%Y-%m-%d>\n\n")
+		    "#+TITLE: %<%A-%Y-%m-%d>.\n\n\n")
            :empty-lines 1)))
 
   ;; Default capture template
@@ -118,7 +118,9 @@
   ((after-init . (lambda ()
                    (interactive)
                    (org-roam-dailies-goto-today)
-                   (goto-char (point-max))))))
+                   (goto-char (point-max))
+                   (indent-buffer)
+                   (save-buffer)))))
 
 
 (provide 'init-org-roam)

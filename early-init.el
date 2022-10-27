@@ -6,14 +6,14 @@
 ;;; Code:
 
 ;;; Pixelwise resize windows
-(setq window-resize-pixelwise t
-      frame-resize-pixelwise t)
+(setq window-resize-pixelwise t)
+(setq frame-resize-pixelwise t)
 
 ;; Do not resize the frame at this early stage
 (setq frame-inhibit-implied-resize t)
 
 (dolist (var '(default-frame-alist initial-frame-alist))
-  (add-to-list var '(width . (text-pixels . 1920)))
+  (add-to-list var '(width . (text-pixels . 950)))
   (add-to-list var '(height . (text-pixels . 990)))
   (add-to-list var '(alpha . (95 . 95))))
 
@@ -22,7 +22,7 @@
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
 (push '(ns-transparent-titlebar . t) default-frame-alist)
-(push '(ns-appearance . light) default-frame-alist)
+(push '(ns-appearance . dark) default-frame-alist)
 
 
 ;; Defer garbage collection further back in the startup process
