@@ -39,7 +39,9 @@
 (require 'init-straight)
 (use-package diminish
   :config
-  (diminish 'eldoc-mode))
+  (diminish 'eldoc-mode)
+  (diminish 'visual-line-mode)
+  (diminish 'abbrev-mode))
 
 ;; Load components
 (require 'init-macos)

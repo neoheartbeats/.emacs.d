@@ -54,11 +54,6 @@
 	 (compose-region (match-beginning 1) (match-end 1) "􀄫"))))))
 
 
-;; Enable mouse click events
-;; (use-package org-mouse
-;;   :straight (:type built-in))
-
-
 ;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)
 (setq org-pretty-entities-include-sub-superscripts nil)
@@ -103,8 +98,8 @@
 ;; Load languages
 (org-babel-do-load-languages 'org-babel-load-languages
 	                     '((emacs-lisp . t)
-		               (shell . t)
-		               (python . t)
+                               (shell . t)
+                               (python . t)
                                (latex . t)))
 
 ;; Hide unwanted shell warning messages

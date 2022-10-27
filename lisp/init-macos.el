@@ -24,7 +24,6 @@
 ;; Enable `pixel-scroll-precision-mode'
 (pixel-scroll-precision-mode 1)
 
-
 ;; Disable auto copying
 (setq mouse-drag-copy-region nil)
 

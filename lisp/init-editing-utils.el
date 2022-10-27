@@ -66,6 +66,7 @@
 (transient-mark-mode 1)
 (save-place-mode 1)
 (global-hl-line-mode 1)
+
 (add-hook 'org-mode-hook 'visual-line-mode)
 
 
@@ -116,7 +117,6 @@
 ;; Make the cursor solid
 (blink-cursor-mode -1)
 (setq-default cursor-type '(bar . 1))
-(set-cursor-color "#78bf78")
 
 ;; Always show the pointer's position
 (setq make-pointer-invisible nil)
