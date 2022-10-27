@@ -6,7 +6,7 @@
 ;;; Code:
 
 
-;; Using `C-c C-f' to toggle fullscreen
+;; Using `C-c f' to toggle fullscreen
 (global-set-key (kbd "C-c f") 'toggle-frame-fullscreen)
 
 
@@ -32,8 +32,8 @@
 
 
 ;; Cleanup the text & icons
-(setq ns-use-proxy-icon nil)
-(setq frame-title-format nil)
+(setq-default ns-use-proxy-icon nil)
+(setq-default frame-title-format nil)
 
 
 ;; Disable showing window diviers
