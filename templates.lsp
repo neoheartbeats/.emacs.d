@@ -26,10 +26,10 @@ emacs-lisp-mode
 org-mode
 
 (qt "#+BEGIN_QUOTE" n> r> n> "#+END_QUOTE")
-(sc "#+BEGIN_SRC " p n> r> n> "#+END_SRC" :post (org-edit-src-code))
-(elisp "#+BEGIN_SRC emacs-lisp" n> r> n "#+END_SRC" :post (org-edit-src-code))
+(sc "#+BEGIN_SRC " p n> r> n> "#+END_SRC")
+(elisp "#+BEGIN_SRC emacs-lisp" n> r> n "#+END_SRC")
 
-(img "#+ATTR_ORG: :width " q)
+(img "#+ATTR_ORG: :width " p n> "[[/Users/ilyaw39/Dropbox/大家好/repos/" p "]]" q)
 
 ;; Local Variables:
 ;; mode: lisp-data
