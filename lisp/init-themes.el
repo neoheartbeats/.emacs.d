@@ -28,7 +28,7 @@
 (setq modus-themes-inhibit-reload t)
 (setq modus-themes-subtle-line-numbers t)
 (setq modus-themes-syntax '(green-strings))
-(setq modus-themes-links '(neutral-underline))
+(setq modus-themes-links '(no-color neutral-underline))
 (setq modus-themes-prompts '(intense bold))
 (setq modus-themes-region '(bg-only no-extend))
 (setq modus-themes-mode-line '(borderless))
