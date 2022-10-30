@@ -56,6 +56,7 @@
 (require 'init-org)
 (require 'init-org-roam)
 (require 'init-tex)
+(require 'init-sites)
 
 
 (provide 'init)

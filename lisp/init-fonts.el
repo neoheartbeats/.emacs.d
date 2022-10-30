@@ -3,7 +3,7 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	            :font "Onfi"
+	            :font "Pumpin' Junkies"
 	            :height 140)
 
 (set-face-attribute 'variable-pitch nil

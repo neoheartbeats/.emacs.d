@@ -34,3 +34,4 @@ tmp/.DS_Store
 *.log
 /tmp/
 /xenops/
+*.html
