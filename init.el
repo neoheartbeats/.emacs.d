@@ -56,8 +56,9 @@
 (require 'init-org)
 (require 'init-org-roam)
 (require 'init-tex)
-;; (require 'init-sites)
-;; (require 'init-eglot)
+
+;; Programming languages
+(require 'init-eglot)
 
 
 (provide 'init)

@@ -54,9 +54,9 @@
 
 ;; Enable those features
 (dolist (c '(narrow-to-region
-             narrow-to-page
-             upcase-region
-             downcase-region))
+	     narrow-to-page
+	     upcase-region
+	     downcase-region))
   (put c 'disabled nil))
 (put 'overwrite-mode 'disabled t)
 

@@ -98,6 +98,7 @@
 ;; Load languages
 (org-babel-do-load-languages 'org-babel-load-languages
 	                     '((emacs-lisp . t)
+                               (C . t)
                                (shell . t)
                                (python . t)
                                (latex . t)))
