@@ -57,6 +57,7 @@
 (require 'init-org-roam)
 (require 'init-tex)
 ;; (require 'init-sites)
+;; (require 'init-eglot)
 
 
 (provide 'init)
