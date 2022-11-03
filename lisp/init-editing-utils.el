@@ -5,7 +5,6 @@
 
 ;;; Code:
 
-(use-package unfill)
 (when (fboundp 'electric-pair-mode)
   (add-hook 'after-init-hook 'electric-pair-mode))
 (add-hook 'after-init-hook 'electric-indent-mode)
@@ -54,9 +53,9 @@
 
 ;; Enable those features
 (dolist (c '(narrow-to-region
-             narrow-to-page
-             upcase-region
-             downcase-region))
+	     narrow-to-page
+	     upcase-region
+	     downcase-region))
   (put c 'disabled nil))
 (put 'overwrite-mode 'disabled t)
 
@@ -72,13 +71,13 @@
 
 ;;; Deleting
 (delete-selection-mode 1)
-(use-package smart-hungry-delete
-  :bind
-  (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
-   ([remap delete-backward-char] . smart-hungry-delete-backward-char)
-   ([remap delete-char] . smart-hungry-delete-forward-char))
-  :init
-  (smart-hungry-delete-add-default-hooks))
+;; (use-package smart-hungry-delete
+;;   :bind
+;;   (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
+;;    ([remap delete-backward-char] . smart-hungry-delete-backward-char)
+;;    ([remap delete-char] . smart-hungry-delete-forward-char))
+;;   :init
+;;   (smart-hungry-delete-add-default-hooks))
 
 
 ;; Newline behaviour
@@ -108,7 +107,6 @@
 
 ;; Use rainbow delimiters
 (use-package rainbow-delimiters
-  :diminish
   :hook
   (prog-mode . rainbow-delimiters-mode))
 
@@ -136,14 +134,9 @@
 (defun indent-buffer ()
   (interactive)
   (save-excursion
-    (indent-region (point-min) (point-max) nil)))
+    (indent-region (point-min) (point-max) nil)
+    (save-buffer)))
 (global-set-key (kbd "s-i") 'indent-buffer)
-
-
-;; Highlight selected contents
-(use-package highlight-thing
-  :hook
-  (prog-mode . highlight-thing-mode))
 
 
 ;;; Literature related

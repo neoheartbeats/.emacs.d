@@ -67,7 +67,7 @@
 
 
 ;; Org images
-(setq org-image-actual-width '(240)) ; Fallback to `240'
+(setq org-image-actual-width '(350)) ; Fallback to `350'
 (global-set-key (kbd "s-p") (lambda ()
                               (interactive)
                               (org-latex-preview)
@@ -98,6 +98,7 @@
 ;; Load languages
 (org-babel-do-load-languages 'org-babel-load-languages
 	                     '((emacs-lisp . t)
+                               (C . t)
                                (shell . t)
                                (python . t)
                                (latex . t)))
@@ -107,13 +108,6 @@
             (lambda (orig-fun &rest args)
               (cl-letf (((symbol-function 'message) #'ignore))
                 (apply orig-fun args))))
-
-;; Determine Python execution program
-(setq org-babel-python-command "python3")
-
-;; Ignore the warnings
-(setq python-indent-guess-indent-offset t)
-(setq python-indent-guess-indent-offset-verbose nil)
 
 
 ;;; Setup Org Agenda

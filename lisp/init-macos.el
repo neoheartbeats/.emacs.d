@@ -13,12 +13,12 @@
 
 ;;; Mouse scrolling
 ;; Smoother and nicer scrolling
-(setq scroll-margin 10)
+(setq scroll-margin 15)
 (setq scroll-step 1)
 (setq next-line-add-newlines nil)
 (setq scroll-conservatively 10000)
 (setq-default scroll-preserve-screen-position t)
-(setq mouse-wheel-follow-mouse 't)
+(setq mouse-wheel-follow-mouse t)
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 
 ;; Enable `pixel-scroll-precision-mode'

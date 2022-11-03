@@ -23,6 +23,9 @@
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
 
+;; Make the background color transparent
+;; (push '(alpha-background . 100) default-frame-alist)
+
 
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
@@ -60,8 +63,8 @@
 
 
 ;;; Byte compiled files
-;; (setq load-prefer-newer t)
-;; (setq byte-compile-warnings '(cl-functions))
+(setq load-prefer-newer t)
+(setq byte-compile-warnings '(cl-functions))
 
 
 (provide 'early-init)
