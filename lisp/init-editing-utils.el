@@ -142,6 +142,7 @@
 
 ;; Highlight selected contents
 (use-package highlight-thing
+  :diminish (highlight-thing-mode)
   :hook
   (prog-mode . highlight-thing-mode))
 
