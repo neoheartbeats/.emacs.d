@@ -2,27 +2,30 @@
 ;;; Commentary:
 ;;; Code:
 
-(setq read-process-output-max (* 1024 1024))
-
+
+;;; Eglot setup
 (use-package eglot
   :straight (:type built-in)
   :custom
   (eglot-autoshutdown t)
   :config
-  (define-key eglot-mode-map (kbd "s-i") 'eglot-format-buffer)
-  :hook
-  ((c-mode c++-mode python-mode LaTeX-mode) . eglot-ensure))
+  (setq read-process-output-max (* 1024 1024))
+  (define-key eglot-mode-map (kbd "s-i") 'eglot-format-buffer))
 
 (use-package consult-eglot)
 
 
+;;; C/C++ support
 (require 'cc-mode)
 
-(setq-default c-default-style "gnu")
+(setq-default c-default-style "r&k")
 (setq-default c-basic-offset 4)
 
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+
 ;; Using Homebrew's version of `clangd'
-;; (defvar my/homebrewed-clangd "/opt/homebrew/opt/llvm/bin/clangd")
+(add-to-list 'eglot-server-programs '((c-mode c++-mode) . ("/opt/homebrew/opt/llvm/bin/clangd")))
 
 (defun my/compile--cc-file ()
   (interactive)
@@ -31,6 +34,14 @@
                    (buffer-name))))
 (define-key c++-mode-map [f9] 'my/compile--cc-file)
 
+
+;;; Python support
+;; Ignore the warnings
+(setq python-indent-guess-indent-offset t)
+(setq python-indent-guess-indent-offset-verbose nil)
+
+;; Enable `eglot' support
+(add-hook 'python-mode-hook 'eglot-ensure)
 
 
 (provide 'init-eglot)

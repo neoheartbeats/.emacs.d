@@ -4,7 +4,7 @@
 
 (set-face-attribute 'default nil
 	            :font "Pumpin' Junkies"
-	            :height 140)
+	            :height 145)
 
 (set-face-attribute 'variable-pitch nil
                     :font "Noto Serif CJK SC")

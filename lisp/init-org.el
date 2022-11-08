@@ -112,10 +112,6 @@
 ;; Determine Python execution program
 (setq org-babel-python-command "python3")
 
-;; Ignore the warnings
-(setq python-indent-guess-indent-offset t)
-(setq python-indent-guess-indent-offset-verbose nil)
-
 
 ;;; Setup Org Agenda
 ;; (setq org-agenda-files '("/Users/ilyaw39/Dropbox/大家好/dates/"))
