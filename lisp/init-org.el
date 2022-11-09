@@ -67,7 +67,7 @@
 
 
 ;; Org images
-(setq org-image-actual-width '(240)) ; Fallback to `240'
+(setq org-image-actual-width '(350)) ; Fallback to `350'
 (global-set-key (kbd "s-p") (lambda ()
                               (interactive)
                               (org-latex-preview)
@@ -108,9 +108,6 @@
             (lambda (orig-fun &rest args)
               (cl-letf (((symbol-function 'message) #'ignore))
                 (apply orig-fun args))))
-
-;; Determine Python execution program
-(setq org-babel-python-command "python3")
 
 
 ;;; Setup Org Agenda
