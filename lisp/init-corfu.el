@@ -32,22 +32,18 @@
   ((prog-mode org-mode) . corfu-mode))
 
 
-;; Using Dabbrev with Corfu
-(use-package dabbrev
-  :custom ;; Other useful Dabbrev configurations
-  (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'"))
-  :bind ;; Swap M-/ and C-M-/
-  (("M-/" . dabbrev-completion)
-   ("C-M-/" . dabbrev-expand)))
+;; Setup `cape-dict-file'
+(setq cape-dict-file
+      (expand-file-name "dict/words.txt" user-emacs-directory))
 
 
 ;; Add extensions
 (use-package cape
   :init ;; Add `completion-at-point-functions', used by `completion-at-point'
-  (add-to-list 'completion-at-point-functions #'cape-dict)
   (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-history)
   (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dict)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev))
 
 

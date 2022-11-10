@@ -37,11 +37,7 @@
 
 ;; Load essential components
 (require 'init-straight)
-(use-package diminish
-  :config
-  (diminish 'eldoc-mode)
-  (diminish 'visual-line-mode)
-  (diminish 'abbrev-mode))
+(use-package diminish)
 
 ;; Load components
 (require 'init-macos)
