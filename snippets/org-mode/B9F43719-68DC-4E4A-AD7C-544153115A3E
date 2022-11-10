@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: dd
-# key: dd
-# --
-\dv{$1}{$2}$0

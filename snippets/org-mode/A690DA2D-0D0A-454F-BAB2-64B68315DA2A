@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: v
-# key: v
-# --
-\vb*{$1}$0

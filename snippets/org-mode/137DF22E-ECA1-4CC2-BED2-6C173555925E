@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: img
-# key: img
-# --
-#+ATTR_ORG: :width $1
-[[/Users/ilyaw39/Dropbox/大家好/repos/$2]]$0
