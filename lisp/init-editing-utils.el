@@ -67,17 +67,18 @@
 (global-hl-line-mode 1)
 
 (add-hook 'org-mode-hook 'visual-line-mode)
+(diminish 'visual-line-mode)
 
 
 ;;; Deleting
 (delete-selection-mode 1)
-;; (use-package smart-hungry-delete
-;;   :bind
-;;   (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
-;;    ([remap delete-backward-char] . smart-hungry-delete-backward-char)
-;;    ([remap delete-char] . smart-hungry-delete-forward-char))
-;;   :init
-;;   (smart-hungry-delete-add-default-hooks))
+(use-package smart-hungry-delete
+  :bind
+  (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
+   ([remap delete-backward-char] . smart-hungry-delete-backward-char)
+   ([remap delete-char] . smart-hungry-delete-forward-char))
+  :init
+  (smart-hungry-delete-add-default-hooks))
 
 
 ;; Newline behaviour
@@ -137,11 +138,6 @@
     (indent-region (point-min) (point-max) nil)
     (save-buffer)))
 (global-set-key (kbd "s-i") 'indent-buffer)
-
-
-;;; Literature related
-(setq save-abbrevs 'silent)
-(add-hook 'org-mode-hook 'abbrev-mode)
 
 
 (provide 'init-editing-utils)
