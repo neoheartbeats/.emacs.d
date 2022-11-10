@@ -14,7 +14,6 @@
   (org-roam-db-location (expand-file-name "org-roam.db" org-directory))
   (org-roam-directory org-directory)
   (org-roam-dailies-directory "dates/")
-  (org-roam-completion-everywhere t)
   (org-roam-db-gc-threshold most-positive-fixnum)
   :bind
   (("C-c n n" . org-id-get-create)

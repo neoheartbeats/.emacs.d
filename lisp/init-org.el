@@ -6,7 +6,7 @@
   :straight (:type built-in))
 
 ;; Org default directory
-(setq-default org-directory "/Users/ilyaw39/Dropbox/大家好/")
+(setq-default org-directory "/Users/ilyaw39/.org/")
 (setq-default bookmark-default-file (concat org-directory ".bookmarks.el"))
 
 ;; Open Org files with previewing
@@ -43,7 +43,7 @@
           ("[-]" . ?􀃞)
           ("[X]" . ?􀃲)))
   (prettify-symbols-mode 1))
-(add-hook 'org-mode-hook 'my/org--icons-toggle)
+(add-hook 'org-mode-hook #'my/org--icons-toggle)
 
 
 ;; Display Org list prefix as dots
@@ -111,14 +111,14 @@
 
 
 ;;; Setup Org Agenda
-;; (setq org-agenda-files '("/Users/ilyaw39/Dropbox/大家好/dates/"))
-;; (setq org-edit-timestamp-down-means-later t)
-;; (setq org-catch-invisible-edits 'show)
-;; (setq org-export-coding-system 'utf-8)
-;; (setq org-fast-tag-selection-single-key 'expert)
-;; (setq org-html-validation-link nil)
-;; (setq org-export-kill-product-buffer-when-displayed t)
-;; (setq org-tags-column 80)
+(setq org-agenda-files '("/Users/ilyaw39/.org/dates/"))
+(setq org-edit-timestamp-down-means-later t)
+(setq org-catch-invisible-edits 'show)
+(setq org-export-coding-system 'utf-8)
+(setq org-fast-tag-selection-single-key 'expert)
+(setq org-html-validation-link nil)
+(setq org-export-kill-product-buffer-when-displayed t)
+(setq org-tags-column 80)
 
 
 ;;; Org mode text edition
