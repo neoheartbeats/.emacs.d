@@ -1,7 +1,26 @@
-;;; init-temp.el --- Simple templates for Emacs -*- lexical-binding: t -*-
+;;; init-temp.el --- The template system for Emacs -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 
+
+;; Using `abbrev' (built-in)
+(use-package abbrev
+  :straight (:type built-in)
+  :diminish (abbrev-mode)
+  :custom
+  (save-abbrevs 'silent)
+  :hook
+  (org-mode . abbrev-mode))
+
+
+;; Using `dabbrev' (built-in)
+(use-package dabbrev
+  :straight (:type built-in)
+  :custom ;; Other useful Dabbrev configurations
+  (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
+
+
+;; Using `tempel'
 (use-package tempel
   :init ;; Setup completion at point
   (defun tempel-setup-capf ()
@@ -12,28 +31,16 @@
   (add-hook 'org-mode-hook 'tempel-setup-capf)
   :custom
   (tempel-path (expand-file-name "templates.lsp" user-emacs-directory))
-  :config
-  (defun my/tempel-maybe-expand ()
-    "Try to `org-cycle', `tempel-expand' at current cursor position.
-  If all failed, try to complete the common part with `indent-for-tab-command'."
-    (interactive)
-    (when (featurep 'tempel)
-      (let ((old-point (point))
-            (old-tick (buffer-chars-modified-tick))
-            (func-list
-             (if (equal major-mode 'org-mode) '(tempel-expand tempel-next org-cycle)
-               '(tempel-expand tempel-next))))
-        (catch 'func-suceed
-          (dolist (func func-list)
-            (ignore-errors (call-interactively func))
-            (unless (and (eq old-point (point))
-                         (eq old-tick (buffer-chars-modified-tick)))
-              (throw 'func-suceed t)))
-          (indent-for-tab-command)))))
+  (tempel-trigger-prefix "\\")
+
+  ;; Hook Tempel into the Abbrev mechanism
+  (global-tempel-abbrev-mode 1)
   :bind
-  ((:map org-mode-map
-         ("<tab>" . my/tempel-maybe-expand)
-         ("s-." . tempel-insert))))
+  ((:map tempel-map
+         ("M-/" . tempel-insert)
+         ("RET" . tempel-done)
+         ("<right>" . tempel-next)
+         ("<left>" . tempel-previous))))
 
 
 (provide 'init-temp)

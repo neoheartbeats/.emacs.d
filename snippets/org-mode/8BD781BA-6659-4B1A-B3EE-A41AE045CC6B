@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: p
-# key: p
-# --
-\left($1\right)$0
