@@ -6,6 +6,7 @@
 ;;; Eglot setup
 (use-package eglot
   :straight (:type built-in)
+  :defer t
   :custom
   (eglot-autoshutdown t)
   :config
@@ -25,7 +26,8 @@
 (add-hook 'c++-mode-hook 'eglot-ensure)
 
 ;; Using Homebrew's version of `clangd'
-(add-to-list 'eglot-server-programs '((c-mode c++-mode) . ("/opt/homebrew/opt/llvm/bin/clangd")))
+(add-to-list 'eglot-server-programs
+             '((c-mode c++-mode) . ("/opt/homebrew/opt/llvm/bin/clangd")))
 
 (defun my/compile--cc-file ()
   (interactive)
