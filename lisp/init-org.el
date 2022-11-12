@@ -126,5 +126,10 @@
 (setq-default org-cycle-separator-lines 2)
 
 
+;;; Org Export
+;; Export with undetermined links
+(setq org-export-with-broken-links t)
+
+
 (provide 'init-org)
 ;;; init-org.el ends here

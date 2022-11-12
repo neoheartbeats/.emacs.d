@@ -118,7 +118,6 @@
                    (interactive)
                    (org-roam-dailies-goto-today)
                    (goto-char (point-max))
-                   (indent-buffer)
                    (save-buffer)))))
 
 
