@@ -32,7 +32,7 @@
          :image-output-type "svg"
          :image-size-adjust (1.7 . 1.5)
          :latex-compiler ("latex -interaction nonstopmode -output-directory %o %f")
-         :image-converter ("dvisvgm %f -e -n -b 1 -c %S -o %O"))))
+         :image-converter ("dvisvgm %f -e -j -n -b 1 -c %S -o %O"))))
 
 
 ;;; Match the text baseline of an LaTeX fragment to the surrounding text
@@ -80,19 +80,20 @@ as a string.  It defaults to \"png\"."
 (setq org-latex-packages-alist
       '(("" "mathtools" t)
         ("" "siunitx" t)
+        ("" "statmath" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
         ("" "concmath" t)))
 
 
-(setq org-format-latex-options ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
-      '( :foreground default
-         :background "Transparent"
-         :scale 3.05
-         :html-foreground default
-         :html-background "Transparent"
-         :html-scale 1.2
-         :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
+;; (setq org-format-latex-options ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
+;;       '( :foreground default
+;;          :background "Transparent"
+;;          :scale 3.05
+;;          :html-foreground default
+;;          :html-background "Transparent"
+;;          :html-scale 1.2
+;;          :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
 
 
 ;;; Better LaTeX editor for Org mode

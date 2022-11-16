@@ -21,17 +21,5 @@
     (define-key magit-status-mode-map (kbd "C-M-<up>") 'magit-section-up)))
 
 
-;; Highlighting uncommitted changes in the left fringe
-;; (use-package diff-hl
-;;   :init
-;;   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
-;;   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-;;   :config
-;;   (global-diff-hl-mode 1)
-;;   (diff-hl-flydiff-mode 1)
-;;   :custom
-;;   (diff-hl-draw-borders nil))
-
-
 (provide 'init-git)
 ;;; init-git.el ends here

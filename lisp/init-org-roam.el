@@ -5,9 +5,11 @@
 
 ;;; Code:
 
-(use-package emacsql-sqlite-builtin :defer t)
+(use-package emacsql-sqlite-builtin
+  :defer t)
 
 (use-package org-roam
+  :straight (:host github :repo "org-roam/org-roam")
   :defer t
   :custom
   (org-roam-database-connector 'sqlite-builtin)
@@ -31,7 +33,6 @@
    ;; Open link from Org Roam window with mouse click
    (:map org-roam-mode-map
          ("<mouse-1>" . org-roam-preview-visit)))
-
   :config
   (org-roam-db-autosync-enable)
 
