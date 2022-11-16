@@ -5,21 +5,17 @@
 
 ;;; Eglot setup
 (use-package eglot
-  :straight (:type built-in)
-  :defer t
   :custom
   (eglot-autoshutdown t)
   :config
   (setq read-process-output-max (* 1024 1024))
   (define-key eglot-mode-map (kbd "s-i") 'eglot-format-buffer))
 
-(use-package consult-eglot)
-
 
 ;;; C/C++ support
 (require 'cc-mode)
 
-(setq-default c-default-style "r&k")
+(setq-default c-default-style "k&r")
 (setq-default c-basic-offset 4)
 
 (add-hook 'c-mode-hook 'eglot-ensure)

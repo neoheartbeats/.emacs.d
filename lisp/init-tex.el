@@ -80,6 +80,7 @@ as a string.  It defaults to \"png\"."
 (setq org-latex-packages-alist
       '(("" "mathtools" t)
         ("" "siunitx" t)
+        ("" "statmath" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
         ("" "concmath" t)))
