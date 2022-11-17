@@ -83,17 +83,17 @@ as a string.  It defaults to \"png\"."
         ("" "statmath" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
-        ("" "concmath" t)))
+        ("sfmath" "kpfonts" t))) ;concmath
 
 
-;; (setq org-format-latex-options ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
-;;       '( :foreground default
-;;          :background "Transparent"
-;;          :scale 3.05
-;;          :html-foreground default
-;;          :html-background "Transparent"
-;;          :html-scale 1.2
-;;          :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
+(setq org-format-latex-options ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
+      '( :foreground default
+         :background "Transparent"
+         :scale 1.5
+         :html-foreground default
+         :html-background "Transparent"
+         :html-scale 1.2
+         :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
 
 
 ;;; Better LaTeX editor for Org mode
