@@ -117,6 +117,15 @@
 (blink-cursor-mode -1)
 (setq-default cursor-type '(bar . 1))
 
+;; Blink cursor with `beacon'.
+;; This also helps refresh buffers.
+(use-package beacon
+  :init
+  (setq beacon-lighter "")
+  (setq beacon-size 25)
+  :config
+  (beacon-mode 1))
+
 ;; Always show the pointer's position
 (setq make-pointer-invisible nil)
 

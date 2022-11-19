@@ -54,7 +54,7 @@ Calculate `ascent' with the data collected in IMAGEFILE."
          (min-y (string-to-number (nth 1 viewbox)))
          (height (string-to-number (nth 3 viewbox)))
          (ascent (round (* -100 (/ min-y height)))))
-    (if (or (< ascent 0) (> ascent 100))
+    (if (or (< ascent 0) (>= ascent 100))
         'center
       ascent)))
 
@@ -83,13 +83,13 @@ as a string.  It defaults to \"png\"."
         ("" "statmath" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
-        ("sfmath" "kpfonts" t))) ;concmath
+        ("" "concmath" t)))
 
 
 (setq org-format-latex-options ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
       '( :foreground default
          :background "Transparent"
-         :scale 1.5
+         :scale 1.55
          :html-foreground default
          :html-background "Transparent"
          :html-scale 1.2

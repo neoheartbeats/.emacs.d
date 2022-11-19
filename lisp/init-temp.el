@@ -37,7 +37,6 @@
   (global-tempel-abbrev-mode 1)
   :bind
   ((:map tempel-map
-         ("M-/" . tempel-insert)
          ("RET" . tempel-done)
          ("<right>" . tempel-next)
          ("<left>" . tempel-previous))))

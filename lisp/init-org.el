@@ -3,8 +3,7 @@
 ;;; Code:
 
 (use-package org
-  ;; :straight (:type built-in)
-  )
+  :straight (:type built-in))
 
 ;; Org default directory
 (setq-default org-directory "/Users/ilyaw39/.org/")
