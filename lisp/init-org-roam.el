@@ -35,6 +35,7 @@
          ("<mouse-1>" . org-roam-preview-visit)))
   :config
   (org-roam-db-autosync-enable)
+  (setq org-roam-complete-everywhere t)
 
   ;; Like `org-roam-completion-everywhere', but
   ;; this function perform the completion in brackets
