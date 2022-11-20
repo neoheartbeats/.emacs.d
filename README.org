@@ -1,5 +1,1 @@
-* Spikemacs
-
-Funding for this program was made possible by viewers like you.
-
 A simple setup for Emacs@29 focusing on scientific writing in Org mode.
