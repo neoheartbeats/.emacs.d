@@ -5,7 +5,7 @@
 
 ;;; Eglot setup
 (use-package eglot
-  ;; :straight (:type built-in)
+  :straight (:type built-in)
   :custom
   (eglot-autoshutdown t)
   :config
@@ -43,7 +43,6 @@
   :config
 
   ;; Python executable file location
-  (setq org-babel-python-command "python3.10")
   (setq python-shell-interpreter "python3.10")
 
   ;; Ignore the warnings

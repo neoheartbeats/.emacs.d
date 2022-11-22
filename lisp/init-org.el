@@ -101,6 +101,12 @@
                                (python . t)
                                (latex . t)))
 
+;; Using `zsh' as default
+(setq-default shell-file-name "/bin/zsh")
+
+;; Language specified settings
+(setq-default org-babel-python-command "python3.10")
+
 ;; Hide unwanted shell warning messages
 (advice-add 'sh-set-shell :around
             (lambda (orig-fun &rest args)
@@ -109,14 +115,14 @@
 
 
 ;;; Setup Org Agenda
-(setq org-agenda-files '("/Users/ilyaw39/.org/dates/"))
-(setq org-edit-timestamp-down-means-later t)
-(setq org-catch-invisible-edits 'show)
-(setq org-export-coding-system 'utf-8)
-(setq org-fast-tag-selection-single-key 'expert)
-(setq org-html-validation-link nil)
-(setq org-export-kill-product-buffer-when-displayed t)
-(setq org-tags-column 80)
+;; (setq org-agenda-files '("/Users/ilyaw39/.org/dates/"))
+;; (setq org-edit-timestamp-down-means-later t)
+;; (setq org-catch-invisible-edits 'show)
+;; (setq org-export-coding-system 'utf-8)
+;; (setq org-fast-tag-selection-single-key 'expert)
+;; (setq org-html-validation-link nil)
+;; (setq org-export-kill-product-buffer-when-displayed t)
+;; (setq org-tags-column 80)
 
 
 ;;; Org mode text edition

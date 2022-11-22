@@ -35,11 +35,11 @@
   ;;       ("<mouse-1>" . org-roam-preview-visit)))
   :config
   (org-roam-db-autosync-enable)
-  (org-roam-complete-everywhere)
+  ;; (org-roam-complete-everywhere)
 
   ;; Like `org-roam-completion-everywhere', but
   ;; this function perform the completion in brackets
-  (org-roam-complete-link-at-point)
+  ;; (org-roam-complete-link-at-point)
 
   ;;; Configure `org-roam-capture-templates'
   ;; Capture template for `org-roam-dailies'
@@ -89,7 +89,7 @@
   ;;   (when-let ((backlinks (seq-sort #'org-roam-backlinks-sort
   ;;                                   (org-roam-backlinks-get node :unique unique))))
   ;;     (magit-insert-section (org-roam-backlinks)
-  ;;       (magit-insert-heading "\n􀉣 LINKED REFERENCES")
+  ;;       (magit-insert-heading "\n LINKED REFERENCES")
   ;;       (insert "\n")
   ;;       (dolist (backlink backlinks)
   ;;         (org-roam-node-insert-section
@@ -119,7 +119,6 @@
   ((after-init . (lambda ()
                    (interactive)
                    (org-roam-dailies-goto-today)
-                   (goto-char (point-max))
                    (save-buffer)))))
 
 
