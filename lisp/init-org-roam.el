@@ -35,11 +35,11 @@
   ;;       ("<mouse-1>" . org-roam-preview-visit)))
   :config
   (org-roam-db-autosync-enable)
-  (org-roam-complete-everywhere)
+  ;; (org-roam-complete-everywhere)
 
   ;; Like `org-roam-completion-everywhere', but
   ;; this function perform the completion in brackets
-  (org-roam-complete-link-at-point)
+  ;; (org-roam-complete-link-at-point)
 
   ;;; Configure `org-roam-capture-templates'
   ;; Capture template for `org-roam-dailies'
