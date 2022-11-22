@@ -89,7 +89,7 @@
   ;;   (when-let ((backlinks (seq-sort #'org-roam-backlinks-sort
   ;;                                   (org-roam-backlinks-get node :unique unique))))
   ;;     (magit-insert-section (org-roam-backlinks)
-  ;;       (magit-insert-heading "\n􀉣 LINKED REFERENCES")
+  ;;       (magit-insert-heading "\n LINKED REFERENCES")
   ;;       (insert "\n")
   ;;       (dolist (backlink backlinks)
   ;;         (org-roam-node-insert-section
@@ -119,7 +119,6 @@
   ((after-init . (lambda ()
                    (interactive)
                    (org-roam-dailies-goto-today)
-                   (goto-char (point-max))
                    (save-buffer)))))
 
 

@@ -5,7 +5,7 @@
 
 ;;; Eglot setup
 (use-package eglot
-  ;; :straight (:type built-in)
+  :straight (:type built-in)
   :custom
   (eglot-autoshutdown t)
   :config
