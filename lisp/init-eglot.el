@@ -35,16 +35,22 @@
 
 
 ;;; Python support
-;; Python executable file location
-(setq org-babel-python-command "python3.10")
-(setq python-shell-interpreter "python3.10")
-
-;; Ignore the warnings
-(setq python-indent-guess-indent-offset t)
-(setq python-indent-guess-indent-offset-verbose nil)
-
 ;; Enable `eglot' support
 (add-hook 'python-mode-hook 'eglot-ensure)
+
+(use-package python-mode
+  :straight (:type built-in)
+  :config
+
+  ;; Python executable file location
+  (setq org-babel-python-command "python3.10")
+  (setq python-shell-interpreter "python3.10")
+
+  ;; Ignore the warnings
+  (setq python-indent-guess-indent-offset t)
+  (setq python-indent-guess-indent-offset-verbose nil)
+  :bind
+  (("M-p r" . run-python)))
 
 
 (provide 'init-eglot)
