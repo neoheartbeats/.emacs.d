@@ -89,7 +89,7 @@ as a string.  It defaults to \"png\"."
 (setq org-format-latex-options ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
       '( :foreground default
          :background "Transparent"
-         :scale 1.45
+         :scale 1.50
          :html-foreground default
          :html-background "Transparent"
          :html-scale 1.2
