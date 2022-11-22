@@ -3,14 +3,13 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	            :font "PragmataPro"
+	            :font "PragmataPro Mono Liga"
 	            :height 145)
 
 (set-face-attribute 'variable-pitch nil
                     :font "HarmonyOS Sans SC")
 
-(set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
+(set-fontset-font "fontset-default" 'unicode "PragmataPro")
 (set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
 (set-fontset-font "fontset-default" 'kana "HarmonyOS Sans SC")
 

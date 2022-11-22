@@ -14,12 +14,12 @@
 (setq org-startup-with-latex-preview t)
 
 
-(setq org-ellipsis " 􀄪")
+(setq org-ellipsis " ")
 
 ;; Org Modern
 (use-package org-modern
   :custom ;; Too much `svg' files declines the performance
-  (org-modern-star '("􀄩" "􀄩􀄩" "􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩􀄩"))
+  (org-modern-star '("" "" "" "" "" ""))
   (org-modern-list nil)
   (org-modern-checkbox nil)
   (org-modern-keyword nil)
@@ -28,20 +28,18 @@
 
 (defun my/org--icons-toggle ()
   (setq prettify-symbols-alist
-        '((":PROPERTIES:" . ?􀈭)
-          ("#+TITLE:" . ?􀉚)
-          ("#+AUTHOR:" . ?􀉩)
-          ("#+FILETAGS:" ?􀙬)
-          ("#+OPTIONS:" ?􀩚)
-          ("#+BEGIN_SRC" . ?􀄫)
-          ("#+END_SRC" . ?􀅽)
-          ("#+RESULTS:" . ?􀆀)
-          ("#+ATTR_ORG:" . ?􀈏)
-          ("#+ATTR_HTML:" . ?􀈏)
-          ("SCHEDULED:" . ?􀐫)
-          ("[ ]" . ?􀂒)
-          ("[-]" . ?􀃞)
-          ("[X]" . ?􀃲)))
+        '((":PROPERTIES:" . ?)
+          ("#+TITLE:" . ?)
+          ("#+AUTHOR:" . ?)
+          ("#+BEGIN_SRC" . ?)
+          ("#+END_SRC" . ?)
+          ("#+RESULTS:" . ?)
+          ("#+ATTR_ORG:" . ?)
+          ("#+ATTR_HTML:" . ?)
+          ("SCHEDULED:" . ?)
+          ("[ ]" . ?)
+          ("[-]" . ?)
+          ("[X]" . ?)))
   (prettify-symbols-mode 1))
 (add-hook 'org-mode-hook #'my/org--icons-toggle)
 
@@ -51,7 +49,7 @@
  'org-mode
  '(("^ *\\([-]\\) "
     (0 (prog1 ()
-	 (compose-region (match-beginning 1) (match-end 1) "􀄫"))))))
+	 (compose-region (match-beginning 1) (match-end 1) ""))))))
 
 
 ;; Setup pretty entities for unicode math symbols
