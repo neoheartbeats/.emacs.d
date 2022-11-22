@@ -4,7 +4,7 @@
 
 (set-face-attribute 'default nil
 	            :font "PragmataPro Mono Liga"
-	            :height 145)
+	            :height 150)
 
 (set-face-attribute 'variable-pitch nil
                     :font "HarmonyOS Sans SC")
