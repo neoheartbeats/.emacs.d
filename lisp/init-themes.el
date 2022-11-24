@@ -10,7 +10,6 @@
 (use-package emacs
   :init
   (setq modus-themes-bold-constructs t)
-  (setq modus-themes-variable-pitch-ui t)
   (setq modus-themes-inhibit-reload t)
   (setq modus-themes-syntax '(green-strings))
   (setq modus-themes-hl-line '(underline accented))
@@ -27,7 +26,7 @@
 
 
 ;;; Mode line settings
-;; (setq-default mode-line-compact t)
+(setq-default mode-line-compact t)
 
 
 ;;; Ef Themes
