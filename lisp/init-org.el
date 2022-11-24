@@ -101,6 +101,12 @@
                                (python . t)
                                (latex . t)))
 
+;; Using `zsh' as default
+(setq-default shell-file-name "/bin/zsh")
+
+;; Language specified settings
+(setq-default org-babel-python-command "python3.10")
+
 ;; Hide unwanted shell warning messages
 (advice-add 'sh-set-shell :around
             (lambda (orig-fun &rest args)

@@ -43,7 +43,6 @@
   :config
 
   ;; Python executable file location
-  (setq org-babel-python-command "python3.10")
   (setq python-shell-interpreter "python3.10")
 
   ;; Ignore the warnings

@@ -41,6 +41,8 @@
   (let ((org-format-latex-header
          "\\documentclass[preview]{standalone}
 \\usepackage[usenames]{color}
+\\renewcommand{\\geq}{\\geqslant}
+\\renewcommand{\\leq}{\\leqslant}
 [PACKAGES]
 [DEFAULT-PACKAGES]"))
     (apply orig args)))
@@ -79,11 +81,12 @@ as a string.  It defaults to \"png\"."
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
       '(("" "mathtools" t)
+        ("" "gensymb" t)
         ("" "siunitx" t)
         ("" "statmath" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
-        ("" "concmath" t)))
+        ("" "sansmathfonts" t)))
 
 
 (setq org-format-latex-options ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds

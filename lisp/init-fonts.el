@@ -3,8 +3,8 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	            :font "PragmataPro Mono Liga"
-	            :height 150)
+	            :font "Pumpin' Junkies"
+	            :height 140)
 
 (set-face-attribute 'variable-pitch nil
                     :font "HarmonyOS Sans SC")
