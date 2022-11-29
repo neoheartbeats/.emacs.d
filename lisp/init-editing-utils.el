@@ -45,7 +45,7 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (setq-default fill-column 95)
-;; (setq-default line-spacing 0.15)
+(setq-default line-spacing 0.15)
 
 
 (global-set-key (kbd "s-z") 'undo)
