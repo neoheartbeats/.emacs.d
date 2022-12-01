@@ -39,6 +39,7 @@
 (require 'init-straight)
 (use-package diminish)
 
+
 ;; Load components
 (require 'init-macos)
 (require 'init-fonts)
