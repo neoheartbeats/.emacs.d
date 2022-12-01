@@ -85,7 +85,8 @@ as a string.  It defaults to \"png\"."
         ("" "siunitx" t)
         ("" "statmath" t)
         ("" "physics" t)
-        ("version=4" "mhchem" t)))
+        ("version=4" "mhchem" t)
+        ("" "cmbright" t)))
 
 
 (setq org-format-latex-options ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds

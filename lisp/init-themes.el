@@ -7,22 +7,22 @@
 
 
 ;;; Modus Themes
-(use-package emacs
-  :init
-  (setq modus-themes-bold-constructs t)
-  (setq modus-themes-inhibit-reload t)
-  (setq modus-themes-syntax '(green-strings))
-  (setq modus-themes-hl-line '(underline accented))
-  (setq modus-themes-links '(neutral-underline no-color))
-  (setq modus-themes-prompts '(intense bold))
-  (setq modus-themes-mode-line '(borderless))
-  (setq modus-themes-region '(bg-only no-extend))
-  (setq modus-themes-headings '((0 . (overline background rainbow))
-                                (t . (rainbow))))
-  :config
-  (load-theme 'modus-vivendi t)
-  (set-face-attribute 'cursor nil
-                      :background (modus-themes-color 'magenta-intense)))
+;; (use-package emacs
+;;   :init
+;;   (setq modus-themes-bold-constructs t)
+;;   (setq modus-themes-inhibit-reload t)
+;;   (setq modus-themes-syntax '(green-strings))
+;;   (setq modus-themes-hl-line '(underline accented))
+;;   (setq modus-themes-links '(neutral-underline no-color))
+;;   (setq modus-themes-prompts '(intense bold))
+;;   (setq modus-themes-mode-line '(borderless))
+;;   (setq modus-themes-region '(bg-only no-extend))
+;;   (setq modus-themes-headings '((0 . (overline background rainbow))
+;;                                 (t . (rainbow))))
+;;   :config
+;;   (load-theme 'modus-vivendi t)
+;;   (set-face-attribute 'cursor nil
+;;                       :background (modus-themes-color 'magenta-intense)))
 
 
 ;;; Mode line settings
@@ -34,6 +34,14 @@
 ;;   :config
 ;;   (mapc #'disable-theme custom-enabled-themes)
 ;;   (load-theme 'ef-dark :no-confirm))
+
+
+;;; Standard Themes
+(use-package standard-themes
+  :straight (:host github :repo "protesilaos/standard-themes")
+  :config
+  (mapc #'disable-theme custom-enabled-themes)
+  (load-theme 'standard-dark :no-confirm))
 
 
 (provide 'init-themes)
