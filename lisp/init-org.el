@@ -105,7 +105,7 @@
 (setq-default shell-file-name "/bin/zsh")
 
 ;; Language specified settings
-(setq-default org-babel-python-command "python3.10")
+(setq-default org-babel-python-command "python")
 
 ;; Hide unwanted shell warning messages
 (advice-add 'sh-set-shell :around

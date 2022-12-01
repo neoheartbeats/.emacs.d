@@ -43,7 +43,7 @@
   :config
 
   ;; Python executable file location
-  (setq python-shell-interpreter "python3.10")
+  (setq python-shell-interpreter "python")
 
   ;; Ignore the warnings
   (setq python-indent-guess-indent-offset t)
