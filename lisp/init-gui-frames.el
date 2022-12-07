@@ -12,16 +12,17 @@
 
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-  (message "Funding for this program was made possible by viewers like you."))
+  ;; (message "Funding for this program was made possible by viewers like you.")
+  (message ""))
 
 
 ;; Better Emacs help and documentation
-(use-package helpful
-  :defer t
-  :bind
-  (("C-h f" . helpful-callable)
-   ("C-h v" . helpful-variable)
-   ("C-h k" . helpful-key)))
+;; (use-package helpful
+;;   :defer t
+;;   :bind
+;;   (("C-h f" . helpful-callable)
+;;    ("C-h v" . helpful-variable)
+;;    ("C-h k" . helpful-key)))
 
 
 ;; Display color at point

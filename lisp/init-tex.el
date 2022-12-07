@@ -86,13 +86,13 @@ as a string.  It defaults to \"png\"."
         ("" "statmath" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
-        ("" "cmbright" t)))
+        ("" "concmath" t)))
 
 
 (setq org-format-latex-options ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
       '( :foreground default
          :background "Transparent"
-         :scale 1.55
+         :scale 1.60
          :html-foreground default
          :html-background "Transparent"
          :html-scale 1.2
