@@ -53,11 +53,11 @@
                  nil
                  (window-parameters (mode-line-format . none)))))
 
-(use-package embark-consult
-  :after (embark consult)
-  :demand t
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+;; (use-package embark-consult
+;;   :after (embark consult)
+;;   :demand t
+;;   :hook
+;;   (embark-collect-mode . consult-preview-at-point-mode))
 
 
 ;; Enable rich annotations
@@ -66,12 +66,12 @@
   (marginalia-mode 1))
 
 
-(use-package which-key
-  :diminish (which-key-mode)
-  :custom
-  (which-key-idle-delay 0)
-  :config
-  (which-key-mode 1))
+;; (use-package which-key
+;;   :diminish (which-key-mode)
+;;   :custom
+;;   (which-key-idle-delay 0)
+;;   :config
+;;   (which-key-mode 1))
 
 
 
