@@ -102,6 +102,9 @@
 ;; Display line numbers while in `prog-mode'
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
+;; Fix the line number displaying width
+(setq-default display-line-numbers-grow-only t)
+
 ;; Enhance the performace of display
 (setq display-raw-bytes-as-hex t)
 (setq redisplay-skip-fontification-on-input t)
