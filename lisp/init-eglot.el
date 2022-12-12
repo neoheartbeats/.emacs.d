@@ -43,7 +43,7 @@
   :config
 
   ;; Python executable file location
-  (setq python-shell-interpreter "python")
+  (setq python-shell-interpreter "/opt/homebrew/anaconda3/bin/python")
 
   ;; Ignore the warnings
   (setq python-indent-guess-indent-offset t)

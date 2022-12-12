@@ -102,10 +102,10 @@
                                (latex . t)))
 
 ;; Using `zsh' as default
-(setq-default shell-file-name "/bin/zsh")
+;; (setq-default shell-file-name "/bin/zsh")
 
 ;; Language specified settings
-(setq-default org-babel-python-command "python")
+(setq-default org-babel-python-command "/opt/homebrew/anaconda3/bin/python")
 
 ;; Hide unwanted shell warning messages
 (advice-add 'sh-set-shell :around
