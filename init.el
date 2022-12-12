@@ -8,11 +8,6 @@
 ;;; Code:
 
 
-;; Personal information
-(setq user-full-name "Ilya.w") ; I love ya. windbell
-(setq user-mail-address "ilyaw3939@gmail.com")
-
-
 ;; Adjust garbage collection thresholds during startup
 (let ((normal-gc-cons-threshold (* 20 1024 1024))
       (init-gc-cons-threshold (* 128 1024 1024)))
@@ -46,13 +41,13 @@
 (require 'init-gui-frames)
 (require 'init-minibuff)
 (require 'init-corfu)
-;; (require 'init-temp)
 (require 'init-editing-utils)
-(require 'init-git)
+(require 'init-dirs)
+(require 'init-snippets)
+(require 'init-projects)
 (require 'init-org)
-(require 'init-org-roam)
 (require 'init-tex)
-;; (require 'init-eglot)
+(require 'init-eglot)
 
 
 (provide 'init)

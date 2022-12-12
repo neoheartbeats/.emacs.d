@@ -5,6 +5,8 @@
 
 ;;; Code:
 
+(defvar is-macos (string= system-type "darwin"))
+
 
 ;; macOS specified key mapping
 (setq mac-command-modifier 'super)
@@ -14,15 +16,22 @@
 ;;; Mouse scrolling
 ;; Smoother and nicer scrolling
 (setq scroll-margin 15)
-(setq next-line-add-newlines nil)
 (setq scroll-step 1)
-(setq scroll-conservatively 10000)
+(setq scroll-conservatively 15000)
 (setq mouse-wheel-follow-mouse t)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
-(setq-default scroll-preserve-screen-position t)
+(setq next-line-add-newlines nil)
+(setq mouse-wheel-scroll-amount '(1
+                                  ((shift) . 5)
+                                  ((control))))
 
-;; Enable `pixel-scroll-precision-mode'
-(pixel-scroll-precision-mode 1)
+(dolist (multiple '("" "double-" "triple-"))
+  (dolist (direction '("right" "left"))
+    (global-set-key (read-kbd-macro
+                     (concat "<" multiple "wheel-" direction ">")) 'ignore)))
+
+;; Enable `pixel-scroll-precision-mode' (Only in Emacs 29+)
+(when (fboundp 'pixel-scroll-precision-mode)
+  (pixel-scroll-precision-mode 1))
 
 ;; Disable auto copying
 (setq mouse-drag-copy-region nil)
@@ -47,10 +56,7 @@
 (global-set-key (kbd "<s-left>") 'switch-to-prev-buffer)
 
 ;; File management specified
-(global-set-key (kbd "s-n") 'find-file)
-(global-set-key (kbd "C-c p") (lambda ()
-				(interactive)
-				(find-file user-init-file)))
+(global-set-key (kbd "s-f") 'find-file)
 
 ;; Window specified
 ;; Go to other windows easily with one keystroke `cmd-'
@@ -59,18 +65,36 @@
 (global-set-key (kbd "s-3") (kbd "C-x 3")) ; cmd-3 split vertically
 
 
+;; Compiling emacs lisp code
+(define-key emacs-lisp-mode-map [f9] (lambda ()
+                                       (interactive)
+                                       (eval-buffer)))
+
+
 ;; Disable these keys
 (global-unset-key [swipe-left])
 (global-unset-key [swipe-right])
 (global-unset-key (kbd "C-z"))
 
 
-(when (string= system-type "darwin")
+(when is-macos
   (setq dired-use-ls-dired nil))
 
 
 ;; Speedup `regexp' searching
-(setq xref-search-program 'ripgrep)
+(setq-default xref-search-program 'ripgrep)
+(setq-default shell-file-name "/bin/zsh")
+
+
+;; System specified path
+(defvar my-home-path "/Users/ilyaw39/")
+(defvar my-dev-path (expand-file-name "Developer/" my-home-path))
+
+;; Homebrew specified path
+(defvar my-hb-bin-path "/opt/homebrew/bin/")
+(defvar my-hb-room-path "/opt/homebrew/Caskroom/")
+(defvar my-conda-exec-path (expand-file-name "anaconda3/bin/" my-hb-room-path))
+(defvar my-python-exec-path (expand-file-name "python3" my-conda-exec-path))
 
 
 (provide 'init-macos)

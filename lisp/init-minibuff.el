@@ -8,23 +8,26 @@
 (use-package vertico
   :straight (:files (:defaults "extensions/*.el"))
   :custom
-  (vertico-count 5)
+  (vertico-count 12) ; Number of candidates to display
   (vertico-cycle t)
+  (vertico-resize t)
   :config
   (vertico-mode 1)
   (use-package vertico-directory
     :straight nil
+    :after vertico
     :bind
     ((:map vertico-map
+           ("<tab>" . vertico-insert)
 	   ("RET" . vertico-directory-enter)
-	   ("DEL" . vertico-directory-delete-char)
-	   ("M-DEL" . vertico-directory-delete-word)))
+           ("DEL" . vertico-directory-delete-char)
+           ("S-DEL" . vertico-directory-delete-word)))
     :hook ;; Correct file path when changed
     (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
   ;; Persist history over Emacs restarts.
   (use-package savehist
-    :config
+    :init
     (savehist-mode 1)))
 
 (use-package consult
@@ -53,26 +56,17 @@
                  nil
                  (window-parameters (mode-line-format . none)))))
 
-;; (use-package embark-consult
-;;   :after (embark consult)
-;;   :demand t
-;;   :hook
-;;   (embark-collect-mode . consult-preview-at-point-mode))
+(use-package embark-consult
+  :after (embark consult)
+  :demand t
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 
 ;; Enable rich annotations
 (use-package marginalia
   :init
   (marginalia-mode 1))
-
-
-;; (use-package which-key
-;;   :diminish (which-key-mode)
-;;   :custom
-;;   (which-key-idle-delay 0)
-;;   :config
-;;   (which-key-mode 1))
-
 
 
 (provide 'init-minibuff)
