@@ -10,7 +10,6 @@
 (use-package emacs
   :init
   (setq modus-themes-bold-constructs t)
-  (setq modus-themes-inhibit-reload t)
   (setq modus-themes-syntax '(green-strings))
   (setq modus-themes-links '(no-underline))
   (setq modus-themes-prompts '(intense bold))

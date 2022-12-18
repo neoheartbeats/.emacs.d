@@ -3,15 +3,15 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	            :font "PragmataPro Mono"
+	            :font "Nodens"
 	            :height 140)
 
 (set-face-attribute 'variable-pitch nil
-                    :font "PragmataPro") ;; Noto Serif CJK SC
+                    :font "Noto Serif CJK SC") ;; Noto Serif CJK SC
 
 (set-fontset-font "fontset-default" 'unicode "PragmataPro")
-(set-fontset-font "fontset-default" 'han "Lolita")
-(set-fontset-font "fontset-default" 'kana "Lolita")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'kana "Noto Serif CJK SC")
 
 
 ;; No gc for font caches

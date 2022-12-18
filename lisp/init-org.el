@@ -6,7 +6,7 @@
   :straight (:type built-in))
 
 ;; Org default directory
-(setq-default org-directory "/Users/ilyaw39/.org/")
+(setq-default org-directory "~/myProjects/myEden/")
 (setq-default bookmark-default-file (concat org-directory ".bookmarks.el"))
 
 ;; Open Org files with previewing
