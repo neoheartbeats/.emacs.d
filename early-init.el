@@ -24,7 +24,7 @@
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
 
-;; Make the background color transparent
+;; Make the background color transparent (Linux only)
 ;; (push '(alpha-background . 100) default-frame-alist)
 
 
@@ -33,7 +33,7 @@
 
 
 ;; Prevent `package.el' loading packages prior to their init-file loading
-;; This procedure is related to
+;; This procedure is required by
 ;; https://github.com/radian-software/straight.el/
 (setq package-enable-at-startup nil)
 
@@ -41,9 +41,6 @@
 ;; Config related to GccEmacs
 ;; Prevent unwanted runtime compilation for GccEmacs
 (setq native-comp-deferred-compilation nil)
-
-;; Initialise installed packages
-(setq package-enable-at-startup t)
 
 ;; Allow loading from the package cache
 (setq package-quickstart t)
@@ -55,7 +52,7 @@
 (setq inhibit-splash-screen t)
 (setq use-dialog-box nil)
 (setq use-file-dialog nil)
-(setq inhibit-startup-echo-area-message user-login-name)
+(setq inhibit-startup-echo-area-message t)
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-buffer-menu t)
 (setq inhibit-x-resources t)
@@ -63,9 +60,9 @@
 (setq native-comp-async-report-warnings-errors 'silent)
 
 
-;;; Byte compiled files
+;;; Byte compiled files (Basically helpless since Emacs 28)
 (setq load-prefer-newer t)
-(setq byte-compile-warnings '(cl-functions))
+;; (setq byte-compile-warnings '(cl-functions))
 
 
 (provide 'early-init)

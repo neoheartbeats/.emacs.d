@@ -11,7 +11,7 @@
   :straight (:files (:defaults "extensions/*.el"))
   :custom
   (corfu-auto t)
-  (corfu-auto-prefix 2)
+  (corfu-auto-prefix 3)
   (corfu-auto-delay 0.0)
   (corfu-quit-at-boundary t)
   (corfu-quit-no-match 'separator)
@@ -47,7 +47,6 @@
 ;; Add extensions
 (use-package cape
   :init ;; Add `completion-at-point-functions', used by `completion-at-point'
-  (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-history)
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-dict)

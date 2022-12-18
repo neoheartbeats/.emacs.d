@@ -48,15 +48,18 @@
 
 ;; File management specified
 (global-set-key (kbd "s-n") 'find-file)
-(global-set-key (kbd "C-c p") (lambda ()
-				(interactive)
-				(find-file user-init-file)))
 
 ;; Window specified
 ;; Go to other windows easily with one keystroke `cmd-'
 (global-set-key (kbd "s-1") (kbd "C-x 1")) ; cmd-1 kill other windows (keep 1)
 (global-set-key (kbd "s-2") (kbd "C-x 2")) ; cmd-2 split horizontally
 (global-set-key (kbd "s-3") (kbd "C-x 3")) ; cmd-3 split vertically
+
+
+;; Compiling emacs lisp code
+(define-key emacs-lisp-mode-map [f9] (lambda ()
+                                       (interactive)
+                                       (eval-buffer)))
 
 
 ;; Disable these keys
@@ -71,6 +74,15 @@
 
 ;; Speedup `regexp' searching
 (setq xref-search-program 'ripgrep)
+
+
+;; System specified path
+(defvar my-home-path "/Users/ilyaw39/")
+(defvar my-git-repo-path (expand-file-name "myProjects/" my-home-path))
+
+;; Homebrew specified path
+(defvar my-hb-bin-path "/opt/homebrew/bin/")
+(defvar my-python-exec-path (expand-file-name "python3" my-hb-bin-path))
 
 
 (provide 'init-macos)

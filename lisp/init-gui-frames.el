@@ -12,17 +12,7 @@
 
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-  ;; (message "Funding for this program was made possible by viewers like you.")
   (message ""))
-
-
-;; Better Emacs help and documentation
-;; (use-package helpful
-;;   :defer t
-;;   :bind
-;;   (("C-h f" . helpful-callable)
-;;    ("C-h v" . helpful-variable)
-;;    ("C-h k" . helpful-key)))
 
 
 ;; Display color at point
@@ -65,15 +55,6 @@
                                 end-of-buffer)))
     (command-error-default-function data context caller)))
 (setq command-error-function #'filter-command-error-function)
-
-;; Disable unnecessary warnings
-(put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(put 'erase-buffer 'disabled nil)
-(put 'scroll-left 'disabled nil)
-(put 'dired-find-alternate-file 'disabled nil)
 
 
 (provide 'init-gui-frames)

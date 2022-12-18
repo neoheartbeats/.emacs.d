@@ -10,7 +10,9 @@
   (eglot-autoshutdown t)
   :config
   (setq read-process-output-max (* 1024 1024))
-  (define-key eglot-mode-map (kbd "s-i") 'eglot-format-buffer))
+  :bind
+  ((:map eglot-mode-map
+         ("s-i" . 'eglot-format-buffer))))
 
 
 ;;; C/C++ support
@@ -19,12 +21,7 @@
 (setq-default c-default-style "k&r")
 (setq-default c-basic-offset 4)
 
-(add-hook 'c-mode-hook 'eglot-ensure)
 (add-hook 'c++-mode-hook 'eglot-ensure)
-
-;; Using Homebrew's version of `clangd'
-(add-to-list 'eglot-server-programs
-             '((c-mode c++-mode) . ("/opt/homebrew/opt/llvm/bin/clangd")))
 
 (defun my/compile--cc-file ()
   (interactive)
@@ -35,21 +32,27 @@
 
 
 ;;; Python support
+;; Note since `run-python' command is set globally,
+;; we will not use `:defer' in this module
 ;; Enable `eglot' support
 (add-hook 'python-mode-hook 'eglot-ensure)
 
 (use-package python-mode
   :straight (:type built-in)
-  :config
+  :defer t
+  :init
 
   ;; Python executable file location
-  (setq python-shell-interpreter "/opt/homebrew/anaconda3/bin/python")
+  (setq-default python-shell-interpreter my-python-exec-path)
+  :config
 
   ;; Ignore the warnings
   (setq python-indent-guess-indent-offset t)
   (setq python-indent-guess-indent-offset-verbose nil)
   :bind
   (("M-p r" . run-python)))
+
+
 
 
 (provide 'init-eglot)

@@ -46,11 +46,10 @@
 (require 'init-gui-frames)
 (require 'init-minibuff)
 (require 'init-corfu)
-(require 'init-temp)
 (require 'init-editing-utils)
-(require 'init-git)
+(require 'init-snippets)
+(require 'init-projects)
 (require 'init-org)
-(require 'init-org-roam)
 (require 'init-tex)
 (require 'init-eglot)
 

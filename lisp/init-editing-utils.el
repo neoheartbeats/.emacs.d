@@ -45,7 +45,7 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (setq-default fill-column 95)
-;; (setq-default line-spacing 0.15)
+(column-number-mode 1) ; Show current column number in mode line
 
 
 (global-set-key (kbd "s-z") 'undo)
@@ -82,16 +82,6 @@
   (smart-hungry-delete-add-default-hooks))
 
 
-;; Newline behaviour
-(global-set-key (kbd "RET") 'newline-and-indent)
-(defun my/newline-at-end-of-line ()
-  "Move to end of line, enter a newline, and reindent."
-  (interactive)
-  (move-end-of-line 1)
-  (newline-and-indent))
-(global-set-key (kbd "s-<return>") 'my/newline-at-end-of-line)
-
-
 ;;; Improve displaying
 ;; The nano style for truncated long lines
 (setq auto-hscroll-mode 'current-line)
@@ -121,15 +111,6 @@
 (blink-cursor-mode -1)
 (setq-default cursor-type '(bar . 1))
 
-;; Blink cursor with `beacon'.
-;; This also helps refresh buffers.
-;; (use-package beacon
-;;   :init
-;;   (setq beacon-lighter "")
-;;   (setq beacon-size 25)
-;;   :config
-;;   (beacon-mode 1))
-
 ;; Always show the pointer's position
 (setq make-pointer-invisible nil)
 
@@ -141,7 +122,7 @@
 
 
 ;; Show lambda as unicode
-(add-hook 'prog-mode-hook 'prettify-symbols-mode)
+(global-prettify-symbols-mode 1)
 
 
 ;; Formatting buffers
