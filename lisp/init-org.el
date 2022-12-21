@@ -131,7 +131,7 @@
 
   ;; Like `org-roam-completion-everywhere', but
   ;; this function perform the completion in brackets
-  ;; (org-roam-complete-link-at-point)
+  (org-roam-complete-link-at-point)
 
   ;;; Configure `org-roam-capture-templates'
   ;; Capture template for `org-roam-dailies'
@@ -151,29 +151,6 @@
            :empty-lines 1
            :immediate-finish t
            :kill-buffer t)))
-
-  ;; Objects displayed in Org Roam
-  (setq org-roam-mode-sections
-        '((org-roam-backlinks-section) ; Remove the `:unique' section
-          org-roam-reflinks-section))
-
-  ;;; Org Roam buffer configuration
-  ;; Overwrite this function to let `org-roam-preview-visit' always
-  ;; open in other window
-  (defun org-roam-preview-visit (file point &optional other-window)
-    (setq other-window t) ; By setting this variable to `t'
-    (interactive (list (org-roam-buffer-file-at-point 'assert)
-                       (oref (magit-current-section) point)
-                       current-prefix-arg))
-    (let ((buf (find-file-noselect file))
-          (display-buffer-fn (if other-window
-                                 #'switch-to-buffer-other-window
-                               #'pop-to-buffer-same-window)))
-      (funcall display-buffer-fn buf)
-      (with-current-buffer buf
-        (widen)
-        (goto-char point))
-      (when (org-invisible-p) (org-show-context)) buf))
 
   ;; Customize the content in `org-roam-buffer' backlinks
   (cl-defun org-roam-backlinks-section (node &key (unique nil))
@@ -211,8 +188,7 @@
                    (interactive)
                    (org-roam-dailies-goto-today)
                    (goto-char (point-max))
-                   (save-buffer)
-                   (org-roam-buffer-toggle)))))
+                   (save-buffer)))))
 
 
 (provide 'init-org)

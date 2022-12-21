@@ -90,7 +90,8 @@
 (setq auto-window-vscroll nil)
 
 ;; Display line numbers while in `prog-mode'
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+;; (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(global-display-line-numbers-mode 1)
 
 ;; Fix the line number displaying width
 (setq-default display-line-numbers-grow-only t)
