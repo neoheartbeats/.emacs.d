@@ -18,5 +18,10 @@
 (setq inhibit-compacting-font-caches t)
 
 
+;; Enable font ligatures (only in emacs-mac)
+(when (fboundp 'mac-auto-operator-composition-mode)
+  (mac-auto-operator-composition-mode 1))
+
+
 (provide 'init-fonts)
 ;;; init-fonts.el ends here

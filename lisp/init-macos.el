@@ -5,6 +5,8 @@
 
 ;;; Code:
 
+(defvar is-macos (string= system-type "darwin"))
+
 
 ;; macOS specified key mapping
 (setq mac-command-modifier 'super)
@@ -15,14 +17,11 @@
 ;; Smoother and nicer scrolling
 (setq scroll-margin 15)
 (setq next-line-add-newlines nil)
-(setq scroll-step 1)
-(setq scroll-conservatively 10000)
-(setq mouse-wheel-follow-mouse t)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 (setq-default scroll-preserve-screen-position t)
 
-;; Enable `pixel-scroll-precision-mode'
-(pixel-scroll-precision-mode 1)
+;; Enable `pixel-scroll-precision-mode' (Only in Emacs 29+)
+(when (fboundp 'pixel-scroll-precision-mode)
+  (pixel-scroll-precision-mode 1))
 
 ;; Disable auto copying
 (setq mouse-drag-copy-region nil)
@@ -68,7 +67,7 @@
 (global-unset-key (kbd "C-z"))
 
 
-(when (string= system-type "darwin")
+(when is-macos
   (setq dired-use-ls-dired nil))
 
 

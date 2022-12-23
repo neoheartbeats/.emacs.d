@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: source-code-block
+# name: sc
 # key: sc
 # --
 #+BEGIN_SRC $1

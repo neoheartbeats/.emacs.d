@@ -13,8 +13,8 @@
 (setq frame-inhibit-implied-resize t)
 
 (dolist (var '(default-frame-alist initial-frame-alist))
-  (add-to-list var '(width . (text-pixels . 1200)))
-  (add-to-list var '(height . (text-pixels . 840)))
+  (add-to-list var '(width . 125))
+  (add-to-list var '(height . 45))
   (add-to-list var '(alpha . (90 . 90))))
 
 ;; Faster to disable these here (before they've been initialized)
@@ -46,20 +46,16 @@
 (setq package-native-compile t)
 
 ;; Suppress GUI features
-(setq inhibit-splash-screen t)
 (setq use-dialog-box nil)
 (setq use-file-dialog nil)
+(setq inhibit-splash-screen t)
 (setq inhibit-startup-echo-area-message t)
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-buffer-menu t)
 (setq inhibit-x-resources t)
 (setq inhibit-default-init t)
+(setq load-prefer-newer t)
 (setq native-comp-async-report-warnings-errors 'silent)
-
-
-;;; Byte compiled files (Basically helpless since Emacs 28)
-;; (setq load-prefer-newer t)
-;; (setq byte-compile-warnings '(cl-functions))
 
 
 (provide 'early-init)

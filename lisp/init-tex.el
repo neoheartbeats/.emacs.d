@@ -32,7 +32,7 @@
          :image-output-type "svg"
          :image-size-adjust (1.7 . 1.5)
          :latex-compiler ("latex -interaction nonstopmode -output-directory %o %f")
-         :image-converter ("dvisvgm %f -e -j -n -b 3 -c %S -o %O"))))
+         :image-converter ("dvisvgm %f --no-fonts --exact-bbox -b 3 --scale=%S -o %O"))))
 
 
 ;;; Match the text baseline of an LaTeX fragment to the surrounding text
@@ -85,13 +85,14 @@ as a string.  It defaults to \"png\"."
         ("" "siunitx" t)
         ("" "statmath" t)
         ("" "physics" t)
-        ("version=4" "mhchem" )))
+        ("version=4" "mhchem" )
+        ("" "mlmodern" t)))
 
 
 (setq org-format-latex-options ; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
       '( :foreground default
          :background "Transparent"
-         :scale 1.70
+         :scale 1.10
          :html-foreground default
          :html-background "Transparent"
          :html-scale 1.2

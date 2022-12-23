@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: insert-inline-image
+# name: img
 # key: img
 # --
 #+ATTR_ORG: :width $1

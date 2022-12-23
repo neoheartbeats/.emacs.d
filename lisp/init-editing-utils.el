@@ -44,8 +44,7 @@
 (setq-default require-final-newline t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-(setq-default fill-column 95)
-(column-number-mode 1) ; Show current column number in mode line
+(setq-default fill-column 75)
 
 
 (global-set-key (kbd "s-z") 'undo)

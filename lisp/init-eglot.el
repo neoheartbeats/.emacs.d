@@ -5,7 +5,6 @@
 
 ;;; Eglot setup
 (use-package eglot
-  :straight (:type built-in)
   :custom
   (eglot-autoshutdown t)
   :config
@@ -44,7 +43,6 @@
 
   ;; Python executable file location
   (setq-default python-shell-interpreter my-python-exec-path)
-  :config
 
   ;; Ignore the warnings
   (setq python-indent-guess-indent-offset t)

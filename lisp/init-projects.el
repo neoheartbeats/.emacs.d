@@ -29,7 +29,7 @@
   (when (executable-find "rg")
     (setq-default projectile-generic-command "rg --files --hidden"))
   :custom
-  (projectile-mode-line-prefix " 􀤞") ; Indent displaying in mode line
+  (projectile-mode-line-prefix " Projs") ; Indent displaying in mode line
   :config
   (projectile-mode 1)
   :bind
