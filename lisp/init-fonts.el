@@ -4,14 +4,14 @@
 
 (set-face-attribute 'default nil
 	            :font "Nodens"
-	            :height 140)
+	            :height 145)
 
 (set-face-attribute 'variable-pitch nil
-                    :font "HarmonyOS Sans SC")
+                    :font "Noto Serif CJK SC")
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
-(set-fontset-font "fontset-default" 'kana "HarmonyOS Sans SC")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'kana "Noto Serif CJK SC")
 
 
 ;; No gc for font caches
