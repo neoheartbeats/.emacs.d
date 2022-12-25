@@ -77,7 +77,7 @@
 
 ;; System specified path
 (defvar my-home-path "/Users/ilyaw39/")
-(defvar my-git-repo-path (expand-file-name "myProjects/" my-home-path))
+(defvar my-dev-path (expand-file-name "Developer/" my-home-path))
 
 ;; Homebrew specified path
 (defvar my-hb-bin-path "/opt/homebrew/bin/")

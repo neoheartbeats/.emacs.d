@@ -22,14 +22,14 @@
 ;;; Project management using `projectile.el'
 (use-package projectile
   :init
-  (when (file-directory-p my-git-repo-path)
+  (when (file-directory-p my-dev-path)
     (let ((project-path-list '()))
-      (push my-git-repo-path project-path-list)
+      (push my-dev-path project-path-list)
       (setq projectile-project-search-path project-path-list)))
   (when (executable-find "rg")
     (setq-default projectile-generic-command "rg --files --hidden"))
   :custom
-  (projectile-mode-line-prefix " Projs") ; Indent displaying in mode line
+  (projectile-mode-line-prefix " Proj") ; Indent displaying in mode line
   :config
   (projectile-mode 1)
   :bind
