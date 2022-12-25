@@ -3,32 +3,36 @@
 ;;; Code:
 
 (use-package org
+  :defer t
   :init
-  (setq org-fold-core-style 'overlays))
+  (setq org-fold-core-style 'overlays)
+  :config
 
-;; Org default directory
-(setq-default org-directory (expand-file-name "myProjects/myEden/" my-home-path))
-(setq-default bookmark-default-file (expand-file-name ".bookmarks.el" org-directory))
+  ;; Org default directory
+  (setq-default org-directory
+                (expand-file-name "myProjects/myEden/" my-home-path))
+  (setq-default bookmark-default-file
+                (expand-file-name ".bookmarks.el" org-directory))
 
-;; Open Org files with previewing
-(setq org-startup-with-inline-images t)
-(setq org-startup-with-latex-preview t)
+  ;; Open Org files with previewing
+  (setq org-startup-with-inline-images t)
+  (setq org-startup-with-latex-preview t))
 
 
-(setq org-ellipsis " 􀍠")
-
 ;; Org Modern
 (use-package org-modern
   :custom
   (org-modern-star
    '("􀄩" "􀄩􀄩" "􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩􀄩"))
   :config
-  (global-org-modern-mode 1))
+  (global-org-modern-mode 1)
 
-
-;; Setup pretty entities for unicode math symbols
-(setq org-pretty-entities t)
-(setq org-pretty-entities-include-sub-superscripts nil)
+  ;; Symbols in Org mode
+  (setq org-ellipsis " 􀍠")
+
+  ;; Setup pretty entities for unicode math symbols
+  (setq org-pretty-entities t)
+  (setq org-pretty-entities-include-sub-superscripts nil))
 
 
 ;; Hide emphasis markders
@@ -40,8 +44,8 @@
 
 
 ;; Org images
-(setq org-image-actual-width '(350)) ; Fallback to `350'
 (with-eval-after-load 'org
+  (setq org-image-actual-width '(350)) ; Fallback to `350'
   (define-key org-mode-map (kbd "s-p") (lambda ()
                                          (interactive)
                                          (org-latex-preview)
@@ -52,32 +56,24 @@
 (setq org-return-follows-link t)
 (setq org-link-elisp-confirm-function nil)
 
-;; Open file links in current window
-(setq org-link-frame-setup
-      '((vm . vm-visit-folder-other-window)
-        (vm-imap . vm-visit-imap-folder-other-frame)
-        (gnus . org-gnus-no-new-news)
-        (file . find-file)
-        (wl . wl-other-frame)))
-
-
-;; Org source code blocks
-(setq-default org-confirm-babel-evaluate nil)
-(setq-default org-src-preserve-indentation t)
-(setq-default org-src-fontify-natively t)
-(setq-default org-src-tab-acts-natively t)
-(setq-default org-edit-src-content-indentation 0) ; No relative indentation for code blocks
-(setq-default org-fontify-whole-block-delimiter-line t) ; Fontify whole block
+;; Using shift-cursor to select text
+(setq org-support-shift-select t)
 
 ;; Load languages
-(org-babel-do-load-languages 'org-babel-load-languages
-                             '((emacs-lisp . t)
-                               (shell . t)
-                               (python . t)
-                               (latex . t)))
+(with-eval-after-load 'org-babel
 
-;; Using `zsh' as default
-(setq-default shell-file-name "/bin/zsh")
+  ;; Org source code blocks
+  (setq-default org-confirm-babel-evaluate nil)
+  (setq-default org-src-preserve-indentation t)
+  (setq-default org-src-fontify-natively t)
+  (setq-default org-src-tab-acts-natively t)
+  (setq-default org-edit-src-content-indentation 0)
+
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((emacs-lisp . t)
+                                 (shell . t)
+                                 (python . t)
+                                 (latex . t))))
 
 ;; Language specified settings
 (setq-default org-babel-python-command my-python-exec-path)
@@ -100,18 +96,24 @@
 
 
 (use-package org-roam
+  :defer t
+  :init
+  (use-package emacsql-sqlite-builtin
+    :defer t)
   :custom
+  (org-roam-database-connector 'sqlite-builtin)
   (org-roam-db-location (expand-file-name "org-roam.db" org-directory))
   (org-roam-directory org-directory)
   (org-roam-dailies-directory "dates/")
   (org-roam-completion-everywhere t)
   (org-roam-db-gc-threshold most-positive-fixnum)
   :bind
-  (("M-n n" . org-id-get-create)
-   ("M-n a" . org-roam-alias-add)
-   ("M-n f" . org-roam-node-find)
-   ("M-n i" . org-roam-node-insert)
-   ("M-n j" . org-roam-dailies-goto-today))
+  ((:map org-mode-map
+         ("s-n n" . org-id-get-create)
+         ("s-n a" . org-roam-alias-add)
+         ("s-n f" . org-roam-node-find)
+         ("s-n i" . org-roam-node-insert))
+   (("s-n j" . org-roam-dailies-goto-today)))
 
   ;; Key-bindings for `org-roam-dailies'
   (:map org-mode-map
@@ -138,13 +140,12 @@
 		    "#+TITLE: ${title}\n\n")
            :empty-lines 1
            :immediate-finish t
-           :kill-buffer t)))
-  :hook
-  ((after-init . (lambda ()
-                   (interactive)
-                   (org-roam-dailies-goto-today)
-                   (goto-char (point-max))
-                   (save-buffer)))))
+           :kill-buffer t))))
+
+
+(org-roam-dailies-goto-today)
+(goto-char (point-max))
+(save-buffer)
 
 
 (provide 'init-org)

@@ -26,6 +26,11 @@
     :after corfu
     :config
     (corfu-history-mode 1))
+
+  ;; Add `corfu-popupinfo' docs
+  (when (featurep 'corfu-popupinfo)
+    (with-eval-after-load 'corfu
+      (corfu-popupinfo-mode)))
   :bind
   (:map corfu-map
         ("<down>" . corfu-next)
@@ -36,11 +41,6 @@
   ((prog-mode org-mode) . corfu-mode))
 
 
-;; Setup `cape-dict-file'
-(setq cape-dict-file
-      (expand-file-name "dict/dict-en-utf8.txt" user-emacs-directory))
-
-
 ;; Add extensions
 (use-package cape
   :init ;; Add `completion-at-point-functions', used by `completion-at-point'
@@ -48,7 +48,12 @@
   (add-to-list 'completion-at-point-functions #'cape-dict)
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-keyword))
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  :config
+
+  ;; Setup `cape-dict-file'
+  (setq cape-dict-file
+        (expand-file-name "dict/dict-en-utf8.txt" user-emacs-directory)))
 
 
 (use-package orderless

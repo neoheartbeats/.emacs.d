@@ -16,8 +16,18 @@
 ;;; Mouse scrolling
 ;; Smoother and nicer scrolling
 (setq scroll-margin 15)
+(setq scroll-step 1)
+(setq scroll-conservatively 15000)
+(setq mouse-wheel-follow-mouse t)
 (setq next-line-add-newlines nil)
-(setq-default scroll-preserve-screen-position t)
+(setq mouse-wheel-scroll-amount '(1
+                                  ((shift) . 5)
+                                  ((control))))
+
+(dolist (multiple '("" "double-" "triple-"))
+  (dolist (direction '("right" "left"))
+    (global-set-key (read-kbd-macro
+                     (concat "<" multiple "wheel-" direction ">")) 'ignore)))
 
 ;; Enable `pixel-scroll-precision-mode' (Only in Emacs 29+)
 (when (fboundp 'pixel-scroll-precision-mode)
@@ -46,7 +56,7 @@
 (global-set-key (kbd "<s-left>") 'switch-to-prev-buffer)
 
 ;; File management specified
-(global-set-key (kbd "s-n") 'find-file)
+(global-set-key (kbd "s-f") 'find-file)
 
 ;; Window specified
 ;; Go to other windows easily with one keystroke `cmd-'
@@ -72,7 +82,8 @@
 
 
 ;; Speedup `regexp' searching
-(setq xref-search-program 'ripgrep)
+(setq-default xref-search-program 'ripgrep)
+(setq-default shell-file-name "/bin/zsh")
 
 
 ;; System specified path
@@ -82,7 +93,7 @@
 ;; Homebrew specified path
 (defvar my-hb-bin-path "/opt/homebrew/bin/")
 (defvar my-hb-room-path "/opt/homebrew/Caskroom/")
-(defvar my-conda-exec-path (expand-file-name "miniconda/base/bin/" my-hb-room-path))
+(defvar my-conda-exec-path (expand-file-name "anaconda3/bin/" my-hb-room-path))
 (defvar my-python-exec-path (expand-file-name "python3" my-conda-exec-path))
 
 
