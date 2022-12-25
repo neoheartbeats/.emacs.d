@@ -88,8 +88,7 @@
 ;; Disable auto vertical scroll for tall lines
 (setq auto-window-vscroll nil)
 
-;; Display line numbers while in `prog-mode'
-;; (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+;; Display line numbers
 (global-display-line-numbers-mode 1)
 
 ;; Fix the line number displaying width
