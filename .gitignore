@@ -35,3 +35,5 @@ tmp/.DS_Store
 /tmp/
 /xenops/
 *.html
+/dict/.DS_Store
+/projectile.cache
