@@ -5,6 +5,7 @@
 
 ;;; Eglot setup
 (use-package eglot
+  :defer t
   :custom
   (eglot-autoshutdown t)
   :config
@@ -12,6 +13,18 @@
   :bind
   ((:map eglot-mode-map
          ("s-i" . 'eglot-format-buffer))))
+
+
+;;; Syntax highlighting
+(use-package tree-sitter
+  :init
+  (setq treesit-extra-load-path
+        (expand-file-name "treesit/dist/" user-emacs-directory))
+  :config
+  (global-tree-sitter-mode 1))
+
+(use-package tree-sitter-langs
+  :after tree-sitter)
 
 
 ;;; C/C++ support

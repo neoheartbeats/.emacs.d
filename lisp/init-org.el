@@ -10,7 +10,7 @@
 
   ;; Org default directory
   (setq-default org-directory
-                (expand-file-name "myProjects/myEden/" my-home-path))
+                (expand-file-name "org-files/" my-dev-path))
   (setq-default bookmark-default-file
                 (expand-file-name ".bookmarks.el" org-directory))
 
@@ -60,7 +60,7 @@
 (setq org-support-shift-select t)
 
 ;; Load languages
-(with-eval-after-load 'org-babel
+(with-eval-after-load 'org
 
   ;; Org source code blocks
   (setq-default org-confirm-babel-evaluate nil)
@@ -142,10 +142,10 @@
            :immediate-finish t
            :kill-buffer t))))
 
-
-(org-roam-dailies-goto-today)
-(goto-char (point-max))
-(save-buffer)
+(with-eval-after-load 'org
+  (org-roam-dailies-goto-today)
+  (goto-char (point-max))
+  (save-buffer))
 
 
 (provide 'init-org)
