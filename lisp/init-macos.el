@@ -93,8 +93,7 @@
 ;; Homebrew specified path
 (defvar my-hb-bin-path "/opt/homebrew/bin/")
 (defvar my-hb-room-path "/opt/homebrew/Caskroom/")
-(defvar my-conda-exec-path (expand-file-name "anaconda3/bin/" my-hb-room-path))
-(defvar my-python-exec-path (expand-file-name "python3" my-conda-exec-path))
+(defvar my-python-exec-path (expand-file-name "python3" my-hb-bin-path))
 
 
 (provide 'init-macos)

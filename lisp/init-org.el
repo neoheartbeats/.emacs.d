@@ -35,9 +35,6 @@
   (setq org-pretty-entities-include-sub-superscripts nil))
 
 
-;; Hide emphasis markders
-(setq org-hide-emphasis-markers t)
-
 ;; Fold drawers by default
 (setq org-hide-drawer-startup t)
 (add-hook 'org-mode-hook #'org-hide-drawer-all)
@@ -74,9 +71,6 @@
                                  (shell . t)
                                  (python . t)
                                  (latex . t))))
-
-;; Language specified settings
-(setq-default org-babel-python-command my-python-exec-path)
 
 ;; Hide unwanted shell warning messages
 (advice-add 'sh-set-shell :around

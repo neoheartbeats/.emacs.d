@@ -56,6 +56,9 @@
 
   ;; Python executable file location
   (setq-default python-shell-interpreter my-python-exec-path)
+  (with-eval-after-load 'org
+    ;; Language specified settings
+    (setq-default org-babel-python-command my-python-exec-path))
 
   ;; Ignore the warnings
   (setq python-indent-guess-indent-offset t)
