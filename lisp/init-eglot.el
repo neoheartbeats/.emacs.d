@@ -3,67 +3,62 @@
 ;;; Code:
 
 
-;;; Eglot setup
-(use-package eglot
-  :defer t
-  :custom
-  (eglot-autoshutdown t)
-  :config
-  (setq read-process-output-max (* 1024 1024))
-  :bind
-  ((:map eglot-mode-map
-         ("s-i" . 'eglot-format-buffer))))
+(when (maybe-require-package 'eglot)
+  (maybe-require-package 'consult-eglot)
+  (setq eglot-autoshutdown t))
 
 
-;;; Syntax highlighting
-(use-package tree-sitter
-  :init
+(when (treesit-available-p)
   (setq treesit-extra-load-path
-        (expand-file-name "treesit/dist/" user-emacs-directory))
-  :config
-  (global-tree-sitter-mode 1))
+        (list (expand-file-name "libs/treesit/" user-emacs-directory)))
 
-(use-package tree-sitter-langs
-  :after tree-sitter)
-
-
-;;; C/C++ support
-(require 'cc-mode)
-
-(setq-default c-default-style "k&r")
-(setq-default c-basic-offset 4)
-
-(add-hook 'c++-mode-hook 'eglot-ensure)
-
-(defun my/compile--cc-file ()
-  (interactive)
-  (compile (format "g++-12 -o %s %s -g -lm -Wall"
-                   (file-name-sans-extension (buffer-name))
-                   (buffer-name))))
-(define-key c++-mode-map [f9] 'my/compile--cc-file)
+  (push '(sh-mode . bash-ts-mode) major-mode-remap-alist)
+  (push '(c-mode . c-ts-mode) major-mode-remap-alist)
+  (push '(c++-mode . c++-ts-mode) major-mode-remap-alist)
+  (push '(css-mode . css-ts-mode) major-mode-remap-alist)
+  (push '(javascript-mode . js-ts-mode) major-mode-remap-alist)
+  (push '(js-json-mode . json-ts-mode) major-mode-remap-alist)
+  (push '(python-mode . python-ts-mode) major-mode-remap-alist))
 
 
-;;; Python support
-;; Note since `run-python' command is set globally,
-;; we will not use `:defer' in this module
+;; C/C++ support
+;; (require 'cc-mode)
+
+;; (setq-default c-default-style "k&r")
+;; (setq-default c-basic-offset 4)
+
+;; (add-hook 'c++-mode-hook 'eglot-ensure)
+
+;; (defun my/compile--cc-file ()
+;;   (interactive)
+;;   (compile (format "g++-12 -o %s %s -g -lm -Wall"
+;;                    (file-name-sans-extension (buffer-name))
+;;                    (buffer-name))))
+;; (define-key c++-mode-map [f9] 'my/compile--cc-file)
+
+
+;; Python support
 ;; Enable `eglot' support
-(add-hook 'python-mode-hook 'eglot-ensure)
+;; (add-hook 'python-mode-hook #'eglot-ensure)
 
-(use-package python-mode
-  :straight (:type built-in)
-  :defer t
-  :init
+;; (with-eval-after-load 'python-mode
+;;   (defun my/run-current-python-file ()
+;;     "Run the current Python file."
+;;     (interactive)
+;;     (python-shell-send-buffer))
+;;   (define-key python-mode-map [f9] 'my/run-current-python-file))
 
-  ;; Python executable file location
-  (setq-default python-shell-interpreter my-python-exec-path)
+;; Python executable file location
+(setq-default python-interpreter "python3")
+(setq-default python-shell-interprete "python3")
+(with-eval-after-load 'org
+  (setq-default org-babel-python-command "python3"))
 
-  ;; Ignore the warnings
-  (setq python-indent-guess-indent-offset t)
-  (setq python-indent-guess-indent-offset-verbose nil)
-  :bind
-  (("M-p r" . run-python)))
+;; ;; Ignore the warnings
+;; (setq-default python-indent-guess-indent-offset t)
+;; (setq-default python-indent-guess-indent-offset-verbose nil)
 
-
+;; (global-set-key (kbd "M-p r") 'run-python)
 
 
 (provide 'init-eglot)

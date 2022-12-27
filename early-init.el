@@ -5,45 +5,30 @@
 
 ;;; Code:
 
-;;; Pixelwise resize windows
-(setq window-resize-pixelwise t)
-(setq frame-resize-pixelwise t)
-
+
 ;; Do not resize the frame at this early stage
 (setq frame-inhibit-implied-resize t)
 
-(dolist (var '(default-frame-alist initial-frame-alist))
-  (add-to-list var '(width . 125))
-  (add-to-list var '(height . 55))
-  (add-to-list var '(alpha . (90 . 90))))
+;; Pixelwise resize windows
+(setq window-resize-pixelwise t)
+(setq frame-resize-pixelwise t)
 
 ;; Faster to disable these here (before they've been initialized)
+(push '(width . 150) default-frame-alist)
+(push '(height . 45) default-frame-alist)
+(push '(alpha . (90 . 90)) default-frame-alist)
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
 
-
-;; Defer garbage collection further back in the startup process
-(setq gc-cons-threshold most-positive-fixnum)
+;; Do not allow loading from the package cache
+(setq package-quickstart nil)
 
-
-;; Prevent `package.el' loading packages prior to their init-file loading
-;; This procedure is required by
-;; https://github.com/radian-software/straight.el/
-(setq package-enable-at-startup nil)
-
-
-;; Config related to GccEmacs
 ;; Prevent unwanted runtime compilation for GccEmacs
 (setq native-comp-deferred-compilation nil)
-
-;; Allow loading from the package cache
-(setq package-quickstart t)
-
-;; Compile external packages for GccEmacs
-(setq package-native-compile t)
+(setq load-prefer-newer noninteractive)
 
 ;; Suppress GUI features
 (setq use-dialog-box nil)
@@ -54,8 +39,9 @@
 (setq inhibit-startup-buffer-menu t)
 (setq inhibit-x-resources t)
 (setq inhibit-default-init t)
-(setq load-prefer-newer t)
+(setq inhibit-compacting-font-caches t)
 (setq native-comp-async-report-warnings-errors 'silent)
+(setq idle-update-delay 1.0)
 
 
 (provide 'early-init)

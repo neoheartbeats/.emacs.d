@@ -4,64 +4,58 @@
 
 (setq tab-always-indent 'complete)
 
-(use-package corfu
-  :straight (:files (:defaults "extensions/*.el"))
-  :init
+
+(setq read-buffer-completion-ignore-case t)
+(setq read-file-name-completion-ignore-case t)
+
+(when (maybe-require-package 'orderless)
+  (require 'orderless)
+  (setq-default completion-styles '(orderless basic)))
+
+(setq completion-category-defaults nil)
+(setq completion-category-overrides nil)
+
+(setq completion-cycle-threshold 4)
+(setq completion-ignore-case t)
+
+
+(when (maybe-require-package 'cape)
+  (push 'cape-dabbrev completion-at-point-functions)
+  (push 'cape-file completion-at-point-functions)
+  (push 'cape-file completion-at-point-functions)
+
+  (with-eval-after-load 'cape
+    (setq cape-dabbrev-min-length 3)))
+
+
+(when (maybe-require-package 'corfu)
   (setq-default corfu-auto t)
+  (setq-default corfu-auto-delay 0)
+  (setq-default corfu-auto-prefix 2)
+  (setq-default corfu-cycle t)
+  (setq-default corfu-quit-at-boundary t)
+  (setq-default corfu-quit-no-match 'separator)
+  (setq-default corfu-preselect 'first)
+
   (with-eval-after-load 'eshell
-    (add-hook 'eshell-mode-hook (lambda ()
-                                  (setq-local corfu-auto nil))))
-  :custom
-  (corfu-auto-delay 0)
-  (corfu-quit-at-boundary t)
-  (corfu-quit-no-match 'separator)
-  (corfu-cycle t)
+    (add-hook 'eshell-mode-hook #'(lambda ()
+                                    (setq-local corfu-auto nil))))
 
-  ;; Cycling is used as long as number of candidates is
-  ;; less than 5
-  (completion-cycle-threshold 5)
-  :config ;; Remember the latest choice
-  (use-package corfu-history
-    :straight nil
-    :after corfu
-    :config
-    (corfu-history-mode 1))
+  (with-eval-after-load 'org
+    (add-hook 'org-mode-hook #'(lambda ()
+                                 (setq-local corfu-auto-prefix 1)
+                                 (setq-local completion-styles '(basic)))))
 
-  ;; Add `corfu-popupinfo' docs
-  (when (featurep 'corfu-popupinfo)
-    (with-eval-after-load 'corfu
-      (corfu-popupinfo-mode)))
-  :bind
-  (:map corfu-map
-        ("<down>" . corfu-next)
-        ("<up>" . corfu-preselect)
-        ("<tab>" . corfu-quit)
-        ("<escape>" . corfu-quit))
-  :hook
-  ((prog-mode org-mode) . corfu-mode))
+  (add-hook 'after-init-hook #'global-corfu-mode)
 
-
-;; Add extensions
-(use-package cape
-  :init ;; Add `completion-at-point-functions', used by `completion-at-point'
-  (add-to-list 'completion-at-point-functions #'cape-history)
-  (add-to-list 'completion-at-point-functions #'cape-dict)
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-keyword)
-  :config
+  (with-eval-after-load 'corfu
+    (corfu-popupinfo-mode 1)
+    (corfu-history-mode 1)
 
-  ;; Setup `cape-dict-file'
-  (setq cape-dict-file
-        (expand-file-name "dict/dict-en-utf8.txt" user-emacs-directory)))
-
-
-(use-package orderless
-  :init
-  (setq completion-styles '(orderless basic))
-  :config
-  (setq completion-category-defaults nil)
-  (setq completion-category-override nil))
+    (define-key corfu-map (kbd "<down>") 'corfu-next)
+    (define-key corfu-map (kbd "<up>") 'corfu-previous)
+    (define-key corfu-map (kbd "<space>") 'corfu-quit)
+    (define-key corfu-map (kbd "<escape>") 'corfu-quit)))
 
 
 (provide 'init-corfu)

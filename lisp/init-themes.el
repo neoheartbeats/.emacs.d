@@ -6,25 +6,47 @@
 ;;; Code:
 
 
-;;; Modus Themes
-(use-package modus-themes
-  :init
-  (setq modus-themes-bold-constructs t)
-  (setq modus-themes-syntax '(green-strings))
-  (setq modus-themes-links '(no-color neutral-underline))
-  (setq modus-themes-prompts '(intense bold))
-  (setq modus-themes-mode-line '(borderless))
-  (setq modus-themes-region '(bg-only no-extend))
-  (setq modus-themes-headings '((t . (rainbow))))
-  :config
-  (modus-themes-load-themes)
-  (modus-themes-load-vivendi)
-  (set-face-attribute 'cursor nil
-                      :background (modus-themes-color 'magenta-intense)))
+(require-theme 'modus-themes)
+
+(setq custom-safe-themes t)
+(setq modus-themes-disable-other-themes t)
+
+(load-theme 'modus-vivendi t)
 
 
-;;; Mode line settings
-(setq-default mode-line-compact t)
+;; Customize faces
+(set-face-attribute 'button nil
+                    :underline "#959595"
+                    :foreground nil)
+
+(set-face-attribute 'fill-column-indicator nil
+                    :height 0.15)
+
+(set-face-attribute 'link nil
+                    :foreground nil)
+
+(set-face-background 'fringe (face-attribute 'default :background))
+
+;; Cursor faces
+(setq-default blink-cursor-mode nil)
+(setq-default cursor-type '(bar . 1))
+
+(set-cursor-color "#ff66ff")
+
+
+;; Mode line settings
+(setq mode-line-compact t)
+
+
+;; Font settings
+(set-face-attribute 'default nil
+	            :font "AdaptiveMono OT"
+	            :height 155)
+
+(set-fontset-font "fontset-default" 'unicode "SF Pro")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+
+(set-face-attribute 'italic nil :slant 'normal)
 
 
 (provide 'init-themes)

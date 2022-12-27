@@ -2,42 +2,84 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package org
-  :defer t
-  :init
-  (setq org-fold-core-style 'overlays)
-  :config
+(require 'org)
 
-  ;; Org default directory
-  (setq-default org-directory
-                (expand-file-name "org-files/" my-dev-path))
-  (setq-default bookmark-default-file
-                (expand-file-name ".bookmarks.el" org-directory))
+;; Org default directory
+(setq-default org-directory my-org-path)
 
-  ;; Open Org files with previewing
-  (setq org-startup-with-inline-images t)
-  (setq org-startup-with-latex-preview t))
+;; Open Org files with previewing
+(setq org-startup-with-inline-images t)
+(setq org-startup-with-latex-preview t)
+
+(require 'org-preview)
 
 
-;; Org Modern
-(use-package org-modern
-  :custom
-  (org-modern-star
-   '("􀄩" "􀄩􀄩" "􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩􀄩"))
-  :config
-  (global-org-modern-mode 1)
+(require-package 'org-cliplink)
 
-  ;; Symbols in Org mode
-  (setq org-ellipsis " 􀍠")
+(define-key global-map (kbd "C-c l") 'org-store-link)
+(define-key global-map (kbd "C-c a") 'org-agenda)
 
-  ;; Setup pretty entities for unicode math symbols
-  (setq org-pretty-entities t)
-  (setq org-pretty-entities-include-sub-superscripts nil))
+;; Various preferences
+(setq org-log-done t)
+(setq org-edit-timestamp-down-means-later t)
+(setq org-hide-emphasis-markers t)
+(setq org-catch-invisible-edits 'show)
+(setq org-export-coding-system 'utf-8)
+(setq org-fast-tag-selection-single-key 'expert)
+(setq org-html-validation-link nil)
+(setq org-export-kill-product-buffer-when-displayed t)
+(setq org-tags-column 80)
 
 
-;; Hide emphasis markders
+(when (maybe-require-package 'org-modern)
+  (setq org-modern-star '("􀄩"))
+  (setq org-modern-hide-stars "􀄩")
+  (setq org-modern-list '((?- . "•")))
+  (setq org-modern-checkbox '((?X . "􀃠")
+                              (?- . "􀃞")
+                              (?\s . "􀂒")))
+  (setq org-modern-block-name '(("src" . ("􀓪" "􀅽"))))
+  (setq org-modern-table-vertical 1)
+  (setq org-modern-keyword nil)
+  (setq org-modern-block-fringe nil)
+
+  (add-hook 'org-mode-hook #'org-modern-mode)
+  (add-hook 'org-agenda-finalize-hook #'org-modern-agenda))
+
+
+;; Symbols in Org mode
+(add-hook 'org-mode-hook #'(lambda ()
+                             (setq prettify-symbols-alist
+                                   '((":PROPERTIES:" . ?􀈣)
+                                     (":ID:" . ?􀅳)
+                                     (":END:" . ?􀅽)
+                                     ("#+TITLE:" . ?􀎞)
+                                     ("#+RESULTS:" . ?􀆀)
+                                     ("#+ATTR_ORG:" . ?􀣋)
+                                     ("SCHEDULED:" . ?􀧞)
+                                     ("CLOSED:" .?􁜒)))
+                             (prettify-symbols-mode 1)))
+
+(setq org-ellipsis " 􀍠")
 (setq org-hide-emphasis-markers t)
 
+;; Draw fringes in Org mode
+(defun my/toggle-internal-fringes ()
+  (setq left-margin-width 5)
+  (setq right-margin-width 5)
+  (set-window-buffer nil (current-buffer)))
+
+(add-hook 'org-mode-hook #'my/toggle-internal-fringes)
+
+;; Setup pretty entities for unicode math symbols
+(setq org-pretty-entities t)
+(setq org-pretty-entities-include-sub-superscripts nil)
+
+
+(setq org-catch-invisible-edits 'show)
+(setq org-insert-heading-respect-content t)
+
+
 ;; Fold drawers by default
 (setq org-hide-drawer-startup t)
 (add-hook 'org-mode-hook #'org-hide-drawer-all)
@@ -45,7 +87,7 @@
 
 ;; Org images
 (with-eval-after-load 'org
-  (setq org-image-actual-width '(350)) ; Fallback to `350'
+  (setq org-image-actual-width '(300)) ; Fallback to `300'
   (define-key org-mode-map (kbd "s-p") (lambda ()
                                          (interactive)
                                          (org-latex-preview)
@@ -56,7 +98,10 @@
 (setq org-return-follows-link t)
 (setq org-link-elisp-confirm-function nil)
 
-;; Using shift-cursor to select text
+(setq-default org-link-frame-setup  ; Open files in current frame
+              (cl-acons 'file #'find-file org-link-frame-setup))
+
+;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
 
 ;; Load languages
@@ -70,82 +115,62 @@
   (setq-default org-edit-src-content-indentation 0)
 
   (org-babel-do-load-languages 'org-babel-load-languages
-                               '((emacs-lisp . t)
-                                 (shell . t)
+                               '((shell . t)
+                                 (emacs-lisp . t)
                                  (python . t)
                                  (latex . t))))
 
-;; Language specified settings
-(setq-default org-babel-python-command my-python-exec-path)
-
-;; Hide unwanted shell warning messages
-(advice-add 'sh-set-shell :around
-            (lambda (orig-fun &rest args)
-              (cl-letf (((symbol-function 'message) #'ignore))
-                (apply orig-fun args))))
-
 
-;;; Org mode text edition
+;; Org mode text edition
 ;; Number of empty lines needed to keep an empty line between collapsed trees
 (setq-default org-cycle-separator-lines 2)
 
 
-;;; Org Export
-;; Export with undetermined links
-(setq org-export-with-broken-links t)
+(when (require-package 'org-roam)
+  (require-package 'emacsql-sqlite-builtin)
+  (setq org-roam-database-connector 'sqlite-builtin))
 
-
-(use-package org-roam
-  :defer t
-  :init
-  (use-package emacsql-sqlite-builtin
-    :defer t)
-  :custom
-  (org-roam-database-connector 'sqlite-builtin)
-  (org-roam-db-location (expand-file-name "org-roam.db" org-directory))
-  (org-roam-directory org-directory)
-  (org-roam-dailies-directory "dates/")
-  (org-roam-completion-everywhere t)
-  (org-roam-db-gc-threshold most-positive-fixnum)
-  :bind
-  ((:map org-mode-map
-         ("s-n n" . org-id-get-create)
-         ("s-n a" . org-roam-alias-add)
-         ("s-n f" . org-roam-node-find)
-         ("s-n i" . org-roam-node-insert))
-   (("s-n j" . org-roam-dailies-goto-today)))
+(setq org-roam-db-location (expand-file-name "org-roam.db" org-directory))
+(setq org-roam-directory org-directory)
+(setq org-roam-dailies-directory "dates/")
+(setq org-roam-completion-everywhere t)
+(setq org-roam-db-gc-threshold most-positive-fixnum)
 
-  ;; Key-bindings for `org-roam-dailies'
-  (:map org-mode-map
-        ("<s-up>" . org-roam-dailies-goto-previous-note)
-        ("<s-down>" . org-roam-dailies-goto-next-note))
-  :config
-  (org-roam-db-autosync-enable)
-  (org-roam-complete-everywhere)
+;; Capture template for `org-roam-dailies'
+(setq org-roam-dailies-capture-templates
+      '(("d" "default" entry "\n* %?"
+         :target (file+head "%<%Y-%m-%d>.org"
+                            "#+TITLE: %<%Y-%m-%d • %A>\n")
+         :empty-lines 1)))
 
-  ;;; Configure `org-roam-capture-templates'
-  ;; Capture template for `org-roam-dailies'
-  (setq org-roam-dailies-capture-templates
-        '(("d" "default" entry "\n* %?"
-           :target (file+head
-		    "%<%Y-%m-%d>.org"
-		    "#+TITLE: %<%A-%Y-%m-%d>.\n\n\n")
-           :empty-lines 1)))
+;; Default capture template for notes
+(setq org-roam-capture-templates
+      '(("d" "default" plain "%?"
+         :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org"
+                            "#+TITLE: ${title}\n")
+         :empty-lines 1
+         :unnarrowed t
+         :immediate-finish t)))
 
-  ;; Default capture template
-  (setq org-roam-capture-templates
-	'(("d" "default" entry "\n* %?"
-           :target (file+head
-                    "notes/${slug}.org"
-		    "#+TITLE: ${title}\n\n")
-           :empty-lines 1
-           :immediate-finish t
-           :kill-buffer t))))
+(with-eval-after-load 'org-roam
+  (org-roam-db-autosync-mode 1)
 
-(with-eval-after-load 'org
-  (org-roam-dailies-goto-today)
-  (goto-char (point-max))
-  (save-buffer))
+  (global-unset-key (kbd "s-n"))
+  (define-key global-map (kbd "s-n j") 'org-roam-dailies-goto-today)
+
+  (define-key org-mode-map (kbd "s-n n") 'org-roam-node-insert)
+  (define-key org-mode-map (kbd "s-n a") 'org-roam-alias-add)
+  (define-key org-mode-map (kbd "s-n f") 'org-roam-node-find)
+
+  (define-key org-mode-map (kbd "s-<up>") 'org-roam-dailies-goto-previous-note)
+  (define-key org-mode-map (kbd "s-<down>") 'org-roam-dailies-goto-next-note))
+
+;; Open today's note when startup
+(add-hook 'after-init-hook #'(lambda ()
+                               (interactive)
+                               (org-roam-dailies-goto-today)
+                               (save-buffer)
+                               (goto-char (point-max))))
 
 
 (provide 'init-org)

@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: inith
+# key: inith
+# --
+;;; init-$1.el --- $2 -*- lexical-binding: t -*-
+;;; Commentary:$3
+;;; Code:
+$0
+
+(provide 'init-$1)
+;;; init-$1.el ends here

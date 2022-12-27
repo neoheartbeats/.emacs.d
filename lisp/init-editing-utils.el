@@ -6,82 +6,96 @@
 ;;; Code:
 
 (when (fboundp 'electric-pair-mode)
-  (add-hook 'after-init-hook 'electric-pair-mode))
-(add-hook 'after-init-hook 'electric-indent-mode)
+  (add-hook 'after-init-hook #'electric-pair-mode)
+  (add-hook 'after-init-hook #'electric-indent-mode))
+
+(setq-default indent-tabs-mode nil)
 
 
 ;; Some basic preferences
 (setq-default case-fold-search t)
-(setq-default confirm-nonexistent-file-or-buffer nil)
 (setq-default create-lockfiles nil)
 (setq-default ediff-split-window-function 'split-window-horizontally)
-(setq-default ediff-window-setup-function 'ediff-setup-windows-plain)
-(setq-default indent-tabs-mode nil)
 (setq-default auto-save-default nil)
 (setq-default make-backup-files nil)
 (setq-default mark-even-if-inactive nil)
+(setq-default mouse-yank-at-point t)
 (setq-default ring-bell-function 'ignore)
 (setq-default save-interprogram-paste-before-kill t)
 (setq-default save-silently t)
 (setq-default set-mark-command-repeat-pop t)
-(setq-default sentence-end-double-space nil) ; Sentences show end with one space
+(setq-default sentence-end-double-space nil)
 (setq-default truncate-lines nil)
 (setq-default truncate-partial-width-windows nil)
 (setq-default use-short-answers t)
 (setq-default help-window-select t) ; Use `q' to close the help window
 
 
-;; Essential key bindings
-(global-set-key (kbd "s-a") 'mark-whole-buffer)
-(global-set-key (kbd "s-c") 'kill-ring-save)
-(global-set-key (kbd "s-v") 'yank)
-(global-set-key (kbd "s-x") 'kill-region)
-(global-set-key (kbd "s-<backspace>") 'kill-whole-line)
-
-
-;;; Formatting files
+;; Formatting files
 ;; Add a new line in the end of buffer while saving
 (setq-default require-final-newline t)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-(setq-default fill-column 75)
+;; Format current buffer while saving
+(add-hook 'before-save-hook #'(lambda ()
+                                (delete-trailing-whitespace)
+                                (indent-region (point-min) (point-max) nil)))
 
-
-(global-set-key (kbd "s-z") 'undo)
-(global-set-key (kbd "S-s-z") 'undo-redo)
+;; Formatting buffers
+(defun my/indent-and-save-buffer ()
+  "Indent current buffer then save it."
+  (interactive)
+  (save-excursion
+    (indent-region (point-min) (point-max) nil)
+    (save-buffer)))
 
-
-;; Enable those features
-(dolist (c '(narrow-to-region
-	     narrow-to-page
-	     upcase-region
-	     downcase-region))
-  (put c 'disabled nil))
-(put 'overwrite-mode 'disabled t)
+(global-set-key (kbd "s-i") #'my/indent-and-save-buffer)
 
 
 ;; Enable the fundamental modes
-(global-auto-revert-mode 1)
-(transient-mark-mode 1)
-(save-place-mode 1)
-(global-hl-line-mode 1)
 
-(add-hook 'org-mode-hook 'visual-line-mode)
-(diminish 'visual-line-mode)
+(add-hook 'after-init-hook #'delete-selection-mode)
 
-
-;;; Deleting
-(delete-selection-mode 1)
-(use-package smart-hungry-delete
-  :bind
-  (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
-   ([remap delete-backward-char] . smart-hungry-delete-backward-char)
-   ([remap delete-char] . smart-hungry-delete-forward-char))
-  :init
-  (smart-hungry-delete-add-default-hooks))
+(add-hook 'after-init-hook #'global-auto-revert-mode)
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
+(with-eval-after-load 'autorevert
+  (diminish 'auto-revert-mode))
+
+(add-hook 'after-init-hook #'transient-mark-mode)
 
 
-;;; Improve displaying
+;; Fill columns
+(setq-default fill-column 80)
+
+(when (boundp 'display-fill-column-indicator)
+  (setq-default display-fill-column-indicator-character ?\u254e)
+  (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode))
+
+
+;; Deleting
+(global-set-key (kbd "s-<backspace>") #'kill-whole-line)
+
+(when (maybe-require-package 'smart-hungry-delete)
+  (smart-hungry-delete-add-default-hooks)
+  (with-eval-after-load 'smart-hungry-delete
+    (define-key global-map [remap backward-delete-char-untabify]
+                'smart-hungry-delete-backward-char)
+    (define-key global-map [remap delete-backward-char]
+                'smart-hungry-delete-backward-char)
+    (define-key global-map [remap delete-char]
+                'smart-hungry-delete-forward-char)))
+
+
+;; Newline behaviours
+(global-set-key (kbd "RET") #'newline-and-indent)
+
+(defun my/newline-at-end-of-line ()
+  (move-end-of-line 1)
+  (newline-and-indent))
+
+(global-set-key (kbd "s-<return>") #'my/newline-at-end-of-line)
+
+
 ;; The nano style for truncated long lines
 (setq auto-hscroll-mode 'current-line)
 
@@ -89,10 +103,9 @@
 (setq auto-window-vscroll nil)
 
 ;; Display line numbers
-(global-display-line-numbers-mode 1)
-
-;; Fix the line number displaying width
-(setq-default display-line-numbers-grow-only t)
+(when (fboundp 'display-line-numbers-mode)
+  (setq-default display-line-numbers-width 3)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode))
 
 ;; Enhance the performace of display
 (setq display-raw-bytes-as-hex t)
@@ -100,37 +113,37 @@
 
 
 ;; Use rainbow delimiters
-(use-package rainbow-delimiters
-  :hook
-  (prog-mode . rainbow-delimiters-mode))
+(when (require-package 'rainbow-delimiters)
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 
-;;; Settings for cursors & clipboard
-;; Make the cursor solid
-(blink-cursor-mode -1)
-(setq-default cursor-type '(bar . 1))
-
 ;; Always show the pointer's position
-(setq make-pointer-invisible nil)
+(setq-default make-pointer-invisible nil)
 
 ;; Hide cursor in inactive windows
 (setq-default cursor-in-non-selected-windows nil)
 
 ;; Preserve contents of system clipboard
-(setq save-interprogram-paste-before-kill t)
+(setq-default save-interprogram-paste-before-kill t)
 
 
-;; Show lambda as unicode
-(global-prettify-symbols-mode 1)
+(require-package 'browse-kill-ring)
+(setq browse-kill-ring-separator "\f")
+(global-set-key (kbd "M-Y") 'browse-kill-ring)
+(with-eval-after-load 'browse-kill-ring
+  (define-key browse-kill-ring-mode-map (kbd "C-g") 'browse-kill-ring-quit)
+  (define-key browse-kill-ring-mode-map (kbd "M-n") 'browse-kill-ring-forward)
+  (define-key browse-kill-ring-mode-map (kbd "M-p") 'browse-kill-ring-previous))
 
 
-;; Formatting buffers
-(defun indent-buffer ()
-  (interactive)
-  (save-excursion
-    (indent-region (point-min) (point-max) nil)
-    (save-buffer)))
-(global-set-key (kbd "s-i") 'indent-buffer)
+;; Don't disable narrowing commands
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(put 'narrow-to-defun 'disabled nil)
+
+;; Don't disable case-change functions
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
 
 
 (provide 'init-editing-utils)

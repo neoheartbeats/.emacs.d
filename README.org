@@ -1,7 +1,5 @@
-This is a simple setup for Emacs 29+ focusing on scientific writing in Org mode.
+This is a simple setup for GNU Emacs focusing on scientific writing in Org mode.
 
-This configuration is designed for my personal uses. You may get installation error
-and be confused if you use this repositary as your Emacs's configuration home directory.
+*** DEMO PICTURE
 
-I am now working on a new project for general usage. The detailed installation
-instructions and documentations will be denoted in that project.
+[[./resources/demo.png]]
