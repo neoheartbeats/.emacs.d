@@ -42,7 +42,6 @@
 (require 'init-minibuff)
 (require 'init-corfu)
 (require 'init-editing-utils)
-(require 'init-dirs)
 (require 'init-snippets)
 (require 'init-projects)
 (require 'init-org)

@@ -100,6 +100,7 @@
   :init
   (use-package emacsql-sqlite-builtin
     :defer t)
+  (global-unset-key (kbd "s-n"))
   :custom
   (org-roam-database-connector 'sqlite-builtin)
   (org-roam-db-location (expand-file-name "org-roam.db" org-directory))
@@ -108,12 +109,12 @@
   (org-roam-completion-everywhere t)
   (org-roam-db-gc-threshold most-positive-fixnum)
   :bind
-  ((:map org-mode-map
+  (("s-n j" . org-roam-dailies-goto-today)
+   (:map org-mode-map
          ("s-n n" . org-id-get-create)
          ("s-n a" . org-roam-alias-add)
          ("s-n f" . org-roam-node-find)
-         ("s-n i" . org-roam-node-insert))
-   (("s-n j" . org-roam-dailies-goto-today)))
+         ("s-n i" . org-roam-node-insert)))
 
   ;; Key-bindings for `org-roam-dailies'
   (:map org-mode-map
@@ -123,7 +124,6 @@
   (org-roam-db-autosync-enable)
   (org-roam-complete-everywhere)
 
-  ;;; Configure `org-roam-capture-templates'
   ;; Capture template for `org-roam-dailies'
   (setq org-roam-dailies-capture-templates
         '(("d" "default" entry "\n* %?"
