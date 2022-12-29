@@ -59,7 +59,7 @@
 (defcustom my-buffer-skip-regexp
   (rx bos (or (or "*scratch*" "*Messages*" "*Help*"
                   "*Async-native-compile-log*"
-                  "*package*" "*Warnings*")
+                  "*straight-process*")
               (seq "magit-diff" (zero-or-more anything))
               (seq "magit-process" (zero-or-more anything))
               (seq "magit-revision" (zero-or-more anything))
