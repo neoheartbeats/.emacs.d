@@ -32,7 +32,11 @@
 
 ;; Load essential components
 (require 'init-straight)
-(use-package diminish)
+
+;; Diminishing components
+(use-package diminish
+  :config
+  (diminish 'eldoc-mode))
 
 ;; Load components
 (require 'init-macos)
@@ -42,7 +46,6 @@
 (require 'init-minibuff)
 (require 'init-corfu)
 (require 'init-editing-utils)
-(require 'init-snippets)
 (require 'init-projects)
 (require 'init-org)
 (require 'init-tex)

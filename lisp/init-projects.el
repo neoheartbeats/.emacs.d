@@ -21,6 +21,7 @@
 
 ;;; Project management using `projectile.el'
 (use-package projectile
+  :diminish projectile-mode
   :init
   (when (file-directory-p my-dev-path)
     (let ((project-path-list '()))
@@ -28,8 +29,6 @@
       (setq projectile-project-search-path project-path-list)))
   (when (executable-find "rg")
     (setq-default projectile-generic-command "rg --files --hidden"))
-  :custom
-  (projectile-mode-line-prefix " Proj") ; Indent displaying in mode line
   :config
   (projectile-mode 1)
   :bind

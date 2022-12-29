@@ -1,22 +1,22 @@
-;;; init-fonts.el --- Configure the fonts -*- lexical-binding: t -*-
+;;; init-fonts.el --- Setup fonts -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 
 (set-face-attribute 'default nil
 	            :font "Nodens"
-	            :height 140)
+	            :height 155)
 
-;; (set-face-attribute 'variable-pitch nil
-;;                     :font "Noto Serif CJK SC")
+(set-face-attribute 'variable-pitch nil
+                    :font "Futura")
 
-(set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
-(set-fontset-font "fontset-default" 'kana "Noto Serif CJK SC")
+(with-eval-after-load 'org
+  (set-fontset-font "fontset-default" 'unicode "SF Pro")
+  (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+  (set-fontset-font "fontset-default" 'kana "Noto Serif CJK SC"))
 
-
-;; Enable font ligatures (only in emacs-mac)
-(when (fboundp 'mac-auto-operator-composition-mode)
-  (mac-auto-operator-composition-mode 1))
+(with-eval-after-load 'init-themes ;; Remove italic constructs
+  (set-face-attribute 'italic nil
+                      :slant 'normal))
 
 
 (provide 'init-fonts)

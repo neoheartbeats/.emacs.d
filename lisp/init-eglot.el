@@ -15,18 +15,6 @@
          ("s-i" . 'eglot-format-buffer))))
 
 
-;;; Syntax highlighting
-(use-package tree-sitter
-  :init
-  (setq treesit-extra-load-path
-        (expand-file-name "treesit/dist/" user-emacs-directory))
-  :config
-  (global-tree-sitter-mode 1))
-
-(use-package tree-sitter-langs
-  :after tree-sitter)
-
-
 ;;; C/C++ support
 (require 'cc-mode)
 
@@ -44,27 +32,26 @@
 
 
 ;;; Python support
-;; Note since `run-python' command is set globally,
-;; we will not use `:defer' in this module
 ;; Enable `eglot' support
-(add-hook 'python-mode-hook 'eglot-ensure)
+(add-hook 'python-mode-hook #'eglot-ensure)
 
-(use-package python-mode
-  :straight (:type built-in)
-  :defer t
-  :init
+(with-eval-after-load 'python-mode
+  (defun my/run-current-python-file ()
+    "Run the current Python file."
+    (interactive)
+    (python-shell-send-buffer))
+  (define-key python-mode-map [f9] 'my/run-current-python-file))
 
-  ;; Python executable file location
-  (setq-default python-shell-interpreter my-python-exec-path)
-  (with-eval-after-load 'org
-    ;; Language specified settings
-    (setq-default org-babel-python-command my-python-exec-path))
+;; Python executable file location
+(setq-default python-shell-interpreter my-python-exec-path)
+(with-eval-after-load 'org
+  (setq-default org-babel-python-command my-python-exec-path))
 
-  ;; Ignore the warnings
-  (setq python-indent-guess-indent-offset t)
-  (setq python-indent-guess-indent-offset-verbose nil)
-  :bind
-  (("M-p r" . run-python)))
+;; Ignore the warnings
+(setq-default python-indent-guess-indent-offset t)
+(setq-default python-indent-guess-indent-offset-verbose nil)
+
+(global-set-key (kbd "M-p r") 'run-python)
 
 
 

@@ -6,21 +6,23 @@
 ;;; Code:
 
 
-;;; Modus Themes
-(use-package modus-themes
-  :init
-  (setq modus-themes-bold-constructs t)
-  (setq modus-themes-syntax '(green-strings))
-  (setq modus-themes-links '(no-color neutral-underline))
-  (setq modus-themes-prompts '(intense bold))
-  (setq modus-themes-mode-line '(borderless))
-  (setq modus-themes-region '(bg-only no-extend))
-  (setq modus-themes-headings '((t . (rainbow))))
+(use-package ef-themes
   :config
-  (modus-themes-load-themes)
-  (modus-themes-load-vivendi)
-  (set-face-attribute 'cursor nil
-                      :background (modus-themes-color 'magenta-intense)))
+  (mapc #'disable-theme custom-enabled-themes)
+  (load-theme 'ef-dark :no-confirm)
+
+  (defun my/ef-themes-mode-line ()
+    "Tweak the style of the mode lines."
+    (ef-themes-with-colors
+      (custom-set-faces
+       `(mode-line ((
+                     ,c :background
+                     ,bg-active :foreground
+                     ,fg-main :box (:line-width 1 :color ,fg-dim))))
+       `(mode-line-inactive ((,c :box (:line-width 1 :color ,bg-active)))))))
+
+  (with-eval-after-load 'init-themes
+    (my/ef-themes-mode-line)))
 
 
 ;;; Mode line settings

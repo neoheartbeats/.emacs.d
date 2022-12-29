@@ -19,7 +19,6 @@
 (setq scroll-step 1)
 (setq scroll-conservatively 15000)
 (setq mouse-wheel-follow-mouse t)
-(setq next-line-add-newlines nil)
 (setq mouse-wheel-scroll-amount '(1
                                   ((shift) . 5)
                                   ((control))))
@@ -29,7 +28,7 @@
     (global-set-key (read-kbd-macro
                      (concat "<" multiple "wheel-" direction ">")) 'ignore)))
 
-;; Enable `pixel-scroll-precision-mode' (Only in Emacs 29+)
+;; Enable `pixel-scroll-precision-mode'
 (when (fboundp 'pixel-scroll-precision-mode)
   (pixel-scroll-precision-mode 1))
 
@@ -54,6 +53,26 @@
 			      (kill-buffer (current-buffer))))
 (global-set-key (kbd "<s-right>") 'switch-to-next-buffer)
 (global-set-key (kbd "<s-left>") 'switch-to-prev-buffer)
+
+;; Ignore these buffers while switching
+
+(defcustom my-buffer-skip-regexp
+  (rx bos (or (or "*scratch*" "*Messages*" "*Help*"
+                  "*Async-native-compile-log*"
+                  "*package*" "*Warnings*")
+              (seq "magit-diff" (zero-or-more anything))
+              (seq "magit-process" (zero-or-more anything))
+              (seq "magit-revision" (zero-or-more anything))
+              (seq "magit-stash" (zero-or-more anything)))
+      eos)
+  "Regexp matching buffers ignored while switching buffers."
+  :type 'regexp)
+
+(defun my/buffer-skip-p (window buffer bury-or-kill)
+  "Return `t' if BUFFER name matches `my-buffer-skip-regexp'."
+  (string-match-p my-buffer-skip-regexp (buffer-name buffer)))
+
+(setq switch-to-prev-buffer-skip 'my/buffer-skip-p)
 
 ;; File management specified
 (global-set-key (kbd "s-f") 'find-file)

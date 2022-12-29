@@ -44,7 +44,7 @@
 (setq-default require-final-newline t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-(setq-default fill-column 75)
+(setq-default fill-column 80)
 
 
 (global-set-key (kbd "s-z") 'undo)
@@ -72,13 +72,6 @@
 
 ;;; Deleting
 (delete-selection-mode 1)
-(use-package smart-hungry-delete
-  :bind
-  (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
-   ([remap delete-backward-char] . smart-hungry-delete-backward-char)
-   ([remap delete-char] . smart-hungry-delete-forward-char))
-  :init
-  (smart-hungry-delete-add-default-hooks))
 
 
 ;;; Improve displaying
@@ -89,7 +82,8 @@
 (setq auto-window-vscroll nil)
 
 ;; Display line numbers
-(global-display-line-numbers-mode 1)
+;; (global-display-line-numbers-mode 1)
+(setq-default line-number-mode nil) ;; Hide line numbers in mode line
 
 ;; Fix the line number displaying width
 (setq-default display-line-numbers-grow-only t)

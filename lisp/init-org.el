@@ -89,11 +89,12 @@
 (setq org-export-with-broken-links t)
 
 
+(use-package emacsql-sqlite-builtin
+  :defer t)
+
 (use-package org-roam
   :defer t
   :init
-  (use-package emacsql-sqlite-builtin
-    :defer t)
   (global-unset-key (kbd "s-n"))
   :custom
   (org-roam-database-connector 'sqlite-builtin)
