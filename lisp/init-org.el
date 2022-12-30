@@ -3,14 +3,13 @@
 ;;; Code:
 
 (use-package org
-  :defer t
   :init
   (setq org-fold-core-style 'overlays)
   :config
 
   ;; Org default directory
   (setq-default org-directory
-                (expand-file-name "org-files/" my-dev-path))
+                (expand-file-name "TH18-03/" my-dev-path))
   (setq-default bookmark-default-file
                 (expand-file-name ".bookmarks.el" org-directory))
 
@@ -88,16 +87,14 @@
 ;; Export with undetermined links
 (setq org-export-with-broken-links t)
 
-
-(use-package emacsql-sqlite-builtin
-  :defer t)
-
 (use-package org-roam
   :defer t
   :init
+  (when (not (version< emacs-version "29.5"))
+    (use-package emacsql-sqlite-builtin)
+    (setq org-roam-database-connector 'sqlite-builtin))
   (global-unset-key (kbd "s-n"))
   :custom
-  (org-roam-database-connector 'sqlite-builtin)
   (org-roam-db-location (expand-file-name "org-roam.db" org-directory))
   (org-roam-directory org-directory)
   (org-roam-dailies-directory "dates/")

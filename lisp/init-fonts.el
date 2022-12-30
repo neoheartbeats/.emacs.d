@@ -4,10 +4,10 @@
 
 (set-face-attribute 'default nil
 	            :font "Nodens"
-	            :height 155)
+	            :height 140)
 
-(set-face-attribute 'variable-pitch nil
-                    :font "Futura")
+;; (set-face-attribute 'variable-pitch nil
+;;                     :font "Futura")
 
 (with-eval-after-load 'org
   (set-fontset-font "fontset-default" 'unicode "SF Pro")
