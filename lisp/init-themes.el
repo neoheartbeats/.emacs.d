@@ -6,27 +6,24 @@
 ;;; Code:
 
 
-(use-package ef-themes
+(use-package modus-themes
+  :init
+  (setq modus-themes-region '(no-extend))
   :config
   (mapc #'disable-theme custom-enabled-themes)
-  (load-theme 'ef-dark :no-confirm)
+  (load-theme 'modus-vivendi :no-confim)
 
-  (defun my/ef-themes-mode-line ()
-    "Tweak the style of the mode lines."
-    (ef-themes-with-colors
-      (custom-set-faces
-       `(mode-line ((
-                     ,c :background
-                     ,bg-active :foreground
-                     ,fg-main :box (:line-width 1 :color ,fg-dim))))
-       `(mode-line-inactive ((,c :box (:line-width 1 :color ,bg-active)))))))
-
-  (with-eval-after-load 'init-themes
-    (my/ef-themes-mode-line)))
+  ;; Customize Org links
+  (custom-set-faces '(org-link ((t (:inherit nil))))))
 
 
 ;;; Mode line settings
 (setq-default mode-line-compact t)
+
+;; Diminishing components
+(use-package diminish
+  :config
+  (diminish 'eldoc-mode))
 
 
 (provide 'init-themes)

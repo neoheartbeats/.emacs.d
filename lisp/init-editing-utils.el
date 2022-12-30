@@ -44,7 +44,7 @@
 (setq-default require-final-newline t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-(setq-default fill-column 80)
+(setq-default fill-column 76)
 
 
 (global-set-key (kbd "s-z") 'undo)
@@ -82,7 +82,7 @@
 (setq auto-window-vscroll nil)
 
 ;; Display line numbers
-;; (global-display-line-numbers-mode 1)
+(global-display-line-numbers-mode 1)
 (setq-default line-number-mode nil) ;; Hide line numbers in mode line
 
 ;; Fix the line number displaying width

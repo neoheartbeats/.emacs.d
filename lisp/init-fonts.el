@@ -3,16 +3,11 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	            :font "Nodens"
-	            :height 140)
-
-;; (set-face-attribute 'variable-pitch nil
-;;                     :font "Futura")
+	            :font "Credits"
+	            :height 150)
 
 (with-eval-after-load 'org
-  (set-fontset-font "fontset-default" 'unicode "SF Pro")
-  (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
-  (set-fontset-font "fontset-default" 'kana "Noto Serif CJK SC"))
+  (set-fontset-font "fontset-default" 'han "Heiti SC"))
 
 (with-eval-after-load 'init-themes ;; Remove italic constructs
   (set-face-attribute 'italic nil

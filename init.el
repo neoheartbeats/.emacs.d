@@ -33,18 +33,14 @@
 ;; Load essential components
 (require 'init-straight)
 
-;; Diminishing components
-(use-package diminish
-  :config
-  (diminish 'eldoc-mode))
-
 ;; Load components
 (require 'init-macos)
 (require 'init-fonts)
 (require 'init-themes)
 (require 'init-gui-frames)
-(require 'init-minibuff)
 (require 'init-corfu)
+(require 'init-minibuff)
+(require 'init-temp)
 (require 'init-editing-utils)
 (require 'init-projects)
 (require 'init-org)

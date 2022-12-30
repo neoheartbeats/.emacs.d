@@ -57,8 +57,9 @@
 ;; Ignore these buffers while switching
 
 (defcustom my-buffer-skip-regexp
-  (rx bos (or (or "*scratch*" "*Messages*" "*Help*"
+  (rx bos (or (or "*scratch*" "*Messages*" "*Help*" "Warning"
                   "*Async-native-compile-log*"
+                  "*Org Preview LaTeX Output*"
                   "*straight-process*")
               (seq "magit-diff" (zero-or-more anything))
               (seq "magit-process" (zero-or-more anything))

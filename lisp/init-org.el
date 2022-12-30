@@ -20,18 +20,16 @@
 
 ;; Org Modern
 (use-package org-modern
-  :custom
-  (org-modern-star
-   '("􀄩" "􀄩􀄩" "􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩" "􀄩􀄩􀄩􀄩􀄩􀄩"))
   :config
   (global-org-modern-mode 1)
 
   ;; Symbols in Org mode
-  (setq org-ellipsis " 􀍠")
+  (setq org-ellipsis " ⤵"))
 
-  ;; Setup pretty entities for unicode math symbols
-  (setq org-pretty-entities t)
-  (setq org-pretty-entities-include-sub-superscripts nil))
+
+;; Setup pretty entities for unicode math symbols
+(setq org-pretty-entities t)
+(setq org-pretty-entities-include-sub-superscripts nil)
 
 
 ;; Fold drawers by default
@@ -51,6 +49,9 @@
 ;; Org links
 (setq org-return-follows-link t)
 (setq org-link-elisp-confirm-function nil)
+
+(setq-default org-link-frame-setup ;; Open files in current frame
+              (cl-acons 'file 'find-file org-link-frame-setup))
 
 ;; Using shift-cursor to select text
 (setq org-support-shift-select t)
@@ -83,12 +84,10 @@
 (setq-default org-cycle-separator-lines 2)
 
 
-;;; Org Export
-;; Export with undetermined links
-(setq org-export-with-broken-links t)
-
 (use-package org-roam
-  :defer t
+  :straight (
+             :host github
+             :repo "org-roam/org-roam")
   :init
   (when (not (version< emacs-version "29.5"))
     (use-package emacsql-sqlite-builtin)
@@ -134,7 +133,7 @@
            :immediate-finish t
            :kill-buffer t))))
 
-(with-eval-after-load 'org
+(with-eval-after-load 'init-tex
   (org-roam-dailies-goto-today)
   (goto-char (point-max))
   (save-buffer))
