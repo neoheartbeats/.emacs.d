@@ -3,7 +3,7 @@
 ;;; Code:
 
 ;; Install AUCTeX
-(use-package latex :ensure auctex)
+(use-package tex :ensure auctex)
 
 ;; (with-eval-after-load 'LaTeX-mode
 ;;   (setq TeX-engine 'xetex)
@@ -100,7 +100,7 @@ as a string.  It defaults to \"png\"."
          (width (car (image-display-size (overlay-get ov 'display))))
          offset)
     (when (= beg (line-beginning-position))
-      (setq offset (floor (- (/ (- fill-column 20) 2)
+      (setq offset (floor (- (/ fill-column 2)
                              (/ width 2))))
       (when (< offset 0)
         (setq offset 0))

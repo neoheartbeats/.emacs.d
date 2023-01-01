@@ -33,7 +33,7 @@
 (setq package-enable-at-startup t)
 
 ;; Allow loading from the package cache
-(setq package-quickstart nil)
+(setq package-quickstart t)
 
 
 ;; Config related to GccEmacs
