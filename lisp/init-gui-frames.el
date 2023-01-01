@@ -20,8 +20,6 @@
 (setq-default frame-title-format nil)
 
 
-;; Disable showing window diviers
-;; _________TODO__________
 (dolist (face '(window-divider
                 window-divider-first-pixel
                 window-divider-last-pixel))

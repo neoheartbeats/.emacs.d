@@ -1,1 +1,5 @@
 This is a simple setup for GNU Emacs focusing on scientific writing in Org mode.
+
+### DEMO PICTURE
+
+![](./resources/demo.png)

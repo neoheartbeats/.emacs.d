@@ -23,6 +23,8 @@
 ;;; Mode line settings
 (setq-default mode-line-compact t)
 
+(diminish 'eldoc-mode)
+
 
 (provide 'init-themes)
 ;;; init-themes.el ends here

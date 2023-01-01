@@ -35,7 +35,7 @@
 (global-set-key (kbd "s-<backspace>") 'kill-whole-line)
 
 
-;;; Formatting files
+;; Formatting files
 ;; Add a new line in the end of buffer while saving
 (setq-default require-final-newline t)
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
@@ -59,7 +59,7 @@
 (global-hl-line-mode 1)
 
 (add-hook 'org-mode-hook #'visual-line-mode)
-;; (diminish 'visual-line-mode)
+(diminish 'visual-line-mode)
 
 
 ;; Deleting
@@ -109,10 +109,6 @@
 
 ;; Preserve contents of system clipboard
 (setq save-interprogram-paste-before-kill t)
-
-
-;; Show lambda as unicode
-;; (global-prettify-symbols-mode 1)
 
 
 ;; Formatting buffers

@@ -100,7 +100,7 @@ as a string.  It defaults to \"png\"."
          (width (car (image-display-size (overlay-get ov 'display))))
          offset)
     (when (= beg (line-beginning-position))
-      (setq offset (floor (- (/ fill-column 2)
+      (setq offset (floor (- (/ (- fill-column 20) 2)
                              (/ width 2))))
       (when (< offset 0)
         (setq offset 0))
@@ -116,7 +116,7 @@ as a string.  It defaults to \"png\"."
   :demand t
   :config
   (add-hook 'LaTeX-mode-hook #'turn-on-cdlatex)
-  (add-hook 'org-mode-hook #'turn-on-cdlatex))
+  (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 
 (provide 'init-tex)

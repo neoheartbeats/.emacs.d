@@ -45,13 +45,14 @@
 (require 'init-gui-frames)
 (require 'init-minibuff)
 (require 'init-corfu)
-(require 'init-temp)
 (require 'init-utils)
 (require 'init-editing-utils)
 (require 'init-projects)
 (require 'init-org)
 (require 'init-tex)
-(require 'init-eglot)
+
+;; (require 'init-temp)
+;; (require 'init-eglot)
 
 
 (provide 'init)
