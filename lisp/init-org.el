@@ -2,34 +2,41 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package org
-  :init
-  (setq org-fold-core-style 'overlays)
-  :config
+(require 'org)
 
-  ;; Org default directory
-  (setq-default org-directory
-                (expand-file-name "TH18-03/" my-dev-path))
-  (setq-default bookmark-default-file
-                (expand-file-name ".bookmarks.el" org-directory))
+(when *const-q*
+  (setq org-fold-core-style 'text-properties))
 
-  ;; Open Org files with previewing
-  (setq org-startup-with-inline-images t)
-  (setq org-startup-with-latex-preview t))
+;; Org default directory
+(setq-default org-directory
+              (expand-file-name "TH18-03/" my-dev-path))
+
+;; Open Org files with previewing
+(setq org-startup-with-inline-images t)
+(setq org-startup-with-latex-preview t)
 
 
 ;; Org Modern
 (use-package org-modern
   :config
-  (global-org-modern-mode 1)
+  (setq org-modern-star '("􀄩"))
+  (setq org-modern-hide-stars "􀄩")
+  (setq org-modern-list '((?- . "•")))
+  (setq org-modern-checkbox '((?X . "􀃠") (?- . "􀃞") (?\s . "􀂒")))
+  (setq org-modern-block-name '(("src" . ("􀐘" "􀅽"))))
+  (setq org-modern-keyword nil)
+  (set-face-attribute 'org-modern-symbol nil
+                      :family "SF Pro")
 
-  ;; Symbols in Org mode
-  (setq org-ellipsis " ⤵"))
+  (global-org-modern-mode 1))
 
 
+;; Symbols in Org mode
+(setq org-ellipsis " 􀍠")
+
 ;; Setup pretty entities for unicode math symbols
-(setq org-pretty-entities t)
-(setq org-pretty-entities-include-sub-superscripts nil)
+;; (setq org-pretty-entities t)
+;; (setq org-pretty-entities-include-sub-superscripts nil)
 
 
 ;; Fold drawers by default
@@ -50,10 +57,10 @@
 (setq org-return-follows-link t)
 (setq org-link-elisp-confirm-function nil)
 
-(setq-default org-link-frame-setup ;; Open files in current frame
-              (cl-acons 'file 'find-file org-link-frame-setup))
+(setq-default org-link-frame-setup ; Open files in current frame
+              (cl-acons 'file #'find-file org-link-frame-setup))
 
-;; Using shift-cursor to select text
+;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
 
 ;; Load languages
@@ -72,6 +79,7 @@
                                  (python . t)
                                  (latex . t))))
 
+
 ;; Hide unwanted shell warning messages
 (advice-add 'sh-set-shell :around
             (lambda (orig-fun &rest args)
@@ -79,26 +87,17 @@
                 (apply orig-fun args))))
 
 
-;;; Org mode text edition
+;; Org mode text edition
 ;; Number of empty lines needed to keep an empty line between collapsed trees
 (setq-default org-cycle-separator-lines 2)
 
 
+(when *const-q*
+  (use-package emacsql-sqlite-builtin))
+
 (use-package org-roam
-  :straight (
-             :host github
-             :repo "org-roam/org-roam")
   :init
-  (when (not (version< emacs-version "29.5"))
-    (use-package emacsql-sqlite-builtin)
-    (setq org-roam-database-connector 'sqlite-builtin))
   (global-unset-key (kbd "s-n"))
-  :custom
-  (org-roam-db-location (expand-file-name "org-roam.db" org-directory))
-  (org-roam-directory org-directory)
-  (org-roam-dailies-directory "dates/")
-  (org-roam-completion-everywhere t)
-  (org-roam-db-gc-threshold most-positive-fixnum)
   :bind
   (("s-n j" . org-roam-dailies-goto-today)
    (:map org-mode-map
@@ -112,31 +111,35 @@
         ("<s-up>" . org-roam-dailies-goto-previous-note)
         ("<s-down>" . org-roam-dailies-goto-next-note))
   :config
-  (org-roam-db-autosync-enable)
-  (org-roam-complete-everywhere)
+  (when *const-q* ; Use the built-in sqlite3
+    (setq org-roam-database-connector 'sqlite-builtin))
+  (setq org-roam-db-location (expand-file-name "org-roam.db" org-directory))
+  (setq org-roam-directory org-directory)
+  (setq org-roam-dailies-directory "dates/")
+  (setq org-roam-completion-everywhere t)
+  (setq org-roam-db-gc-threshold most-positive-fixnum)
+
+  (org-roam-db-autosync-mode 1)
 
   ;; Capture template for `org-roam-dailies'
   (setq org-roam-dailies-capture-templates
         '(("d" "default" entry "\n* %?"
-           :target (file+head
-		    "%<%Y-%m-%d>.org"
-		    "#+TITLE: %<%A-%Y-%m-%d>.\n\n\n")
+           :target (file+head "%<%Y-%m-%d>.org"
+                              "#+TITLE: %<%Y-%m-%d-%Y>\n")
            :empty-lines 1)))
 
-  ;; Default capture template
+  ;; Default capture template for notes
   (setq org-roam-capture-templates
-	'(("d" "default" entry "\n* %?"
-           :target (file+head
-                    "notes/${slug}.org"
-		    "#+TITLE: ${title}\n\n")
+	'(("d" "default" plain "%?"
+           :target (file+head "notes/${slug}.org"
+                              "#+TITLE: ${title}\n")
            :empty-lines 1
+           :unnarrowed t
            :immediate-finish t
            :kill-buffer t))))
 
-(with-eval-after-load 'init-tex
-  (org-roam-dailies-goto-today)
-  (goto-char (point-max))
-  (save-buffer))
+;; Open today's note when startup
+(add-hook 'after-init-hook #'org-roam-dailies-goto-today)
 
 
 (provide 'init-org)

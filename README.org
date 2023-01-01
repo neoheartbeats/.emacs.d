@@ -1,1 +1,1 @@
-This is a simple setup for Emacs 29+ focusing on scientific writing in Org mode.
+This is a simple setup for GNU Emacs focusing on scientific writing in Org mode.

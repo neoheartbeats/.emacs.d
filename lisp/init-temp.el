@@ -10,10 +10,11 @@
     (setq-local completion-at-point-functions
                 (cons #'tempel-expand
                       completion-at-point-functions)))
-  (add-hook 'org-mode-hook 'tempel-setup-capf)
-  :custom ;; Require trigger prefix when completing
-  (tempel-trigger-prefix "\\")
-  (tempel-path (concat user-emacs-directory "templates/*.eld"))
+  (add-hook 'org-mode-hook #'tempel-setup-capf)
+  :config
+
+  ;; Require trigger prefix when completing
+  (setq tempel-path (concat user-emacs-directory "templates/*.eld"))
   :bind
   (("s-." . tempel-expand)
    (:map tempel-map

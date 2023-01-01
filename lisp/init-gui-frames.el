@@ -15,19 +15,13 @@
   (message ""))
 
 
-;; Display color at point
-(use-package rainbow-mode
-  :defer t
-  :bind
-  ("C-c c" . rainbow-mode))
-
-
 ;; Cleanup the text & icons
 (setq-default ns-use-proxy-icon nil)
 (setq-default frame-title-format nil)
 
 
 ;; Disable showing window diviers
+;; _________TODO__________
 (dolist (face '(window-divider
                 window-divider-first-pixel
                 window-divider-last-pixel))

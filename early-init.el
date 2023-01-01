@@ -14,7 +14,8 @@
 
 (dolist (var '(default-frame-alist initial-frame-alist))
   (add-to-list var '(width . 125))
-  (add-to-list var '(height . 55)))
+  (add-to-list var '(height . 55))
+  (add-to-list var '(alpha . (90 . 90))))
 
 ;; Faster to disable these here (before they've been initialized)
 (push '(menu-bar-lines . 0) default-frame-alist)
@@ -28,18 +29,16 @@
 (setq gc-cons-threshold most-positive-fixnum)
 
 
-;; Prevent `package.el' loading packages prior to their init-file loading
-;; This procedure is required by
-;; https://github.com/radian-software/straight.el/
-(setq package-enable-at-startup nil)
+;; Initialise installed packages
+(setq package-enable-at-startup t)
+
+;; Allow loading from the package cache
+(setq package-quickstart nil)
 
 
 ;; Config related to GccEmacs
 ;; Prevent unwanted runtime compilation for GccEmacs
 (setq native-comp-deferred-compilation nil)
-
-;; Allow loading from the package cache
-(setq package-quickstart t)
 
 ;; Compile external packages for GccEmacs
 (setq package-native-compile t)
@@ -47,13 +46,13 @@
 ;; Suppress GUI features
 (setq use-dialog-box nil)
 (setq use-file-dialog nil)
+(setq use-dialog-box nil)
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-echo-area-message t)
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-buffer-menu t)
 (setq inhibit-x-resources t)
 (setq inhibit-default-init t)
-(setq load-prefer-newer t)
 (setq native-comp-async-report-warnings-errors 'silent)
 
 

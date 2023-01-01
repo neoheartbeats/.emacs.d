@@ -6,8 +6,8 @@
 ;;; Code:
 
 (when (fboundp 'electric-pair-mode)
-  (add-hook 'after-init-hook 'electric-pair-mode))
-(add-hook 'after-init-hook 'electric-indent-mode)
+  (add-hook 'after-init-hook #'electric-pair-mode)
+  (add-hook 'after-init-hook #'electric-indent-mode))
 
 
 ;; Some basic preferences
@@ -24,7 +24,7 @@
 (setq-default save-interprogram-paste-before-kill t)
 (setq-default save-silently t)
 (setq-default set-mark-command-repeat-pop t)
-(setq-default sentence-end-double-space nil) ; Sentences show end with one space
+(setq-default sentence-end-double-space nil) ; Sentences should end with one space
 (setq-default truncate-lines nil)
 (setq-default truncate-partial-width-windows nil)
 (setq-default use-short-answers t)
@@ -32,23 +32,15 @@
 
 
 ;; Essential key bindings
-(global-set-key (kbd "s-a") 'mark-whole-buffer)
-(global-set-key (kbd "s-c") 'kill-ring-save)
-(global-set-key (kbd "s-v") 'yank)
-(global-set-key (kbd "s-x") 'kill-region)
 (global-set-key (kbd "s-<backspace>") 'kill-whole-line)
 
 
 ;;; Formatting files
 ;; Add a new line in the end of buffer while saving
 (setq-default require-final-newline t)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
 
-(setq-default fill-column 76)
-
-
-(global-set-key (kbd "s-z") 'undo)
-(global-set-key (kbd "S-s-z") 'undo-redo)
+(setq-default fill-column 80)
 
 
 ;; Enable those features
@@ -66,11 +58,11 @@
 (save-place-mode 1)
 (global-hl-line-mode 1)
 
-(add-hook 'org-mode-hook 'visual-line-mode)
-(diminish 'visual-line-mode)
+(add-hook 'org-mode-hook #'visual-line-mode)
+;; (diminish 'visual-line-mode)
 
 
-;;; Deleting
+;; Deleting
 (delete-selection-mode 1)
 
 
@@ -83,7 +75,7 @@
 
 ;; Display line numbers
 (global-display-line-numbers-mode 1)
-(setq-default line-number-mode nil) ;; Hide line numbers in mode line
+(setq-default line-number-mode nil) ; Hide line numbers in mode line
 
 ;; Fix the line number displaying width
 (setq-default display-line-numbers-grow-only t)
@@ -95,14 +87,19 @@
 
 ;; Use rainbow delimiters
 (use-package rainbow-delimiters
-  :hook
-  (prog-mode . rainbow-delimiters-mode))
+  :demand t
+  :config
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'org-mode-hook #'rainbow-delimiters-mode))
 
 
-;;; Settings for cursors & clipboard
+;; Settings for cursors & clipboard
 ;; Make the cursor solid
 (blink-cursor-mode -1)
 (setq-default cursor-type '(bar . 1))
+
+(set-face-attribute 'cursor nil
+                    :background "#6ae4b9")
 
 ;; Always show the pointer's position
 (setq make-pointer-invisible nil)
@@ -115,16 +112,17 @@
 
 
 ;; Show lambda as unicode
-(global-prettify-symbols-mode 1)
+;; (global-prettify-symbols-mode 1)
 
 
 ;; Formatting buffers
-(defun indent-buffer ()
+(defun my/indent-buffer ()
+  "Indent current buffer then save it."
   (interactive)
   (save-excursion
     (indent-region (point-min) (point-max) nil)
     (save-buffer)))
-(global-set-key (kbd "s-i") 'indent-buffer)
+(global-set-key (kbd "s-i") 'my/indent-buffer)
 
 
 (provide 'init-editing-utils)

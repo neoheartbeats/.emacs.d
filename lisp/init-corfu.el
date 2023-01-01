@@ -4,64 +4,47 @@
 
 (setq tab-always-indent 'complete)
 
-(use-package corfu
-  :straight (:files (:defaults "extensions/*.el"))
+
+(use-package orderless
   :init
-  (setq-default corfu-auto t)
-  (with-eval-after-load 'eshell
-    (add-hook 'eshell-mode-hook (lambda ()
-                                  (setq-local corfu-auto nil))))
-  :custom
-  (corfu-auto-delay 0)
-  (corfu-quit-at-boundary t)
-  (corfu-quit-no-match 'separator)
-  (corfu-cycle t)
+  (setq completion-category-defaults nil)
+  (setq completion-category-override
+        '((file (styles . (partial-completion)))))
+  (setq completion-styles '(orderless)))
 
-  ;; Cycling is used as long as number of candidates is
-  ;; less than 5
-  (completion-cycle-threshold 5)
-  :config ;; Remember the latest choice
-  (use-package corfu-history
-    :straight nil
-    :after corfu
-    :config
-    (corfu-history-mode 1))
+(use-package corfu
+  :init
+  (global-corfu-mode 1)
+  :config
 
-  ;; Add `corfu-popupinfo' docs
-  (when (featurep 'corfu-popupinfo)
-    (with-eval-after-load 'corfu
-      (corfu-popupinfo-mode)))
+  ;; Load extensions
+  (require 'corfu-history)
+
+  ;; Remember the latest choice
+  (corfu-history-mode 1)
+
+  (setq corfu-auto t)
+  (setq corfu-cycle t)
+  (setq corfu-quit-at-boundary t)
+  (setq corfu-quit-no-match t)
+  (setq corfu-preselect 'prompt)
   :bind
   (:map corfu-map
         ("<down>" . corfu-next)
-        ("<up>" . corfu-preselect)
+        ("<up>" . corfu-previous)
         ("<tab>" . corfu-quit)
-        ("<escape>" . corfu-quit))
-  :hook
-  ((prog-mode org-mode) . corfu-mode))
+        ("<escape>" . corfu-quit)))
 
 
 ;; Add extensions
 (use-package cape
   :init ;; Add `completion-at-point-functions', used by `completion-at-point'
-  (add-to-list 'completion-at-point-functions #'cape-history)
   (add-to-list 'completion-at-point-functions #'cape-dict)
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-keyword)
-  :config
-
-  ;; Setup `cape-dict-file'
+  :config ;; Setup `cape-dict-file'
   (setq cape-dict-file
         (expand-file-name "dict/dict-en-utf8.txt" user-emacs-directory)))
-
-
-(use-package orderless
-  :init
-  (setq completion-styles '(orderless basic))
-  :config
-  (setq completion-category-defaults nil)
-  (setq completion-category-override nil))
 
 
 (provide 'init-corfu)

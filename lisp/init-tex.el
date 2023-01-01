@@ -1,66 +1,61 @@
-
 ;;; init-tex.el --- LaTeX configuration -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 
 ;; Install AUCTeX
-(use-package latex
-  :straight auctex
-  :defer t
-  :config
-  (setq-default TeX-engine 'xetex)
-  (setq-default TeX-PDF-mode t)
-  (setq-default TeX-master nil)
-  (setq reftex-plug-into-AUCTeX t)
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  :hook
-  ((LaTeX-mode-hook . LaTeX-math-mode)
-   (LaTeX-mode-hook . turn-on-reftex)))
+(use-package latex :ensure auctex)
+
+;; (with-eval-after-load 'LaTeX-mode
+;;   (setq TeX-engine 'xetex)
+;;   (setq TeX-master nil)
+;;   (setq TeX-PDF-mode t)
+;;   (setq reftex-plug-into-AUCTeX t)
+;;   (setq TeX-auto-save t)
+;;   (setq TeX-parse-self t))
+;;
+;; (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
+;; (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
 
 
 (setq-default org-latex-preview-ltxpng-directory
               (expand-file-name "ltximg/" user-emacs-directory))
 
 ;; Setup `dvisvgm' to preview LaTeX fragments
-(setq-default org-preview-latex-default-process 'dvisvgm)
+(setq org-preview-latex-default-process 'dvisvgm)
 (setq org-preview-latex-process-alist
-      '((dvisvgm
+      '(
+        (dvisvgm
          :programs ("latex" "dvisvgm")
          :description "dvi > svg"
          :image-input-type "dvi"
          :image-output-type "svg"
          :image-size-adjust (1.7 . 1.5)
          :latex-compiler ("latex -interaction nonstopmode -output-directory %o %f")
-         :image-converter ("dvisvgm %f --no-fonts --exact-bbox -b preview --scale=%S -o %O"))))
+         :image-converter ("dvisvgm %f --no-fonts --exact-bbox --scale=%S --output=%O"))))
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
-      '(("" "mathtools" t)
-        ("" "gensymb" t)
+      '(
+        ("" "mathtools" t)
         ("" "siunitx" t)
-        ("" "statmath" t)
         ("" "physics" t)
-        ("version=4" "mhchem" )
+        ("version=4" "mhchem" t)
         ("" "mlmodern" t)))
 
 (setq org-format-latex-options
-      '( :foreground default
-         :background "Transparent"
-         :scale 1.65
-         :html-foreground default
-         :html-background "Transparent"
-         :html-scale 1.2
-         :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
-
-;; Syntax highlighting for LaTeX in Org mode
-(setq org-highlight-latex-and-related '(latex script))
+      '(
+        :foreground default
+        :background "Transparent"
+        :scale 1.65
+        :html-foreground default
+        :html-background "Transparent"
+        :html-scale 1.25
+        :matchers '("begin" "$1" "$" "\\[")))
 
 ;; Match the text baseline of an LaTeX fragment to the surrounding text
 (defun my/org--latex-header-preview (orig &rest args)
   "Setup dedicated `org-format-latex-header' to `my/org--match-text-baseline-ascent'."
-  (let ((org-format-latex-header
-         "\\documentclass[preview]{standalone}
+  (let ((org-format-latex-header "\\documentclass[preview]{standalone}
 \\usepackage[usenames]{color}
 [PACKAGES]
 [DEFAULT-PACKAGES]"))
@@ -96,36 +91,32 @@ as a string.  It defaults to \"png\"."
 		   'display
 		   (list 'image :type imagetype :file image :ascent ascent)))))
 
-;; Referred: https://kitchingroup.cheme.cmu.edu/blog/2016/11/06/Justifying-LaTeX-preview-fragments-in-org-mode/
-;; Specify the justification
-(plist-put org-format-latex-options :justify 'center)
-
-(defun my/org-justify-fragment-overlay (beg end image imagetype)
-  (let* ((position (plist-get org-format-latex-options :justify))
-         (img (create-image image 'svg t))
+;; Referred from: https://kitchingroup.cheme.cmu.edu/blog/2016/11/06/Justifying-LaTeX-preview-fragments-in-org-mode/
+;; Justify displaying math equations
+(defun my/org--justify-fragment-overlay (beg end image imagetype)
+  "Center LaTeX fragments in display."
+  (let* ((img (create-image image 'svg t))
          (ov (car (overlays-at (/ (+ beg end) 2) t)))
          (width (car (image-display-size (overlay-get ov 'display))))
          offset)
-    (cond
-     ((and (eq 'center position)
-           (= beg (line-beginning-position)))
+    (when (= beg (line-beginning-position))
       (setq offset (floor (- (/ fill-column 2)
                              (/ width 2))))
       (when (< offset 0)
         (setq offset 0))
-      (overlay-put ov 'before-string (make-string offset ? ))))))
+      (overlay-put ov 'before-string (make-string offset ? )))))
 
 (advice-add 'org--make-preview-overlay
-            :after 'my/org-justify-fragment-overlay)
+            :after 'my/org--justify-fragment-overlay)
 
 
-;;; Better LaTeX editor for Org mode
+;; Better LaTeX editor for Org mode
 ;; Setup `CDLaTeX'
 (use-package cdlatex
-  :after org
-  :hook
-  ((LaTeX-mode . turn-on-cdlatex)
-   (org-mode . turn-on-org-cdlatex)))
+  :demand t
+  :config
+  (add-hook 'LaTeX-mode-hook #'turn-on-cdlatex)
+  (add-hook 'org-mode-hook #'turn-on-cdlatex))
 
 
 (provide 'init-tex)

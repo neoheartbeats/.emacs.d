@@ -5,8 +5,6 @@
 
 ;;; Code:
 
-(defvar is-macos (string= system-type "darwin"))
-
 
 ;; macOS specified key mapping
 (setq mac-command-modifier 'super)
@@ -19,6 +17,7 @@
 (setq scroll-step 1)
 (setq scroll-conservatively 15000)
 (setq mouse-wheel-follow-mouse t)
+(setq mouse-wheel-progressive-speed nil)
 (setq mouse-wheel-scroll-amount '(1
                                   ((shift) . 5)
                                   ((control))))
@@ -43,6 +42,13 @@
 ;;; macOS styled keybindings
 ;; Editing specified
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+(global-set-key (kbd "s-a") 'mark-whole-buffer)
+(global-set-key (kbd "s-c") 'kill-ring-save)
+(global-set-key (kbd "s-v") 'yank)
+(global-set-key (kbd "s-x") 'kill-region)
+
+(global-set-key (kbd "s-z") 'undo)
+(global-set-key (kbd "S-s-z") 'undo-redo)
 
 ;; Buffer specified
 (global-set-key (kbd "s-s") 'save-buffer)
@@ -55,12 +61,11 @@
 (global-set-key (kbd "<s-left>") 'switch-to-prev-buffer)
 
 ;; Ignore these buffers while switching
-
 (defcustom my-buffer-skip-regexp
   (rx bos (or (or "*scratch*" "*Messages*" "*Help*" "Warning"
+                  "*Native-compile-Log*" "*Compile-Log*"
                   "*Async-native-compile-log*"
-                  "*Org Preview LaTeX Output*"
-                  "*straight-process*")
+                  "*Org Preview LaTeX Output*")
               (seq "magit-diff" (zero-or-more anything))
               (seq "magit-process" (zero-or-more anything))
               (seq "magit-revision" (zero-or-more anything))
@@ -97,8 +102,7 @@
 (global-unset-key (kbd "C-z"))
 
 
-(when is-macos
-  (setq dired-use-ls-dired nil))
+(setq dired-use-ls-dired nil)
 
 
 ;; Speedup `regexp' searching

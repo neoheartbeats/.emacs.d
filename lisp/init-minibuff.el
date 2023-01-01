@@ -1,34 +1,30 @@
 ;;; init-minibuff.el --- Config for minibuffer completion -*- lexical-binding: t -*-
 ;;; Commentary:
-
-;; This file is inspired by https://github.com/purcell/emacs.d/.
-
 ;;; Code:
 
 (use-package vertico
-  :straight (:files (:defaults "extensions/*.el"))
-  :custom
-  (vertico-count 5) ; Number of candidates to display
-  (vertico-cycle t)
-  (vertico-resize t)
+  :init (vertico-mode 1)
   :config
-  (vertico-mode 1)
-  (use-package vertico-directory
-    :straight nil
-    :after vertico
-    :bind
-    ((:map vertico-map
-           ("<tab>" . vertico-insert)
-	   ("RET" . vertico-directory-enter)
-           ("DEL" . vertico-directory-delete-char)
-           ("S-DEL" . vertico-directory-delete-word)))
-    :hook ;; Correct file path when changed
-    (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
-  ;; Persist history over Emacs restarts.
-  (use-package savehist
-    :init
-    (savehist-mode 1)))
+  ;; Load extensions
+  (require 'vertico-directory)
+
+  ;; Correct file path when changed
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+
+  (setq vertico-count 8)
+  (setq vertico-cycle t)
+  :bind
+  ((:map vertico-map
+         ("<tab>" . vertico-insert)
+	 ("RET" . vertico-directory-enter)
+         ("DEL" . vertico-directory-delete-char)
+         ("s-DEL" . vertico-directory-delete-word))))
+
+;; Persist history over Emacs restarts
+(with-eval-after-load 'vertico
+  (require 'savehist)
+  (savehist-mode 1))
 
 (use-package consult
   :init
@@ -82,9 +78,8 @@
 
 (use-package embark-consult
   :after (embark consult)
-  :demand t
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+  :config
+  (add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode))
 
 
 ;; Enable rich annotations
