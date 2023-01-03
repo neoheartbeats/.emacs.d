@@ -23,8 +23,7 @@
 ;; Setup `dvisvgm' to preview LaTeX fragments
 (setq org-preview-latex-default-process 'dvisvgm)
 (setq org-preview-latex-process-alist
-      '(
-        (dvisvgm
+      '((dvisvgm
          :programs ("latex" "dvisvgm")
          :description "dvi > svg"
          :image-input-type "dvi"
@@ -35,18 +34,17 @@
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
-      '(
-        ("" "mathtools" t)
+      '(("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
-        ("" "arev" t)))
+        ("" "mlmodern" t)))
 
 (setq org-format-latex-options
       '(
         :foreground default
         :background "Transparent"
-        :scale 1.30
+        :scale 1.70
         :html-foreground default
         :html-background "Transparent"
         :html-scale 1.25
@@ -116,7 +114,7 @@ as a string.  It defaults to \"png\"."
 ;; Setup `CDLaTeX'
 (use-package cdlatex
   :demand t
-  :diminish
+  :diminish (org-cdlatex-mode)
   :config
   (add-hook 'LaTeX-mode-hook #'turn-on-cdlatex)
   (add-hook 'org-mode-hook #'turn-on-org-cdlatex))

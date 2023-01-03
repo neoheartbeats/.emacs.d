@@ -5,12 +5,17 @@
 
 ;;; Code:
 
+
+;; Defer garbage collection further back in the startup process
+(setq gc-cons-threshold most-positive-fixnum)
+
+
+;; Do not resize the frame at this early stage
+(setq frame-inhibit-implied-resize t)
+
 ;; Pixelwise resize windows
 (setq window-resize-pixelwise t)
 (setq frame-resize-pixelwise t)
-
-;; Do not resize the frame at this early stage
-(setq frame-inhibit-implied-resize t)
 
 (dolist (var '(default-frame-alist initial-frame-alist))
   (add-to-list var '(width . 125))
@@ -25,23 +30,18 @@
 (push '(ns-appearance . dark) default-frame-alist)
 
 
-;; Defer garbage collection further back in the startup process
-(setq gc-cons-threshold most-positive-fixnum)
-
-
-;; Initialise installed packages
+;; Initializing installed packages
 (setq package-enable-at-startup t)
 
-;; Allow loading from the package cache
+;; Do not allow loading from the package cache
 (setq package-quickstart nil)
 
-
-;; Config related to GccEmacs
 ;; Prevent unwanted runtime compilation for GccEmacs
 (setq native-comp-deferred-compilation nil)
+(setq load-prefer-newer noninteractive)
 
-;; Compile external packages for GccEmacs
-(setq package-native-compile t)
+;; It must be set before loading `use-package'
+(setq use-package-enable-imenu-support t)
 
 ;; Suppress GUI features
 (setq use-dialog-box nil)

@@ -23,7 +23,7 @@
 ;; Project management using `projectile.el'
 (use-package projectile
   :diminish
-  :config
+  :init
   (when (file-directory-p my-dev-path)
     (let ((project-path-list '()))
       (push my-dev-path project-path-list)

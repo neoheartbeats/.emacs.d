@@ -3,14 +3,11 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	            :family "PragmataPro"
-	            :height 140)
+	            :family "Credits"
+	            :height 155)
 
-(set-face-attribute 'variable-pitch nil
-                    :family "HarmonyOS Sans SC")
-
-(set-fontset-font "fontset-default" 'unicode "PragmataPro")
-(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
+(set-fontset-font "fontset-default" 'unicode "SF Pro")
+(set-fontset-font "fontset-default" 'han "Heiti SC")
 
 (with-eval-after-load 'init-themes ; Remove italic constructs
   (set-face-attribute 'italic nil

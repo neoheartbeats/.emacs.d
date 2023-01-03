@@ -12,15 +12,25 @@
 
 ;; Setup standard package repositories
 (setq-default package-archives
-  '(
-     ("melpa" . "https://melpa.org/packages/")
-     ("gnu" . "https://elpa.gnu.org/packages/")
-     ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+              '(("melpa" . "https://melpa.org/packages/")
+                ("gnu" . "https://elpa.gnu.org/packages/")
+                ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
 
 ;; Bootstrap `use-package.el'
-(require 'use-package)
-(setq-default use-package-always-ensure t)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+;; Should set before loading `use-package'
+(eval-and-compile
+  (setq use-package-always-ensure t)
+  (setq use-package-always-defer t)
+  (setq use-package-expand-minimally t)
+  (setq use-package-enable-imenu-support t))
+
+(eval-when-compile
+  (require 'use-package))
 
 (use-package diminish :demand t)
 (use-package bind-key :demand t)

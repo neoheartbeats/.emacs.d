@@ -39,40 +39,20 @@
 ;; Add a new line in the end of buffer while saving
 (setq-default require-final-newline t)
 
+;; Line spacings
+(setq-default line-spacing 0.2)
+
 ;; Format current buffer while saving
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 (add-hook 'before-save-hook (lambda ()
                               (indent-region (point-min) (point-max) nil)))
 
 
-;; Add paddings between lines
-(defun my/add-line-padding ()
-  "Add extra padding between lines."
-
-  ;; Remove padding overlays if they already exist
-  (let ((overlays (overlays-at (point-min))))
-    (while overlays
-      (let ((overlay (car overlays)))
-        (if (overlay-get overlay 'padding-overlayed-q)
-            (delete-overlay overlay)))
-      (setq overlays (cdr overlays))))
-
-  ;; Add new padding overlay
-  (let ((line-padding 2.0)
-        (padding-overlay (make-overlay (point-min) (point-max))))
-    (overlay-put padding-overlay 'padding-overlayed-q t)
-    (overlay-put padding-overlay 'line-spacing (* .1 line-padding))
-    (overlay-put padding-overlay 'line-height (+ 1 (* .1 line-padding))))
-  (setq mark-active nil))
-
-(add-hook 'buffer-list-update-hook #'my/add-line-padding)
-
-
 ;; Enable the fundamental modes
 (global-auto-revert-mode 1)
+;; (global-hl-line-mode 1)
 (transient-mark-mode 1)
 (save-place-mode 1)
-(global-hl-line-mode 1)
 
 
 ;; Fill columns
@@ -103,13 +83,13 @@
 (setq auto-window-vscroll nil)
 
 ;; Display line numbers
-(global-display-line-numbers-mode 1)
-(setq-default line-number-mode nil) ; Hide line numbers in mode line
-
+;; (global-display-line-numbers-mode 1)
+;; (setq-default line-number-mode nil) ; Hide line numbers in mode line
+;;
 ;; Fix the line number displaying width
-(setq-default display-line-numbers-width 3)
-(setq-default display-line-numbers-widen t)
-(setq-default display-line-numbers-grow-only t)
+;; (setq-default display-line-numbers-width 3)
+;; (setq-default display-line-numbers-widen t)
+;; (setq-default display-line-numbers-grow-only t)
 
 ;; Enhance the performace of display
 (setq display-raw-bytes-as-hex t)
