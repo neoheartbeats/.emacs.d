@@ -4,7 +4,7 @@
 
 (set-face-attribute 'default nil
 	            :family "Credits"
-	            :height 155)
+	            :height 140)
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'han "Heiti SC")

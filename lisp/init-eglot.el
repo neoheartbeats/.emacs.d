@@ -6,9 +6,8 @@
 ;; Eglot setup
 ;; (unless (not *const-q*)
 ;;   (package-install 'eglot))
-
+;;
 ;; (use-package eglot
-;;   :ensure nil
 ;;   :config
 ;;   (setq eglot-autoshutdown t)
 ;;   (setq read-process-output-max (* 1024 1024))
@@ -64,8 +63,6 @@
 ;; (setq-default python-indent-guess-indent-offset-verbose nil)
 
 ;; (global-set-key (kbd "M-p r") 'run-python)
-
-
 
 
 (provide 'init-eglot)

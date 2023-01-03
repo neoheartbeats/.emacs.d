@@ -1,6 +1,7 @@
 org-mode
 
 (sc "#+BEGIN_SRC " p n> r> n> "#+END_SRC")
+(scp "#+BEGIN_SRC python :session :results " p n> r> n> "#+END_SRC")
 (qt "#+BEGIN_QUOTE " p n> r> n> "#+END_QUOTE")
 (m "$" r "$")
 (mm "\\[" r "\\]")

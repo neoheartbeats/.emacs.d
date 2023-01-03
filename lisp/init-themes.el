@@ -36,8 +36,8 @@
 
 
 ;; Mode line settings
-;; (setq-default mode-line-compact t)
-(setq-default mode-line-format nil)
+(setq-default mode-line-compact t)
+;; (setq-default mode-line-format nil)
 
 (diminish 'eldoc-mode)
 

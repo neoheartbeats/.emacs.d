@@ -40,7 +40,7 @@
 (add-hook 'org-mode-hook (lambda ()
                            (setq prettify-symbols-alist
                                  '((":PROPERTIES:" . ?􀈣)
-                                   (":ID:      " . ?􀅳)
+                                   (":ID:" . ?􀅳)
                                    (":END:" . ?􀅽)
                                    ("#+TITLE:" . ?􀎞)
                                    ("#+RESULTS:" . ?􀆀)

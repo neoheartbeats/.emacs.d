@@ -39,9 +39,6 @@
 ;; Add a new line in the end of buffer while saving
 (setq-default require-final-newline t)
 
-;; Line spacings
-(setq-default line-spacing 0.2)
-
 ;; Format current buffer while saving
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 (add-hook 'before-save-hook (lambda ()

@@ -54,9 +54,8 @@
 (require 'init-projects)
 (require 'init-org)
 (require 'init-tex)
-
 (require 'init-temp)
-;; (require 'init-eglot)
+(require 'init-eglot)
 
 
 (provide 'init)
