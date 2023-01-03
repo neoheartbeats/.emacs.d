@@ -40,13 +40,13 @@
         ("" "siunitx" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
-        ("" "mlmodern" t)))
+        ("" "arev" t)))
 
 (setq org-format-latex-options
       '(
         :foreground default
         :background "Transparent"
-        :scale 1.65
+        :scale 1.30
         :html-foreground default
         :html-background "Transparent"
         :html-scale 1.25
@@ -98,8 +98,10 @@ as a string.  It defaults to \"png\"."
   (let* ((img (create-image image 'svg t))
          (ov (car (overlays-at (/ (+ beg end) 2) t)))
          (width (car (image-display-size (overlay-get ov 'display))))
+         (display-p (/= (char-after beg) 36))
          offset)
-    (when (= beg (line-beginning-position))
+    (when (and (= beg (line-beginning-position))
+               display-p)
       (setq offset (floor (- (/ fill-column 2)
                              (/ width 2))))
       (when (< offset 0)
@@ -107,13 +109,14 @@ as a string.  It defaults to \"png\"."
       (overlay-put ov 'before-string (make-string offset ? )))))
 
 (advice-add 'org--make-preview-overlay
-            :after 'my/org--justify-fragment-overlay)
+            :after #'my/org--justify-fragment-overlay)
 
 
 ;; Better LaTeX editor for Org mode
 ;; Setup `CDLaTeX'
 (use-package cdlatex
   :demand t
+  :diminish
   :config
   (add-hook 'LaTeX-mode-hook #'turn-on-cdlatex)
   (add-hook 'org-mode-hook #'turn-on-org-cdlatex))

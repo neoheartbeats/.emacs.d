@@ -19,24 +19,42 @@
 ;; Org Modern
 (use-package org-modern
   :config
-  (setq org-modern-star '("􀄩"))
-  (setq org-modern-hide-stars "􀄩")
+  (setq org-modern-star '(""))
+  (setq org-modern-hide-stars "")
   (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X . "􀃠") (?- . "􀃞") (?\s . "􀂒")))
-  (setq org-modern-block-name '(("src" . ("􀐘" "􀅽"))))
+  (setq org-modern-checkbox '((?X . "")
+                              (?- . "")
+                              (?\s . "")))
   (setq org-modern-keyword nil)
+  (setq org-modern-block-name '(("src" . ("" ""))
+                                ("quote" . ("" ""))))
+  (setq org-modern-block-fringe nil)
+  (setq org-modern-timestamp nil)
+
   (set-face-attribute 'org-modern-symbol nil
-                      :family "SF Pro")
+                      :family "PragmataPro")
 
   (global-org-modern-mode 1))
 
 
 ;; Symbols in Org mode
-(setq org-ellipsis " 􀍠")
+(add-hook 'prog-mode-hook #'prettify-symbols-mode)
+(add-hook 'org-mode-hook (lambda ()
+                           (setq prettify-symbols-alist
+                                 '((":PROPERTIES:" . ?)
+                                   (":ID:      " . ?)
+                                   (":END:" . ?)
+                                   ("#+TITLE:" . ?)
+                                   ("#+AUTHOR:" . ?)
+                                   ("#+RESULTS:" . ?)
+                                   ("ATTR_ORG:" . ?)))
+                           (prettify-symbols-mode 1)))
+
+(setq org-ellipsis " ")
 
 ;; Setup pretty entities for unicode math symbols
-;; (setq org-pretty-entities t)
-;; (setq org-pretty-entities-include-sub-superscripts nil)
+(setq org-pretty-entities t)
+(setq org-pretty-entities-include-sub-superscripts nil)
 
 
 ;; Fold drawers by default
@@ -74,17 +92,11 @@
   (setq-default org-edit-src-content-indentation 0)
 
   (org-babel-do-load-languages 'org-babel-load-languages
-                               '((emacs-lisp . t)
+                               '(
+                                 (emacs-lisp . t)
                                  (shell . t)
                                  (python . t)
                                  (latex . t))))
-
-
-;; Hide unwanted shell warning messages
-(advice-add 'sh-set-shell :around
-            (lambda (orig-fun &rest args)
-              (cl-letf (((symbol-function 'message) #'ignore))
-                (apply orig-fun args))))
 
 
 ;; Org mode text edition
@@ -125,7 +137,7 @@
   (setq org-roam-dailies-capture-templates
         '(("d" "default" entry "\n* %?"
            :target (file+head "%<%Y-%m-%d>.org"
-                              "#+TITLE: %<%Y-%m-%d-%Y>\n")
+                              "#+TITLE: %<%Y-%m-%d-%A>\n")
            :empty-lines 1)))
 
   ;; Default capture template for notes

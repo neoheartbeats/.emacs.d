@@ -5,7 +5,7 @@
 
 ;;; Code:
 
-;;; Pixelwise resize windows
+;; Pixelwise resize windows
 (setq window-resize-pixelwise t)
 (setq frame-resize-pixelwise t)
 
@@ -33,7 +33,7 @@
 (setq package-enable-at-startup t)
 
 ;; Allow loading from the package cache
-(setq package-quickstart t)
+(setq package-quickstart nil)
 
 
 ;; Config related to GccEmacs

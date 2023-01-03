@@ -1,6 +1,7 @@
 org-mode
 
-(s "#+BEGIN_SRC " p n> r> n> "#+END_SRC")
+(sc "#+BEGIN_SRC " p n> r> n> "#+END_SRC")
+(qt "#+BEGIN_QUOTE " p n> r> n> "#+END_QUOTE")
 (m "$" r "$")
 (mm "\\[" r "\\]")
 (bn "\\binom{" p "}{" r "}")

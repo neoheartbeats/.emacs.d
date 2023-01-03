@@ -12,10 +12,10 @@
 
 ;; Setup standard package repositories
 (setq-default package-archives
-              '(
-                ("melpa" . "https://melpa.org/packages/")
-                ("gnu" . "https://elpa.gnu.org/packages/")
-                ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+  '(
+     ("melpa" . "https://melpa.org/packages/")
+     ("gnu" . "https://elpa.gnu.org/packages/")
+     ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
 
 ;; Bootstrap `use-package.el'

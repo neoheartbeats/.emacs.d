@@ -38,18 +38,34 @@
 ;; Formatting files
 ;; Add a new line in the end of buffer while saving
 (setq-default require-final-newline t)
-(add-hook 'before-save-hook #'delete-trailing-whitespace)
 
-(setq-default fill-column 80)
+;; Format current buffer while saving
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+(add-hook 'before-save-hook (lambda ()
+                              (indent-region (point-min) (point-max) nil)))
 
 
-;; Enable those features
-(dolist (c '(narrow-to-region
-	     narrow-to-page
-	     upcase-region
-	     downcase-region))
-  (put c 'disabled nil))
-(put 'overwrite-mode 'disabled t)
+;; Add paddings between lines
+(defun my/add-line-padding ()
+  "Add extra padding between lines."
+
+  ;; Remove padding overlays if they already exist
+  (let ((overlays (overlays-at (point-min))))
+    (while overlays
+      (let ((overlay (car overlays)))
+        (if (overlay-get overlay 'padding-overlayed-q)
+            (delete-overlay overlay)))
+      (setq overlays (cdr overlays))))
+
+  ;; Add new padding overlay
+  (let ((line-padding 2.0)
+        (padding-overlay (make-overlay (point-min) (point-max))))
+    (overlay-put padding-overlay 'padding-overlayed-q t)
+    (overlay-put padding-overlay 'line-spacing (* .1 line-padding))
+    (overlay-put padding-overlay 'line-height (+ 1 (* .1 line-padding))))
+  (setq mark-active nil))
+
+(add-hook 'buffer-list-update-hook #'my/add-line-padding)
 
 
 ;; Enable the fundamental modes
@@ -58,15 +74,28 @@
 (save-place-mode 1)
 (global-hl-line-mode 1)
 
-(add-hook 'org-mode-hook #'visual-line-mode)
-(diminish 'visual-line-mode)
+
+;; Fill columns
+(setq-default fill-column 80)
+
+(with-eval-after-load 'org
+  (add-hook 'org-mode-hook #'visual-line-mode)
+  (diminish 'visual-line-mode))
 
 
 ;; Deleting
 (delete-selection-mode 1)
 
+(use-package smart-hungry-delete
+  :init
+  (smart-hungry-delete-add-default-hooks)
+  :bind
+  (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
+   ([remap delete-backward-char] . smart-hungry-delete-backward-char)
+   ([remap delete-char] . smart-hungry-delete-forward-char)))
+
 
-;;; Improve displaying
+;; Improve displaying
 ;; The nano style for truncated long lines
 (setq auto-hscroll-mode 'current-line)
 
@@ -78,6 +107,8 @@
 (setq-default line-number-mode nil) ; Hide line numbers in mode line
 
 ;; Fix the line number displaying width
+(setq-default display-line-numbers-width 3)
+(setq-default display-line-numbers-widen t)
 (setq-default display-line-numbers-grow-only t)
 
 ;; Enhance the performace of display
@@ -89,17 +120,7 @@
 (use-package rainbow-delimiters
   :demand t
   :config
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-  (add-hook 'org-mode-hook #'rainbow-delimiters-mode))
-
-
-;; Settings for cursors & clipboard
-;; Make the cursor solid
-(blink-cursor-mode -1)
-(setq-default cursor-type '(bar . 1))
-
-(set-face-attribute 'cursor nil
-                    :background "#6ae4b9")
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 ;; Always show the pointer's position
 (setq make-pointer-invisible nil)
@@ -112,13 +133,13 @@
 
 
 ;; Formatting buffers
-(defun my/indent-buffer ()
+(defun my/indent-and-save-buffer ()
   "Indent current buffer then save it."
   (interactive)
   (save-excursion
     (indent-region (point-min) (point-max) nil)
     (save-buffer)))
-(global-set-key (kbd "s-i") 'my/indent-buffer)
+(global-set-key (kbd "s-i") 'my/indent-and-save-buffer)
 
 
 (provide 'init-editing-utils)

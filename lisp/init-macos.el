@@ -15,17 +15,18 @@
 ;; Smoother and nicer scrolling
 (setq scroll-margin 15)
 (setq scroll-step 1)
-(setq scroll-conservatively 15000)
+(setq scroll-conservatively 105)
+(setq scroll-preserve-screen-position t)
 (setq mouse-wheel-follow-mouse t)
 (setq mouse-wheel-progressive-speed nil)
 (setq mouse-wheel-scroll-amount '(1
-                                  ((shift) . 5)
-                                  ((control))))
+                                   ((shift) . 5)
+                                   ((control))))
 
 (dolist (multiple '("" "double-" "triple-"))
   (dolist (direction '("right" "left"))
     (global-set-key (read-kbd-macro
-                     (concat "<" multiple "wheel-" direction ">")) 'ignore)))
+                      (concat "<" multiple "wheel-" direction ">")) 'ignore)))
 
 ;; Enable `pixel-scroll-precision-mode'
 (when (fboundp 'pixel-scroll-precision-mode)
@@ -37,6 +38,18 @@
 ;; Disabe default key for scaling text
 (global-unset-key (kbd "C-<wheel-up>"))
 (global-unset-key (kbd "C-<wheel-down>"))
+
+
+;; Everything in UTF-8
+;; Referred from: `https://hieuphay.com/emacs-config'
+(set-language-environment "UTF-8")
+(prefer-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-buffer-file-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(setq default-input-method 'vietnamese-telex)
+(setq search-default-mode 'char-fold-to-regexp)
 
 
 ;;; macOS styled keybindings
@@ -55,22 +68,22 @@
 (global-set-key (kbd "s-q") 'save-buffers-kill-emacs)
 (global-set-key (kbd "s-e") 'delete-window)
 (global-set-key (kbd "s-w") (lambda ()
-			      (interactive)
-			      (kill-buffer (current-buffer))))
+			                        (interactive)
+			                        (kill-buffer (current-buffer))))
 (global-set-key (kbd "<s-right>") 'switch-to-next-buffer)
 (global-set-key (kbd "<s-left>") 'switch-to-prev-buffer)
 
 ;; Ignore these buffers while switching
 (defcustom my-buffer-skip-regexp
   (rx bos (or (or "*scratch*" "*Messages*" "*Help*" "Warning"
-                  "*Native-compile-Log*" "*Compile-Log*"
-                  "*Async-native-compile-log*"
-                  "*Org Preview LaTeX Output*")
-              (seq "magit-diff" (zero-or-more anything))
-              (seq "magit-process" (zero-or-more anything))
-              (seq "magit-revision" (zero-or-more anything))
-              (seq "magit-stash" (zero-or-more anything)))
-      eos)
+                "*Native-compile-Log*" "*Compile-Log*"
+                "*Async-native-compile-log*"
+                "*Org Preview LaTeX Output*")
+            (seq "magit-diff" (zero-or-more anything))
+            (seq "magit-process" (zero-or-more anything))
+            (seq "magit-revision" (zero-or-more anything))
+            (seq "magit-stash" (zero-or-more anything)))
+    eos)
   "Regexp matching buffers ignored while switching buffers."
   :type 'regexp)
 
