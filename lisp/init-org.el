@@ -19,18 +19,15 @@
 ;; Org Modern
 (use-package org-modern
   :init
-  (setq org-modern-star '("􀄩"))
-  (setq org-modern-hide-stars "􀄩")
+  (setq org-modern-star '(""))
+  (setq org-modern-hide-stars "")
   (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X . "􀃠")
-                              (?- . "􀃞")
-                              (?\s . "􀂒")))
-  (setq org-modern-block-name '(("src" . ("􀓪" "􀅽"))))
-  (setq org-modern-todo nil)
+  (setq org-modern-checkbox '((?X . "")
+                              (?- . "")
+                              (?\s . "")))
+  (setq org-modern-block-name '(("src" . ("" ""))))
   (setq org-modern-keyword nil)
   (setq org-modern-block-fringe nil)
-  (setq org-modern-statistics nil)
-  (setq org-modern-timestamp nil)
 
   (global-org-modern-mode 1))
 
@@ -39,15 +36,15 @@
 (add-hook 'prog-mode-hook #'prettify-symbols-mode)
 (add-hook 'org-mode-hook (lambda ()
                            (setq prettify-symbols-alist
-                                 '((":PROPERTIES:" . ?􀈣)
-                                   (":ID:" . ?􀅳)
-                                   (":END:" . ?􀅽)
-                                   ("#+TITLE:" . ?􀎞)
-                                   ("#+RESULTS:" . ?􀆀)
-                                   ("#+ATTR_ORG:" . ?􀣋)))
+                                 '((":PROPERTIES:" . ?)
+                                   (":END:" . ?)
+                                   ("#+TITLE:" . ?)
+                                   ("#+AUTHOR:" . ?)
+                                   ("#+RESULTS:" . ?)
+                                   ("#+ATTR_ORG:" . ?)))
                            (prettify-symbols-mode 1)))
 
-(setq org-ellipsis " 􀍠")
+(setq org-ellipsis " ")
 
 ;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)

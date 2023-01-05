@@ -32,8 +32,12 @@
 (eval-when-compile
   (require 'use-package))
 
-(use-package diminish :demand t)
 (use-package bind-key :demand t)
+
+(use-package diminish
+  :demand t
+  :config
+  (diminish 'eldoc-mode))
 
 
 ;; Keep `user-emacs-directory' clean

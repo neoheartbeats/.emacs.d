@@ -14,12 +14,27 @@
 (defun display-startup-echo-area-message () (message ""))
 
 
-;; Cleanup the text & icons
+;; Set the text and icons in title
 (setq-default ns-use-proxy-icon nil)
-(setq-default frame-title-format nil)
 
 ;; Stop showing fringe bitmaps
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
+
+
+;; Non-zero values for `line-spacing' can mess up ansi-term and co,
+;; so we zero it explicitly in those cases
+(add-hook 'term-mode-hook
+          (lambda ()
+            (setq line-spacing 0)))
+
+
+;; Nicer naming of buffers for files with identical names
+(require 'uniquify)
+
+(setq uniquify-buffer-name-style 'reverse)
+(setq uniquify-separator " • ")
+(setq uniquify-after-kill-buffer-p t)
+(setq uniquify-ignore-buffers-re "^\\*")
 
 
 (provide 'init-gui-frames)

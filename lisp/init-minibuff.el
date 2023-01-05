@@ -88,5 +88,15 @@
   (marginalia-mode 1))
 
 
+;; Show guides for key bindings
+(use-package which-key
+  :config
+  (setq-default which-key-idle-delay 1.5)
+  (add-hook 'after-init-hook #'(lambda ()
+                                 (which-key-mode 1)))
+  (with-eval-after-load 'which-key
+    (diminish 'which-key-mode)))
+
+
 (provide 'init-minibuff)
 ;;; init-minibuff.el ends here
