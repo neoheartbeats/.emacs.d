@@ -24,7 +24,8 @@
 
 (use-package corfu
   :init
-  (global-corfu-mode 1)
+  (add-hook 'after-init-hook #'(lambda ()
+                                 (global-corfu-mode 1)))
   :config
 
   ;; Load extensions
@@ -33,12 +34,16 @@
   ;; Remember the latest choice
   (corfu-history-mode 1)
 
-  (setq corfu-auto t)
-  (setq corfu-auto-prefix 2)
-  (setq corfu-cycle t)
-  (setq corfu-quit-at-boundary t)
-  (setq corfu-quit-no-match 'separator)
-  (setq corfu-preselect 'prompt)
+  (setq-default corfu-auto t)
+  (setq-default corfu-auto-prefix 2)
+  (setq-default corfu-cycle t)
+  (setq-default corfu-quit-at-boundary t)
+  (setq-default corfu-quit-no-match 'separator)
+  (setq-default corfu-preselect 'prompt)
+
+  (with-eval-after-load 'eshell
+    (add-hook 'eshell-mode-hook (lambda ()
+                                  (setq-local corfu-auto nil))))
 
   (with-eval-after-load 'org
     ;; Aggressive completion, cheap prefix filtering

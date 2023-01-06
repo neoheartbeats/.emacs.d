@@ -3,10 +3,10 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	            :font "PragmataPro"
+	            :font "Input"
 	            :height 140)
 
-(set-fontset-font "fontset-default" 'unicode "PragmataPro")
+(set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
 
 (with-eval-after-load 'init-themes ; Remove italic constructs

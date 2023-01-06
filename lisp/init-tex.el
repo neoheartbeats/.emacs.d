@@ -35,7 +35,7 @@
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
       '(("" "mathtools" t)
-        ("" "siunitx" t)
+        ("retain-explicit-decimal-marker" "siunitx" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
         ("" "mlmodern" t)))
@@ -44,7 +44,7 @@
       '(
         :foreground default
         :background "Transparent"
-        :scale 1.70
+        :scale 1.65
         :html-foreground default
         :html-background "Transparent"
         :html-scale 1.25

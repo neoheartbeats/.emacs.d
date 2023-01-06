@@ -23,11 +23,14 @@
 (set-face-background 'fringe (face-attribute 'default :background))
 
 ;; Cursor faces
+(setq-default blink-cursor-mode nil)
+(setq-default cursor-type '(bar . 1))
 (set-cursor-color "#ff5f5f")
 
 
 ;; Mode line settings
 (setq-default mode-line-compact t)
+
 
 
 (provide 'init-themes)

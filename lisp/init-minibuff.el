@@ -3,7 +3,8 @@
 ;;; Code:
 
 (use-package vertico
-  :init (vertico-mode 1)
+  :init
+  (vertico-mode 1)
   :config
 
   ;; Load extensions
@@ -79,7 +80,8 @@
 (use-package embark-consult
   :after (embark consult)
   :config
-  (add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode))
+  (add-hook 'embark-collect-mode-hook #'(lambda ()
+                                          (consult-preview-at-point-mode 1))))
 
 
 ;; Enable rich annotations

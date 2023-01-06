@@ -32,7 +32,7 @@
 (setq debug-on-error init-file-debug)
 
 
-;;; Bootstrap process
+;; Bootstrap process
 ;; Setup `custom.el'
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
@@ -56,6 +56,7 @@
 (require 'init-tex)
 (require 'init-temp)
 (require 'init-eglot)
+(require 'init-clock)
 
 
 (provide 'init)

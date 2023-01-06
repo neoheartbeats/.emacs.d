@@ -19,32 +19,38 @@
 ;; Org Modern
 (use-package org-modern
   :init
-  (setq org-modern-star '(""))
-  (setq org-modern-hide-stars "")
+  (setq org-modern-star '("􀄩"))
+  (setq org-modern-hide-stars "􀄩")
   (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X . "")
-                              (?- . "")
-                              (?\s . "")))
-  (setq org-modern-block-name '(("src" . ("" ""))))
+  (setq org-modern-checkbox '((?X . "􀃠")
+                              (?- . "􀃞")
+                              (?\s . "􀂒")))
+  (setq org-modern-block-name '(("src" . ("􀓪" "􀅽"))))
+  (setq org-modern-todo nil)
   (setq org-modern-keyword nil)
   (setq org-modern-block-fringe nil)
+  (setq org-modern-statistics nil)
+  (setq org-modern-timestamp nil)
 
   (global-org-modern-mode 1))
 
 
 ;; Symbols in Org mode
 (add-hook 'prog-mode-hook #'prettify-symbols-mode)
-(add-hook 'org-mode-hook (lambda ()
-                           (setq prettify-symbols-alist
-                                 '((":PROPERTIES:" . ?)
-                                   (":END:" . ?)
-                                   ("#+TITLE:" . ?)
-                                   ("#+AUTHOR:" . ?)
-                                   ("#+RESULTS:" . ?)
-                                   ("#+ATTR_ORG:" . ?)))
-                           (prettify-symbols-mode 1)))
+(add-hook 'org-mode-hook #'(lambda ()
+                             (setq prettify-symbols-alist
+                                   '((":PROPERTIES:" . ?􀈣)
+                                     (":ID:" . ?􀅳)
+                                     (":END:" . ?􀅽)
+                                     ("#+TITLE:" . ?􀎞)
+                                     ("#+RESULTS:" . ?􀆀)
+                                     ("#+ATTR_ORG:" . ?􀣋)
+                                     ("SCHEDULED:" . ?􀧞)
+                                     ("CLOSED:" .?􁜒)))
+                             (prettify-symbols-mode 1)))
 
-(setq org-ellipsis " ")
+(setq org-ellipsis " 􀍠")
+(setq org-hide-emphasis-markers t)
 
 ;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)
@@ -86,8 +92,7 @@
   (setq-default org-edit-src-content-indentation 0)
 
   (org-babel-do-load-languages 'org-babel-load-languages
-                               '(
-                                 (emacs-lisp . t)
+                               '((emacs-lisp . t)
                                  (shell . t)
                                  (python . t)
                                  (latex . t))))
@@ -146,6 +151,35 @@
 
 ;; Open today's note when startup
 (add-hook 'after-init-hook #'org-roam-dailies-goto-today)
+
+
+(use-package consult-org-roam
+  :init
+  (require 'consult-org-roam)
+
+  ;; Activate the minor mode
+  (consult-org-roam-mode 1)
+  :custom
+
+  ;; Use `ripgrep' for searching with `consult-org-roam-search'
+  (consult-org-roam-grep-func #'consult-ripgrep)
+
+  ;; Configure a custom narrow key for `consult-buffer'
+  (consult-org-roam-buffer-narrow-key ?r)
+
+  ;; Display org-roam buffers right after non-org-roam buffers
+  ;; in consult-buffer (and not down at the bottom)
+  (consult-org-roam-buffer-after-buffers t)
+  :config
+
+  ;; Eventually suppress previewing for certain functions
+  (consult-customize
+   consult-org-roam-forward-links
+   :preview-key (kbd "M-p"))
+  :bind
+
+  ;; Define some convenient keybindings as an addition
+  ("s-n b" . consult-org-roam-backlinks))
 
 
 (provide 'init-org)

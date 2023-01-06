@@ -39,8 +39,8 @@
 
 ;; Format current buffer while saving
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
-(add-hook 'before-save-hook (lambda ()
-                              (indent-region (point-min) (point-max) nil)))
+(add-hook 'before-save-hook #'(lambda ()
+                                (indent-region (point-min) (point-max) nil)))
 
 
 ;; Formatting buffers
@@ -73,9 +73,7 @@
 (when (boundp 'display-fill-column-indicator)
   (setq-default indicate-buffer-boundaries 'left)
   (add-hook 'prog-mode-hook #'(lambda ()
-                                (display-fill-column-indicator-mode 1)))
-  (add-hook 'org-mode-hook #'(lambda ()
-                               (display-fill-column-indicator-mode 1))))
+                                (display-fill-column-indicator-mode 1))))
 
 (with-eval-after-load 'org
   (add-hook 'org-mode-hook #'(lambda ()
@@ -112,8 +110,8 @@
 ;; Display line numbers
 (when (fboundp 'display-line-numbers-mode)
   (setq-default display-line-numbers-width 3)
-  (add-hook 'prog-mode-hook #'(lambda ()
-                                (display-line-numbers-mode 1))))
+  (add-hook 'after-init-hook #'(lambda ()
+                                 (display-line-numbers-mode 1))))
 
 ;; Enhance the performace of display
 (setq display-raw-bytes-as-hex t)

@@ -16,6 +16,7 @@
 
 ;; Set the text and icons in title
 (setq-default ns-use-proxy-icon nil)
+(setq-default frame-title-format nil)
 
 ;; Stop showing fringe bitmaps
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
@@ -23,18 +24,26 @@
 
 ;; Non-zero values for `line-spacing' can mess up ansi-term and co,
 ;; so we zero it explicitly in those cases
-(add-hook 'term-mode-hook
-          (lambda ()
-            (setq line-spacing 0)))
+(add-hook 'term-mode-hook #'(lambda ()
+                              (setq line-spacing 0)))
 
 
 ;; Nicer naming of buffers for files with identical names
 (require 'uniquify)
 
 (setq uniquify-buffer-name-style 'reverse)
-(setq uniquify-separator " • ")
+(setq uniquify-separator " - ")
 (setq uniquify-after-kill-buffer-p t)
 (setq uniquify-ignore-buffers-re "^\\*")
+
+
+(use-package helpful
+  :init
+  (global-set-key (kbd "C-h f") #'helpful-callable)
+  (global-set-key (kbd "C-h F") #'helpful-function)
+  (global-set-key (kbd "C-h v") #'helpful-variable)
+  (global-set-key (kbd "C-h k") #'helpful-key)
+  (global-set-key (kbd "C-c C-d") #'helpful-at-point))
 
 
 (provide 'init-gui-frames)
