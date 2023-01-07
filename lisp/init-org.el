@@ -154,6 +154,7 @@
 
 
 (use-package consult-org-roam
+  :diminish
   :init
   (require 'consult-org-roam)
 
