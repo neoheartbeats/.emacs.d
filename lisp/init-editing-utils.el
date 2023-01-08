@@ -12,7 +12,7 @@
 
 ;; Some basic preferences
 (setq-default case-fold-search t)
-(setq-default column-number-mode t)
+(setq-default line-number-mode nil)
 (setq-default confirm-nonexistent-file-or-buffer nil)
 (setq-default create-lockfiles nil)
 (setq-default ediff-split-window-function 'split-window-horizontally)
@@ -71,7 +71,6 @@
 (setq-default fill-column 80)
 
 (when (boundp 'display-fill-column-indicator)
-  (setq-default indicate-buffer-boundaries 'left)
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (display-fill-column-indicator-mode 1))))
 
@@ -86,6 +85,14 @@
                                (delete-selection-mode 1)))
 
 (global-set-key (kbd "s-<backspace>") #'kill-whole-line)
+
+(use-package smart-hungry-delete
+  :init
+  (smart-hungry-delete-add-default-hooks)
+  :bind
+  (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
+   ([remap delete-backward-char] . smart-hungry-delete-backward-char)
+   ([remap delete-char] . smart-hungry-delete-forward-char)))
 
 
 ;; Newline behaviours
@@ -108,10 +115,11 @@
 (setq auto-window-vscroll nil)
 
 ;; Display line numbers
-(when (fboundp 'display-line-numbers-mode)
-  (setq-default display-line-numbers-width 3)
-  (add-hook 'after-init-hook #'(lambda ()
-                                 (display-line-numbers-mode 1))))
+(setq-default display-line-numbers-width 3)
+(add-hook 'prog-mode-hook #'(lambda ()
+                              (display-line-numbers-mode 1)))
+(add-hook 'org-mode-hook #'(lambda ()
+                             (display-line-numbers-mode 1)))
 
 ;; Enhance the performace of display
 (setq display-raw-bytes-as-hex t)

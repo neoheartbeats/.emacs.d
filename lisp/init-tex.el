@@ -3,7 +3,8 @@
 ;;; Code:
 
 ;; Install AUCTeX
-(use-package tex :ensure auctex)
+(use-package latex
+  :straight auctex)
 
 ;; (with-eval-after-load 'LaTeX-mode
 ;;   (setq TeX-engine 'xetex)

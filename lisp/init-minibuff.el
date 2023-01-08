@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package vertico
+  :straight (:files (:defaults "extensions/*.el"))
   :init
   (vertico-mode 1)
   :config

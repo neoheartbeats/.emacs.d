@@ -18,9 +18,9 @@
 (setq frame-resize-pixelwise t)
 
 (dolist (var '(default-frame-alist initial-frame-alist))
-  (add-to-list var '(width . 125))
-  (add-to-list var '(height . 55))
-  (add-to-list var '(alpha . (90 . 90))))
+  (add-to-list var '(width . (text-pixels . 1920)))
+  (add-to-list var '(height . (text-pixels . 990)))
+  (add-to-list var '(alpha . (93 . 93))))
 
 ;; Faster to disable these here (before they've been initialized)
 (push '(menu-bar-lines . 0) default-frame-alist)
@@ -30,8 +30,8 @@
 (push '(ns-appearance . dark) default-frame-alist)
 
 
-;; Initializing installed packages
-(setq package-enable-at-startup t)
+;; Prevent `package.el' loading packages prior to init-file loading
+(setq package-enable-at-startup nil)
 
 ;; Do not allow loading from the package cache
 (setq package-quickstart nil)

@@ -40,7 +40,7 @@
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 ;; Load essential components
-(require 'init-packages)
+(require 'init-straight)
 
 ;; Load components
 (require 'init-macos)
@@ -49,14 +49,13 @@
 (require 'init-gui-frames)
 (require 'init-minibuff)
 (require 'init-corfu)
+(require 'init-temp)
 (require 'init-utils)
 (require 'init-editing-utils)
 (require 'init-projects)
 (require 'init-org)
 (require 'init-tex)
-(require 'init-temp)
 (require 'init-eglot)
-(require 'init-clock)
 
 
 (provide 'init)

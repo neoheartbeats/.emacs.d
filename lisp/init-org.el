@@ -26,11 +26,11 @@
                               (?- . "􀃞")
                               (?\s . "􀂒")))
   (setq org-modern-block-name '(("src" . ("􀓪" "􀅽"))))
-  (setq org-modern-todo nil)
+  ;; (setq org-modern-todo nil)
   (setq org-modern-keyword nil)
   (setq org-modern-block-fringe nil)
-  (setq org-modern-statistics nil)
-  (setq org-modern-timestamp nil)
+  ;; (setq org-modern-statistics nil)
+  ;; (setq org-modern-timestamp nil)
 
   (global-org-modern-mode 1))
 
@@ -64,7 +64,7 @@
 
 ;; Org images
 (with-eval-after-load 'org
-  (setq org-image-actual-width '(350)) ; Fallback to `350'
+  (setq org-image-actual-width '(300)) ; Fallback to `300'
   (define-key org-mode-map (kbd "s-p") (lambda ()
                                          (interactive)
                                          (org-latex-preview)
@@ -107,6 +107,9 @@
   (use-package emacsql-sqlite-builtin))
 
 (use-package org-roam
+  :straight (
+             :host github
+             :repo "org-roam/org-roam")
   :init
   (global-unset-key (kbd "s-n"))
   :bind
@@ -115,12 +118,17 @@
          ("s-n n" . org-id-get-create)
          ("s-n a" . org-roam-alias-add)
          ("s-n f" . org-roam-node-find)
-         ("s-n i" . org-roam-node-insert)))
+         ("s-n i" . org-roam-node-insert)
+         ("s-n l" . org-roam-buffer-toggle)))
 
   ;; Key-bindings for `org-roam-dailies'
   (:map org-mode-map
         ("<s-up>" . org-roam-dailies-goto-previous-note)
         ("<s-down>" . org-roam-dailies-goto-next-note))
+
+  ;; Open link from Org Roam window with mouse click
+  (:map org-roam-mode-map
+        ("<mouse-1>" . org-roam-preview-visit))
   :config
   (when *const-q* ; Use the built-in sqlite3
     (setq org-roam-database-connector 'sqlite-builtin))
@@ -147,40 +155,106 @@
            :empty-lines 1
            :unnarrowed t
            :immediate-finish t
-           :kill-buffer t))))
+           :kill-buffer t)))
+
+  ;; The Org Roam buffer
+  (setq org-roam-mode-sections
+        '((org-roam-backlinks-section :unique t)
+          org-roam-reflinks-section))
+
+  ;; Overwrite function `org-roam-preview-visit'
+  (defun org-roam-preview-visit (file point &optional other-window)
+    (setq other-window t) ; By setting this variable to `t'
+    (interactive (list (org-roam-buffer-file-at-point 'assert)
+                       (oref (magit-current-section) point)
+                       current-prefix-arg))
+    (let ((buf (find-file-noselect file))
+          (display-buffer-fn (if other-window
+                                 #'switch-to-buffer-other-window
+                               #'pop-to-buffer-same-window)))
+      (funcall display-buffer-fn buf)
+      (with-current-buffer buf
+        (widen)
+        (goto-char point))
+      (when (org-invisible-p) (org-show-context))
+      buf))
+
+  ;; Customize content in `org-roam-buffer' backlinks
+  (cl-defun org-roam-backlinks-section (node &key (unique nil))
+    (when-let ((backlinks (seq-sort #'org-roam-backlinks-sort
+                                    (org-roam-backlinks-get
+                                     node :unique unique))))
+      (magit-insert-section (org-roam-backlinks)
+        (magit-insert-heading "\n LINKED REFERENCES")
+        (insert "\n")
+        (dolist (backlink backlinks)
+          (org-roam-node-insert-section
+           :source-node (org-roam-backlink-source-node backlink)
+           :point (org-roam-backlink-point backlink)
+           :properties (org-roam-backlink-properties backlink)))
+        (insert ?\n))))
+
+  ;; Preview LaTeX & images in Org Roam window
+  ;; Note this function is defined interactivity
+  (add-hook 'org-roam-buffer-postrender-functions
+            #'(lambda ()
+                (goto-line 5)
+                (insert "\n")
+                (visual-line-mode 1)
+                (org--latex-preview-region (point-min) (point-max))
+                (org-display-inline-images)))
+
+  ;; Setup Org Roam buffer frame
+  (add-to-list 'display-buffer-alist
+               '("\\*org-roam\\*"
+                 (display-buffer-in-direction)
+                 (direction . right)
+                 (window-width . 0.35)
+                 (window-height . fit-window-to-buffer)))
+
+  ;; Customize faces
+  (set-face-attribute 'org-roam-dim nil
+                      :foreground "#26211d")
+  (set-face-attribute 'org-roam-header-line nil
+                      :foreground "#ef656a")
+  (set-face-attribute 'org-roam-title nil
+                      :foreground "#64aa0f"))
 
 ;; Open today's note when startup
-(add-hook 'after-init-hook #'org-roam-dailies-goto-today)
+(add-hook 'after-init-hook #'(lambda ()
+                               (interactive)
+                               (org-roam-dailies-goto-today)
+                               (org-roam-buffer-toggle)))
 
 
-(use-package consult-org-roam
-  :diminish
-  :init
-  (require 'consult-org-roam)
+;; Org Agenda
+(define-key global-map (kbd "C-c a") #'org-agenda)
 
-  ;; Activate the minor mode
-  (consult-org-roam-mode 1)
-  :custom
+(setq org-agenda-files '("~/Developer/TH18-03/dates/"
+                         "~/Developer/TH18-03/notes/"))
 
-  ;; Use `ripgrep' for searching with `consult-org-roam-search'
-  (consult-org-roam-grep-func #'consult-ripgrep)
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
 
-  ;; Configure a custom narrow key for `consult-buffer'
-  (consult-org-roam-buffer-narrow-key ?r)
+(setq org-edit-timestamp-down-means-later t)
+(setq org-export-coding-system 'utf-8)
+(setq org-export-kill-product-buffer-when-displayed t)
+(setq org-html-validation-link nil)
+(setq org-fast-tag-selection-single-key 'expert)
 
-  ;; Display org-roam buffers right after non-org-roam buffers
-  ;; in consult-buffer (and not down at the bottom)
-  (consult-org-roam-buffer-after-buffers t)
-  :config
-
-  ;; Eventually suppress previewing for certain functions
-  (consult-customize
-   consult-org-roam-forward-links
-   :preview-key (kbd "M-p"))
-  :bind
-
-  ;; Define some convenient keybindings as an addition
-  ("s-n b" . consult-org-roam-backlinks))
+;; Appearances
+(setq org-auto-align-tags nil)
+(setq org-catch-invisible-edits 'show-and-error)
+(setq org-agenda-block-separator ?─)
+(setq org-agenda-time-grid
+      '((daily today require-timed)
+        (800 1000 1200 1400 1600 1800 2000)
+        " ───── " "───────────────"))
+(setq org-agenda-current-time-string
+      "⭠ now ─────────────────────────────────────────────────")
+(setq org-agenda-block-separator nil)
+(setq org-tags-colum 0)
 
 
 (provide 'init-org)

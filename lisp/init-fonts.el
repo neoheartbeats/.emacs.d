@@ -3,11 +3,11 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	            :font "Input"
-	            :height 140)
+	            :font "AdaptiveMono OT"
+	            :height 155)
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
+(set-fontset-font "fontset-default" 'han "LXGW Wenkai")
 
 (with-eval-after-load 'init-themes ; Remove italic constructs
   (set-face-attribute 'italic nil

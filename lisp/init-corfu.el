@@ -23,9 +23,9 @@
   (setq completion-category-override nil))
 
 (use-package corfu
+  :straight (:files (:defaults "extensions/*.el"))
   :init
-  (add-hook 'after-init-hook #'(lambda ()
-                                 (global-corfu-mode 1)))
+  (global-corfu-mode 1)
   :config
 
   ;; Load extensions
@@ -39,7 +39,7 @@
   (setq-default corfu-cycle t)
   (setq-default corfu-quit-at-boundary t)
   (setq-default corfu-quit-no-match 'separator)
-  (setq-default corfu-preselect 'prompt)
+  (setq-default corfu-preselect 'first)
 
   (with-eval-after-load 'eshell
     (add-hook 'eshell-mode-hook (lambda ()
