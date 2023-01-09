@@ -53,8 +53,8 @@
 (setq org-hide-emphasis-markers t)
 
 ;; Setup pretty entities for unicode math symbols
-(setq org-pretty-entities t)
-(setq org-pretty-entities-include-sub-superscripts nil)
+;; (setq org-pretty-entities t)
+;; (setq org-pretty-entities-include-sub-superscripts nil)
 
 
 ;; Fold drawers by default
@@ -198,8 +198,6 @@
   ;; Note this function is defined interactivity
   (add-hook 'org-roam-buffer-postrender-functions
             #'(lambda ()
-                (goto-line 5)
-                (insert "\n")
                 (visual-line-mode 1)
                 (org--latex-preview-region (point-min) (point-max))
                 (org-display-inline-images)))
@@ -223,8 +221,7 @@
 ;; Open today's note when startup
 (add-hook 'after-init-hook #'(lambda ()
                                (interactive)
-                               (org-roam-dailies-goto-today)
-                               (org-roam-buffer-toggle)))
+                               (org-roam-dailies-goto-today)))
 
 
 ;; Org Agenda

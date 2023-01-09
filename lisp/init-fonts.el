@@ -3,11 +3,11 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	            :font "AdaptiveMono OT"
-	            :height 155)
+	            :font "Pes Mono" ;; AdaptiveMono OT
+	            :height 170)
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "LXGW Wenkai")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 (with-eval-after-load 'init-themes ; Remove italic constructs
   (set-face-attribute 'italic nil
