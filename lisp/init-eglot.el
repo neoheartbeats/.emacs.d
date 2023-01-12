@@ -53,10 +53,10 @@
 ;;     (python-shell-send-buffer))
 ;;   (define-key python-mode-map [f9] 'my/run-current-python-file))
 
-;; ;; Python executable file location
-;; (setq-default python-shell-interpreter my-python-exec-path)
-;; (with-eval-after-load 'org
-;;   (setq-default org-babel-python-command my-python-exec-path))
+;; Python executable file location
+(setq-default python-shell-interprete "python3")
+(with-eval-after-load 'org
+  (setq-default org-babel-python-command "python3"))
 
 ;; ;; Ignore the warnings
 ;; (setq-default python-indent-guess-indent-offset t)

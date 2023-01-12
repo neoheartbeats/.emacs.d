@@ -4,7 +4,7 @@ org-mode
 (scp "#+BEGIN_SRC python :session :results " p n> r> n> "#+END_SRC")
 (qt "#+BEGIN_QUOTE " p n> r> n> "#+END_QUOTE")
 (m "$" r "$")
-(mm "\\[" r "\\]")
+(mm "\\begin{equation}" r "\\end{equation}]")
 (bn "\\binom{" p "}{" r "}")
 (qq "\\coloneqq")
 (pp "\\left(" r "\\right)")

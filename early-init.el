@@ -18,8 +18,8 @@
 (setq frame-resize-pixelwise t)
 
 (dolist (var '(default-frame-alist initial-frame-alist))
-  (add-to-list var '(width . (text-pixels . 1920)))
-  (add-to-list var '(height . (text-pixels . 990)))
+  (add-to-list var '(width . (text-pixels . 990)))
+  (add-to-list var '(height . (text-pixels . 790)))
   (add-to-list var '(alpha . (93 . 93))))
 
 ;; Faster to disable these here (before they've been initialized)

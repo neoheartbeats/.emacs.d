@@ -6,17 +6,7 @@
 ;;; Code:
 
 
-(require-theme 'modus-themes)
-(setq modus-themes-common-palette-overrides
-      modus-themes-preset-overrides-intense)
-
-(mapc #'disable-theme custom-enabled-themes)
 (load-theme 'modus-vivendi :no-confirm)
-
-;; (use-package ef-themes
-;;   :config
-;;   (mapc #'disable-theme custom-enabled-themes)
-;;   (load-theme 'ef-autumn :no-confirm))
 
 
 ;; Customize faces
@@ -33,8 +23,8 @@
 (set-face-background 'fringe (face-attribute 'default :background))
 
 ;; Cursor faces
-;; (setq-default blink-cursor-mode nil)
-;; (setq-default cursor-type '(bar . 1))
+(setq-default blink-cursor-mode nil)
+(setq-default cursor-type '(bar . 1))
 
 
 ;; Highlight defined Elisp symbols in source code
@@ -47,13 +37,7 @@
 
 
 ;; Mode line settings
-;; Use one single line as mode line
-(use-package emacs
-  :custom-face
-  (mode-line ((t (:height 0.1))))
-  (mode-line-inactive ((t (:inherit mode-line))))
-  :config
-  (setq-default mode-line-format '("")))
+(setq-default mode-line-compact t)
 
 
 (provide 'init-themes)
