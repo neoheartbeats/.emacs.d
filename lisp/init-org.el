@@ -221,7 +221,14 @@
 ;; Open today's note when startup
 (add-hook 'after-init-hook #'(lambda ()
                                (interactive)
-                               (org-roam-dailies-goto-today)))
+                               (org-roam-dailies-goto-today)
+                               (save-buffer)))
+
+(add-hook 'org-mode-hook #'(lambda ()
+                             (progn
+                               (setq left-margin-width 5)
+                               (setq right-margin-width 5)
+                               (set-window-buffer nil (current-buffer)))))
 
 
 ;; Org Agenda

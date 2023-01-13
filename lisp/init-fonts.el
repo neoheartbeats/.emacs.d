@@ -3,8 +3,8 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	            :font "PragmataPro"
-	            :height 145)
+	            :font "Pes Mono"
+	            :height 150)
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'han "Heiti SC")

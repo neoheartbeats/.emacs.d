@@ -6,16 +6,16 @@
 (use-package latex
   :straight auctex)
 
-;; (with-eval-after-load 'LaTeX-mode
-;;   (setq TeX-engine 'xetex)
-;;   (setq TeX-master nil)
-;;   (setq TeX-PDF-mode t)
-;;   (setq reftex-plug-into-AUCTeX t)
-;;   (setq TeX-auto-save t)
-;;   (setq TeX-parse-self t))
-;;
-;; (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
-;; (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+(with-eval-after-load 'LaTeX-mode
+  (setq TeX-engine 'xetex)
+  (setq TeX-master nil)
+  (setq TeX-PDF-mode t)
+  (setq reftex-plug-into-AUCTeX t)
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t))
+
+(add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
+(add-hook 'LaTeX-mode-hook #'turn-on-reftex)
 
 
 (setq-default org-latex-preview-ltxpng-directory
@@ -55,14 +55,14 @@
 (defun my/org--latex-header-preview (orig &rest args)
   "Setup dedicated `org-format-latex-header' to `my/org--match-text-baseline-ascent'."
   (let ((org-format-latex-header "\\documentclass[preview]{standalone}
-\\usepackage[usenames]{color}
-[PACKAGES]
-[DEFAULT-PACKAGES]"))
+  \\usepackage[usenames]{color}
+  [PACKAGES]
+  [DEFAULT-PACKAGES]"))
     (apply orig args)))
 
 (defun my/org--match-text-baseline-ascent (imagefile)
   "Set `:ascent' to match the text baseline of an image to the surrounding text.
-Calculate `ascent' with the data collected in IMAGEFILE."
+  Calculate `ascent' with the data collected in IMAGEFILE."
   (advice-add 'org-create-formula-image :around #'my/org--latex-header-preview)
   (let* ((viewbox (split-string
                    (xml-get-attribute (car (xml-parse-file imagefile)) 'viewBox)))
@@ -75,8 +75,8 @@ Calculate `ascent' with the data collected in IMAGEFILE."
 
 (defun org--make-preview-overlay (beg end image &optional imagetype)
   "Build an overlay between BEG and END using IMAGE file.
-Argument IMAGETYPE is the extension of the displayed image,
-as a string.  It defaults to \"png\"."
+  Argument IMAGETYPE is the extension of the displayed image,
+  as a string.  It defaults to \"png\"."
   (let ((ov (make-overlay beg end))
 	(imagetype (or (intern imagetype) 'png)))
     (let ((ascent (my/org--match-text-baseline-ascent image)))
