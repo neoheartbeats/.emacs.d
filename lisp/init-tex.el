@@ -45,7 +45,7 @@
       '(
         :foreground default
         :background "Transparent"
-        :scale 1.60
+        :scale 1.75
         :html-foreground default
         :html-background "Transparent"
         :html-scale 1.25

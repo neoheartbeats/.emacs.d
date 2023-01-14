@@ -54,6 +54,7 @@
 ;;   (define-key python-mode-map [f9] 'my/run-current-python-file))
 
 ;; Python executable file location
+(setq-default python-interpreter "python3")
 (setq-default python-shell-interprete "python3")
 (with-eval-after-load 'org
   (setq-default org-babel-python-command "python3"))
@@ -63,6 +64,16 @@
 ;; (setq-default python-indent-guess-indent-offset-verbose nil)
 
 ;; (global-set-key (kbd "M-p r") 'run-python)
+
+(use-package chatgpt
+  :straight (
+             :host github
+             :repo "joshcho/ChatGPT.el"
+             :files ("dist" "*.el"))
+  :init
+  (require 'python)
+  (setq chatgpt-repo-path "~/.emacs.d/straight/repos/ChatGPT.el/")
+  :bind ("M-." . chatgpt-query))
 
 
 (provide 'init-eglot)

@@ -6,7 +6,7 @@
 ;;; Code:
 
 
-(load-theme 'modus-vivendi :no-confirm)
+(load-theme 'modus-vivendi t)
 
 
 ;; Customize faces

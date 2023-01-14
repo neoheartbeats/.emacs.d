@@ -224,11 +224,11 @@
                                (org-roam-dailies-goto-today)
                                (save-buffer)))
 
-(add-hook 'org-mode-hook #'(lambda ()
-                             (progn
-                               (setq left-margin-width 5)
-                               (setq right-margin-width 5)
-                               (set-window-buffer nil (current-buffer)))))
+;; (add-hook 'org-mode-hook #'(lambda ()
+;;                              (progn
+;;                                (setq left-margin-width 5)
+;;                                (setq right-margin-width 5)
+;;                                (set-window-buffer nil (current-buffer)))))
 
 
 ;; Org Agenda

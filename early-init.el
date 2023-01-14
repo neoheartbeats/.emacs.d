@@ -19,15 +19,14 @@
 
 (dolist (var '(default-frame-alist initial-frame-alist))
   (add-to-list var '(width . (text-pixels . 990)))
-  (add-to-list var '(height . (text-pixels . 790)))
-  (add-to-list var '(alpha . (93 . 93))))
+  (add-to-list var '(height . (text-pixels . 790))))
 
 ;; Faster to disable these here (before they've been initialized)
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
 (push '(ns-transparent-titlebar . t) default-frame-alist)
-(push '(ns-appearance . dark) default-frame-alist)
+(push '(ns-appearance . light) default-frame-alist)
 
 
 ;; Prevent `package.el' loading packages prior to init-file loading
