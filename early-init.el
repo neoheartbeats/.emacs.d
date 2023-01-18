@@ -26,7 +26,7 @@
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
 (push '(ns-transparent-titlebar . t) default-frame-alist)
-(push '(ns-appearance . light) default-frame-alist)
+(push '(ns-appearance . dark) default-frame-alist)
 
 
 ;; Prevent `package.el' loading packages prior to init-file loading
