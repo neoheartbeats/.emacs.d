@@ -65,16 +65,6 @@
 
 ;; (global-set-key (kbd "M-p r") 'run-python)
 
-(use-package chatgpt
-  :straight (
-             :host github
-             :repo "joshcho/ChatGPT.el"
-             :files ("dist" "*.el"))
-  :init
-  (require 'python)
-  (setq chatgpt-repo-path "~/.emacs.d/straight/repos/ChatGPT.el/")
-  :bind ("M-." . chatgpt-query))
-
 
 (provide 'init-eglot)
 ;;; init-eglot.el ends here

@@ -14,7 +14,7 @@
   ;; Correct file path when changed
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
 
-  (setq vertico-count 8)
+  (setq vertico-count 5)
   (setq vertico-cycle t)
   :bind
   ((:map vertico-map
@@ -89,16 +89,6 @@
 (use-package marginalia
   :init
   (marginalia-mode 1))
-
-
-;; Show guides for key bindings
-(use-package which-key
-  :config
-  (setq-default which-key-idle-delay 1.5)
-  (add-hook 'after-init-hook #'(lambda ()
-                                 (which-key-mode 1)))
-  (with-eval-after-load 'which-key
-    (diminish 'which-key-mode)))
 
 
 (provide 'init-minibuff)

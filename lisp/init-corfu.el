@@ -47,10 +47,10 @@
 
   (with-eval-after-load 'org
     ;; Aggressive completion, cheap prefix filtering
-    (add-hook 'org-mode-hook (lambda ()
-                               (setq-local corfu-auto-delay 0)
-                               (setq-local corfu-auto-prefix 3)
-                               (setq-local completion-styles '(basic)))))
+    (add-hook 'org-mode-hook #'(lambda ()
+                                 (setq-local corfu-auto-delay 0)
+                                 (setq-local corfu-auto-prefix 1)
+                                 (setq-local completion-styles '(basic)))))
   :bind
   (:map corfu-map
         ("<down>" . corfu-next)

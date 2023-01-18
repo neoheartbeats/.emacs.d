@@ -7,11 +7,12 @@
 
 
 ;; Using `C-c f' to toggle fullscreen
-(global-set-key (kbd "C-c f") 'toggle-frame-fullscreen)
+(global-set-key (kbd "C-c f") #'toggle-frame-fullscreen)
 
 
 ;; Default startup message
-(defun display-startup-echo-area-message () (message ""))
+(defun display-startup-echo-area-message ()
+  (message ""))
 
 
 ;; Set the text and icons in title
@@ -35,15 +36,6 @@
 (setq uniquify-separator " - ")
 (setq uniquify-after-kill-buffer-p t)
 (setq uniquify-ignore-buffers-re "^\\*")
-
-
-(use-package helpful
-  :init
-  (global-set-key (kbd "C-h f") #'helpful-callable)
-  (global-set-key (kbd "C-h F") #'helpful-function)
-  (global-set-key (kbd "C-h v") #'helpful-variable)
-  (global-set-key (kbd "C-h k") #'helpful-key)
-  (global-set-key (kbd "C-c C-d") #'helpful-at-point))
 
 
 (provide 'init-gui-frames)

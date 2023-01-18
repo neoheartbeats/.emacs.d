@@ -53,8 +53,8 @@
 (setq org-hide-emphasis-markers t)
 
 ;; Setup pretty entities for unicode math symbols
-;; (setq org-pretty-entities t)
-;; (setq org-pretty-entities-include-sub-superscripts nil)
+(setq org-pretty-entities t)
+(setq org-pretty-entities-include-sub-superscripts nil)
 
 
 ;; Fold drawers by default
@@ -103,8 +103,7 @@
 (setq-default org-cycle-separator-lines 2)
 
 
-(when *const-q*
-  (use-package emacsql-sqlite-builtin))
+(use-package emacsql-sqlite-builtin)
 
 (use-package org-roam
   :straight (
@@ -130,8 +129,7 @@
   (:map org-roam-mode-map
         ("<mouse-1>" . org-roam-preview-visit))
   :config
-  (when *const-q* ; Use the built-in sqlite3
-    (setq org-roam-database-connector 'sqlite-builtin))
+  (setq org-roam-database-connector 'sqlite-builtin)
   (setq org-roam-db-location (expand-file-name "org-roam.db" org-directory))
   (setq org-roam-directory org-directory)
   (setq org-roam-dailies-directory "dates/")
@@ -155,80 +153,14 @@
            :empty-lines 1
            :unnarrowed t
            :immediate-finish t
-           :kill-buffer t)))
+           :kill-buffer t))))
 
-  ;; The Org Roam buffer
-  (setq org-roam-mode-sections
-        '((org-roam-backlinks-section :unique t)
-          org-roam-reflinks-section))
-
-  ;; Overwrite function `org-roam-preview-visit'
-  (defun org-roam-preview-visit (file point &optional other-window)
-    (setq other-window t) ; By setting this variable to `t'
-    (interactive (list (org-roam-buffer-file-at-point 'assert)
-                       (oref (magit-current-section) point)
-                       current-prefix-arg))
-    (let ((buf (find-file-noselect file))
-          (display-buffer-fn (if other-window
-                                 #'switch-to-buffer-other-window
-                               #'pop-to-buffer-same-window)))
-      (funcall display-buffer-fn buf)
-      (with-current-buffer buf
-        (widen)
-        (goto-char point))
-      (when (org-invisible-p) (org-show-context))
-      buf))
-
-  ;; Customize content in `org-roam-buffer' backlinks
-  (cl-defun org-roam-backlinks-section (node &key (unique nil))
-    (when-let ((backlinks (seq-sort #'org-roam-backlinks-sort
-                                    (org-roam-backlinks-get
-                                     node :unique unique))))
-      (magit-insert-section (org-roam-backlinks)
-        (magit-insert-heading "\n LINKED REFERENCES")
-        (insert "\n")
-        (dolist (backlink backlinks)
-          (org-roam-node-insert-section
-           :source-node (org-roam-backlink-source-node backlink)
-           :point (org-roam-backlink-point backlink)
-           :properties (org-roam-backlink-properties backlink)))
-        (insert ?\n))))
-
-  ;; Preview LaTeX & images in Org Roam window
-  ;; Note this function is defined interactivity
-  (add-hook 'org-roam-buffer-postrender-functions
-            #'(lambda ()
-                (visual-line-mode 1)
-                (org--latex-preview-region (point-min) (point-max))
-                (org-display-inline-images)))
-
-  ;; Setup Org Roam buffer frame
-  (add-to-list 'display-buffer-alist
-               '("\\*org-roam\\*"
-                 (display-buffer-in-direction)
-                 (direction . right)
-                 (window-width . 0.35)
-                 (window-height . fit-window-to-buffer)))
-
-  ;; Customize faces
-  (set-face-attribute 'org-roam-dim nil
-                      :foreground "#26211d")
-  (set-face-attribute 'org-roam-header-line nil
-                      :foreground "#ef656a")
-  (set-face-attribute 'org-roam-title nil
-                      :foreground "#64aa0f"))
 
 ;; Open today's note when startup
 (add-hook 'after-init-hook #'(lambda ()
                                (interactive)
                                (org-roam-dailies-goto-today)
                                (save-buffer)))
-
-;; (add-hook 'org-mode-hook #'(lambda ()
-;;                              (progn
-;;                                (setq left-margin-width 5)
-;;                                (setq right-margin-width 5)
-;;                                (set-window-buffer nil (current-buffer)))))
 
 
 ;; Org Agenda

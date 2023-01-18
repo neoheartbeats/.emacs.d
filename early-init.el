@@ -52,7 +52,9 @@
 (setq inhibit-startup-buffer-menu t)
 (setq inhibit-x-resources t)
 (setq inhibit-default-init t)
+(setq inhibit-compacting-font-caches t)
 (setq native-comp-async-report-warnings-errors 'silent)
+(setq idle-update-delay 1.0)
 
 
 (provide 'early-init)
