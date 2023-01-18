@@ -26,7 +26,8 @@
 (dolist (multiple '("" "double-" "triple-"))
   (dolist (direction '("right" "left"))
     (global-set-key (read-kbd-macro
-                     (concat "<" multiple "wheel-" direction ">")) 'ignore)))
+                     (concat "<" multiple "wheel-" direction ">"))
+                    'ignore)))
 
 ;; Enable `pixel-scroll-precision-mode'
 (when (fboundp 'pixel-scroll-precision-mode)
@@ -78,6 +79,7 @@
   (rx bos (or (or "*scratch*" "*Messages*" "*Help*" "Warning"
                   "*Native-compile-Log*" "*Compile-Log*"
                   "*Async-native-compile-log*"
+                  "*straight-process*"
                   "*Org Preview LaTeX Output*")
               (seq "magit-diff" (zero-or-more anything))
               (seq "magit-process" (zero-or-more anything))
@@ -101,12 +103,6 @@
 (global-set-key (kbd "s-1") (kbd "C-x 1")) ; cmd-1 kill other windows (keep 1)
 (global-set-key (kbd "s-2") (kbd "C-x 2")) ; cmd-2 split horizontally
 (global-set-key (kbd "s-3") (kbd "C-x 3")) ; cmd-3 split vertically
-
-
-;; Compiling emacs lisp code
-(define-key emacs-lisp-mode-map [f9] (lambda ()
-                                       (interactive)
-                                       (eval-buffer)))
 
 
 ;; Disable these keys

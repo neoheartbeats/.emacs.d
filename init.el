@@ -12,21 +12,16 @@
 (setq auto-mode-case-fold nil)
 
 
-;; Initial global constants
-(defvar *macos-q* (string= system-type "darwin"))
-(defvar *const-q* (> emacs-major-version 28))
-
-
 ;; Adjust garbage collection thresholds during startup
-(let ((normal-gc-cons-threshold (* 64 1024 1024))
-      (init-gc-cons-threshold (* 128 1024 1024)))
+(let ((normal-gc-cons-threshold (* 2048 1024 1024))
+      (init-gc-cons-threshold (* 4096 1024 1024)))
   (setq gc-cons-threshold init-gc-cons-threshold)
   (add-hook 'emacs-startup-hook
             (lambda ()
               (setq gc-cons-threshold normal-gc-cons-threshold))))
 
 ;; Increase how much is read from processes in a single chunk
-(setq read-process-output-max (* 32 1024 1024))
+(setq read-process-output-max (* 128 1024 1024))
 
 ;; --debug-init implies `debug-on-error'
 (setq debug-on-error init-file-debug)

@@ -30,8 +30,10 @@
          :image-input-type "dvi"
          :image-output-type "svg"
          :image-size-adjust (1.7 . 1.5)
-         :latex-compiler ("latex -interaction nonstopmode -output-directory %o %f")
-         :image-converter ("dvisvgm %f --no-fonts --exact-bbox --scale=%S --output=%O"))))
+         :latex-compiler
+         ("latex -interaction nonstopmode -output-directory %o %f")
+         :image-converter
+         ("dvisvgm %f --no-fonts --exact-bbox --scale=%S --output=%O"))))
 
 ;; Org LaTeX packages
 (setq org-latex-packages-alist
@@ -53,7 +55,8 @@
 
 ;; Match the text baseline of an LaTeX fragment to the surrounding text
 (defun my/org--latex-header-preview (orig &rest args)
-  "Setup dedicated `org-format-latex-header' to `my/org--match-text-baseline-ascent'."
+  "Setup dedicated `org-format-latex-header'
+to `my/org--match-text-baseline-ascent'."
   (let ((org-format-latex-header "\\documentclass[preview]{standalone}
   \\usepackage[usenames]{color}
   [PACKAGES]
@@ -90,7 +93,7 @@
 		   'display
 		   (list 'image :type imagetype :file image :ascent ascent)))))
 
-;; Referred from: https://kitchingroup.cheme.cmu.edu/blog/2016/11/06/Justifying-LaTeX-preview-fragments-in-org-mode/
+;; From: `https://kitchingroup.cheme.cmu.edu/blog/'
 ;; Justify displaying math equations
 (defun my/org--justify-fragment-overlay (beg end image imagetype)
   "Center LaTeX fragments in display."

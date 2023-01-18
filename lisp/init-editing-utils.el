@@ -26,7 +26,7 @@
 (setq-default save-interprogram-paste-before-kill t)
 (setq-default save-silently t)
 (setq-default set-mark-command-repeat-pop t)
-(setq-default sentence-end-double-space nil) ; Sentences should end with one space
+(setq-default sentence-end-double-space nil)
 (setq-default truncate-lines nil)
 (setq-default truncate-partial-width-windows nil)
 (setq-default use-short-answers t)

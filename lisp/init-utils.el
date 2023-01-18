@@ -8,7 +8,8 @@
 
 ;; String utilities
 (defun my/string-all-matches (regex str &optional group)
-  "Find all matches for `REGEX' within `STR', returning the full match string or group `GROUP'."
+  "Find all matches for `REGEX' within `STR',
+returning the full match string or group `GROUP'."
   (let ((result nil)
         (pos 0)
         (group (or group 0)))

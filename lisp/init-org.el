@@ -4,9 +4,6 @@
 
 (require 'org)
 
-(when *const-q*
-  (setq org-fold-core-style 'text-properties))
-
 ;; Org default directory
 (setq-default org-directory
               (expand-file-name "TH18-03/" my-dev-path))
@@ -26,12 +23,8 @@
                               (?- . "􀃞")
                               (?\s . "􀂒")))
   (setq org-modern-block-name '(("src" . ("􀓪" "􀅽"))))
-  ;; (setq org-modern-todo nil)
   (setq org-modern-keyword nil)
   (setq org-modern-block-fringe nil)
-  ;; (setq org-modern-statistics nil)
-  ;; (setq org-modern-timestamp nil)
-
   (global-org-modern-mode 1))
 
 
