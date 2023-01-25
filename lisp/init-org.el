@@ -6,7 +6,7 @@
 
 ;; Org default directory
 (setq-default org-directory
-              (expand-file-name "PLEASE/" my-dev-path))
+              (expand-file-name "TH18-03/" my-dev-path))
 
 ;; Open Org files with previewing
 (setq org-startup-with-inline-images t)
@@ -16,22 +16,33 @@
 ;; Org Modern
 (use-package org-modern
   :init
-  (setq org-modern-star '(""))
-  (setq org-modern-hide-stars "")
+  (setq org-modern-star '("􀄩"))
+  (setq org-modern-hide-stars "􀄩")
   (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X . "")
-                              (?- . "")
-                              (?\s . "")))
-  (setq org-modern-block-name '(("src" . ("" ""))))
+  (setq org-modern-checkbox '((?X . "􀃠")
+                              (?- . "􀃞")
+                              (?\s . "􀂒")))
+  (setq org-modern-block-name '(("src" . ("􀓪" "􀅽"))))
   (setq org-modern-keyword nil)
-  (setq org-modern-todo nil)
   (setq org-modern-block-fringe nil)
   (global-org-modern-mode 1))
 
-(setq org-todo-keywords '((sequence "     " "     ")))
-
 
-(setq org-ellipsis " ")
+;; Symbols in Org mode
+(add-hook 'prog-mode-hook #'prettify-symbols-mode)
+(add-hook 'org-mode-hook #'(lambda ()
+                             (setq prettify-symbols-alist
+                                   '((":PROPERTIES:" . ?􀈣)
+                                     (":ID:" . ?􀅳)
+                                     (":END:" . ?􀅽)
+                                     ("#+TITLE:" . ?􀎞)
+                                     ("#+RESULTS:" . ?􀆀)
+                                     ("#+ATTR_ORG:" . ?􀣋)
+                                     ("SCHEDULED:" . ?􀧞)
+                                     ("CLOSED:" .?􁜒)))
+                             (prettify-symbols-mode 1)))
+
+(setq org-ellipsis " 􀍠")
 (setq org-hide-emphasis-markers t)
 
 ;; Draw fringes in Org mode
@@ -41,6 +52,10 @@
   (set-window-buffer nil (current-buffer)))
 
 (add-hook 'org-mode-hook #'my/toggle-internal-fringes)
+
+;; Setup pretty entities for unicode math symbols
+(setq org-pretty-entities t)
+(setq org-pretty-entities-include-sub-superscripts nil)
 
 
 ;; Fold drawers by default
@@ -79,7 +94,9 @@
 
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((emacs-lisp . t)
-                                 (python . t))))
+                                 (shell . t)
+                                 (python . t)
+                                 (latex . t))))
 
 
 ;; Org mode text edition
@@ -126,13 +143,13 @@
   (setq org-roam-dailies-capture-templates
         '(("d" "default" entry "\n* %?"
            :target (file+head "%<%Y-%m-%d>.org"
-                              "#+TITLE: %<%Y-%m-%d • %A>\n")
+                              "#+TITLE: %<%Y-%m-%d-%A>\n")
            :empty-lines 1)))
 
   ;; Default capture template for notes
   (setq org-roam-capture-templates
 	'(("d" "default" plain "%?"
-           :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org"
+           :target (file+head "notes/${slug}.org"
                               "#+TITLE: ${title}\n")
            :empty-lines 1
            :unnarrowed t
@@ -144,31 +161,15 @@
 (add-hook 'after-init-hook #'(lambda ()
                                (interactive)
                                (org-roam-dailies-goto-today)
-                               (save-buffer)))
-
-
-;; Org Roam UI
-(use-package org-roam-ui
-  :straight (
-             :host github
-             :repo "org-roam/org-roam-ui"
-             :branch "main"
-             :files ("*.el" "out"))
-  :after org-roam
-  :config
-  (setq org-roam-ui-sync-theme t
-        org-roam-ui-follow t
-        org-roam-ui-update-on-save t
-        org-roam-ui-open-on-start t)
-  :hook (after-init . org-roam-ui-mode))
-
+                               (save-buffer)
+                               (goto-char (point-max))))
 
 
 ;; Org Agenda
 (define-key global-map (kbd "C-c a") #'org-agenda)
 
-(setq org-agenda-files '("~/Developer/PLEASE/dates/"
-                         "~/Developer/PLEASE/notes/"))
+(setq org-agenda-files '("~/Developer/TH18-03/dates/"
+                         "~/Developer/TH18-03/notes/"))
 
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)

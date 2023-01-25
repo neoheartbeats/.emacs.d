@@ -8,18 +8,7 @@
 
 (require-theme 'modus-themes)
 
-(setq modus-themes-common-palette-overrides
-      modus-themes-preset-overrides-intense)
-
 (setq modus-themes-disable-other-themes t)
-
-(setq  modus-themes-headings
-       '((1 . (1.50))
-         (2 . (1.35))
-         (3 . (1.30))
-         (4 . (1.25))
-         (5 . (1.20))
-         (t . (1.15))))
 
 (load-theme 'modus-vivendi t)
 
