@@ -46,7 +46,17 @@
 (require 'init-projects)
 (require 'init-org)
 (require 'init-tex)
-(require 'init-eglot)
+;; (require 'init-eglot)
+
+
+;; Some applications
+(use-package emms
+  :config
+  (require 'emms-setup)
+  (emms-all)
+
+  (setq emms-player-list '(emms-player-mpv))
+  (setq emms-playlist-buffer-name "*Music*"))
 
 
 (provide 'init)

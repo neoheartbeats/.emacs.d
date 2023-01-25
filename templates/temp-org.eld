@@ -9,4 +9,4 @@ org-mode
 (qq "\\coloneqq")
 (pp "\\left(" r "\\right)")
 (beg "\\begin{" (s env) "}" r> n> "\\end{" (s env) "}")
-(img "#+ATTR_ORG: :width " p n> "[[/Users/ilyaw39/Developer/TH18-03/repos/" r> "]]")
+(img "#+ATTR_ORG: :width " p n> "[[/Users/ilyaw39/Developer/PLEASE/repos/" r> "]]")
