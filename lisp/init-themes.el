@@ -6,6 +6,13 @@
 ;;; Code:
 
 
+(require-theme 'modus-themes)
+
+(setq modus-themes-common-palette-overrides
+      modus-themes-preset-overrides-intense)
+
+(setq modus-themes-disable-other-themes t)
+
 (load-theme 'modus-vivendi t)
 
 
@@ -25,6 +32,7 @@
 ;; Cursor faces
 (setq-default blink-cursor-mode nil)
 (setq-default cursor-type '(bar . 1))
+(set-cursor-color "#ff66ff")
 
 ;; Blink cursor with `beacon'
 ;; This also helps rendering frames
@@ -33,7 +41,7 @@
   :config
   (setq beacon-push-mark 35)
   (setq beacon-blink-duration 0.5)
-  (setq beacon-color "#959595")
+  (setq beacon-color "#ff66ff")
   (beacon-mode 1))
 
 

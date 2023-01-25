@@ -16,39 +16,24 @@
 ;; Org Modern
 (use-package org-modern
   :init
-  (setq org-modern-star '("􀄩"))
-  (setq org-modern-hide-stars "􀄩")
+  (setq org-modern-star '(""))
+  (setq org-modern-hide-stars "")
   (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X . "􀃠")
-                              (?- . "􀃞")
-                              (?\s . "􀂒")))
-  (setq org-modern-block-name '(("src" . ("􀓪" "􀅽"))))
+  (setq org-modern-checkbox '((?X . "")
+                              (?- . "")
+                              (?\s . "")))
+  (setq org-modern-block-name '(("src" . ("" ""))))
   (setq org-modern-keyword nil)
+  (setq org-modern-todo nil)
   (setq org-modern-block-fringe nil)
   (global-org-modern-mode 1))
 
-
-;; Symbols in Org mode
-(add-hook 'prog-mode-hook #'prettify-symbols-mode)
-(add-hook 'org-mode-hook #'(lambda ()
-                             (setq prettify-symbols-alist
-                                   '((":PROPERTIES:" . ?􀈣)
-                                     (":ID:" . ?􀅳)
-                                     (":END:" . ?􀅽)
-                                     ("#+TITLE:" . ?􀎞)
-                                     ("#+RESULTS:" . ?􀆀)
-                                     ("#+ATTR_ORG:" . ?􀣋)
-                                     ("SCHEDULED:" . ?􀧞)
-                                     ("CLOSED:" .?􁜒)))
-                             (prettify-symbols-mode 1)))
+(setq org-todo-keywords '((sequence "     " "     ")))
 
-(setq org-ellipsis " 􀍠")
+
+(setq org-ellipsis " ")
 (setq org-hide-emphasis-markers t)
 
-;; Setup pretty entities for unicode math symbols
-;; (setq org-pretty-entities t)
-;; (setq org-pretty-entities-include-sub-superscripts nil)
-;;
 ;; Draw fringes in Org mode
 (defun my/toggle-internal-fringes ()
   (setq left-margin-width 5)
@@ -160,6 +145,23 @@
                                (interactive)
                                (org-roam-dailies-goto-today)
                                (save-buffer)))
+
+
+;; Org Roam UI
+(use-package org-roam-ui
+  :straight (
+             :host github
+             :repo "org-roam/org-roam-ui"
+             :branch "main"
+             :files ("*.el" "out"))
+  :after org-roam
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t)
+  :hook (after-init . org-roam-ui-mode))
+
 
 
 ;; Org Agenda

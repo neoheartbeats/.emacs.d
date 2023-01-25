@@ -13,11 +13,13 @@
 (setq window-resize-pixelwise t)
 (setq frame-resize-pixelwise t)
 
-(dolist (var '(default-frame-alist initial-frame-alist))
-  (add-to-list var '(width . (text-pixels . 990)))
-  (add-to-list var '(height . (text-pixels . 790))))
+;; (dolist (var '(default-frame-alist initial-frame-alist))
+;;   (add-to-list var '(width . (text-pixels . 1200)))
+;;   (add-to-list var '(height . (text-pixels . 900))))
 
 ;; Faster to disable these here (before they've been initialized)
+(push '(width . 150) default-frame-alist)
+(push '(height . 80) default-frame-alist)
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
