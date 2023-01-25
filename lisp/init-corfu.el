@@ -55,7 +55,7 @@
   (:map corfu-map
         ("<down>" . corfu-next)
         ("<up>" . corfu-previous)
-        ("<tab>" . corfu-quit)
+        ("<space>" . corfu-quit)
         ("<escape>" . corfu-quit)))
 
 

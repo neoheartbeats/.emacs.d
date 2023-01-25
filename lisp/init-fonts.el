@@ -3,13 +3,13 @@
 ;;; Code:
 
 (set-face-attribute 'default nil
-	            :font "Fira Code"
-	            :height 140)
+	            :font "AdaptiveMono OT"
+	            :height 155)
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
+(set-fontset-font "fontset-default" 'han "LXGW Wenkai")
 
-(with-eval-after-load 'init-themes ; Remove italic constructs
+(with-eval-after-load 'init-themes  ; Remove italic constructs
   (set-face-attribute 'italic nil
                       :slant 'normal))
 

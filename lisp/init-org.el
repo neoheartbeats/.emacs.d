@@ -6,7 +6,7 @@
 
 ;; Org default directory
 (setq-default org-directory
-              (expand-file-name "TH18-03/" my-dev-path))
+              (expand-file-name "PLEASE/" my-dev-path))
 
 ;; Open Org files with previewing
 (setq org-startup-with-inline-images t)
@@ -46,8 +46,16 @@
 (setq org-hide-emphasis-markers t)
 
 ;; Setup pretty entities for unicode math symbols
-(setq org-pretty-entities t)
-(setq org-pretty-entities-include-sub-superscripts nil)
+;; (setq org-pretty-entities t)
+;; (setq org-pretty-entities-include-sub-superscripts nil)
+;;
+;; Draw fringes in Org mode
+(defun my/toggle-internal-fringes ()
+  (setq left-margin-width 5)
+  (setq right-margin-width 5)
+  (set-window-buffer nil (current-buffer)))
+
+(add-hook 'org-mode-hook #'my/toggle-internal-fringes)
 
 
 ;; Fold drawers by default
@@ -86,9 +94,7 @@
 
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((emacs-lisp . t)
-                                 (shell . t)
-                                 (python . t)
-                                 (latex . t))))
+                                 (python . t))))
 
 
 ;; Org mode text edition
@@ -135,13 +141,13 @@
   (setq org-roam-dailies-capture-templates
         '(("d" "default" entry "\n* %?"
            :target (file+head "%<%Y-%m-%d>.org"
-                              "#+TITLE: %<%Y-%m-%d-%A>\n")
+                              "#+TITLE: %<%Y-%m-%d • %A>\n")
            :empty-lines 1)))
 
   ;; Default capture template for notes
   (setq org-roam-capture-templates
 	'(("d" "default" plain "%?"
-           :target (file+head "notes/${slug}.org"
+           :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org"
                               "#+TITLE: ${title}\n")
            :empty-lines 1
            :unnarrowed t
@@ -159,8 +165,8 @@
 ;; Org Agenda
 (define-key global-map (kbd "C-c a") #'org-agenda)
 
-(setq org-agenda-files '("~/Developer/TH18-03/dates/"
-                         "~/Developer/TH18-03/notes/"))
+(setq org-agenda-files '("~/Developer/PLEASE/dates/"
+                         "~/Developer/PLEASE/notes/"))
 
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)

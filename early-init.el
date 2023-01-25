@@ -6,10 +6,6 @@
 ;;; Code:
 
 
-;; Defer garbage collection further back in the startup process
-(setq gc-cons-threshold most-positive-fixnum)
-
-
 ;; Do not resize the frame at this early stage
 (setq frame-inhibit-implied-resize t)
 
@@ -39,13 +35,9 @@
 (setq native-comp-deferred-compilation nil)
 (setq load-prefer-newer noninteractive)
 
-;; It must be set before loading `use-package'
-(setq use-package-enable-imenu-support t)
-
 ;; Suppress GUI features
 (setq use-dialog-box nil)
 (setq use-file-dialog nil)
-(setq use-dialog-box nil)
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-echo-area-message t)
 (setq inhibit-startup-screen t)

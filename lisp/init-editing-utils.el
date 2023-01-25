@@ -118,8 +118,6 @@
 (setq-default display-line-numbers-width 3)
 (add-hook 'prog-mode-hook #'(lambda ()
                               (display-line-numbers-mode 1)))
-(add-hook 'org-mode-hook #'(lambda ()
-                             (display-line-numbers-mode 1)))
 
 ;; Enhance the performace of display
 (setq display-raw-bytes-as-hex t)

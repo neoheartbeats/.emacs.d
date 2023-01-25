@@ -47,7 +47,7 @@
       '(
         :foreground default
         :background "Transparent"
-        :scale 1.55
+        :scale 1.65
         :html-foreground default
         :html-background "Transparent"
         :html-scale 1.25
@@ -68,7 +68,8 @@ to `my/org--match-text-baseline-ascent'."
   Calculate `ascent' with the data collected in IMAGEFILE."
   (advice-add 'org-create-formula-image :around #'my/org--latex-header-preview)
   (let* ((viewbox (split-string
-                   (xml-get-attribute (car (xml-parse-file imagefile)) 'viewBox)))
+                   (xml-get-attribute (car (xml-parse-file imagefile))
+                                      'viewBox)))
          (min-y (string-to-number (nth 1 viewbox)))
          (height (string-to-number (nth 3 viewbox)))
          (ascent (round (* -100 (/ min-y height)))))
@@ -112,50 +113,6 @@ to `my/org--match-text-baseline-ascent'."
 
 (advice-add 'org--make-preview-overlay
             :after #'my/org--justify-fragment-overlay)
-
-;; Better equation numbering in LaTeX fragments
-(defun my/org-renumber-environment (orig-func &rest args)
-  (let ((results '())
-        (counter -1)
-        (numberp))
-    (setq results (cl-loop for (begin .  env) in
-                           (org-element-map (org-element-parse-buffer)
-                               'latex-environment
-                             (lambda (env)
-                               (cons
-                                (org-element-property :begin env)
-                                (org-element-property :value env))))
-                           collect
-                           (cond
-                            ((and (string-match "\\\\begin{equation}" env)
-                                  (not (string-match "\\\\tag{" env)))
-                             (cl-incf counter)
-                             (cons begin counter))
-                            ((and (string-match "\\\\begin{align}" env)
-                                  (string-match "\\\\notag" env))
-                             (cl-incf counter)
-                             (cons begin counter))
-                            ((string-match "\\\\begin{align}" env)
-                             (prog2
-                                 (cl-incf counter)
-                                 (cons begin counter)
-                               (with-temp-buffer
-                                 (insert env)
-                                 (goto-char (point-min))
-                                 (cl-incf counter (count-matches "\\\\$"))
-                                 (goto-char (point-min))
-                                 (cl-decf counter
-                                          (count-matches "\\nonumber")))))
-                            (t
-                             (cons begin nil)))))
-    (when (setq numberp (cdr (assoc (point) results)))
-      (setf (car args)
-            (concat
-             (format "\\setcounter{equation}{%s}\n" numberp)
-             (car args)))))
-  (apply orig-func args))
-
-(advice-add 'org-create-formula-image :around #'my/org-renumber-environment)
 
 
 ;; Better LaTeX editor for Org mode

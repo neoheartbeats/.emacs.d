@@ -13,15 +13,11 @@
 
 
 ;; Adjust garbage collection thresholds during startup
-(let ((normal-gc-cons-threshold (* 2048 1024 1024))
-      (init-gc-cons-threshold (* 4096 1024 1024)))
-  (setq gc-cons-threshold init-gc-cons-threshold)
-  (add-hook 'emacs-startup-hook
-            (lambda ()
-              (setq gc-cons-threshold normal-gc-cons-threshold))))
+(setq gc-cons-percentage 0.6)
+(setq gc-cons-threshold most-positive-fixnum)
 
 ;; Increase how much is read from processes in a single chunk
-(setq read-process-output-max (* 128 1024 1024))
+(setq read-process-output-max (* 64 1024 1024))
 
 ;; --debug-init implies `debug-on-error'
 (setq debug-on-error init-file-debug)

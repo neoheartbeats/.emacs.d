@@ -26,6 +26,16 @@
 (setq-default blink-cursor-mode nil)
 (setq-default cursor-type '(bar . 1))
 
+;; Blink cursor with `beacon'
+;; This also helps rendering frames
+(use-package beacon
+  :diminish
+  :config
+  (setq beacon-push-mark 35)
+  (setq beacon-blink-duration 0.5)
+  (setq beacon-color "#959595")
+  (beacon-mode 1))
+
 
 ;; Mode line settings
 (setq-default mode-line-compact t)
