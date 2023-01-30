@@ -121,12 +121,13 @@
 
 ;; System specified path
 (defvar my-home-path "/Users/ilyaw39/")
-(defvar my-dev-path (expand-file-name "Developer/" my-home-path))
+(defvar my-dev-path "/Users/ilyaw39/Developer/")
+(defvar my-org-path "/Users/ilyaw39/PLEASE/")
 
 ;; Homebrew specified path
 (defvar my-hb-bin-path "/opt/homebrew/bin/")
 (defvar my-hb-room-path "/opt/homebrew/Caskroom/")
-(defvar my-python-exec-path (expand-file-name "python3" my-hb-bin-path))
+(defvar my-python-exec-path "/opt/homebrew/bin/python3")
 
 
 (provide 'init-macos)

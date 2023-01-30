@@ -5,8 +5,7 @@
 (require 'org)
 
 ;; Org default directory
-(setq-default org-directory
-              (expand-file-name "TH18-03/" my-dev-path))
+(setq-default org-directory my-org-path)
 
 ;; Open Org files with previewing
 (setq org-startup-with-inline-images t)

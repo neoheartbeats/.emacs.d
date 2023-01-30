@@ -41,13 +41,13 @@
         ("retain-explicit-decimal-marker" "siunitx" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
-        ("" "mlmodern" t)))
+        ("upint" "stix" t)))
 
 (setq org-format-latex-options
       '(
         :foreground default
         :background "Transparent"
-        :scale 1.65
+        :scale 1.70
         :html-foreground default
         :html-background "Transparent"
         :html-scale 1.25
@@ -93,26 +93,6 @@ to `my/org--match-text-baseline-ascent'."
       (overlay-put ov
 		   'display
 		   (list 'image :type imagetype :file image :ascent ascent)))))
-
-;; From: `https://kitchingroup.cheme.cmu.edu/blog/'
-;; Justify displaying math equations
-(defun my/org--justify-fragment-overlay (beg end image imagetype)
-  "Center LaTeX fragments in display."
-  (let* ((img (create-image image 'svg t))
-         (ov (car (overlays-at (/ (+ beg end) 2) t)))
-         (width (car (image-display-size (overlay-get ov 'display))))
-         (display-p (/= (char-after beg) 36))
-         offset)
-    (when (and (= beg (line-beginning-position))
-               display-p)
-      (setq offset (floor (- (/ fill-column 2)
-                             (/ width 2))))
-      (when (< offset 0)
-        (setq offset 0))
-      (overlay-put ov 'before-string (make-string offset ? )))))
-
-(advice-add 'org--make-preview-overlay
-            :after #'my/org--justify-fragment-overlay)
 
 
 ;; Better LaTeX editor for Org mode
