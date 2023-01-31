@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: pp
+# key: pp
+# --
+\\left($0\\right)

@@ -14,7 +14,8 @@
   ;; Correct file path when changed
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
 
-  (setq vertico-count 5)
+  (setq vertico-count 8)
+  (setq vertico-resize nil)
   (setq vertico-cycle t)
   :bind
   ((:map vertico-map
@@ -54,21 +55,30 @@
   (setq consult-project-function
         #'consult--default-project-function)
 
+  (setq consult-narrow-key "􀄫")
+
   ;; Customize Consult buffers
   (with-eval-after-load 'vertico
     (set-face-attribute 'vertico-group-title nil
                         :slant 'normal))
-  :hook
-  (completion-list-mode . consult-preview-at-point-mode)
+
+  (add-hook 'completion-list-mode #'consult-preview-at-point-mode)
   :bind
   (("C-s" . consult-line)
    ("M-s" . consult-ripgrep)))
 
 
+(setq resize-mini-windows t)
+(setq minibuffer-eldef-shorten-default t)
+
+(setq echo-keystrokes 0.25)
+
+
 (use-package embark
-  :init ;; Optionally replace the key help with a completing-read interface
+  :init  ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
-  :config ;; Hide the mode line of the Embark live/completions buffers
+  (setq embark-confirm-act-all nil)
+  :config  ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
@@ -81,13 +91,13 @@
 (use-package embark-consult
   :after (embark consult)
   :config
-  (add-hook 'embark-collect-mode-hook #'(lambda ()
-                                          (consult-preview-at-point-mode 1))))
+  (add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode 1))
 
 
 ;; Enable rich annotations
 (use-package marginalia
   :init
+  (setq marginalia-max-relative-age 0)
   (marginalia-mode 1))
 
 

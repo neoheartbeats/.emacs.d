@@ -14,7 +14,7 @@
 
 ;; Org Modern
 (use-package org-modern
-  :init
+  :config
   (setq org-modern-star '("􀄩"))
   (setq org-modern-hide-stars "􀄩")
   (setq org-modern-list '((?- . "•")))
@@ -22,10 +22,12 @@
                               (?- . "􀃞")
                               (?\s . "􀂒")))
   (setq org-modern-block-name '(("src" . ("􀓪" "􀅽"))))
+  (setq org-modern-table-vertical 1)
   (setq org-modern-keyword nil)
   (setq org-modern-block-fringe nil)
-  (global-org-modern-mode 1))
 
+  (add-hook 'org-mode-hook #'org-modern-mode)
+  (add-hook 'org-agenda-finalize-hook #'org-modern-agenda))
 
 ;; Symbols in Org mode
 (add-hook 'prog-mode-hook #'prettify-symbols-mode)
@@ -57,6 +59,10 @@
 (setq org-pretty-entities-include-sub-superscripts nil)
 
 
+(setq org-catch-invisible-edits 'show)
+(setq org-insert-heading-respect-content t)
+
+
 ;; Fold drawers by default
 (setq org-hide-drawer-startup t)
 (add-hook 'org-mode-hook #'org-hide-drawer-all)
@@ -75,7 +81,7 @@
 (setq org-return-follows-link t)
 (setq org-link-elisp-confirm-function nil)
 
-(setq-default org-link-frame-setup ; Open files in current frame
+(setq-default org-link-frame-setup  ; Open files in current frame
               (cl-acons 'file #'find-file org-link-frame-setup))
 
 ;; Using shift-<arrow-keys> to select text
@@ -117,8 +123,7 @@
          ("s-n n" . org-id-get-create)
          ("s-n a" . org-roam-alias-add)
          ("s-n f" . org-roam-node-find)
-         ("s-n i" . org-roam-node-insert)
-         ("s-n l" . org-roam-buffer-toggle)))
+         ("s-n i" . org-roam-node-insert)))
 
   ;; Key-bindings for `org-roam-dailies'
   (:map org-mode-map

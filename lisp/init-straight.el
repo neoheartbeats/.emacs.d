@@ -27,9 +27,6 @@
 (setq straight-vc-git-default-clone-depth 1)
 
 
-(straight-use-package 'org)
-
-
 ;; Bootstrap `use-package.el'
 (unless (package-installed-p 'use-package)
   (straight-use-package 'use-package))

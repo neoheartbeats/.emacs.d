@@ -7,13 +7,12 @@
 
 ;; Add extensions
 (use-package cape
-  :init ;; Add `completion-at-point-functions', used by `completion-at-point'
-  (add-to-list 'completion-at-point-functions #'cape-dict)
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  :config ;; Setup `cape-dict-file'
-  (setq cape-dict-file
-        (expand-file-name "dict/dict-en-utf8.txt" user-emacs-directory)))
+  :init
+  (push 'cape-dabbrev completion-at-point-functions)
+  (push 'cape-file completion-at-point-functions)
+  (push 'cape-ispell completion-at-point-functions)
+  :config
+  (setq cape-dabbrev-min-length 3))
 
 
 (use-package orderless
@@ -21,6 +20,10 @@
   (setq completion-styles '(orderless partial-completion basic))
   (setq completion-category-defaults nil)
   (setq completion-category-override nil))
+
+(setq completion-ignore-case t)
+(setq read-buffer-completion-ignore-case t)
+(setq read-file-name-completion-ignore-case t)
 
 (use-package corfu
   :straight (:files (:defaults "extensions/*.el"))
