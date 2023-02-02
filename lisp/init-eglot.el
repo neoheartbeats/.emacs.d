@@ -4,19 +4,19 @@
 
 
 ;; Eglot setup
-;; (unless (not *const-q*)
-;;   (package-install 'eglot))
-;;
-;; (use-package eglot
-;;   :config
-;;   (setq eglot-autoshutdown t)
-;;   (setq read-process-output-max (* 1024 1024))
-;;   :bind
-;;   ((:map eglot-mode-map
-;;          ("s-i" . 'eglot-format-buffer))))
+(use-package eglot
+  :straight (:type built-in)
+  :config
+  (setq eglot-autoshutdown t)
+  :bind
+  ((:map eglot-mode-map
+         ("s-i" . 'eglot-format-buffer))))
 
 
 (when (treesit-available-p)
+  (setq treesit-extra-load-path
+        (list (expand-file-name "libs/treesit/" user-emacs-directory)))
+
   (push '(sh-mode . bash-ts-mode) major-mode-remap-alist)
   (push '(c-mode . c-ts-mode) major-mode-remap-alist)
   (push '(c++-mode . c++-ts-mode) major-mode-remap-alist)

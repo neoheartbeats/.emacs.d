@@ -43,7 +43,7 @@
 
 
 ;; Mode line settings
-(setq-default mode-line-format nil)
+(setq mode-line-compact t)
 
 
 (provide 'init-themes)

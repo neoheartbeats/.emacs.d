@@ -38,30 +38,5 @@
          ("C-c p" . 'projectile-command-map))))
 
 
-;; Better file management with `Dirvish'
-(use-package dirvish
-  :config
-  (setq dirvish-hide-details t)
-  (setq dirvish-use-mode-line nil)
-  (setq dirvish-use-header-line 'global)
-  (setq dirvish-depth 0)
-  (setq dirvish-header-line-height '(25 . 35))
-  (setq dirvish-mode-line-height 25)
-  (setq dirvish-layout-recipes '((0 0 0.4)
-                                 (0 0 0.8)
-                                 (1 0.08 0.8)
-                                 (1 0.11 0.55)))
-  (setq dirvish-header-line-format
-        '(
-          :left (path)
-          :right (free-space))
-        dirvish-mode-line-format
-        '(
-          :left (sort file-time " ")
-          :right (omit yank index)))
-
-  (dirvish-override-dired-mode 1))
-
-
 (provide 'init-projects)
 ;;; init-projects.el ends here

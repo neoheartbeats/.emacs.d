@@ -4,7 +4,7 @@
 
 
 (use-package yasnippet
-  :diminish (yas-global-mode)
+  :diminish (yas-minor-mode)
   :config
   (setq yas-snippet-dirs
         (list (expand-file-name "snippets/" user-emacs-directory)))
@@ -24,6 +24,7 @@
   (define-abbrev table "auctex" "AUCTeX"))
 
 (set-default 'abbrev-mode t)
+(diminish 'abbrev-mode)
 
 
 (provide 'init-temp)
