@@ -11,10 +11,27 @@
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
+(require 'org-preview)
+
 
-;; Org Modern
-(use-package org-modern
-  :config
+(require-package 'org-cliplink)
+
+(define-key global-map (kbd "C-c l") 'org-store-link)
+(define-key global-map (kbd "C-c a") 'org-agenda)
+
+;; Various preferences
+(setq org-log-done t)
+(setq org-edit-timestamp-down-means-later t)
+(setq org-hide-emphasis-markers t)
+(setq org-catch-invisible-edits 'show)
+(setq org-export-coding-system 'utf-8)
+(setq org-fast-tag-selection-single-key 'expert)
+(setq org-html-validation-link nil)
+(setq org-export-kill-product-buffer-when-displayed t)
+(setq org-tags-column 80)
+
+
+(when (maybe-require-package 'org-modern)
   (setq org-modern-star '("􀄩"))
   (setq org-modern-hide-stars "􀄩")
   (setq org-modern-list '((?- . "•")))
@@ -28,9 +45,9 @@
 
   (add-hook 'org-mode-hook #'org-modern-mode)
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda))
+
 
 ;; Symbols in Org mode
-(add-hook 'prog-mode-hook #'prettify-symbols-mode)
 (add-hook 'org-mode-hook #'(lambda ()
                              (setq prettify-symbols-alist
                                    '((":PROPERTIES:" . ?􀈣)
@@ -98,8 +115,8 @@
   (setq-default org-edit-src-content-indentation 0)
 
   (org-babel-do-load-languages 'org-babel-load-languages
-                               '((emacs-lisp . t)
-                                 (shell . t)
+                               '((shell . t)
+                                 (emacs-lisp . t)
                                  (python . t)
                                  (latex . t))))
 
@@ -109,57 +126,44 @@
 (setq-default org-cycle-separator-lines 2)
 
 
-(use-package emacsql-sqlite-builtin)
+(when (require-package 'org-roam)
+  (require-package 'emacsql-sqlite-builtin)
+  (setq org-roam-database-connector 'sqlite-builtin))
 
-(use-package org-roam
-  :straight (
-             :host github
-             :repo "org-roam/org-roam")
-  :init
-  (global-unset-key (kbd "s-n"))
-  :bind
-  (("s-n j" . org-roam-dailies-goto-today)
-   (:map org-mode-map
-         ("s-n n" . org-id-get-create)
-         ("s-n a" . org-roam-alias-add)
-         ("s-n f" . org-roam-node-find)
-         ("s-n i" . org-roam-node-insert)))
+(setq org-roam-db-location (expand-file-name "org-roam.db" org-directory))
+(setq org-roam-directory org-directory)
+(setq org-roam-dailies-directory "dates/")
+(setq org-roam-completion-everywhere t)
+(setq org-roam-db-gc-threshold most-positive-fixnum)
 
-  ;; Key-bindings for `org-roam-dailies'
-  (:map org-mode-map
-        ("<s-up>" . org-roam-dailies-goto-previous-note)
-        ("<s-down>" . org-roam-dailies-goto-next-note))
+;; Capture template for `org-roam-dailies'
+(setq org-roam-dailies-capture-templates
+      '(("d" "default" entry "\n* %?"
+         :target (file+head "%<%Y-%m-%d>.org"
+                            "#+TITLE: %<%Y-%m-%d • %A>\n")
+         :empty-lines 1)))
 
-  ;; Open link from Org Roam window with mouse click
-  (:map org-roam-mode-map
-        ("<mouse-1>" . org-roam-preview-visit))
-  :config
-  (setq org-roam-database-connector 'sqlite-builtin)
-  (setq org-roam-db-location (expand-file-name "org-roam.db" org-directory))
-  (setq org-roam-directory org-directory)
-  (setq org-roam-dailies-directory "dates/")
-  (setq org-roam-completion-everywhere t)
-  (setq org-roam-db-gc-threshold most-positive-fixnum)
+;; Default capture template for notes
+(setq org-roam-capture-templates
+      '(("d" "default" plain "%?"
+         :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org"
+                            "#+TITLE: ${title}\n")
+         :empty-lines 1
+         :unnarrowed t
+         :immediate-finish t)))
 
+(with-eval-after-load 'org-roam
   (org-roam-db-autosync-mode 1)
 
-  ;; Capture template for `org-roam-dailies'
-  (setq org-roam-dailies-capture-templates
-        '(("d" "default" entry "\n* %?"
-           :target (file+head "%<%Y-%m-%d>.org"
-                              "#+TITLE: %<%Y-%m-%d-%A>\n")
-           :empty-lines 1)))
+  (global-unset-key (kbd "s-n"))
+  (define-key global-map (kbd "s-n j") 'org-roam-dailies-goto-today)
 
-  ;; Default capture template for notes
-  (setq org-roam-capture-templates
-	'(("d" "default" plain "%?"
-           :target (file+head "notes/${slug}.org"
-                              "#+TITLE: ${title}\n")
-           :empty-lines 1
-           :unnarrowed t
-           :immediate-finish t
-           :kill-buffer t))))
+  (define-key org-mode-map (kbd "s-n n") 'org-roam-node-insert)
+  (define-key org-mode-map (kbd "s-n a") 'org-roam-alias-add)
+  (define-key org-mode-map (kbd "s-n f") 'org-roam-node-find)
 
+  (define-key org-mode-map (kbd "s-<up>") 'org-roam-dailies-goto-previous-note)
+  (define-key org-mode-map (kbd "s-<down>") 'org-roam-dailies-goto-next-note))
 
 ;; Open today's note when startup
 (add-hook 'after-init-hook #'(lambda ()
@@ -167,36 +171,6 @@
                                (org-roam-dailies-goto-today)
                                (save-buffer)
                                (goto-char (point-max))))
-
-
-;; Org Agenda
-(define-key global-map (kbd "C-c a") #'org-agenda)
-
-(setq org-agenda-files '("~/Developer/TH18-03/dates/"
-                         "~/Developer/TH18-03/notes/"))
-
-(setq org-agenda-start-with-log-mode t)
-(setq org-log-done 'time)
-(setq org-log-into-drawer t)
-
-(setq org-edit-timestamp-down-means-later t)
-(setq org-export-coding-system 'utf-8)
-(setq org-export-kill-product-buffer-when-displayed t)
-(setq org-html-validation-link nil)
-(setq org-fast-tag-selection-single-key 'expert)
-
-;; Appearances
-(setq org-auto-align-tags nil)
-(setq org-catch-invisible-edits 'show-and-error)
-(setq org-agenda-block-separator ?─)
-(setq org-agenda-time-grid
-      '((daily today require-timed)
-        (800 1000 1200 1400 1600 1800 2000)
-        " ───── " "───────────────"))
-(setq org-agenda-current-time-string
-      "⭠ now ─────────────────────────────────────────────────")
-(setq org-agenda-block-separator nil)
-(setq org-tags-colum 0)
 
 
 (provide 'init-org)

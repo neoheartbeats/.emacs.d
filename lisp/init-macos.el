@@ -11,7 +11,6 @@
 (setq mac-option-modifier 'meta)
 
 
-;;; Mouse scrolling
 ;; Smoother and nicer scrolling
 (setq scroll-margin 15)
 (setq scroll-step 1)
@@ -30,8 +29,7 @@
                     'ignore)))
 
 ;; Enable `pixel-scroll-precision-mode'
-(when (fboundp 'pixel-scroll-precision-mode)
-  (pixel-scroll-precision-mode 1))
+(pixel-scroll-precision-mode 1)
 
 ;; Disable auto copying
 (setq mouse-drag-copy-region nil)
@@ -42,18 +40,17 @@
 
 
 ;; Everything in UTF-8
-;; Referred from: `https://hieuphay.com/emacs-config'
 (set-language-environment "UTF-8")
 (prefer-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-buffer-file-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
-(setq default-input-method 'vietnamese-telex)
+
 (setq search-default-mode 'char-fold-to-regexp)
 
 
-;;; macOS styled keybindings
+;; macOS styled keybindings
 ;; Editing specified
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 (global-set-key (kbd "s-a") 'mark-whole-buffer)
@@ -98,11 +95,10 @@
 ;; File management specified
 (global-set-key (kbd "s-f") 'find-file)
 
-;; Window specified
 ;; Go to other windows easily with one keystroke `cmd-'
-(global-set-key (kbd "s-1") (kbd "C-x 1")) ; cmd-1 kill other windows (keep 1)
-(global-set-key (kbd "s-2") (kbd "C-x 2")) ; cmd-2 split horizontally
-(global-set-key (kbd "s-3") (kbd "C-x 3")) ; cmd-3 split vertically
+(global-set-key (kbd "s-1") (kbd "C-x 1"))  ; cmd-1 kill other windows (keep 1)
+(global-set-key (kbd "s-2") (kbd "C-x 2"))  ; cmd-2 split horizontally
+(global-set-key (kbd "s-3") (kbd "C-x 3"))  ; cmd-3 split vertically
 
 
 ;; Disable these keys

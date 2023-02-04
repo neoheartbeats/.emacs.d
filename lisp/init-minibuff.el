@@ -2,103 +2,76 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package vertico
-  :straight (:files (:defaults "extensions/*.el"))
-  :init
-  (vertico-mode 1)
-  :config
+(when (maybe-require-package 'vertico)
+  (add-hook 'after-init-hook #'vertico-mode)
 
-  ;; Load extensions
-  (require 'vertico-directory)
-
-  ;; Correct file path when changed
-  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
-
-  (setq vertico-count 8)
-  (setq vertico-resize nil)
-  (setq vertico-cycle t)
-  :bind
-  ((:map vertico-map
-         ("<tab>" . vertico-insert)
-	 ("RET" . vertico-directory-enter)
-         ("DEL" . vertico-directory-delete-char)
-         ("s-DEL" . vertico-directory-delete-word))))
-
-;; Persist history over Emacs restarts
-(with-eval-after-load 'vertico
-  (require 'savehist)
-  (savehist-mode 1))
-
-(use-package consult
-  :init
-  (global-unset-key (kbd "C-x b"))
-  (global-set-key (kbd "s-b")
-                  'switch-to-buffer)
-  (global-set-key [remap switch-to-buffer]
-                  'consult-buffer)
-  (global-set-key [remap switch-to-buffer-other-window]
-                  'consult-buffer-other-window)
-  (global-set-key [remap switch-to-buffer-other-frame]
-                  'consult-buffer-other-frame)
-  (global-set-key [remap goto-line] 'consult-goto-line)
-
-  ;; Customize the register formatting
-  (setq register-preview-delay 0.5)
-  (setq register-preview-function #'consult-register-format)
-  (advice-add #'register-preview
-              :override #'consult-register-window)
-
-  ;; Use Consult to select xref locations with preview
-  (setq xref-show-xrefs-function #'consult-xref)
-  (setq xref-show-definitions-function #'consult-xref)
-  :config
-  (setq consult-project-function
-        #'consult--default-project-function)
-
-  (setq consult-narrow-key "􀄫")
-
-  ;; Customize Consult buffers
   (with-eval-after-load 'vertico
-    (set-face-attribute 'vertico-group-title nil
-                        :slant 'normal))
+    (setq vertico-count 10)
+    (setq vertico-cycle t)
 
-  (add-hook 'completion-list-mode #'consult-preview-at-point-mode)
-  :bind
-  (("C-s" . consult-line)
-   ("M-s" . consult-ripgrep)))
+    ;; Correct file path when changed
+    (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
 
-
-(setq resize-mini-windows t)
-(setq minibuffer-eldef-shorten-default t)
+    (define-key vertico-map (kbd "<tab>") 'vertico-insert)
+    (define-key vertico-map (kbd "RET") 'vertico-directory-enter)
+    (define-key vertico-map (kbd "DEL") 'vertico-directory-delete-char)
+    (define-key vertico-map (kbd "s-DEL") 'vertico-directory-delete-word)
 
-(setq echo-keystrokes 0.25)
+    ;; Customize Consult buffers
+    (set-face-attribute 'vertico-group-title nil :slant 'normal)
 
-
-(use-package embark
-  :init  ;; Optionally replace the key help with a completing-read interface
-  (setq prefix-help-command #'embark-prefix-help-command)
-  (setq embark-confirm-act-all nil)
-  :config  ;; Hide the mode line of the Embark live/completions buffers
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none))))
-  :bind
-  (("C-." . embark-act)
-   ("M-." . embark-dwim)
-   ("C-h B" . embark-bindings)))
+    ;; Persist history over Emacs restarts
+    (require 'savehist)
+    (savehist-mode 1))
 
-(use-package embark-consult
-  :after (embark consult)
-  :config
-  (add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode 1))
+  (when (maybe-require-package 'embark)
+    (with-eval-after-load 'vertico
+      (define-key vertico-map (kbd "C-c C-o") 'embark-export)
+      (define-key vertico-map (kbd "C-c C-c") 'embark-act)))
 
-
-;; Enable rich annotations
-(use-package marginalia
-  :init
-  (setq marginalia-max-relative-age 0)
-  (marginalia-mode 1))
+  (define-key global-map (kbd "M-.") 'embark-dwim)
+
+  (when (maybe-require-package 'consult)
+    (defmacro my/no-consult-preview (&rest cmds)
+      `(with-eval-after-load 'consult
+         (consult-customize ,@cmds :preview-key (kbd "M-P"))))
+
+    (my/no-consult-preview
+     consult-ripgrep
+     consult-git-grep consult-grep
+     consult-bookmark consult-recent-file consult-xref)
+
+    (global-set-key (kbd "s-b") 'switch-to-buffer)
+
+    (global-set-key [remap switch-to-buffer]
+                    'consult-buffer)
+    (global-set-key [remap switch-to-buffer-other-window]
+                    'consult-buffer-other-window)
+    (global-set-key [remap switch-to-buffer-other-frame]
+                    'consult-buffer-other-frame)
+    (global-set-key [remap goto-line]
+                    'consult-goto-line)
+
+    (define-key global-map (kbd "s-l") 'consult-line)
+    (define-key global-map (kbd "M-s") 'consult-ripgrep))
+
+  (when (maybe-require-package 'embark-consult)
+    (with-eval-after-load 'embark
+      (require 'embark-consult)
+      (add-hook 'embark-collect-mode-hook #'embark-consult-preview-minor-mode)))
+
+  (when (and (executable-find "rg") (maybe-require-package 'affe))
+    (defun my/affe-grep-at-point (&optional dir initial)
+      (interactive (list prefix-arg (when-let ((s (symbol-at-point)))
+                                      (symbol-name s))))
+      (affe-grep dir initial))
+    (global-set-key (kbd "M-?") 'my/affe-grep-at-point)
+    (my/no-consult-preview my/affe-grep-at-point)
+    (with-eval-after-load 'affe
+      (my/no-consult-preview affe-grep))))
+
+(when (maybe-require-package 'marginalia)
+  (add-hook 'after-init-hook 'marginalia-mode))
 
 
 (provide 'init-minibuff)

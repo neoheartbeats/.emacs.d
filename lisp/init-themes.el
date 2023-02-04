@@ -8,6 +8,7 @@
 
 (require-theme 'modus-themes)
 
+(setq custom-safe-themes t)
 (setq modus-themes-disable-other-themes t)
 
 (load-theme 'modus-vivendi t)
@@ -29,21 +30,23 @@
 ;; Cursor faces
 (setq-default blink-cursor-mode nil)
 (setq-default cursor-type '(bar . 1))
-(set-cursor-color "#ff66ff")
 
-;; Blink cursor with `beacon'
-;; This also helps rendering frames
-(use-package beacon
-  :diminish
-  :config
-  (setq beacon-push-mark 35)
-  (setq beacon-blink-duration 0.5)
-  (setq beacon-color "#ff66ff")
-  (beacon-mode 1))
+(set-cursor-color "#ff66ff")
 
 
 ;; Mode line settings
 (setq mode-line-compact t)
+
+
+;; Font settings
+(set-face-attribute 'default nil
+	            :font "AdaptiveMono OT"
+	            :height 155)
+
+(set-fontset-font "fontset-default" 'unicode "SF Pro")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+
+(set-face-attribute 'italic nil :slant 'normal)
 
 
 (provide 'init-themes)

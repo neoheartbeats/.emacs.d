@@ -23,10 +23,6 @@
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
 
-
-;; Prevent `package.el' loading packages prior to init-file loading
-(setq package-enable-at-startup nil)
-
 ;; Do not allow loading from the package cache
 (setq package-quickstart nil)
 

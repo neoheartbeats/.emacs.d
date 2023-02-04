@@ -3,14 +3,9 @@
 ;;; Code:
 
 
-;; Eglot setup
-(use-package eglot
-  :straight (:type built-in)
-  :config
-  (setq eglot-autoshutdown t)
-  :bind
-  ((:map eglot-mode-map
-         ("s-i" . 'eglot-format-buffer))))
+(when (maybe-require-package 'eglot)
+  (maybe-require-package 'consult-eglot)
+  (setq eglot-autoshutdown t))
 
 
 (when (treesit-available-p)

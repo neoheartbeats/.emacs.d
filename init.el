@@ -3,7 +3,7 @@
 
 ;; This file bootstraps the configuration, which is divided into
 ;; number of other files.
-;; This file is inspired by https://github.com/purcell/emacs.d/.
+;; This file is inspired by `https://github.com/purcell/emacs.d/'.
 
 ;;; Code:
 
@@ -31,11 +31,18 @@
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 ;; Load essential components
-(require 'init-straight)
+(require 'cl-lib)
+(require 'init-site-lisp)
+(require 'init-packages)
+
+(require 'hl-defined)
+(set-face-foreground 'hdefd-functions "#82b0ec")
+(add-hook 'prog-mode-hook #'hdefd-highlight-mode)
+
+(require-package 'diminish)
 
 ;; Load components
 (require 'init-macos)
-(require 'init-fonts)
 (require 'init-themes)
 (require 'init-gui-frames)
 (require 'init-minibuff)
@@ -47,16 +54,6 @@
 (require 'init-org)
 (require 'init-tex)
 (require 'init-eglot)
-
-
-;; Some applications
-(use-package emms
-  :config
-  (require 'emms-setup)
-  (emms-all)
-
-  (setq emms-player-list '(emms-player-mpv))
-  (setq emms-playlist-buffer-name "*Music*"))
 
 
 (provide 'init)

@@ -3,21 +3,8 @@
 ;;; Code:
 
 ;; Install AUCTeX
-(use-package latex
-  :straight auctex)
+(require-package 'auctex)
 
-(with-eval-after-load 'LaTeX-mode
-  (setq TeX-engine 'xetex)
-  (setq TeX-master nil)
-  (setq TeX-PDF-mode t)
-  (setq reftex-plug-into-AUCTeX t)
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t))
-
-(add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
-(add-hook 'LaTeX-mode-hook #'turn-on-reftex)
-
-
 (setq-default org-latex-preview-ltxpng-directory
               (expand-file-name "ltximg/" user-emacs-directory))
 
@@ -41,7 +28,7 @@
         ("retain-explicit-decimal-marker" "siunitx" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
-        ("upint" "stix" t)))
+        ("" "mlmodern" t)))
 
 (setq org-format-latex-options
       '(
@@ -51,7 +38,7 @@
         :html-foreground default
         :html-background "Transparent"
         :html-scale 1.25
-        :matchers '("begin" "$1" "$" "\\[")))
+        :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
 
 ;; Match the text baseline of an LaTeX fragment to the surrounding text
 (defun my/org--latex-header-preview (orig &rest args)
@@ -95,14 +82,11 @@ to `my/org--match-text-baseline-ascent'."
 		   (list 'image :type imagetype :file image :ascent ascent)))))
 
 
-;; Better LaTeX editor for Org mode
-;; Setup `CDLaTeX'
-(use-package cdlatex
-  :demand t
-  :diminish (org-cdlatex-mode)
-  :config
+(when (maybe-require-package 'cdlatex)
   (add-hook 'LaTeX-mode-hook #'turn-on-cdlatex)
-  (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+  (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
+  (with-eval-after-load 'cdlatex
+    (diminish 'org-cdlatex-mode)))
 
 
 (provide 'init-tex)

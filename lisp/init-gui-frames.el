@@ -1,4 +1,4 @@
-;;; init-gui-frames.el --- Behaviour specific to GUI frames -*- lexical-binding: t -*-
+;;; init-gui-frames.el --- Behaviours of GUI frames -*- lexical-binding: t -*-
 ;;; Commentary:
 
 ;; This file is inspired by https://github.com/purcell/emacs.d/.
@@ -23,19 +23,32 @@
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
 
 
-;; Non-zero values for `line-spacing' can mess up ansi-term and co,
-;; so we zero it explicitly in those cases
-(add-hook 'term-mode-hook #'(lambda ()
-                              (setq line-spacing 0)))
+(defvar after-make-console-frame-hooks '()
+  "Hooks to run after creating a new TTY frame.")
+
+(defvar after-make-window-system-frame-hooks '()
+  "Hooks to run after creating a new window-system frame.")
+
+(defun run-after-make-frame-hooks (frame)
+  "Run configured hooks in response to the newly-created FRAME.
+Selectively runs either `after-make-console-frame-hooks' or
+`after-make-window-system-frame-hooks'."
+  (with-selected-frame frame
+    (run-hooks (if window-system
+                   'after-make-window-system-frame-hooks
+                 'after-make-console-frame-hooks))))
+
+(add-hook 'after-make-frame-functions #'run-after-make-frame-hooks)
+
+(defconst my/initial-frame (selected-frame)
+  "The frame (if any) active during Emacs initialization.")
+
+(add-hook 'after-init-hook
+          #'(lambda () (when my/initial-frame
+                         (run-after-make-frame-hooks my/initial-frame))))
 
 
-;; Nicer naming of buffers for files with identical names
-(require 'uniquify)
-
-(setq uniquify-buffer-name-style 'reverse)
-(setq uniquify-separator " - ")
-(setq uniquify-after-kill-buffer-p t)
-(setq uniquify-ignore-buffers-re "^\\*")
+(setq switch-to-buffer-obey-display-actions t)
 
 
 (provide 'init-gui-frames)

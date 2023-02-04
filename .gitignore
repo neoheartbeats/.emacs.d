@@ -39,3 +39,5 @@ tmp/.DS_Store
 /projectile.cache
 /elpa/
 /var/
+/elpa-30.0/
+/etc/

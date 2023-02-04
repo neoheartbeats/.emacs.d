@@ -8,34 +8,24 @@
 
 
 ;; Git client using `magit'
-(use-package magit
-  :init
+(when (maybe-require-package 'magit)
   (setq-default magit-diff-refine-hunk t)
-  :custom
+  (setq-default magit-section-visibility-indicator nil)
 
-  ;; Disable showing the bitmap indicators
-  (magit-section-visibility-indicator nil)
-  :bind
-  (("C-x g" . magit-status)
-   ("C-x M-g" . magit-dispatch)))
+  (define-key global-map (kbd "C-x g") 'magit-status))
 
 
-;; Project management using `projectile.el'
-(use-package projectile
-  :diminish
-  :init
-  (when (file-directory-p my-dev-path)
-    (let ((project-path-list '()))
-      (push my-dev-path project-path-list)
-      (setq projectile-project-search-path project-path-list)))
+(when (maybe-require-package 'projectile)
+  (add-hook 'after-init-hook #'projectile-mode)
+
+  ;; Shorter modeline
+  (setq-default projectile-mode-line-prefix " 􀐚")
 
   (when (executable-find "rg")
     (setq-default projectile-generic-command "rg --files --hidden"))
 
-  (projectile-mode 1)
-  :bind
-  ((:map projectile-mode-map
-         ("C-c p" . 'projectile-command-map))))
+  (with-eval-after-load 'projectile
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)))
 
 
 (provide 'init-projects)
