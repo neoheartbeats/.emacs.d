@@ -11,8 +11,6 @@
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
-(require 'org-preview)
-
 
 (require-package 'org-cliplink)
 

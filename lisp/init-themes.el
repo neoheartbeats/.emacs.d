@@ -35,7 +35,7 @@
 
 ;; Font settings
 (set-face-attribute 'default nil
-	            :font "Pes Mono"
+	            :font "M PLUS 1 Code"
 	            :height 155)
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
