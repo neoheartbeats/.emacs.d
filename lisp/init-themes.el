@@ -6,11 +6,6 @@
 ;;; Code:
 
 
-(require-theme 'modus-themes)
-
-(setq custom-safe-themes t)
-(setq modus-themes-disable-other-themes t)
-
 (load-theme 'modus-vivendi t)
 
 
@@ -40,11 +35,11 @@
 
 ;; Font settings
 (set-face-attribute 'default nil
-	            :font "AdaptiveMono OT"
+	            :font "Pes Mono"
 	            :height 155)
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'han "Heiti SC")
 
 (set-face-attribute 'italic nil :slant 'normal)
 
