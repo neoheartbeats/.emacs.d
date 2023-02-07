@@ -41,3 +41,6 @@ tmp/.DS_Store
 /var/
 /elpa-30.0/
 /etc/
+/custom.el~
+/elisp-autofmt-cache/
+/network-security.data

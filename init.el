@@ -32,14 +32,7 @@
 
 ;; Load essential components
 (require 'cl-lib)
-(require 'init-site-lisp)
 (require 'init-packages)
-
-;; (require 'hl-defined)
-;; (set-face-foreground 'hdefd-functions "#82b0ec")
-;; (add-hook 'prog-mode-hook #'hdefd-highlight-mode)
-
-(require-package 'diminish)
 
 ;; Load components
 (require 'init-macos)

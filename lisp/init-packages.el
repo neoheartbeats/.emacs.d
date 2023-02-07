@@ -241,5 +241,9 @@ advice for `require-package', to which ARGS are passed."
 (add-hook 'package-menu-mode-hook #'pes-maybe-widen-package-menu-columns)
 
 
+(when (maybe-require-package 'diminish)
+  (diminish 'eldoc-mode))
+
+
 (provide 'init-packages)
 ;;; init-packages.el ends here

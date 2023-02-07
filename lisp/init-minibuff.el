@@ -38,19 +38,20 @@
 
     (pes-no-consult-preview
      consult-ripgrep
-     consult-git-grep consult-grep
-     consult-bookmark consult-recent-file consult-xref)
+     consult-git-grep
+     consult-grep
+     consult-bookmark
+     consult-recent-file
+     consult-xref)
 
     (global-set-key (kbd "s-b") 'switch-to-buffer)
 
-    (global-set-key [remap switch-to-buffer]
-                    'consult-buffer)
-    (global-set-key [remap switch-to-buffer-other-window]
-                    'consult-buffer-other-window)
-    (global-set-key [remap switch-to-buffer-other-frame]
-                    'consult-buffer-other-frame)
-    (global-set-key [remap goto-line]
-                    'consult-goto-line)
+    (global-set-key [remap switch-to-buffer] 'consult-buffer)
+    (global-set-key
+     [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
+    (global-set-key
+     [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
+    (global-set-key [remap goto-line] 'consult-goto-line)
 
     (define-key global-map (kbd "s-l") 'consult-line)
     (define-key global-map (kbd "M-s") 'consult-ripgrep))
@@ -62,8 +63,10 @@
 
   (when (and (executable-find "rg") (maybe-require-package 'affe))
     (defun pes-affe-grep-at-point (&optional dir initial)
-      (interactive (list prefix-arg (when-let ((s (symbol-at-point)))
-                                      (symbol-name s))))
+      (interactive (list
+                    prefix-arg
+                    (when-let ((s (symbol-at-point)))
+                      (symbol-name s))))
       (affe-grep dir initial))
     (global-set-key (kbd "M-?") 'pes-affe-grep-at-point)
     (pes-no-consult-preview pes-affe-grep-at-point)

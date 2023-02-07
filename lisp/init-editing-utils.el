@@ -36,9 +36,16 @@
 (setq-default require-final-newline t)
 
 ;; Format current buffer while saving
-(add-hook 'before-save-hook #'(lambda ()
-                                (delete-trailing-whitespace)
-                                (indent-region (point-min) (point-max) nil)))
+(add-hook
+ 'before-save-hook
+ #'(lambda ()
+     (delete-trailing-whitespace)
+     (indent-region (point-min) (point-max) nil)))
+
+(when (maybe-require-package 'elisp-autofmt)
+  (setq elisp-autofmt-python-bin my-python-exec-path)
+  (add-hook 'emacs-lisp-mode-hook #'elisp-autofmt-mode)
+  (define-key emacs-lisp-mode-map (kbd "s-i") 'elisp-autofmt-buffer))
 
 ;; Formatting buffers
 (defun pes-indent-and-save-buffer ()
@@ -61,8 +68,6 @@
 (with-eval-after-load 'autorevert
   (diminish 'auto-revert-mode))
 
-(add-hook 'after-init-hook #'transient-mark-mode)
-
 
 ;; Fill columns
 (setq-default fill-column 80)
@@ -78,12 +83,14 @@
 (when (maybe-require-package 'smart-hungry-delete)
   (smart-hungry-delete-add-default-hooks)
   (with-eval-after-load 'smart-hungry-delete
-    (define-key global-map [remap backward-delete-char-untabify]
-                'smart-hungry-delete-backward-char)
-    (define-key global-map [remap delete-backward-char]
-                'smart-hungry-delete-backward-char)
-    (define-key global-map [remap delete-char]
-                'smart-hungry-delete-forward-char)))
+    (define-key
+     global-map
+     [remap backward-delete-char-untabify]
+     'smart-hungry-delete-backward-char)
+    (define-key
+     global-map [remap delete-backward-char] 'smart-hungry-delete-backward-char)
+    (define-key
+     global-map [remap delete-char] 'smart-hungry-delete-forward-char)))
 
 
 ;; Newline behaviours

@@ -25,8 +25,9 @@ returning the full match string or group `GROUP'."
   (interactive)
   (unless (buffer-file-name)
     (error "No file is currently being edited"))
-  (when (yes-or-no-p (format "Confirm delete '%s'?"
-                             (file-name-nondirectory buffer-file-name)))
+  (when (yes-or-no-p
+         (format "Confirm delete '%s'?"
+                 (file-name-nondirectory buffer-file-name)))
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
 
@@ -43,6 +44,32 @@ returning the full match string or group `GROUP'."
         (rename-file filename new-name 1))
       (set-visited-file-name new-name)
       (rename-buffer new-name))))
+
+
+;; ERC & GNUS
+(setq user-mail-address "ilyaw3939@gmail.com")
+(setq user-full-name "ilyaw3939")
+
+(setq message-send-mail-function 'smtpmail-send-it)
+(setq gnus-secondary-select-methods '((nntp "news.gwene.org")))
+(setq gnus-select-method
+      '(nnimap
+        "gmail"
+        (nnimap-address "imap.gmail.com")
+        (nnimap-server-port 993)
+        (nnimap-stream ssl)))
+
+(require 'erc)
+(require 'erc-log)
+(require 'erc-notify)
+(require 'erc-spelling)
+(require 'erc-autoaway)
+
+(setq erc-server-coding-system '(utf-8 . utf-8))
+(setq erc-interpret-mirc-color t)
+(setq erc-kill-buffer-on-part t)
+(setq erc-kill-queries-on-quit t)
+(setq erc-kill-server-buffer-on-quit t)
 
 
 (provide 'init-utils)

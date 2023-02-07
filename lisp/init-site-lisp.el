@@ -47,8 +47,9 @@
   "Return whether or not the library `name' can be loaded from a
 source file under `/site-lisp/name/'."
   (let ((f (locate-library (symbol-name name))))
-    (and f (string-prefix-p (file-name-as-directory (site-lisp-dir-for name))
-                            f))))
+    (and f
+         (string-prefix-p
+          (file-name-as-directory (site-lisp-dir-for name)) f))))
 
 
 (provide 'init-site-lisp)

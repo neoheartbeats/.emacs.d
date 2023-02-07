@@ -33,9 +33,7 @@
   (setq org-modern-star '("􀄩"))
   (setq org-modern-hide-stars "􀄩")
   (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X . "􀃠")
-                              (?- . "􀃞")
-                              (?\s . "􀂒")))
+  (setq org-modern-checkbox '((?X . "􀃠") (?- . "􀃞") (?\s . "􀂒")))
   (setq org-modern-block-name '(("src" . ("􀓪" "􀅽"))))
   (setq org-modern-table-vertical 1)
   (setq org-modern-keyword nil)
@@ -46,17 +44,19 @@
 
 
 ;; Symbols in Org mode
-(add-hook 'org-mode-hook #'(lambda ()
-                             (setq prettify-symbols-alist
-                                   '((":PROPERTIES:" . ?􀈣)
-                                     (":ID:" . ?􀅳)
-                                     (":END:" . ?􀅽)
-                                     ("#+TITLE:" . ?􀎞)
-                                     ("#+RESULTS:" . ?􀆀)
-                                     ("#+ATTR_ORG:" . ?􀣋)
-                                     ("SCHEDULED:" . ?􀧞)
-                                     ("CLOSED:" .?􁜒)))
-                             (prettify-symbols-mode 1)))
+(add-hook
+ 'org-mode-hook
+ #'(lambda ()
+     (setq prettify-symbols-alist
+           '((":PROPERTIES:" . ?􀈣)
+             (":ID:" . ?􀅳)
+             (":END:" . ?􀅽)
+             ("#+TITLE:" . ?􀎞)
+             ("#+RESULTS:" . ?􀆀)
+             ("#+ATTR_ORG:" . ?􀣋)
+             ("SCHEDULED:" . ?􀧞)
+             ("CLOSED:" .?􁜒)))
+     (prettify-symbols-mode 1)))
 
 (setq org-ellipsis " 􀍠")
 (setq org-hide-emphasis-markers t)
@@ -86,17 +86,19 @@
 ;; Org images
 (with-eval-after-load 'org
   (setq org-image-actual-width '(300)) ; Fallback to `300'
-  (define-key org-mode-map (kbd "s-p") (lambda ()
-                                         (interactive)
-                                         (org-latex-preview)
-                                         (org-display-inline-images))))
+  (define-key
+   org-mode-map (kbd "s-p")
+   (lambda ()
+     (interactive)
+     (org-latex-preview)
+     (org-display-inline-images))))
 
 
 ;; Org links
 (setq org-return-follows-link t)
 (setq org-link-elisp-confirm-function nil)
 
-(setq-default org-link-frame-setup  ; Open files in current frame
+(setq-default org-link-frame-setup ; Open files in current frame
               (cl-acons 'file #'find-file org-link-frame-setup))
 
 ;; Using shift-<arrow-keys> to select text
@@ -112,11 +114,9 @@
   (setq-default org-src-tab-acts-natively t)
   (setq-default org-edit-src-content-indentation 0)
 
-  (org-babel-do-load-languages 'org-babel-load-languages
-                               '((shell . t)
-                                 (emacs-lisp . t)
-                                 (python . t)
-                                 (latex . t))))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((shell . t) (emacs-lisp . t) (python . t) (latex . t))))
 
 
 ;; Org mode text edition
@@ -136,19 +136,24 @@
 
 ;; Capture template for `org-roam-dailies'
 (setq org-roam-dailies-capture-templates
-      '(("d" "default" entry "\n* %?"
-         :target (file+head "%<%Y-%m-%d>.org"
-                            "#+TITLE: %<%Y-%m-%d • %A>\n")
+      '(("d"
+         "default"
+         entry
+         "\n* %?"
+         :target (file+head "%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d • %A>\n")
          :empty-lines 1)))
 
 ;; Default capture template for notes
-(setq org-roam-capture-templates
-      '(("d" "default" plain "%?"
-         :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org"
-                            "#+TITLE: ${title}\n")
-         :empty-lines 1
-         :unnarrowed t
-         :immediate-finish t)))
+(setq
+ org-roam-capture-templates
+ '(("d"
+    "default"
+    plain
+    "%?"
+    :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+    :empty-lines 1
+    :unnarrowed t
+    :immediate-finish t)))
 
 (with-eval-after-load 'org-roam
   (org-roam-db-autosync-mode 1)
@@ -164,11 +169,13 @@
   (define-key org-mode-map (kbd "s-<down>") 'org-roam-dailies-goto-next-note))
 
 ;; Open today's note when startup
-(add-hook 'after-init-hook #'(lambda ()
-                               (interactive)
-                               (org-roam-dailies-goto-today)
-                               (save-buffer)
-                               (goto-char (point-max))))
+(add-hook
+ 'after-init-hook
+ #'(lambda ()
+     (interactive)
+     (org-roam-dailies-goto-today)
+     (save-buffer)
+     (goto-char (point-max))))
 
 
 (provide 'init-org)

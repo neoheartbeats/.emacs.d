@@ -34,18 +34,21 @@
 Selectively runs either `after-make-console-frame-hooks' or
 `after-make-window-system-frame-hooks'."
   (with-selected-frame frame
-    (run-hooks (if window-system
-                   'after-make-window-system-frame-hooks
-                 'after-make-console-frame-hooks))))
+    (run-hooks
+     (if window-system
+         'after-make-window-system-frame-hooks
+       'after-make-console-frame-hooks))))
 
 (add-hook 'after-make-frame-functions #'run-after-make-frame-hooks)
 
 (defconst pes-initial-frame (selected-frame)
   "The frame (if any) active during Emacs initialization.")
 
-(add-hook 'after-init-hook
-          #'(lambda () (when pes-initial-frame
-                         (run-after-make-frame-hooks pes-initial-frame))))
+(add-hook
+ 'after-init-hook
+ #'(lambda ()
+     (when pes-initial-frame
+       (run-after-make-frame-hooks pes-initial-frame))))
 
 
 (setq switch-to-buffer-obey-display-actions t)
