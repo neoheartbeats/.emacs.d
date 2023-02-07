@@ -41,19 +41,19 @@
         :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
 
 ;; Match the text baseline of an LaTeX fragment to the surrounding text
-(defun my/org--latex-header-preview (orig &rest args)
+(defun pes-org--latex-header-preview (orig &rest args)
   "Setup dedicated `org-format-latex-header'
-to `my/org--match-text-baseline-ascent'."
+to `pes-org--match-text-baseline-ascent'."
   (let ((org-format-latex-header "\\documentclass[preview]{standalone}
   \\usepackage[usenames]{color}
   [PACKAGES]
   [DEFAULT-PACKAGES]"))
     (apply orig args)))
 
-(defun my/org--match-text-baseline-ascent (imagefile)
+(defun pes-org--match-text-baseline-ascent (imagefile)
   "Set `:ascent' to match the text baseline of an image to the surrounding text.
   Calculate `ascent' with the data collected in IMAGEFILE."
-  (advice-add 'org-create-formula-image :around #'my/org--latex-header-preview)
+  (advice-add 'org-create-formula-image :around #'pes-org--latex-header-preview)
   (let* ((viewbox (split-string
                    (xml-get-attribute (car (xml-parse-file imagefile))
                                       'viewBox)))
@@ -70,7 +70,7 @@ to `my/org--match-text-baseline-ascent'."
   as a string.  It defaults to \"png\"."
   (let ((ov (make-overlay beg end))
 	(imagetype (or (intern imagetype) 'png)))
-    (let ((ascent (my/org--match-text-baseline-ascent image)))
+    (let ((ascent (pes-org--match-text-baseline-ascent image)))
       (overlay-put ov 'org-overlay-type 'org-latex-overlay)
       (overlay-put ov 'evaporate t)
       (overlay-put ov

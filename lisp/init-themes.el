@@ -35,11 +35,11 @@
 
 ;; Font settings
 (set-face-attribute 'default nil
-	            :font "M PLUS 1 Code"
-	            :height 155)
+	            :font "Pes Mono"
+	            :height 140)
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "Heiti SC")
+(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
 
 (set-face-attribute 'italic nil :slant 'normal)
 

@@ -7,7 +7,7 @@
 
 
 ;; String utilities
-(defun my/string-all-matches (regex str &optional group)
+(defun pes-string-all-matches (regex str &optional group)
   "Find all matches for `REGEX' within `STR',
 returning the full match string or group `GROUP'."
   (let ((result nil)
@@ -20,7 +20,7 @@ returning the full match string or group `GROUP'."
 
 
 ;; Delete the current file
-(defun my/delete-this-file ()
+(defun pes-delete-this-file ()
   "Delete the current file, then kill the buffer."
   (interactive)
   (unless (buffer-file-name)
@@ -31,7 +31,7 @@ returning the full match string or group `GROUP'."
     (kill-this-buffer)))
 
 ;; Rename the current file
-(defun my/rename-this-file-and-buffer (new-name)
+(defun pes-rename-this-file-and-buffer (new-name)
   "Rename both current buffer and file to NEW-NAME."
   (interactive "File new name: ")
   (let ((name (buffer-name))

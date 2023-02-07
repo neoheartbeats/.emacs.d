@@ -28,7 +28,7 @@
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
 ;; Load path
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
 
 ;; Load essential components
 (require 'cl-lib)

@@ -6,7 +6,7 @@
 ;;; Code:
 
 ;; Set load path
-(defun my/add-subdirs-to-load-path (parent-dir)
+(defun pes-add-subdirs-to-load-path (parent-dir)
   "Add every non-hidden subdir of PARENT-DIR to `load-path'."
   (let ((default-directory parent-dir))
     (setq load-path
@@ -19,7 +19,7 @@
 ;; Add both `site-lisp' and its immediate subdirs to `load-path'
 (let ((site-lisp-dir (expand-file-name "site-lisp/" user-emacs-directory)))
   (push site-lisp-dir load-path)
-  (my/add-subdirs-to-load-path site-lisp-dir))
+  (pes-add-subdirs-to-load-path site-lisp-dir))
 
 
 ;; Utilities for grabbing upstream libs

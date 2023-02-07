@@ -10,6 +10,16 @@
 (setq mac-command-modifier 'super)
 (setq mac-option-modifier 'meta)
 
+(setq default-input-method "chinese-py")
+
+;; Enable those
+(dolist (c '(
+             narrow-to-region
+             narrow-to-page
+             upcase-region
+             downcase-region))
+  (put c 'disabled nil))
+
 
 ;; Smoother and nicer scrolling
 (setq scroll-margin 15)
@@ -86,11 +96,11 @@
   "Regexp matching buffers ignored while switching buffers."
   :type 'regexp)
 
-(defun my/buffer-skip-p (window buffer bury-or-kill)
+(defun pes-buffer-skip-p (window buffer bury-or-kill)
   "Return `t' if BUFFER name matches `my-buffer-skip-regexp'."
   (string-match-p my-buffer-skip-regexp (buffer-name buffer)))
 
-(setq switch-to-prev-buffer-skip 'my/buffer-skip-p)
+(setq switch-to-prev-buffer-skip 'pes-buffer-skip-p)
 
 ;; File management specified
 (global-set-key (kbd "s-f") 'find-file)

@@ -62,12 +62,12 @@
 (setq org-hide-emphasis-markers t)
 
 ;; Draw fringes in Org mode
-(defun my/toggle-internal-fringes ()
+(defun pes-toggle-internal-fringes ()
   (setq left-margin-width 5)
   (setq right-margin-width 5)
   (set-window-buffer nil (current-buffer)))
 
-(add-hook 'org-mode-hook #'my/toggle-internal-fringes)
+(add-hook 'org-mode-hook #'pes-toggle-internal-fringes)
 
 ;; Setup pretty entities for unicode math symbols
 (setq org-pretty-entities t)

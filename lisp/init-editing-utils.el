@@ -41,14 +41,14 @@
                                 (indent-region (point-min) (point-max) nil)))
 
 ;; Formatting buffers
-(defun my/indent-and-save-buffer ()
+(defun pes-indent-and-save-buffer ()
   "Indent current buffer then save it."
   (interactive)
   (save-excursion
     (indent-region (point-min) (point-max) nil)
     (save-buffer)))
 
-(global-set-key (kbd "s-i") #'my/indent-and-save-buffer)
+(global-set-key (kbd "s-i") #'pes-indent-and-save-buffer)
 
 
 ;; Enable the fundamental modes
@@ -89,11 +89,11 @@
 ;; Newline behaviours
 (global-set-key (kbd "RET") #'newline-and-indent)
 
-(defun my/newline-at-end-of-line ()
+(defun pes-newline-at-end-of-line ()
   (move-end-of-line 1)
   (newline-and-indent))
 
-(global-set-key (kbd "s-<return>") #'my/newline-at-end-of-line)
+(global-set-key (kbd "s-<return>") #'pes-newline-at-end-of-line)
 
 
 ;; The nano style for truncated long lines
@@ -144,6 +144,13 @@
 ;; Don't disable case-change functions
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+
+
+;; Page break lines
+(when (maybe-require-package 'page-break-lines)
+  (add-hook 'after-init-hook #'global-page-break-lines-mode)
+  (with-eval-after-load 'page-break-lines
+    (diminish 'page-break-lines-mode)))
 
 
 (provide 'init-editing-utils)
