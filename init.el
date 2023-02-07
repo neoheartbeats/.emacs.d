@@ -24,22 +24,15 @@
 
 
 ;; Bootstrap process
-;; Setup `custom.el'
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
 ;; Load path
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
 
+
 ;; Load essential components
-(require 'cl-lib)
 (require 'init-site-lisp)
 (require 'init-packages)
-
-(require 'hl-defined)
-(set-face-foreground 'hdefd-functions "#82b0ec")
-(add-hook 'prog-mode-hook #'hdefd-highlight-mode)
-
-(require-package 'diminish)
 
 ;; Load components
 (require 'init-macos)
@@ -52,7 +45,6 @@
 (require 'init-editing-utils)
 (require 'init-projects)
 (require 'init-org)
-(require 'init-tex)
 (require 'init-eglot)
 
 

@@ -12,6 +12,15 @@
 (setq-default indent-tabs-mode nil)
 
 
+(require 'hl-defined)
+
+(set-face-foreground 'hdefd-functions "#82b0ec")
+(set-face-foreground 'hdefd-undefined "#fec43f")
+(set-face-foreground 'hdefd-variables "#88ca9f")
+
+(add-hook 'prog-mode-hook #'hdefd-highlight-mode)
+
+
 ;; Some basic preferences
 (setq-default case-fold-search t)
 (setq-default create-lockfiles nil)
@@ -36,19 +45,26 @@
 (setq-default require-final-newline t)
 
 ;; Format current buffer while saving
-(add-hook 'before-save-hook #'(lambda ()
-                                (delete-trailing-whitespace)
-                                (indent-region (point-min) (point-max) nil)))
+(add-hook
+ 'before-save-hook
+ #'(lambda ()
+     (delete-trailing-whitespace)
+     (indent-region (point-min) (point-max) nil)))
+
+(when (maybe-require-package 'elisp-autofmt)
+  (setq elisp-autofmt-python-bin "/opt/homebrew/bin/python3")
+  (add-hook 'emacs-lisp-mode-hook #'elisp-autofmt-mode)
+  (define-key emacs-lisp-mode-map (kbd "s-i") 'elisp-autofmt-buffer))
 
 ;; Formatting buffers
-(defun my/indent-and-save-buffer ()
+(defun pes-indent-and-save-buffer ()
   "Indent current buffer then save it."
   (interactive)
   (save-excursion
     (indent-region (point-min) (point-max) nil)
     (save-buffer)))
 
-(global-set-key (kbd "s-i") #'my/indent-and-save-buffer)
+(global-set-key (kbd "s-i") #'pes-indent-and-save-buffer)
 
 
 ;; Enable the fundamental modes
@@ -60,8 +76,6 @@
 (setq auto-revert-verbose nil)
 (with-eval-after-load 'autorevert
   (diminish 'auto-revert-mode))
-
-(add-hook 'after-init-hook #'transient-mark-mode)
 
 
 ;; Fill columns
@@ -78,22 +92,24 @@
 (when (maybe-require-package 'smart-hungry-delete)
   (smart-hungry-delete-add-default-hooks)
   (with-eval-after-load 'smart-hungry-delete
-    (define-key global-map [remap backward-delete-char-untabify]
-                'smart-hungry-delete-backward-char)
-    (define-key global-map [remap delete-backward-char]
-                'smart-hungry-delete-backward-char)
-    (define-key global-map [remap delete-char]
-                'smart-hungry-delete-forward-char)))
+    (define-key
+     global-map
+     [remap backward-delete-char-untabify]
+     'smart-hungry-delete-backward-char)
+    (define-key
+     global-map [remap delete-backward-char] 'smart-hungry-delete-backward-char)
+    (define-key
+     global-map [remap delete-char] 'smart-hungry-delete-forward-char)))
 
 
 ;; Newline behaviours
 (global-set-key (kbd "RET") #'newline-and-indent)
 
-(defun my/newline-at-end-of-line ()
+(defun pes-newline-at-end-of-line ()
   (move-end-of-line 1)
   (newline-and-indent))
 
-(global-set-key (kbd "s-<return>") #'my/newline-at-end-of-line)
+(global-set-key (kbd "s-<return>") #'pes-newline-at-end-of-line)
 
 
 ;; The nano style for truncated long lines

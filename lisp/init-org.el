@@ -3,19 +3,17 @@
 ;;; Code:
 
 (require 'org)
+(require-package 'org-contrib)
 
+
 ;; Org default directory
-(setq-default org-directory my-org-path)
+(setq-default org-directory pes-org-path)
 
 ;; Open Org files with previewing
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
-(require 'org-preview)
-
 
-(require-package 'org-cliplink)
-
 (define-key global-map (kbd "C-c l") 'org-store-link)
 (define-key global-map (kbd "C-c a") 'org-agenda)
 
@@ -29,15 +27,14 @@
 (setq org-html-validation-link nil)
 (setq org-export-kill-product-buffer-when-displayed t)
 (setq org-tags-column 80)
+(setq org-fontify-whole-heading-line t)
 
 
 (when (maybe-require-package 'org-modern)
   (setq org-modern-star '("􀄩"))
   (setq org-modern-hide-stars "􀄩")
   (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X . "􀃠")
-                              (?- . "􀃞")
-                              (?\s . "􀂒")))
+  (setq org-modern-checkbox '((?X . "􀃠") (?- . "􀃞") (?\s . "􀂒")))
   (setq org-modern-block-name '(("src" . ("􀓪" "􀅽"))))
   (setq org-modern-table-vertical 1)
   (setq org-modern-keyword nil)
@@ -48,32 +45,30 @@
 
 
 ;; Symbols in Org mode
-(add-hook 'org-mode-hook #'(lambda ()
-                             (setq prettify-symbols-alist
-                                   '((":PROPERTIES:" . ?􀈣)
-                                     (":ID:" . ?􀅳)
-                                     (":END:" . ?􀅽)
-                                     ("#+TITLE:" . ?􀎞)
-                                     ("#+RESULTS:" . ?􀆀)
-                                     ("#+ATTR_ORG:" . ?􀣋)
-                                     ("SCHEDULED:" . ?􀧞)
-                                     ("CLOSED:" .?􁜒)))
-                             (prettify-symbols-mode 1)))
+(add-hook
+ 'org-mode-hook
+ #'(lambda ()
+     (setq prettify-symbols-alist
+           '((":PROPERTIES:" . ?􀈣)
+             (":ID:" . ?􀅳)
+             (":END:" . ?􀅽)
+             ("#+TITLE:" . ?􀎞)
+             ("#+RESULTS:" . ?􀆀)
+             ("#+ATTR_ORG:" . ?􀣋)
+             ("SCHEDULED:" . ?􀧞)
+             ("CLOSED:" .?􁜒)))
+     (prettify-symbols-mode 1)))
 
 (setq org-ellipsis " 􀍠")
 (setq org-hide-emphasis-markers t)
 
 ;; Draw fringes in Org mode
-(defun my/toggle-internal-fringes ()
-  (setq left-margin-width 5)
-  (setq right-margin-width 5)
+(defun pes-toggle-internal-fringes ()
+  (setq left-margin-width 8)
+  (setq right-margin-width 8)
   (set-window-buffer nil (current-buffer)))
 
-(add-hook 'org-mode-hook #'my/toggle-internal-fringes)
-
-;; Setup pretty entities for unicode math symbols
-(setq org-pretty-entities t)
-(setq org-pretty-entities-include-sub-superscripts nil)
+(add-hook 'org-mode-hook #'pes-toggle-internal-fringes)
 
 
 (setq org-catch-invisible-edits 'show)
@@ -88,17 +83,19 @@
 ;; Org images
 (with-eval-after-load 'org
   (setq org-image-actual-width '(300)) ; Fallback to `300'
-  (define-key org-mode-map (kbd "s-p") (lambda ()
-                                         (interactive)
-                                         (org-latex-preview)
-                                         (org-display-inline-images))))
+  (define-key
+   org-mode-map (kbd "s-p")
+   (lambda ()
+     (interactive)
+     (org-latex-preview)
+     (org-display-inline-images))))
 
 
 ;; Org links
 (setq org-return-follows-link t)
 (setq org-link-elisp-confirm-function nil)
 
-(setq-default org-link-frame-setup  ; Open files in current frame
+(setq-default org-link-frame-setup ; Open files in current frame
               (cl-acons 'file #'find-file org-link-frame-setup))
 
 ;; Using shift-<arrow-keys> to select text
@@ -114,11 +111,9 @@
   (setq-default org-src-tab-acts-natively t)
   (setq-default org-edit-src-content-indentation 0)
 
-  (org-babel-do-load-languages 'org-babel-load-languages
-                               '((shell . t)
-                                 (emacs-lisp . t)
-                                 (python . t)
-                                 (latex . t))))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((shell . t) (emacs-lisp . t) (python . t) (latex . t))))
 
 
 ;; Org mode text edition
@@ -138,16 +133,20 @@
 
 ;; Capture template for `org-roam-dailies'
 (setq org-roam-dailies-capture-templates
-      '(("d" "default" entry "\n* %?"
-         :target (file+head "%<%Y-%m-%d>.org"
-                            "#+TITLE: %<%Y-%m-%d • %A>\n")
+      '(("d"
+         "default"
+         entry
+         "\n* %?"
+         :target (file+head "%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d • %A>\n")
          :empty-lines 1)))
 
 ;; Default capture template for notes
 (setq org-roam-capture-templates
-      '(("d" "default" plain "%?"
-         :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org"
-                            "#+TITLE: ${title}\n")
+      '(("d"
+         "default"
+         plain
+         "%?"
+         :target (file+head "notes/${slug}.org" "#+TITLE: ${title}\n")
          :empty-lines 1
          :unnarrowed t
          :immediate-finish t)))
@@ -166,11 +165,35 @@
   (define-key org-mode-map (kbd "s-<down>") 'org-roam-dailies-goto-next-note))
 
 ;; Open today's note when startup
-(add-hook 'after-init-hook #'(lambda ()
-                               (interactive)
-                               (org-roam-dailies-goto-today)
-                               (save-buffer)
-                               (goto-char (point-max))))
+(add-hook
+ 'after-init-hook
+ #'(lambda ()
+     (interactive)
+     (org-roam-dailies-goto-today)
+     (save-buffer)
+     (goto-char (point-max))))
+
+
+(require-package 'auctex)
+(setq org-latex-packages-alist
+      '(("" "mathtools" t)
+        ("retain-explicit-decimal-marker" "siunitx" t)
+        ("version=4" "mhchem" t)
+        ("upint" "stix2" t)))
+
+(setq-default org-latex-preview-default-process 'dvisvgm)
+(setq-default org-latex-preview-options
+              (progn
+                (plist-put org-format-latex-options :background "Transparent")
+                (plist-put org-format-latex-options :scale 6.9)
+                (plist-put org-format-latex-options :zoom 1.15)))
+
+
+
+(when (maybe-require-package 'cdlatex)
+  (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
+  (with-eval-after-load 'cdlatex
+    (diminish 'org-cdlatex-mode)))
 
 
 (provide 'init-org)

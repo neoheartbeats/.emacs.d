@@ -15,7 +15,7 @@
 
 ;; Faster to disable these here (before they've been initialized)
 (push '(width . 150) default-frame-alist)
-(push '(height . 45) default-frame-alist)
+(push '(height . 75) default-frame-alist)
 (push '(alpha . (90 . 90)) default-frame-alist)
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
@@ -23,10 +23,11 @@
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
 
-;; Do not allow loading from the package cache
-(setq package-quickstart nil)
+;; Prevent Emacs making packages at startup
+(setq package-enable-at-startup nil)
 
 ;; Prevent unwanted runtime compilation for GccEmacs
+(setq inhibit-automatic-native-compilation t)
 (setq native-comp-deferred-compilation nil)
 (setq load-prefer-newer noninteractive)
 

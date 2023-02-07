@@ -15,9 +15,9 @@
   (message ""))
 
 
-;; Set the text and icons in title
-(setq-default ns-use-proxy-icon nil)
-(setq-default frame-title-format nil)
+;; Hide text and icons in title
+(setq ns-use-proxy-icon nil)
+(setq frame-title-format nil)
 
 ;; Stop showing fringe bitmaps
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
@@ -34,18 +34,21 @@
 Selectively runs either `after-make-console-frame-hooks' or
 `after-make-window-system-frame-hooks'."
   (with-selected-frame frame
-    (run-hooks (if window-system
-                   'after-make-window-system-frame-hooks
-                 'after-make-console-frame-hooks))))
+    (run-hooks
+     (if window-system
+         'after-make-window-system-frame-hooks
+       'after-make-console-frame-hooks))))
 
 (add-hook 'after-make-frame-functions #'run-after-make-frame-hooks)
 
-(defconst my/initial-frame (selected-frame)
+(defconst pes-initial-frame (selected-frame)
   "The frame (if any) active during Emacs initialization.")
 
-(add-hook 'after-init-hook
-          #'(lambda () (when my/initial-frame
-                         (run-after-make-frame-hooks my/initial-frame))))
+(add-hook
+ 'after-init-hook
+ #'(lambda ()
+     (when pes-initial-frame
+       (run-after-make-frame-hooks pes-initial-frame))))
 
 
 (setq switch-to-buffer-obey-display-actions t)
