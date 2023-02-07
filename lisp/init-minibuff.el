@@ -53,7 +53,7 @@
      [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
     (global-set-key [remap goto-line] 'consult-goto-line)
 
-    (define-key global-map (kbd "s-l") 'consult-line)
+    (define-key global-map (kbd "C-s") 'consult-line)
     (define-key global-map (kbd "M-s") 'consult-ripgrep))
 
   (when (maybe-require-package 'embark-consult)

@@ -4,6 +4,28 @@
 
 (require 'org)
 
+(org-latex-preview-auto-mode 1)
+
+
+(require-package 'auctex)
+(setq org-latex-preview-default-process 'dvisvgm)
+(setq-default org-latex-preview-ltxpng-directory
+              (expand-file-name "ltximg/" user-emacs-directory))
+
+(setq org-latex-packages-alist
+      '(("" "mathtools" t)
+        ("retain-explicit-decimal-marker" "siunitx" t)
+        ("" "physics" t)
+        ("version=4" "mhchem" t)
+        ;; ("" "mlmodern" t)
+        ))
+
+(setq-default org-format-latex-options
+              (progn
+                (plist-put org-format-latex-options :background "Transparent")
+                (plist-put org-format-latex-options :scale 1.25)
+                (plist-put org-format-latex-options :zoom 1.25)))
+
 ;; Org default directory
 (setq-default org-directory pes-org-path)
 

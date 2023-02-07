@@ -28,7 +28,9 @@
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
 ;; Load path
+
 (add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
+(add-to-list 'load-path "/Users/ilyaw39/Developer/dev-emacs/dev-org/lisp/")
 
 ;; Load essential components
 (require 'cl-lib)
@@ -45,7 +47,7 @@
 (require 'init-editing-utils)
 (require 'init-projects)
 (require 'init-org)
-(require 'init-tex)
+;; (require 'init-tex)
 (require 'init-eglot)
 
 
