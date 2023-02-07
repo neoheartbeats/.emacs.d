@@ -77,7 +77,7 @@
 (global-set-key (kbd "<s-left>") 'switch-to-prev-buffer)
 
 ;; Ignore these buffers while switching
-(defcustom my-buffer-skip-regexp
+(defcustom pes-buffer-skip-regexp
   (rx
    bos
    (or (or "*scratch*"
@@ -98,8 +98,8 @@
   :type 'regexp)
 
 (defun pes-buffer-skip-p (window buffer bury-or-kill)
-  "Return `t' if BUFFER name matches `my-buffer-skip-regexp'."
-  (string-match-p my-buffer-skip-regexp (buffer-name buffer)))
+  "Return `t' if BUFFER name matches `pes-buffer-skip-regexp'."
+  (string-match-p pes-buffer-skip-regexp (buffer-name buffer)))
 
 (setq switch-to-prev-buffer-skip 'pes-buffer-skip-p)
 
@@ -127,14 +127,14 @@
 
 
 ;; System specified path
-(defvar my-home-path "/Users/ilyaw39/")
-(defvar my-dev-path "/Users/ilyaw39/Developer/")
-(defvar my-org-path "/Users/ilyaw39/PLEASE/")
+(defvar pes-home-path "/Users/ilyaw39/")
+(defvar pes-dev-path "/Users/ilyaw39/Developer/")
+(defvar pes-org-path "/Users/ilyaw39/PLEASE/")
 
 ;; Homebrew specified path
-(defvar my-hb-bin-path "/opt/homebrew/bin/")
-(defvar my-hb-room-path "/opt/homebrew/Caskroom/")
-(defvar my-python-exec-path "/opt/homebrew/bin/python3")
+(defvar pes-hb-bin-path "/opt/homebrew/bin/")
+(defvar pes-hb-room-path "/opt/homebrew/Caskroom/")
+(defvar pes-python-exec-path "/opt/homebrew/bin/python3")
 
 
 (provide 'init-macos)

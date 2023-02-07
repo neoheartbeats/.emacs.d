@@ -5,7 +5,7 @@
 (require 'org)
 
 ;; Org default directory
-(setq-default org-directory my-org-path)
+(setq-default org-directory pes-org-path)
 
 ;; Open Org files with previewing
 (setq org-startup-with-inline-images t)

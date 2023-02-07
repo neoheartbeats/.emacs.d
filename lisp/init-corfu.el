@@ -22,7 +22,6 @@
 (when (maybe-require-package 'cape)
   (push 'cape-dabbrev completion-at-point-functions)
   (push 'cape-file completion-at-point-functions)
-  (push 'cape-file completion-at-point-functions)
 
   (with-eval-after-load 'cape
     (setq cape-dabbrev-min-length 3)))
