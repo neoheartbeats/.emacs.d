@@ -4,7 +4,7 @@
 
 (require 'org)
 
-(org-latex-preview-auto-mode 1)
+;; (org-latex-preview-auto-mode 1)
 
 
 (require-package 'auctex)
