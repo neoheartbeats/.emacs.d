@@ -4,7 +4,6 @@
 
 (require 'org)
 (require-package 'auctex)
-(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
 
 (setq-default org-format-latex-options
               (progn
@@ -16,7 +15,6 @@
 (setq org-latex-packages-alist
       '(("" "mathtools" t)
         ("retain-explicit-decimal-marker" "siunitx" t)
-        ("" "physics" t)
         ("version=4" "mhchem" t)
         ("" "mlmodern" t)))
 
