@@ -22,6 +22,7 @@
 (when (maybe-require-package 'cape)
   (push 'cape-dabbrev completion-at-point-functions)
   (push 'cape-file completion-at-point-functions)
+  (push 'cape-dict completion-at-point-functions)
 
   (with-eval-after-load 'cape
     (setq cape-dabbrev-min-length 3)))
@@ -37,13 +38,14 @@
   (setq-default corfu-preselect 'first)
 
   (with-eval-after-load 'eshell
-    (add-hook 'eshell-mode-hook #'(lambda ()
-                                    (setq-local corfu-auto nil))))
+    (add-hook 'eshell-mode-hook #'(lambda () (setq-local corfu-auto nil))))
 
   (with-eval-after-load 'org
-    (add-hook 'org-mode-hook #'(lambda ()
-                                 (setq-local corfu-auto-prefix 1)
-                                 (setq-local completion-styles '(basic)))))
+    (add-hook
+     'org-mode-hook
+     #'(lambda ()
+         (setq-local corfu-auto-prefix 1)
+         (setq-local completion-styles '(basic)))))
 
   (add-hook 'after-init-hook #'global-corfu-mode)
 

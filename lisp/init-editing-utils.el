@@ -153,12 +153,5 @@
 (put 'downcase-region 'disabled nil)
 
 
-;; Page break lines
-(when (maybe-require-package 'page-break-lines)
-  (add-hook 'after-init-hook #'global-page-break-lines-mode)
-  (with-eval-after-load 'page-break-lines
-    (diminish 'page-break-lines-mode)))
-
-
 (provide 'init-editing-utils)
 ;;; init-editing-utils.el ends here

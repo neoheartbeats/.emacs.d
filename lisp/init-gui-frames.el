@@ -15,9 +15,9 @@
   (message ""))
 
 
-;; Set the text and icons in title
+;; Hide text and icons in title
 (setq ns-use-proxy-icon nil)
-(setq frame-title-format '("%b"))
+(setq frame-title-format nil)
 
 ;; Stop showing fringe bitmaps
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))

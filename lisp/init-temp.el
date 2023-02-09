@@ -14,19 +14,5 @@
     (diminish 'yas-minor-mode)))
 
 
-(require 'abbrev)
-
-(let ((table global-abbrev-table))
-  (define-abbrev table "zmail" "ilyaw3939@gmail.com")
-  (define-abbrev table "latex" "LaTeX")
-  (define-abbrev table "github" "GitHub")
-  (define-abbrev table "gitlab" "GitLab")
-  (define-abbrev table "emacsconf" "EmacsConf")
-  (define-abbrev table "auctex" "AUCTeX"))
-
-(set-default 'abbrev-mode t)
-(diminish 'abbrev-mode)
-
-
 (provide 'init-temp)
 ;;; init-temp ends here

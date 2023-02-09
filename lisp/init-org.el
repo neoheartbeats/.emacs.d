@@ -3,27 +3,27 @@
 ;;; Code:
 
 (require 'org)
-
-;; (org-latex-preview-auto-mode 1)
-
-
 (require-package 'auctex)
-(setq org-latex-preview-default-process 'dvisvgm)
-(setq-default org-latex-preview-ltxpng-directory
-              (expand-file-name "ltximg/" user-emacs-directory))
+(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
+
+(setq-default org-format-latex-options
+              (progn
+                (plist-put org-format-latex-options :background "Transparent")
+                (plist-put org-format-latex-options :scale 7.5)
+                (plist-put org-format-latex-options :zoom 1.50)))
+
 
 (setq org-latex-packages-alist
       '(("" "mathtools" t)
         ("retain-explicit-decimal-marker" "siunitx" t)
         ("" "physics" t)
         ("version=4" "mhchem" t)
-        ;; ("" "mlmodern" t)
-        ))
+        ("" "mlmodern" t)))
 
 (setq-default org-format-latex-options
               (progn
                 (plist-put org-format-latex-options :background "Transparent")
-                (plist-put org-format-latex-options :scale 1.25)
+                (plist-put org-format-latex-options :scale 5.5)
                 (plist-put org-format-latex-options :zoom 1.25)))
 
 ;; Org default directory
@@ -166,16 +166,15 @@
          :empty-lines 1)))
 
 ;; Default capture template for notes
-(setq
- org-roam-capture-templates
- '(("d"
-    "default"
-    plain
-    "%?"
-    :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
-    :empty-lines 1
-    :unnarrowed t
-    :immediate-finish t)))
+(setq org-roam-capture-templates
+      '(("d"
+         "default"
+         plain
+         "%?"
+         :target (file+head "notes/${slug}.org" "#+TITLE: ${title}\n")
+         :empty-lines 1
+         :unnarrowed t
+         :immediate-finish t)))
 
 (with-eval-after-load 'org-roam
   (org-roam-db-autosync-mode 1)
