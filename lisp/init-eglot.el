@@ -8,17 +8,8 @@
   (setq eglot-autoshutdown t))
 
 
-(when (treesit-available-p)
-  (setq treesit-extra-load-path
-        (list (expand-file-name "libs/treesit/" user-emacs-directory)))
-
-  (push '(sh-mode . bash-ts-mode) major-mode-remap-alist)
-  (push '(c-mode . c-ts-mode) major-mode-remap-alist)
-  (push '(c++-mode . c++-ts-mode) major-mode-remap-alist)
-  (push '(css-mode . css-ts-mode) major-mode-remap-alist)
-  (push '(javascript-mode . js-ts-mode) major-mode-remap-alist)
-  (push '(js-json-mode . json-ts-mode) major-mode-remap-alist)
-  (push '(python-mode . python-ts-mode) major-mode-remap-alist))
+(require-package 'treesit-auto)
+(global-treesit-auto-mode 1)
 
 
 ;; C/C++ support

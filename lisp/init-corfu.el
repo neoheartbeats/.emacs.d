@@ -20,12 +20,23 @@
 
 
 (when (maybe-require-package 'cape)
-  (push 'cape-dabbrev completion-at-point-functions)
-  (push 'cape-file completion-at-point-functions)
-  (push 'cape-dict completion-at-point-functions)
+  (add-hook
+   'emacs-lisp-mode-hook
+   #'(lambda ()
+       (push 'cape-dabbrev completion-at-point-functions)
+       (push 'cape-file completion-at-point-functions)
+       (push 'cape-symbol completion-at-point-functions)
+       (push 'cape-keyword completion-at-point-functions)))
+
+  (add-hook
+   'org-mode-hook
+   #'(lambda ()
+       (push 'cape-dabbrev completion-at-point-functions)
+       (push 'cape-file completion-at-point-functions)
+       (push 'cape-dict completion-at-point-functions)))
 
   (with-eval-after-load 'cape
-    (setq cape-dabbrev-min-length 3)))
+    (setq cape-dabbrev-min-length 5)))
 
 
 (when (maybe-require-package 'corfu)
@@ -50,7 +61,9 @@
   (add-hook 'after-init-hook #'global-corfu-mode)
 
   (with-eval-after-load 'corfu
+    (setq corfu-popupinfo-delay t)
     (corfu-popupinfo-mode 1)
+
     (corfu-history-mode 1)
 
     (define-key corfu-map (kbd "<down>") 'corfu-next)

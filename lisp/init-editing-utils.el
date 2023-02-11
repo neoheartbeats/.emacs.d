@@ -12,6 +12,15 @@
 (setq-default indent-tabs-mode nil)
 
 
+(require 'hl-defined)
+
+(set-face-foreground 'hdefd-functions "#82b0ec")
+(set-face-foreground 'hdefd-undefined "#fec43f")
+(set-face-foreground 'hdefd-variables "#88ca9f")
+
+(add-hook 'prog-mode-hook #'hdefd-highlight-mode)
+
+
 ;; Some basic preferences
 (setq-default case-fold-search t)
 (setq-default create-lockfiles nil)

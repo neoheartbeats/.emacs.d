@@ -10,15 +10,9 @@
 
 
 ;; Customize faces
-(set-face-attribute 'button nil
-                    :underline "#959595"
-                    :foreground nil)
-
-(set-face-attribute 'fill-column-indicator nil
-                    :height 0.15)
-
-(set-face-attribute 'link nil
-                    :foreground nil)
+(set-face-attribute 'button nil :underline "#959595" :foreground nil)
+(set-face-attribute 'fill-column-indicator nil :height 0.15)
+(set-face-attribute 'link nil :foreground nil)
 
 (set-face-background 'fringe (face-attribute 'default :background))
 
@@ -26,20 +20,17 @@
 (setq-default blink-cursor-mode nil)
 (setq-default cursor-type '(bar . 1))
 
-(set-cursor-color "#ff66ff")
-
 
 ;; Mode line settings
 (setq mode-line-compact t)
 
 
-;; Font settings
-(set-face-attribute 'default nil
-	            :font "Pes Mono"
-	            :height 150)
+;; Main typeface
+(set-face-attribute 'default nil :family "M PLUS 1 Code" :height 150)
 
+;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 (set-face-attribute 'italic nil :slant 'normal)
 

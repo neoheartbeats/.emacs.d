@@ -5,24 +5,20 @@
 (require 'org)
 (require-package 'auctex)
 
-(setq-default org-format-latex-options
-              (progn
-                (plist-put org-format-latex-options :background "Transparent")
-                (plist-put org-format-latex-options :scale 7.5)
-                (plist-put org-format-latex-options :zoom 1.50)))
-
-
 (setq org-latex-packages-alist
       '(("" "mathtools" t)
+        ("" "physics" t)
+        ("" "mlmodern" t)
         ("retain-explicit-decimal-marker" "siunitx" t)
-        ("version=4" "mhchem" t)
-        ("" "mlmodern" t)))
+        ("version=4" "mhchem" t)))
 
-(setq-default org-format-latex-options
+(setq-default org-latex-preview-options
               (progn
                 (plist-put org-format-latex-options :background "Transparent")
                 (plist-put org-format-latex-options :scale 5.5)
-                (plist-put org-format-latex-options :zoom 1.25)))
+                (plist-put org-format-latex-options :zoom 1.35)))
+
+
 
 ;; Org default directory
 (setq-default org-directory pes-org-path)
@@ -47,6 +43,7 @@
 (setq org-html-validation-link nil)
 (setq org-export-kill-product-buffer-when-displayed t)
 (setq org-tags-column 80)
+(setq org-fontify-whole-heading-line t)
 
 
 (when (maybe-require-package 'org-modern)
@@ -83,15 +80,11 @@
 
 ;; Draw fringes in Org mode
 (defun pes-toggle-internal-fringes ()
-  (setq left-margin-width 5)
-  (setq right-margin-width 5)
+  (setq left-margin-width 7)
+  (setq right-margin-width 7)
   (set-window-buffer nil (current-buffer)))
 
 (add-hook 'org-mode-hook #'pes-toggle-internal-fringes)
-
-;; Setup pretty entities for unicode math symbols
-(setq org-pretty-entities t)
-(setq org-pretty-entities-include-sub-superscripts nil)
 
 
 (setq org-catch-invisible-edits 'show)

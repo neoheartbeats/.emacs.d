@@ -24,17 +24,14 @@
 
 
 ;; Bootstrap process
-;; Setup `custom.el'
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
 ;; Load path
-
 (add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
-(add-to-list 'load-path "/Users/ilyaw39/Developer/emacs.d/org-mode/lisp/")
 
 
 ;; Load essential components
-(require 'cl-lib)
+(require 'init-site-lisp)
 (require 'init-packages)
 
 ;; Load components
