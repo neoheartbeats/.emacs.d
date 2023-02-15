@@ -31,7 +31,8 @@
         ("melpa" . "https://melpa.org/packages/")))
 
 ;; Highest number gets priority (what is not mentioned has priority 0)
-(setq package-archive-priorities '(("elpa" . 2) ("nongnu" . 1)))
+(setq package-archive-priorities
+      '(("melpa" . 3) ("nongnu" . 2) ("elpa-devel" . 1)))
 
 
 (package-initialize)
@@ -135,6 +136,9 @@ advice for `require-package', to which ARGS are passed."
 
 (when (maybe-require-package 'diminish)
   (diminish 'eldoc-mode))
+
+
+(require 'use-package)
 
 
 (provide 'init-packages)

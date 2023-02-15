@@ -26,7 +26,7 @@
 
 
 ;; Main typeface
-(set-face-attribute 'default nil :family "M PLUS 1 Code" :height 150)
+(set-face-attribute 'default nil :family "AdaptiveMono OT" :height 155)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")

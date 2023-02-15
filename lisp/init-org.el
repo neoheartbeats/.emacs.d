@@ -3,23 +3,9 @@
 ;;; Code:
 
 (require 'org)
-(require-package 'auctex)
-
-(setq org-latex-packages-alist
-      '(("" "mathtools" t)
-        ("" "physics" t)
-        ("" "mlmodern" t)
-        ("retain-explicit-decimal-marker" "siunitx" t)
-        ("version=4" "mhchem" t)))
-
-(setq-default org-latex-preview-options
-              (progn
-                (plist-put org-format-latex-options :background "Transparent")
-                (plist-put org-format-latex-options :scale 5.5)
-                (plist-put org-format-latex-options :zoom 1.35)))
+(require-package 'org-contrib)
 
 
-
 ;; Org default directory
 (setq-default org-directory pes-org-path)
 
@@ -28,8 +14,6 @@
 (setq org-startup-with-latex-preview t)
 
 
-(require-package 'org-cliplink)
-
 (define-key global-map (kbd "C-c l") 'org-store-link)
 (define-key global-map (kbd "C-c a") 'org-agenda)
 
@@ -80,8 +64,8 @@
 
 ;; Draw fringes in Org mode
 (defun pes-toggle-internal-fringes ()
-  (setq left-margin-width 7)
-  (setq right-margin-width 7)
+  (setq left-margin-width 8)
+  (setq right-margin-width 8)
   (set-window-buffer nil (current-buffer)))
 
 (add-hook 'org-mode-hook #'pes-toggle-internal-fringes)
@@ -188,6 +172,100 @@
      (org-roam-dailies-goto-today)
      (save-buffer)
      (goto-char (point-max))))
+
+
+(require-package 'auctex)
+
+(setq org-latex-default-packages-alist nil)
+
+;; (setq org-latex-remove-logfiles nil)
+
+(setq org-latex-logfiles-extensions
+      '("bcf"
+        "blg"
+        "fdb_latexmk"
+        "fls"
+        "figlist"
+        "idx"
+        "nav"
+        "out"
+        "ptc"
+        "run.xml"
+        "snm"
+        "toc"
+        "vrb"))
+
+(setq org-latex-packages-alist
+      '(("" "mathtools" t)
+        ("retain-explicit-decimal-marker" "siunitx" t)
+        ("version=4" "mhchem" t)))
+
+(setq-default org-latex-preview-ltxpng-directory
+              (expand-file-name "ltximg/" user-emacs-directory))
+
+(setq org-preview-latex-default-process 'dvisvgm)
+(setq
+ org-preview-latex-process-alist
+ '((dvisvgm
+    :programs ("xelatex" "dvisvgm")
+    :description "xdv > svg"
+    :image-input-type "xdv"
+    :image-output-type "svg"
+    :image-size-adjust (1.7 . 1.5)
+    :latex-compiler ("xelatex-dev --no-pdf -output-directory %o %f") ;; -interaction nonstopmode
+    :image-converter ("dvisvgm %f --scale=%S --output=%O"))))
+
+(setq-default org-format-latex-options
+              (progn
+                (plist-put org-format-latex-options :background "Transparent")
+                (plist-put org-format-latex-options :scale 1.70)))
+
+;; Match the text baseline of an LaTeX fragment to the surrounding text
+(defun pes-org--latex-header-preview (orig &rest args)
+  "Setup dedicated `org-format-latex-header'
+to `pes-org--match-text-baseline-ascent'."
+  (let ((org-format-latex-header ;;
+         "\\documentclass[preview]{standalone}
+\\usepackage[usenames]{color}
+  [PACKAGES]
+  [DEFAULT-PACKAGES]"))
+    (apply orig args)))
+
+(defun pes-org--match-text-baseline-ascent (imagefile)
+  "Set `:ascent' to match the text baseline of an image to the surrounding text.
+  Calculate `ascent' with the data collected in IMAGEFILE."
+  (advice-add 'org-create-formula-image :around #'pes-org--latex-header-preview)
+  (let* ((viewbox
+          (split-string
+           (xml-get-attribute (car (xml-parse-file imagefile)) 'viewBox)))
+         (min-y (string-to-number (nth 1 viewbox)))
+         (height (string-to-number (nth 3 viewbox)))
+         (ascent (round (* -100 (/ min-y height)))))
+    (if (or (< ascent 0) (>= ascent 100))
+        'center
+      ascent)))
+
+(defun org--make-preview-overlay (beg end image &optional imagetype)
+  "Build an overlay between BEG and END using IMAGE file.
+  Argument IMAGETYPE is the extension of the displayed image,
+  as a string.  It defaults to \"png\"."
+  (let ((ov (make-overlay beg end))
+        (imagetype (or (intern imagetype) 'png)))
+    (let ((ascent (pes-org--match-text-baseline-ascent image)))
+      (overlay-put ov 'org-overlay-type 'org-latex-overlay)
+      (overlay-put ov 'evaporate t)
+      (overlay-put
+       ov
+       'modification-hooks
+       (list (lambda (o _flag _beg _end &optional _l) (delete-overlay o))))
+      (overlay-put
+       ov 'display (list 'image :type imagetype :file image :ascent ascent)))))
+
+
+(when (maybe-require-package 'cdlatex)
+  (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
+  (with-eval-after-load 'cdlatex
+    (diminish 'org-cdlatex-mode)))
 
 
 (provide 'init-org)

@@ -52,7 +52,7 @@
      (indent-region (point-min) (point-max) nil)))
 
 (when (maybe-require-package 'elisp-autofmt)
-  (setq elisp-autofmt-python-bin pes-python-exec-path)
+  (setq elisp-autofmt-python-bin "/opt/homebrew/bin/python3")
   (add-hook 'emacs-lisp-mode-hook #'elisp-autofmt-mode)
   (define-key emacs-lisp-mode-map (kbd "s-i") 'elisp-autofmt-buffer))
 

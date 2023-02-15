@@ -44,3 +44,5 @@ tmp/.DS_Store
 /custom.el~
 /elisp-autofmt-cache/
 /network-security.data
+libs/.DS_Store
+libs/.DS_Store
