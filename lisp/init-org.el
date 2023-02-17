@@ -179,14 +179,14 @@
       '(("" "mathtools" t)
         ("retain-explicit-decimal-marker" "siunitx" t)
         ("version=4" "mhchem" t)
-        ("" "mlmodern" t)))
+        ("upint" "stix2" t)))
 
 (setq-default org-latex-preview-default-process 'dvisvgm)
 (setq-default org-latex-preview-options
               (progn
                 (plist-put org-format-latex-options :background "Transparent")
-                (plist-put org-format-latex-options :scale 5.5)
-                (plist-put org-format-latex-options :zoom 1.10)))
+                (plist-put org-format-latex-options :scale 6.9)
+                (plist-put org-format-latex-options :zoom 1.15)))
 
 
 

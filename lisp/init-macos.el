@@ -130,7 +130,6 @@
 (defvar pes-home-path "/Users/ilyaw39/")
 
 (defvar pes-dev-path "/Users/ilyaw39/Developer/")
-(defvar pes-env-path "/Users/ilyaw39/Developer/python-venvs/")
 (defvar pes-org-path "/Users/ilyaw39/Developer/LutwidgeTown/")
 
 ;; Homebrew specified path
