@@ -172,30 +172,28 @@
      (save-buffer)
      (goto-char (point-max))))
 
+(setq org-latex-preview-default-process 'dvisvgm)
+(setq org-latex-preview-options
+      (progn
+        (plist-put org-format-latex-options :background "Transparent")
+        (plist-put org-format-latex-options :scale 2.5)
+        (plist-put org-format-latex-options :zoom 2.50)))
+
 
 (setq org-latex-packages-alist
-      '(("" "mathtools" t)
-        ("" "upgreek" t)
-        ("" "mlmodern" t)
+      '(("" "upgreek" t)
         ("" "siunitx" t)
+        ("" "mlmodern" t)
         ("version=4" "mhchem" t)))
 
-(require 'org-latex-preview)
 
-(setq-default org-latex-preview-header
-              "\\documentclass{article}
+(setq org-latex-preview-header
+      "\\documentclass{article}
 [DEFAULT-PACKAGES]
 [PACKAGES]
+\\usepackage{xcolor}
 \\newcommand{\\vect}[1]{\\textit{\\textbf{#1}}}
-\\newcommand{\\diff}{\\mathop{}\\!\\mathrm{d}}
-\\usepackage{xcolor}")
-
-(setq-default org-latex-preview-default-process 'dvisvgm)
-(setq-default org-latex-preview-options
-              (progn
-                (plist-put org-format-latex-options :background "Transparent")
-                (plist-put org-format-latex-options :scale 6.9)
-                (plist-put org-format-latex-options :zoom 1.15)))
+\\newcommand{\\diff}{\\mathop{}\\!\\mathrm{d}}")
 
 
 (when (maybe-require-package 'cdlatex)

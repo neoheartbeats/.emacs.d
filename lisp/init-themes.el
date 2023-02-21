@@ -28,6 +28,7 @@
 
 ;; Main typeface
 (set-face-attribute 'default nil :family "Pes Mono" :height 140)
+(set-face-attribute 'variable-pitch nil :family "Fira Sans" :height 140)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
