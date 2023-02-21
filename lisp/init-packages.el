@@ -1,145 +1,55 @@
-;;; init-packages.el --- Settings for `package.el' -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
-
-
-(require 'cl-lib)
+;; init-packages.el --- Settings for `package.el' -*- lexical-binding: t -*-
+;;
+;; Copyright (C) 2022-2023 Ilya Wang
+;;
+;; This file is not part of GNU Emacs.
+;;
+;; Commentary:
+;; Code:
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;
+;; Loading libs
 (require 'package)
 
-(setq package-name-column-width 40)
-(setq package-version-column-width 14)
-(setq package-status-column-width 12)
-(setq package-archive-column-width 8)
-
-(add-hook 'package-menu-mode-hook #'hl-line-mode)
-
-
-;; Install into separate package dirs for each Emacs version
-;; to prevent bytecode incompatibility
-(setq package-user-dir
-      (expand-file-name (format "elpa-%s.%s"
-                                emacs-major-version
-                                emacs-minor-version)
-                        user-emacs-directory))
-
-
-;; Standard package repositories
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Initialize packages
+;;
+;; Standard package repos
 (setq package-archives
-      '(("elpa" . "https://elpa.gnu.org/packages/")
-        ("elpa-devel" . "https://elpa.gnu.org/devel/")
-        ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-        ("melpa" . "https://melpa.org/packages/")))
+  '(
+  	("elpa" . "https://elpa.gnu.org/packages/")
+    ("elpa-devel" . "https://elpa.gnu.org/devel/")
+    ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+    ("melpa" . "https://melpa.org/packages/")))
 
-;; Highest number gets priority (what is not mentioned has priority 0)
-(setq package-archive-priorities
-      '(("melpa" . 3) ("nongnu" . 2) ("elpa-devel" . 1)))
+;; Initialize packages
+(unless (bound-and-true-p package--initialized)
+  (setq package-enable-at-startup nil)
+  (package-initialize))
 
-
-(package-initialize)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Setup `use-package'
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
-
-;; On-demand installation of packages
-(defun require-package (package &optional min-version no-refresh)
-  "Install given PACKAGE, optionally requiring MIN-VERSION.
-If NO-REFRESH is non-nil, the available package lists will not be
-re-downloaded in order to locate PACKAGE."
-  (when (stringp min-version)
-    (setq min-version (version-to-list min-version)))
-  (or (package-installed-p package min-version)
-      (let* ((known (cdr (assoc package package-archive-contents)))
-             (best
-              (car
-               (sort
-                known
-                (lambda (lo hi)
-                  (version-list-<=
-                   (package-desc-version hi) (package-desc-version lo)))))))
-        (if (and best (version-list-<= min-version (package-desc-version best)))
-            (package-install best)
-          (if no-refresh
-              (error "No version of %s >= %S is available" package min-version)
-            (package-refresh-contents)
-            (require-package package min-version t)))
-        (package-installed-p package min-version))))
+;; Should set before loading `use-package'
+(eval-and-compile
+  (setq use-package-expand-minimally t)
+  (setq use-package-enable-imenu-support t))
 
-(defun maybe-require-package (package &optional min-version no-refresh)
-  "Try to install PACKAGE, and return non-nil if successful.
-In the event of failure, return nil and print a warning message.
-Optionally require MIN-VERSION.  If NO-REFRESH is non-nil, the
-available package lists will not be re-downloaded in order to
-locate PACKAGE."
-  (condition-case err
-      (require-package package min-version no-refresh)
-    (error
-     (message "Couldn't install optional package `%s': %S" package err) nil)))
+(eval-when-compile
+  (require 'use-package))
 
-
-;; `package.el' updates the saved version of `package-selected-packages'
-;; correctly only after custom-file has been loaded, which is a bug.
-;; We work around this by adding the required packages
-;; to `package-selected-packages' after startup is complete.
+;; These are required by `use-package'
+(use-package diminish :ensure t :demand t)
+(use-package bind-key :ensure t :demand t)
 
-(defvar pes-required-packages nil)
-
-(defun pes-note-selected-package (oldfun package &rest args)
-  "If OLDFUN reports PACKAGE was successfully installed, note that fact.
-The package name is noted by adding it to
-`pes-required-packages'. This function is used as an
-advice for `require-package', to which ARGS are passed."
-  (let ((available (apply oldfun package args)))
-    (prog1 available
-      (when available
-        (add-to-list 'pes-required-packages package)))))
-
-(advice-add 'require-package :around #'pes-note-selected-package)
-
-(when (fboundp 'package--save-selected-packages)
-  (require-package 'seq)
-  (add-hook
-   'after-init-hook
-   #'(lambda ()
-       (package--save-selected-packages
-        (seq-uniq (append pes-required-packages package-selected-packages))))))
-
-
-(require-package 'fullframe)
-(fullframe list-packages quit-window)
-
-
-(let ((package-check-signature nil))
-  (require-package 'gnu-elpa-keyring-update))
-
-
-(defun pes-set-tabulated-list-column-width (col-name width)
-  "Set any column with name COL-NAME to the given WIDTH."
-  (when (> width (length col-name))
-    (cl-loop
-     for
-     column
-     across
-     tabulated-list-format
-     when
-     (string= col-name (car column))
-     do
-     (setf (elt column 1) width))))
-
-(defun pes-maybe-widen-package-menu-columns ()
-  "Widen some columns of the package menu table to avoid truncation."
-  (when (boundp 'tabulated-list-format)
-    (pes-set-tabulated-list-column-width "Version" 13)
-    (let ((longest-archive-name
-           (apply 'max (mapcar 'length (mapcar 'car package-archives)))))
-      (pes-set-tabulated-list-column-width "Archive" longest-archive-name))))
-
-(add-hook 'package-menu-mode-hook #'pes-maybe-widen-package-menu-columns)
-
-
-(when (maybe-require-package 'diminish)
-  (diminish 'eldoc-mode))
-
-
-(require 'use-package)
-
-
 (provide 'init-packages)
-;;; init-packages.el ends here
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; init-packages.el ends here

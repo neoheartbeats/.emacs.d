@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: .
-# key: .
+# name: ve
+# key: ve
 # --
-\\($0\\)
+\vect{e}

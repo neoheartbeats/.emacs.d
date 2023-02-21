@@ -2,55 +2,60 @@
 ;;; Commentary:
 ;;; Code:
 
-(when (maybe-require-package 'vertico)
-  (add-hook 'after-init-hook #'vertico-mode)
+(use-package vertico :ensure t
+  :init (vertico-mode)
+  :config
+  
+  ;; Load extensions
+  (require 'vertico-directory)
 
-  (with-eval-after-load 'vertico
-    (setq vertico-count 10)
-    (setq vertico-cycle t)
+  ;; Correct file path when changed
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
 
-    ;; Correct file path when changed
-    (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+  (setq vertico-count 15)
+  (setq vertico-cycle t)
 
-    (define-key vertico-map (kbd "<tab>") 'vertico-insert)
-    (define-key vertico-map (kbd "RET") 'vertico-directory-enter)
-    (define-key vertico-map (kbd "DEL") 'vertico-directory-delete-char)
-    (define-key vertico-map (kbd "s-DEL") 'vertico-directory-delete-word)
+  ;; Do not render italic fonts
+  (set-face-attribute 'vertico-group-title nil :slant 'normal)
+  :bind
+  ((:map vertico-map
+     ("<tab>" . vertico-insert)
+     ("<return>" . vertico-directory-enter)
+     ("<backspace>" . vertico-directory-delete-char))))
 
-    ;; Customize Consult buffers
-    (set-face-attribute 'vertico-group-title nil :slant 'normal)
+(use-package consult :ensure t
+  :init
+  (global-set-key (kbd "s-b") 'switch-to-buffer)
+  (global-set-key [remap switch-to-buffer] 'consult-buffer)
+  (global-set-key
+    [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
+  (global-set-key
+    [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
+  (global-set-key [remap goto-line] 'consult-goto-line)
+  :bind
+  (
+  	("C-s" . consult-line)
+    ("M-s" . consult-ripgrep)))
 
-    ;; Persist history over Emacs restarts
-    (require 'savehist)
-    (savehist-mode 1))
+(use-package embark :ensure t
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
+  :bind
+  (
+  	("M-." . embark-dwim)
+    ("C-h b" . embark-bindings)))
 
-  (when (maybe-require-package 'embark)
-    (with-eval-after-load 'vertico
-      (define-key vertico-map (kbd "C-c C-o") 'embark-export)
-      (define-key vertico-map (kbd "C-c C-c") 'embark-act)))
+(use-package embark-consult :ensure t
+  :after (embark consult)
+  :hook (embark-collect-mode-hook . consult-preview-at-point-mode))
 
-  (define-key global-map (kbd "M-.") 'embark-dwim)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Enable rich annotations
+(use-package marginalia :ensure t
+  :init (marginalia-mode 1))
 
-  (when (maybe-require-package 'consult)
-    (global-set-key (kbd "s-b") 'switch-to-buffer)
-    (global-set-key [remap switch-to-buffer] 'consult-buffer)
-    (global-set-key
-     [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
-    (global-set-key
-     [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
-    (global-set-key [remap goto-line] 'consult-goto-line)
-
-    (define-key global-map (kbd "C-s") 'consult-line)
-    (define-key global-map (kbd "M-s") 'consult-ripgrep))
-
-  (when (maybe-require-package 'embark-consult)
-    (with-eval-after-load 'embark
-      (require 'embark-consult)
-      (add-hook 'embark-collect-mode-hook #'embark-consult-preview-minor-mode))))
-
-(when (maybe-require-package 'marginalia)
-  (add-hook 'after-init-hook 'marginalia-mode))
-
-
 (provide 'init-minibuff)
-;;; init-minibuff.el ends here
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; init-minibuff.el ends here
