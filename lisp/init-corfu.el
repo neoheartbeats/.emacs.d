@@ -55,7 +55,7 @@
     (add-hook
      'org-mode-hook
      #'(lambda ()
-         (setq-local corfu-auto-prefix 1)
+         (setq-local corfu-auto-prefix 3)
          (setq-local completion-styles '(basic)))))
 
   (add-hook 'after-init-hook #'global-corfu-mode)

@@ -3,7 +3,6 @@
 ;;; Code:
 
 (require 'org)
-(require-package 'org-contrib)
 
 
 ;; Org default directory
@@ -37,8 +36,8 @@
   (setq org-modern-checkbox '((?X . "􀃠") (?- . "􀃞") (?\s . "􀂒")))
   (setq org-modern-block-name '(("src" . ("􀓪" "􀅽"))))
   (setq org-modern-table-vertical 1)
-  (setq org-modern-keyword nil)
   (setq org-modern-block-fringe nil)
+  (setq org-modern-keyword nil)
 
   (add-hook 'org-mode-hook #'org-modern-mode)
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda))
@@ -64,8 +63,8 @@
 
 ;; Draw fringes in Org mode
 (defun pes-toggle-internal-fringes ()
-  (setq left-margin-width 8)
-  (setq right-margin-width 8)
+  (setq left-margin-width 10)
+  (setq right-margin-width 10)
   (set-window-buffer nil (current-buffer)))
 
 (add-hook 'org-mode-hook #'pes-toggle-internal-fringes)
@@ -157,7 +156,7 @@
   (global-unset-key (kbd "s-n"))
   (define-key global-map (kbd "s-n j") 'org-roam-dailies-goto-today)
 
-  (define-key org-mode-map (kbd "s-n n") 'org-roam-node-insert)
+  (define-key org-mode-map (kbd "s-n i") 'org-roam-node-insert)
   (define-key org-mode-map (kbd "s-n a") 'org-roam-alias-add)
   (define-key org-mode-map (kbd "s-n f") 'org-roam-node-find)
 
@@ -174,12 +173,22 @@
      (goto-char (point-max))))
 
 
-(require-package 'auctex)
 (setq org-latex-packages-alist
       '(("" "mathtools" t)
-        ("retain-explicit-decimal-marker" "siunitx" t)
-        ("version=4" "mhchem" t)
-        ("upint" "stix2" t)))
+        ("" "upgreek" t)
+        ("" "mlmodern" t)
+        ("" "siunitx" t)
+        ("version=4" "mhchem" t)))
+
+(require 'org-latex-preview)
+
+(setq-default org-latex-preview-header
+              "\\documentclass{article}
+[DEFAULT-PACKAGES]
+[PACKAGES]
+\\newcommand{\\vect}[1]{\\textit{\\textbf{#1}}}
+\\newcommand{\\diff}{\\mathop{}\\!\\mathrm{d}}
+\\usepackage{xcolor}")
 
 (setq-default org-latex-preview-default-process 'dvisvgm)
 (setq-default org-latex-preview-options
@@ -187,7 +196,6 @@
                 (plist-put org-format-latex-options :background "Transparent")
                 (plist-put org-format-latex-options :scale 6.9)
                 (plist-put org-format-latex-options :zoom 1.15)))
-
 
 
 (when (maybe-require-package 'cdlatex)

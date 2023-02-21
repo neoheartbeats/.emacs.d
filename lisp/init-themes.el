@@ -10,9 +10,10 @@
 
 
 ;; Customize faces
-(set-face-attribute 'button nil :underline "#959595" :foreground nil)
+(set-face-attribute 'button nil :underline "#959595" :foreground 'unspecified)
+(set-face-attribute 'link nil :foreground 'unspecified)
+
 (set-face-attribute 'fill-column-indicator nil :height 0.15)
-(set-face-attribute 'link nil :foreground nil)
 
 (set-face-background 'fringe (face-attribute 'default :background))
 
@@ -26,7 +27,7 @@
 
 
 ;; Main typeface
-(set-face-attribute 'default nil :family "Pes Mono" :height 145)
+(set-face-attribute 'default nil :family "Pes Mono" :height 140)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")

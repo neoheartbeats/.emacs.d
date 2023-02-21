@@ -34,6 +34,9 @@
 (require 'init-site-lisp)
 (require 'init-packages)
 
+(require-package 'treesit-auto)
+(global-treesit-auto-mode 1)
+
 ;; Load components
 (require 'init-macos)
 (require 'init-themes)
@@ -45,7 +48,7 @@
 (require 'init-editing-utils)
 (require 'init-projects)
 (require 'init-org)
-(require 'init-eglot)
+;; (require 'init-eglot)
 
 
 (provide 'init)

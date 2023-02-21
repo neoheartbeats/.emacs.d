@@ -10,8 +10,6 @@
 (setq mac-command-modifier 'super)
 (setq mac-option-modifier 'meta)
 
-(setq default-input-method "chinese-py")
-
 ;; Enable those
 (dolist (c '(narrow-to-region narrow-to-page upcase-region downcase-region))
   (put c 'disabled nil))

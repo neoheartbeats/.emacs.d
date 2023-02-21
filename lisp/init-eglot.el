@@ -8,8 +8,7 @@
   (setq eglot-autoshutdown t))
 
 
-(require-package 'treesit-auto)
-(global-treesit-auto-mode 1)
+
 
 
 ;; C/C++ support
