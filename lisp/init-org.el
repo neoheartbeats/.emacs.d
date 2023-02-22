@@ -176,14 +176,14 @@
 (setq org-latex-preview-options
       (progn
         (plist-put org-format-latex-options :background "Transparent")
-        (plist-put org-format-latex-options :scale 2.5)
-        (plist-put org-format-latex-options :zoom 2.50)))
+        (plist-put org-format-latex-options :scale 2.0)
+        (plist-put org-format-latex-options :zoom 2.00)))
 
 
 (setq org-latex-packages-alist
       '(("" "upgreek" t)
-        ("" "siunitx" t)
         ("" "mlmodern" t)
+        ("retain-explicit-decimal-marker=true" "siunitx" t)
         ("version=4" "mhchem" t)))
 
 
