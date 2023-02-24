@@ -1,4 +1,4 @@
-;;; early-init.el --- Emacs 27+ pre-initialisation config
+;;; early-init.el --- Emacs 29+ pre-initialisation config
 ;;; Commentary:
 
 ;; Code loaded before the package system and GUI is initialized.
