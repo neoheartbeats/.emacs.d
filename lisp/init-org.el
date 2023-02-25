@@ -172,34 +172,28 @@
      (save-buffer)
      (goto-char (point-max))))
 
-(setq org-latex-preview-default-process 'dvisvgm)
-(setq org-latex-preview-options
-      (progn
-        (plist-put org-format-latex-options :background "Transparent")
-        (plist-put org-format-latex-options :scale 2.0)
-        (plist-put org-format-latex-options :zoom 2.00)))
+(setq-default org-latex-preview-default-process 'dvisvgm)
+(setq-default org-latex-preview-options
+              (progn
+                (plist-put org-format-latex-options :background "Transparent")
+                ;;  (plist-put org-format-latex-options :scale 2.05)
+                ))
 
 
-(setq org-latex-packages-alist
-      '(("" "upgreek" t)
-        ("" "mlmodern" t)
-        ("retain-explicit-decimal-marker=true" "siunitx" t)
-        ("version=4" "mhchem" t)))
+(setq-default org-latex-packages-alist
+              '(("retain-explicit-decimal-marker=true" "siunitx" t)
+                ("version=4" "mhchem" t)
+                ("" "upgreek" t)
+                ("" "mlmodern" t)))
 
-
-(setq org-latex-preview-header
-      "\\documentclass{article}
+(setq-default org-latex-preview-header
+              "\\documentclass{article}
 [DEFAULT-PACKAGES]
 [PACKAGES]
 \\usepackage{xcolor}
 \\newcommand{\\vect}[1]{\\textit{\\textbf{#1}}}
-\\newcommand{\\diff}{\\mathop{}\\!\\mathrm{d}}")
-
-
-(when (maybe-require-package 'cdlatex)
-  (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
-  (with-eval-after-load 'cdlatex
-    (diminish 'org-cdlatex-mode)))
+\\newcommand{\\diff}{\\mathop{}\\!\\mathrm{d}}
+\\newcommand{\\Diff}{\\mathop{}\\!\\mathrm{D}}")
 
 
 (provide 'init-org)
