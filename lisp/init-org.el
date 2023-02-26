@@ -176,8 +176,8 @@
 (setq-default org-latex-preview-options
               (progn
                 (plist-put org-format-latex-options :background "Transparent")
-                ;;  (plist-put org-format-latex-options :scale 2.05)
-                ))
+                (plist-put org-format-latex-options :scale 2.5)
+                (plist-put org-format-latex-options :zoom 3.00)))
 
 
 (setq-default org-latex-packages-alist

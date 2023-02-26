@@ -1065,12 +1065,6 @@ Some of the options can be changed using the variable
            elements)))
     (org-latex-preview-place processing-type entries numbering-offsets)))
 
-;; * Make all the images
-;; (<org-element latex-fragment> . key)...
-
-;; Backend make-an-image
-;; (get-cached-image (alist-get <org-element latex-fragment>))
-
 ;;;###autoload
 (defun org-latex-preview-place (processing-type entries &optional numbering-offsets latex-header)
   "Preview LaTeX math fragments ENTRIES using PROCESSING-TYPE.
@@ -1693,13 +1687,36 @@ fragments are regenerated."
     (plist-put info :errors (plist-get fragment-info :errors))
     info))
 
-(defconst org-latex-preview--tex-scale-divisor 65781.76
-  "The ratio between ")
+;TODO: Figure out why this factor is needed.
+(defconst org-latex-preview--shameful-magic-tex-scaling-factor
+  1.0270763
+  "Extra factor for aligning preview image baselines.
+
+Sometimes a little sprinkling of pixie dust is needed to get
+things just right.  Even just 2.7% magic can suffice.
+
+This is the ratio of image sizes as reported by preview.sty and
+computed by dvisvgm.  The latter is correct.")
+
+(defconst org-latex-preview--tex-scale-divisor
+  (* 65781.76 org-latex-preview--shameful-magic-tex-scaling-factor)
+  "Base pt to point conversion for preview.sty output.
+
+This is the product of three scaling quantities:
+
+- base point to point ratio: 1:65536
+- ;;TODO explain this: 72:72.27
+- The magic scaling factor
+  (see `org-latex-preview--shameful-magic-tex-scaling-factor').")
 
 (defun org-latex-preview--latex-preview-filter (_proc _string extended-info)
   "Examine the stdout from LaTeX compilation with preview.sty.
-The detected fontsize is directly entered into EXTENDED-INFO, and
-fragment errors are put into the :errors slot of the relevant
+
+- The detected fontsize is directly entered into EXTENDED-INFO.
+- The tightpage bounds information is captured and stored in EXTENDED-INFO.
+- Fragment geometry and alignment info is computed using the
+  tightpage info and page geometry reported by preview.sty.
+- Fragment errors are put into the :errors slot of the relevant
 fragments in EXTENDED-INFO."
   (unless (plist-get extended-info :fontsize)
     (when (save-excursion
@@ -1708,8 +1725,9 @@ fragments in EXTENDED-INFO."
   (let ((preview-start-re
          "^! Preview: Snippet \\([0-9]+\\) started.\n<-><->\n *\nl\\.\\([0-9]+\\)[^\n]+\n")
         (preview-end-re
-         "\\(?:^Preview: Tightpage.*$\\)?\n! Preview: Snippet [0-9]+ ended.(\\([0-9]+\\)+\\([0-9]+\\)x\\([0-9]+\\))")
+         "\\(?:^Preview: Tightpage.*$\\)?\n! Preview: Snippet [0-9]+ ended.(\\([0-9]+\\)\\+\\([0-9]+\\)x\\([0-9]+\\))")
         (fragments (plist-get extended-info :fragments))
+        (tightpage-info (plist-get extended-info :tightpage))
         preview-marks)
     (beginning-of-line)
     (save-excursion
@@ -1722,19 +1740,53 @@ fragments in EXTENDED-INFO."
     (setq preview-marks (nreverse preview-marks))
     (while preview-marks
       (goto-char (caar preview-marks))
+      ;; Check for tightpage-info
+      (unless tightpage-info
+        (save-excursion
+          (when (re-search-forward
+                 "^Preview: Tightpage \\(-?[0-9]+\\) *\\(-?[0-9]+\\) *\\(-?[0-9]+\\) *\\(-?[0-9]+\\)"
+                                   (or (caadr preview-marks) (point-max)) t)
+            (setq tightpage-info
+                  (mapcar #'string-to-number
+                          ;; left-margin bottom-margin
+                          ;; right-margin top-margin
+                          (list (match-string 1) (match-string 2)
+                                (match-string 3) (match-string 4))))
+            (plist-put extended-info :tightpage tightpage-info))))
+      ;; Check for processed fragment
       (if (re-search-forward preview-end-re (or (caadr preview-marks) (point-max)) t)
           (let ((fragment-info (nth (1- (nth 2 (car preview-marks))) fragments))
                 (errors-substring
-                 (string-trim
-                  (buffer-substring (cadar preview-marks)
-                                    (match-beginning 0)))))
-            (cl-loop for (geom . match-index)
-                     in '((:height . 1) (:depth . 2) (:width . 3))
-                     do
-                     (plist-put fragment-info geom
-                                (/ (string-to-number (match-string match-index))
-                                   org-latex-preview--tex-scale-divisor
-                                   (or (plist-get fragment-info :fontsize) 10))))
+                 (save-match-data
+                   (string-trim
+                    (buffer-substring (cadar preview-marks)
+                                      (match-beginning 0))))))
+            ;; Gather geometry and alignment info
+            (if tightpage-info
+                (progn
+                  (plist-put fragment-info :height
+                             (/ (+ (string-to-number (match-string 1))
+                                   (nth 3 tightpage-info))
+                                org-latex-preview--tex-scale-divisor
+                                (or (plist-get fragment-info :fontsize) 10)))
+                  (plist-put fragment-info :depth
+                             (/ (- (string-to-number (match-string 2))
+                                   (nth 1 tightpage-info))
+                                org-latex-preview--tex-scale-divisor
+                                (or (plist-get fragment-info :fontsize) 10)))
+                  (plist-put fragment-info :width
+                             (/ (+ (string-to-number (match-string 3))
+                                   (nth 2 tightpage-info)
+                                   (- (nth 1 tightpage-info)))
+                                org-latex-preview--tex-scale-divisor
+                                (or (plist-get fragment-info :fontsize) 10))))
+              (cl-loop for (geom . match-index)
+                       in '((:height . 1) (:depth . 2) (:width . 3))
+                       do
+                       (plist-put fragment-info geom
+                                  (/ (string-to-number (match-string match-index))
+                                     org-latex-preview--tex-scale-divisor
+                                     (or (plist-get fragment-info :fontsize) 10)))))
             (plist-put fragment-info :errors
                        (and (not (string-blank-p errors-substring))
                             (replace-regexp-in-string
@@ -1853,6 +1905,7 @@ tests with the output of dvisvgm."
                 (replace-match "currentColor" t t nil 1)))
             (write-region nil nil path nil 0)))))))
 
+;; ;TODO: This is no longer needed
 (defconst org-latex-preview--dvipng-dpi-pt-factor 0.5144
   "Factor that converts dvipng reported depth at 140 DPI to pt.
 
