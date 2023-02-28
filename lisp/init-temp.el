@@ -3,15 +3,14 @@
 ;;; Code:
 
 
-(when (maybe-require-package 'yasnippet)
+(use-package yasnippet
+  :diminish (yas-minor-mode)
+  :config
   (setq yas-snippet-dirs
         (list (expand-file-name "snippets/" user-emacs-directory)))
   (setq yas-triggers-in-field t)
   (setq yas-visit-from-menu t)
-
-  (yas-global-mode 1)
-  (with-eval-after-load 'yasnippet
-    (diminish 'yas-minor-mode)))
+  (yas-global-mode 1))
 
 
 (provide 'init-temp)

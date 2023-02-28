@@ -1,52 +1,82 @@
 ;;; init.el --- Load the full configuration -*- lexical-binding: t -*-
-;;; Commentary:
-
+;;
+;; Copyright (C) 2022-2023 Ilya Wang
+;;
+;; This file is not part of GNU Emacs.
+;;
+;; Commentary:
+;;
 ;; This file bootstraps the configuration, which is divided into
 ;; number of other files.
 ;; This file is inspired by `https://github.com/purcell/emacs.d/'.
-
-;;; Code:
-
-
+;;
+;; Code:
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Speed up startup
-(setq auto-mode-case-fold nil)
-
-
-;; Adjust garbage collection thresholds during startup
-(setq gc-cons-percentage 0.6)
+;;
+;; Defer garbage collection further back in the startup process
+;; This would be changed by `gcmh' from `init-system.el'
 (setq gc-cons-threshold most-positive-fixnum)
 
-;; Increase how much is read from processes in a single chunk
-(setq read-process-output-max (* 64 1024 1024))
+;; Prevent flash of unstyled modeline at startup
+(setq-default mode-line-format nil)
 
-;; --debug-init implies `debug-on-error'
-(setq debug-on-error init-file-debug)
+;; Don't pass case-insensitive to `auto-mode-alist'
+(setq auto-mode-case-fold nil)
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Bootstrap process
-(setq custom-file (locate-user-emacs-file "custom.el"))
-
+;;
 ;; Load path
-(add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
+;;
+;; Force `lisp' and `site-lisp' at head to reduce the startup time
+(defun pes-update-load-path (&rest _)
+  "Update `load-path'."
+  (dolist (subdirs '("site-lisp/" "lisp/"))
+    (push (expand-file-name subdirs user-emacs-directory) load-path)))
 
-
+(defun pes-push-subdirs-to-load-path (&rest _)
+  "Add subdirectories to `load-path'."
+  (let ((default-directory
+         (expand-file-name "site-lisp/" user-emacs-directory)))
+    (normal-top-level-add-subdirs-to-load-path)))
+
+(advice-add #'package-initialize :after #'pes-update-load-path)
+(advice-add #'package-initialize :after #'pes-push-subdirs-to-load-path)
+
+(pes-update-load-path)
+
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Load essential components
-(require 'init-site-lisp)
+;; (require 'init-custom)
 (require 'init-packages)
 
+(global-set-key
+ (kbd "<f12>")
+ #'(lambda ()
+     (interactive)
+     (find-file (expand-file-name "init.el" user-emacs-directory))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Load components
-(require 'init-macos)
+(require 'init-system)
 (require 'init-themes)
 (require 'init-gui-frames)
+(require 'init-editing-utils)
 (require 'init-minibuff)
 (require 'init-corfu)
 (require 'init-temp)
-(require 'init-utils)
-(require 'init-editing-utils)
-(require 'init-projects)
-(require 'init-org)
-(require 'init-eglot)
+;; (require 'init-utils)
+;; (require 'init-projects)
+;; (require 'init-org)
+;; (require 'init-eglot)
 
-
-(provide 'init)
+
 ;;; init.el ends here

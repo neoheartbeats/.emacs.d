@@ -8,24 +8,14 @@
 
 
 ;; Git client using `magit'
-(when (maybe-require-package 'magit)
-  (setq-default magit-diff-refine-hunk t)
-  (setq-default magit-section-visibility-indicator nil)
+(use-package
+  magit
+  :init (setq-default magit-diff-refine-hunk t)
+  :custom
 
-  (define-key global-map (kbd "C-x g") 'magit-status))
 
-
-(when (maybe-require-package 'projectile)
-  (add-hook 'after-init-hook #'projectile-mode)
-
-  ;; Shorter modeline
-  (setq-default projectile-mode-line-prefix " 􀐚")
-
-  (when (executable-find "rg")
-    (setq-default projectile-generic-command "rg --files --hidden"))
-
-  (with-eval-after-load 'projectile
-    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)))
+  (magit-section-visibility-indicator nil) ; disable showing the bitmap indicators
+  :bind (("C-x g" . magit-status) ("C-x M-g" . magit-dispatch)))
 
 
 (provide 'init-projects)
