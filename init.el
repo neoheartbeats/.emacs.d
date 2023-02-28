@@ -20,11 +20,10 @@
 ;; This would be changed by `gcmh' from `init-system.el'
 (setq gc-cons-threshold most-positive-fixnum)
 
-;; Prevent flash of unstyled modeline at startup
-(setq-default mode-line-format nil)
-
 ;; Don't pass case-insensitive to `auto-mode-alist'
 (setq auto-mode-case-fold nil)
+
+(defvar native-comp-deferred-compilation-deny-list nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -49,12 +48,10 @@
 
 (pes-update-load-path)
 
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Load essential components
-;; (require 'init-custom)
+(require 'init-custom)
 (require 'init-packages)
 
 (global-set-key
@@ -67,7 +64,6 @@
 ;;
 ;; Load components
 (require 'init-system)
-(require 'init-themes)
 (require 'init-gui-frames)
 (require 'init-editing-utils)
 (require 'init-minibuff)

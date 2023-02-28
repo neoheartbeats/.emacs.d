@@ -7,13 +7,7 @@
 (when (fboundp 'electric-pair-mode)
   (add-hook 'after-init-hook #'electric-pair-mode)
   (add-hook 'after-init-hook #'electric-indent-mode))
-(setq-default indent-tabs-mode nil)
-
-(require 'hl-defined)
-(set-face-foreground 'hdefd-functions "#82b0ec")
-(set-face-foreground 'hdefd-undefined "#fec43f")
-(set-face-foreground 'hdefd-variables "#88ca9f")
-(add-hook 'prog-mode-hook #'hdefd-highlight-mode)
+
 
 ;; Some basic preferences
 (setq-default case-fold-search t)
@@ -53,10 +47,7 @@
 ;; Enable the fundamental modes
 (add-hook 'after-init-hook #'delete-selection-mode)
 (add-hook 'after-init-hook #'global-auto-revert-mode)
-(setq global-auto-revert-non-file-buffers t)
-(setq auto-revert-verbose nil)
-(with-eval-after-load 'autorevert
-  (diminish 'auto-revert-mode))
+
 
 ;; Fill columns
 (setq-default fill-column 80)

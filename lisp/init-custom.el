@@ -12,71 +12,21 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgroup centaur nil
+(defgroup pes nil
   "Pes Emacs distribution."
   :group 'convenience
   :link '(url-link :tag "Homepage" "https://github.com/ilyaw39/.emacs.d"))
 
-(defcustom pes-completion-style 'childframe
-  "Completion display style."
-  :group 'pes
-  :type
-  '(choice
-    (const :tag "Minibuffer" minibuffer) (const :tag "Child Frame" childframe)))
 
-(defcustom pes-prog-prettify-symbols-alist
-  '(("lambda" . ?λ)
-    ("<-" . ?←)
-    ("->" . ?→)
-    ("->>" . ?↠)
-    ("=>" . ?⇒)
-    ("map" . ?↦)
-    ("/=" . ?≠)
-    ("!=" . ?≠)
-    ("==" . ?≡)
-    ("<=" . ?≤)
-    (">=" . ?≥)
-    ("=<<" . (?= (Br . Bl) ?≪))
-    (">>=" . (?≫ (Br . Bl) ?=))
-    ("<=<" . ?↢)
-    (">=>" . ?↣)
-    ("&&" . ?∧)
-    ("||" . ?∨)
-    ("not" . ?¬))
-  "A list of symbol prettifications.
-Nil to use font supports ligatures."
-  :group 'pes
-  :type '(alist :key-type string :value-type (choice character sexp)))
+(defvar pes-logo "../resources/2A317673-5ACF-4C0D-94D9-0D27D3808800.png")
 
-(defcustom pes-org-prettify-symbols-alist
-  '(("[ ]" . ?)
-    ("[-]" . ?)
-    ("[X]" . ?)
+(defvar pes-home-path "/Users/ilyaw39/")
+(defvar pes-dev-path "/Users/ilyaw39/Developer/")
+(defvar pes-org-path "/Users/ilyaw39/Developer/LutwidgeTown/")
 
-    (":PROPERTIES:" . ?)
-    (":ID:" . ?🪪)
-    (":END:" . ?🔚)
-
-    ("#+ARCHIVE:" . ?📦)
-    ("#+AUTHOR:" . ?👤)
-    ("#+CREATOR:" . ?💁)
-    ("#+DATE:" . ?📆)
-    ("#+DESCRIPTION:" . ?⸙)
-    ("#+EMAIL:" . ?📧)
-    ("#+HEADERS" . ?☰)
-    ("#+OPTIONS:" . ?⚙)
-    ("#+SETUPFILE:" . ?⚒)
-    ("#+TAGS:" . ?🏷)
-    ("#+TITLE:" . ?📓)
-
-    ("#+BEGIN_SRC" . ?✎)
-    ("#+END_SRC" . ?□)
-    ("#+BEGIN_QUOTE" . ?«)
-    ("#+END_QUOTE" . ?»)
-    ("#+RESULTS:" . ?💻))
-  "A list of symbol prettifications for `org-mode'."
-  :group 'pes
-  :type '(alist :key-type string :value-type (choice character sexp)))
+;; Homebrew specified path
+(defvar pes-hb-bin-path "/opt/homebrew/bin/")
+(defvar pes-hb-room-path "/opt/homebrew/Caskroom/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

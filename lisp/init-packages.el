@@ -11,40 +11,41 @@
 ;;
 ;;
 ;; Loading libs
-(require 'package)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Initialize packages
 ;;
 ;; Standard package repos
-(setq package-archives
-      '(("elpa" . "https://elpa.gnu.org/packages/")
-        ("elpa-devel" . "https://elpa.gnu.org/devel/")
-        ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-        ("melpa" . "https://melpa.org/packages/")))
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el"
+                         user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent
+         'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-(unless (bound-and-true-p package--initialized)
-  (setq package-enable-at-startup nil) ; To prevent initializing twice
-  (package-initialize))
+(setq straight-vc-git-default-clone-depth 1)
 
+(straight-use-package 'use-package)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Setup `use-package'
 ;;
-;; `use-package' is built-in in 29+
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
 ;; Should set before loading `use-package'
 (eval-and-compile
-  (setq use-package-always-ensure t)
-  (setq use-package-expand-minimally t)
+(setq straight-use-package-by-default t)
   (setq use-package-enable-imenu-support t))
 
 (eval-when-compile
   (require 'use-package))
+
 
 ;; These are required by `use-package'
 (use-package diminish)

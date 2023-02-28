@@ -42,7 +42,6 @@
 (setq inhibit-x-resources t)
 (setq inhibit-default-init t)
 (setq native-comp-async-report-warnings-errors 'silent)
-(setq-default mode-line-format nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

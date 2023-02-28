@@ -29,6 +29,7 @@
  ([(super f)] . find-file))
 
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+(define-key emacs-lisp-mode-map (kbd "C-c C-c") 'eval-buffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -68,10 +69,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Locate position history
-(use-package saveplace :ensure nil :hook (after-init . save-place-mode))
+(use-package saveplace :straight nil :hook (after-init . save-place-mode))
 (use-package
  savehist
- :ensure nil
+ :straight nil
  :hook (after-init . savehist-mode)
  :init
  (setq
@@ -87,18 +88,15 @@
 ;; The rules of minimalism
 (use-package
  simple
- :ensure nil
- :hook
- ((after-init . size-indication-mode)
-  (text-mode . visual-line-mode)
-  ((prog-mode conf-mode) . enable-trailing-whitespace))
+ :straight nil
+ :hook (prog-mode . enable-trailing-whitespace)
  :init
- (setq
-  column-number-mode t
-  line-number-mode t
-  line-move-visual nil
-  track-eol t ; Keep cursor at end of lines. Require `line-move-visual' is nil.
-  set-mark-command-repeat-pop t) ; Repeating C-SPC after popping mark pops it again
+ (setq column-number-mode t)
+ (setq line-number-mode t)
+ (setq line-move-visual nil)
+ (setq track-eol t) ; keep cursor at end of lines. require `line-move-visual' is nil
+ (setq set-mark-command-repeat-pop t) ; repeating `c-spc' after popping mark pops it again
+ (setq ignore-window-parameters t) ; treat all the windows the same
 
  ;; Trailing TAB, (HARD) SPACE
  (setq-default show-trailing-whitespace nil) ; don't show trailing whitespace by default
@@ -109,8 +107,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Misc
+;; Misc options
 (setq use-short-answers t)
+(setq delete-by-moving-to-trash t)
 (setq dired-use-ls-dired nil)
 
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
@@ -124,8 +123,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Global keybindings
-(defun delete-this-file ()
+;; Global functions
+(defun pes-delete-current-file ()
   "Delete the current file, and kill the buffer."
   (interactive)
   (unless (buffer-file-name)
@@ -135,6 +134,13 @@
                  (file-name-nondirectory buffer-file-name)))
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
+
+(defun pes-kill-current-buffer ()
+  (interactive)
+  (kill-buffer (current-buffer)))
+
+(bind-keys
+ ("C-x k" . pes-delete-current-file) ("C-x w" . pes-kill-current-buffer))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -167,10 +173,6 @@
            "*Messages*"
            "*Help*"
            "Warning"
-           "*Native-compile-Log*"
-           "*Compile-Log*"
-           "*Async-native-compile-log*"
-           "*straight-process*"
            "*Org Preview LaTeX Output*")
        (seq "magit-diff" (zero-or-more anything))
        (seq "magit-process" (zero-or-more anything))
@@ -187,30 +189,24 @@
 (setq switch-to-prev-buffer-skip #'pes-buffer-skip-p)
 
 ;; Go to other windows easily with one keystroke `cmd-'
-(global-set-key (kbd "s-1") (kbd "C-x 1")) ; cmd-1 kill other windows (keep 1)
-(global-set-key (kbd "s-2") (kbd "C-x 2")) ; cmd-2 split horizontally
-(global-set-key (kbd "s-3") (kbd "C-x 3")) ; cmd-3 split vertically
-
-(global-set-key (kbd "<s-right>") 'switch-to-next-buffer)
-(global-set-key (kbd "<s-left>") 'switch-to-prev-buffer)
+(bind-keys
+ ("s-1" . delete-other-windows)
+ ("s-2" . split-window-below)
+ ("s-3" . split-window-right)
+ ("<s-right>" . switch-to-next-buffer)
+ ("<s-left>" . switch-to-prev-buffer))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Speedup `regexp' searching
 (setq-default xref-search-program 'ripgrep)
-(setq-default shell-file-name "/bin/zsh")
 
-
-;; System specified path
-(defvar pes-home-path "/Users/ilyaw39/")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Built-in Sqlite support
+(use-package emacsql-sqlite-builtin :demand t)
 
-(defvar pes-dev-path "/Users/ilyaw39/Developer/")
-(defvar pes-org-path "/Users/ilyaw39/Developer/LutwidgeTown/")
-
-;; Homebrew specified path
-(defvar pes-hb-bin-path "/opt/homebrew/bin/")
-(defvar pes-hb-room-path "/opt/homebrew/Caskroom/")
-
-
 (provide 'init-system)
-;;; init-macos.el ends here
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; init-system.el ends here
