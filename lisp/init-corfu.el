@@ -1,71 +1,76 @@
-;;; init-corfu.el --- Completion in buffers -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; init-corfu.el --- Completion in buffers -*- lexical-binding: t -*-
+;;
+;; Copyright (C) 2022-2023 Ilya Wang
+;;
+;; This file is not part of GNU Emacs.
+;;
+;; Commentary:
+;; Code:
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq tab-always-indent 'complete)
 
-
-(setq read-buffer-completion-ignore-case t)
-(setq read-file-name-completion-ignore-case t)
-
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Add extensions
-(use-package
- cape
- :init ;; Add `completion-at-point-functions', used by `completion-at-point'
- (add-to-list 'completion-at-point-functions #'cape-dict)
- (add-to-list 'completion-at-point-functions #'cape-file)
- (add-to-list 'completion-at-point-functions #'cape-dabbrev)
- :config ;; Setup `cape-dict-file'
- ;; (setq cape-dict-file
- ;;       (expand-file-name "dict/dict-en-utf8.txt" user-emacs-directory))
- )
+(use-package cape :ensure t
+  :config
+  (setq cape-dabbrev-min-length 5)
+  :hook
+  ((emacs-lisp-mode . (lambda ()
+                        (push 'cape-dabbrev completion-at-point-functions)
+                        (push 'cape-file completion-at-point-functions)
+                        (push 'cape-symbol completion-at-point-functions)
+                        (push 'cape-keyword completion-at-point-functions)))
+    (org-mode . (lambda ()
+                  (push 'cape-dabbrev completion-at-point-functions)
+                  (push 'cape-file completion-at-point-functions)
+                  (push 'cape-dict completion-at-point-functions)))))
 
-
-(use-package
- orderless
- :init
- (setq completion-styles '(orderless partial-completion basic))
- (setq completion-category-defaults nil)
- (setq completion-category-override nil))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Build the completion framework
+(use-package orderless :ensure t
+  :init
+  (setq completion-styles '(orderless basic))
+  (setq completion-category-defaults nil)
+  (setq completion-category-override nil)
 
-(use-package
- corfu
- :init (add-hook 'after-init-hook #'(lambda () (global-corfu-mode 1)))
- :config
+  (setq completion-cycle-threshold 5)
+  (setq completion-ignore-case t))
 
- ;; Load extensions
- (require 'corfu-history)
+(use-package corfu :ensure t
+  :init
+  (add-hook 'after-init-hook #'(lambda ()
+                                 (global-corfu-mode 1)))
+  :custom
+  (corfu-auto t)
+  (corfu-auto-delay 0)
+  (corfu-auto-prefix 2)
+  (corfu-cycle t)
+  (corfu-quit-at-boundary t)
+  (corfu-quit-no-match 'separator)
+  (corfu-preselect 'first)
+  
+  :config
+  (corfu-history-mode 1)
+  (corfu-popupinfo-mode 1)
+  :hook
+  (eshell-mode .  (lambda ()
+                    (setq-local corfu-auto nil)))
+  (org-mode . (lambda ()
+                (setq-local corfu-auto-delay 0)
+                (setq-local corfu-auto-prefix 1)
+                (setq-local completion-styles '(basic))))
+  :bind
+  (:map corfu-map
+    ("<down>" . corfu-next)
+    ("<up>" . corfu-previous)
+    ("<space>" . corfu-quit)
+    ("<escape>" . corfu-quit)))
 
- ;; Remember the latest choice
- (corfu-history-mode 1)
-
- (setq-default corfu-auto t)
- (setq-default corfu-auto-prefix 2)
- (setq-default corfu-cycle t)
- (setq-default corfu-quit-at-boundary t)
- (setq-default corfu-quit-no-match 'separator)
- (setq-default corfu-preselect 'prompt)
-
- (with-eval-after-load 'eshell
-   (add-hook 'eshell-mode-hook (lambda () (setq-local corfu-auto nil))))
-
- (with-eval-after-load 'org
-   ;; Aggressive completion, cheap prefix filtering
-   (add-hook
-    'org-mode-hook
-    (lambda ()
-      (setq-local corfu-auto-delay 0)
-      (setq-local corfu-auto-prefix 3)
-      (setq-local completion-styles '(basic)))))
- :bind
- (:map
-  corfu-map
-  ("<down>" . corfu-next)
-  ("<up>" . corfu-previous)
-  ("<tab>" . corfu-quit)
-  ("<escape>" . corfu-quit)))
-
-
 (provide 'init-corfu)
-;;; init-corfu.el ends here
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; init-corfu.el ends here

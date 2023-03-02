@@ -1,99 +1,78 @@
-;;; init-editing-utils.el --- Editing helpers -*- lexical-binding: t -*-
-;;; Commentary:
-
+;; init-editing-utils.el --- Editing helpers -*- lexical-binding: t -*-
+;;
+;; Copyright (C) 2022-2023 Ilya Wang
+;;
+;; This file is not part of GNU Emacs.
+;;
+;; Commentary:
+;;
 ;; This file is inspired by https://github.com/purcell/emacs.d/.
+;;
+;; Code:
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Smart parentheses
+(use-package smartparens
+  :ensure t
+  :config
+  (require 'smartparens-config)
+  :hook
+  ((after-init . smartparens-global-mode)))
 
-;;; Code:
-(when (fboundp 'electric-pair-mode)
-  (add-hook 'after-init-hook #'electric-pair-mode)
-  (add-hook 'after-init-hook #'electric-indent-mode))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Delete selection if you insert
+(use-package delsel
+  :hook
+  (after-init . delete-selection-mode))
 
-
-;; Some basic preferences
-(setq-default case-fold-search t)
-(setq-default create-lockfiles nil)
-(setq-default ediff-split-window-function 'split-window-horizontally)
-(setq-default auto-save-default nil)
-(setq-default make-backup-files nil)
-(setq-default mark-even-if-inactive nil)
-(setq-default mouse-yank-at-point t)
-(setq-default ring-bell-function 'ignore)
-(setq-default save-interprogram-paste-before-kill t)
-(setq-default save-silently t)
-(setq-default set-mark-command-repeat-pop t)
-(setq-default sentence-end-double-space nil)
-(setq-default truncate-lines nil)
-(setq-default truncate-partial-width-windows nil)
-(setq-default use-short-answers t)
-(setq-default help-window-select t)
+;; Smart deletion
+(use-package smart-hungry-delete
+  :ensure t
+  :init
+  (smart-hungry-delete-add-default-hooks)
+  :bind
+  (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
+	([remap delete-backward-char] . smart-hungry-delete-backward-char)
+	([remap delete-char] . smart-hungry-delete-forward-char)))
 
-
-;; Formatting files
-;; Add a new line in the end of buffer while saving
-(setq-default require-final-newline t)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Automatically reload files was modified by external program
+(use-package autorevert
+  :diminish (auto-revert-mode)
+  :hook
+  (after-init . global-auto-revert-mode))
 
-;; Formatting elisp buffers
-(use-package
- elisp-autofmt
- :custom
- (elisp-autofmt-on-save-p 'always)
- (elisp-autofmt-python-bin "/opt/homebrew/bin/python3")
- (elisp-autofmt-parallel-threshold 0) ; parallel computation for all buffers
- :commands (elisp-autofmt-mode elisp-autofmt-buffer)
- :hook (emacs-lisp-mode . elisp-autofmt-mode)
- :bind ((:map emacs-lisp-mode-map (("s-i" . elisp-autofmt-buffer)))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Framework for mode-specific buffer indexes
+(use-package imenu
+  :ensure nil
+  :bind
+  (("s-m" . imenu)))
 
-
-;; Enable the fundamental modes
-(add-hook 'after-init-hook #'delete-selection-mode)
-(add-hook 'after-init-hook #'global-auto-revert-mode)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Using rainbow delimiters
+(use-package rainbow-delimiters
+  :ensure t
+  :demand t
+  :hook
+  (prog-mode . rainbow-delimiters-mode))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Fill columns
-(setq-default fill-column 80)
-(when (boundp 'display-fill-column-indicator)
-  (setq-default display-fill-column-indicator-character ?\u254e)
-  (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode))
-
-;; Deleting
-(global-set-key (kbd "s-<backspace>") #'kill-whole-line)
-
-;; Newline behaviours
-(global-set-key (kbd "RET") #'newline-and-indent)
-
-;; The nano style for truncated long lines
-(setq auto-hscroll-mode 'current-line)
-;; Disable auto vertical scroll for tall lines
-(setq auto-window-vscroll nil)
+(setq display-fill-column-indicator-character ?\u254e)
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+
 ;; Display line numbers
-(when (fboundp 'display-line-numbers-mode)
-  (setq-default display-line-numbers-width 3)
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode))
-;; Enhance the performace of display
-(setq display-raw-bytes-as-hex t)
-(setq redisplay-skip-fontification-on-input t)
-
-;; Use rainbow delimiters
-(use-package
- rainbow-delimiters
- :demand t
- :config
- (add-hook 'prog-mode-hook #'(lambda () (rainbow-delimiters-mode 1))))
-
-;; Always show the pointer's position
-(setq-default make-pointer-invisible nil)
-;; Hide cursor in inactive windows
-(setq-default cursor-in-non-selected-windows nil)
-;; Preserve contents of system clipboard
-(setq-default save-interprogram-paste-before-kill t)
-
-;; Don't disable narrowing commands
-(put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
-(put 'narrow-to-defun 'disabled nil)
-;; Don't disable case-change functions
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-
+(setq-default display-line-numbers-width 3)
+(global-display-line-numbers-mode 1)
+
 (provide 'init-editing-utils)
-;;; init-editing-utils.el ends here
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; init-editing-utils.el ends here

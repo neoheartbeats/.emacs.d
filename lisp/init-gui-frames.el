@@ -25,10 +25,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Identity
-(use-package
- modus-themes
- :init (setq modus-themes-disable-other-themes t)
- :config (load-theme 'modus-vivendi t))
+(use-package modus-themes
+  :init
+  (setq modus-themes-disable-other-themes t)
+  :config
+  (load-theme 'modus-vivendi t))
 
 (setq frame-title-format '("Pes 􀄫 %b"))
 (setq icon-title-format frame-title-format)
@@ -54,17 +55,18 @@
 ;; Mode line settings
 ;;
 ;; The basic mode line pack
-(use-package
- minions
- :custom (minions-mode-line-lighter "􀌞")
- :config (minions-mode 1))
+(use-package minions :ensure t
+  :custom
+  (minions-mode-line-lighter "􀌞")
+  :config
+  (minions-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Pes Mono" :height 155)
+(set-face-attribute 'default nil :family "Pes Mono" :height 140)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
@@ -98,9 +100,9 @@ Selectively runs either `after-make-console-frame-hooks' or
 `after-make-window-system-frame-hooks'."
   (with-selected-frame frame
     (run-hooks
-     (if window-system
-         'after-make-window-system-frame-hooks
-       'after-make-console-frame-hooks))))
+      (if window-system
+        'after-make-window-system-frame-hooks
+        'after-make-console-frame-hooks))))
 
 (add-hook 'after-make-frame-functions #'run-after-make-frame-hooks)
 
@@ -110,10 +112,10 @@ Selectively runs either `after-make-console-frame-hooks' or
 (defconst pes-initial-frame (selected-frame)
   "The frame (if any) active during Emacs initialization.")
 (add-hook
- 'after-init-hook
- #'(lambda ()
-     (when pes-initial-frame
-       (run-after-make-frame-hooks pes-initial-frame))))
+  'after-init-hook
+  #'(lambda ()
+      (when pes-initial-frame
+        (run-after-make-frame-hooks pes-initial-frame))))
 (setq switch-to-buffer-obey-display-actions t)
 
 (provide 'init-gui-frames)
