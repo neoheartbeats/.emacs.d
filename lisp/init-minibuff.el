@@ -22,7 +22,7 @@
   ((:map vertico-map
      ("<tab>" . vertico-insert)
      ("<return>" . vertico-directory-enter)
-     ("<backspace>" . vertico-directory-delete-word))))
+     ("<backspace>" . vertico-directory-delete-char))))
 
 (use-package consult :ensure t
   :init
