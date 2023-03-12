@@ -59,5 +59,6 @@
 (require 'init-org)
 (require 'init-eglot)
 
-
-;;; init.el ends here
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; init.el ends here

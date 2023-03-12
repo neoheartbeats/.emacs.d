@@ -25,7 +25,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Identity
-(use-package modus-themes
+(use-package modus-themes :ensure t
   :init
   (setq modus-themes-disable-other-themes t)
   :config

@@ -127,19 +127,13 @@
 
   ;; Capture template for `org-roam-dailies'
   (setq org-roam-dailies-capture-templates
-    '(("d"
-        "default"
-        entry
-        "\n* %?"
+    '(("d" "default" entry "\n* %?"
         :target (file+head "%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d • %A>\n")
         :empty-lines 1)))
 
   ;; Default capture template for notes
   (setq org-roam-capture-templates
-    '(("d"
-        "default"
-        plain
-        "%?"
+    '(("d" "default" plain "%?"
         :target (file+head "notes/${slug}.org" "#+TITLE: ${title}\n")
         :empty-lines 1
         :unnarrowed t

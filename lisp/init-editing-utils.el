@@ -13,8 +13,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Smart parentheses
-(use-package smartparens
-  :ensure t
+(use-package smartparens :ensure t
   :config
   (require 'smartparens-config)
   :hook
@@ -28,8 +27,7 @@
   (after-init . delete-selection-mode))
 
 ;; Smart deletion
-(use-package smart-hungry-delete
-  :ensure t
+(use-package smart-hungry-delete :ensure t
   :init
   (smart-hungry-delete-add-default-hooks)
   :bind
@@ -49,7 +47,6 @@
 ;;
 ;; Framework for mode-specific buffer indexes
 (use-package imenu
-  :ensure nil
   :bind
   (("s-m" . imenu)))
 
@@ -70,7 +67,7 @@
 
 ;; Display line numbers
 (setq-default display-line-numbers-width 3)
-(global-display-line-numbers-mode 1)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
 (provide 'init-editing-utils)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-(use-package yasnippet
+(use-package yasnippet :ensure t
   :diminish (yas-minor-mode)
   :config
   (setq yas-snippet-dirs
