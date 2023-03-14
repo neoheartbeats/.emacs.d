@@ -11,6 +11,12 @@
 (use-package org
   :load-path "site-lisp/org-mode/lisp/")
 
+(use-package latex
+  :ensure auctex
+  :demand t)
+
+(use-package org-contrib :ensure t)
+
 (setq org-log-done t)
 (setq org-edit-timestamp-down-means-later t)
 (setq org-catch-invisible-edits 'show)
@@ -20,7 +26,6 @@
 (setq org-export-kill-product-buffer-when-displayed t)
 (setq org-tags-column 80)
 (setq org-fontify-whole-heading-line t)
-
 
 (setq org-directory pes-org-path)
 
@@ -52,7 +57,8 @@
   :hook
   (org-mode . (lambda ()
                 (setq prettify-symbols-alist
-                  '((":PROPERTIES:" . ?􀈣)
+                  '(
+                     (":PROPERTIES:" . ?􀈣)
                      (":ID:" . ?􀅳)
                      (":END:" . ?􀅽)
                      ("#+TITLE:" . ?􀎞)
@@ -107,7 +113,11 @@
      (shell . t)
      (emacs-lisp . t)
      (python . t)
+     (haskell . t)
      (latex . t)))
+
+;; Extensions
+(use-package haskell-mode :ensure t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -157,21 +167,21 @@
                   (save-buffer)
                   (goto-char (point-max)))))
 
-(setq-default org-latex-preview-default-process 'dvisvgm)
-(setq-default org-latex-preview-options
+(setq org-latex-preview-default-process 'dvisvgm)
+(setq org-latex-preview-options
   (progn
     (plist-put org-format-latex-options :background "Transparent")
-    (plist-put org-format-latex-options :scale 2.5)
+    (plist-put org-format-latex-options :scale 5.0)
     (plist-put org-format-latex-options :zoom 1.25)))
 
-
-(setq-default org-latex-packages-alist
-  '(("retain-explicit-decimal-marker=true" "siunitx" t)
+(setq org-latex-packages-alist
+  '(
+     ("" "siunitx" t)
      ("version=4" "mhchem" t)
-     ("" "upgreek" t)
-     ("" "mlmodern" t)))
+     ("" "mlmodern")))
 
-(setq-default org-latex-preview-header
+
+(setq org-latex-preview-preamble
   "\\documentclass{article}
 [DEFAULT-PACKAGES]
 [PACKAGES]
@@ -180,6 +190,19 @@
 \\newcommand{\\diff}{\\mathop{}\\!\\mathrm{d}}
 \\newcommand{\\Diff}{\\mathop{}\\!\\mathrm{D}}")
 
-
+(defun pes-preview-org-fragments ()
+  (interactive)
+  (org-display-inline-images)
+  (org-latex-preview))
+
+(bind-keys :map org-mode-map
+  ("s-p" . pes-preview-org-fragments))
+
+(use-package cdlatex :ensure t)
+
+(add-hook 'org-mode-hook #'turn-on-org-cdlatex)
+
 (provide 'init-org)
-;;; init-org.el ends here
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; init-org.el ends here

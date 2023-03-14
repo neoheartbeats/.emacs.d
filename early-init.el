@@ -54,9 +54,7 @@
 (setq native-comp-deferred-compilation nil) ; obsolete since 29.1
 (setq native-comp-jit-compilation nil)
 
-;; In noninteractive sessions, prioritize non-byte-compiled source files to
-;; prevent the use of stale byte-code
-(setq load-prefer-newer noninteractive)
+(setq load-prefer-newer t)
 
 ;; This must be set before loading `use-package'
 (setq use-package-enable-imenu-support t)

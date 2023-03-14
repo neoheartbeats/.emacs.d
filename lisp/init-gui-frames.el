@@ -66,7 +66,7 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Pes Mono" :height 140)
+(set-face-attribute 'default nil :family "Pes Mono" :height 145)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")

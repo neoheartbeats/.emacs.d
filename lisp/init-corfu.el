@@ -19,12 +19,10 @@
   (setq cape-dabbrev-min-length 5)
   :hook
   ((emacs-lisp-mode . (lambda ()
-                        (push 'cape-dabbrev completion-at-point-functions)
                         (push 'cape-file completion-at-point-functions)
                         (push 'cape-symbol completion-at-point-functions)
                         (push 'cape-keyword completion-at-point-functions)))
     (org-mode . (lambda ()
-                  (push 'cape-dabbrev completion-at-point-functions)
                   (push 'cape-file completion-at-point-functions)
                   (push 'cape-dict completion-at-point-functions)))))
 
