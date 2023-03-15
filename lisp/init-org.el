@@ -8,14 +8,7 @@
 ;; Code:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package org
-  :load-path "site-lisp/org-mode/lisp/")
-
-(use-package latex
-  :ensure auctex
-  :demand t)
-
-(use-package org-contrib :ensure t)
+(use-package org :ensure t)
 
 (setq org-log-done t)
 (setq org-edit-timestamp-down-means-later t)
@@ -113,11 +106,7 @@
      (shell . t)
      (emacs-lisp . t)
      (python . t)
-     (haskell . t)
      (latex . t)))
-
-;; Extensions
-(use-package haskell-mode :ensure t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -167,29 +156,6 @@
                   (save-buffer)
                   (goto-char (point-max)))))
 
-(setq org-latex-preview-default-process 'dvisvgm)
-(setq org-latex-preview-options
-  (progn
-    (plist-put org-format-latex-options :background "Transparent")
-    (plist-put org-format-latex-options :scale 5.0)
-    (plist-put org-format-latex-options :zoom 1.25)))
-
-(setq org-latex-packages-alist
-  '(
-     ("" "siunitx" t)
-     ("version=4" "mhchem" t)
-     ("" "mlmodern")))
-
-
-(setq org-latex-preview-preamble
-  "\\documentclass{article}
-[DEFAULT-PACKAGES]
-[PACKAGES]
-\\usepackage{xcolor}
-\\newcommand{\\vect}[1]{\\textit{\\textbf{#1}}}
-\\newcommand{\\diff}{\\mathop{}\\!\\mathrm{d}}
-\\newcommand{\\Diff}{\\mathop{}\\!\\mathrm{D}}")
-
 (defun pes-preview-org-fragments ()
   (interactive)
   (org-display-inline-images)
@@ -197,10 +163,6 @@
 
 (bind-keys :map org-mode-map
   ("s-p" . pes-preview-org-fragments))
-
-(use-package cdlatex :ensure t)
-
-(add-hook 'org-mode-hook #'turn-on-org-cdlatex)
 
 (provide 'init-org)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

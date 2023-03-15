@@ -28,8 +28,10 @@
 (use-package modus-themes :ensure t
   :init
   (setq modus-themes-disable-other-themes t)
+  (setq modus-themes-italic-constructs nil)
+  (setq modus-themes-bold-constructs nil)
   :config
-  (load-theme 'modus-vivendi t))
+  (load-theme 'modus-vivendi-tinted t))
 
 (setq frame-title-format '("Pes 􀄫 %b"))
 (setq icon-title-format frame-title-format)
