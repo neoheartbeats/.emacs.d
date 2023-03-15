@@ -28,8 +28,6 @@
 (use-package modus-themes :ensure t
   :init
   (setq modus-themes-disable-other-themes t)
-  (setq modus-themes-italic-constructs nil)
-  (setq modus-themes-bold-constructs nil)
   :config
   (load-theme 'modus-vivendi-tinted t))
 
@@ -86,39 +84,6 @@
 ;;
 ;; Stop showing fringe bitmaps
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Making frames
-(defvar after-make-console-frame-hooks '()
-  "Hooks to run after creating a new TTY frame.")
-
-(defvar after-make-window-system-frame-hooks '()
-  "Hooks to run after creating a new window-system frame.")
-
-(defun run-after-make-frame-hooks (frame)
-  "Run configured hooks in response to the newly-created FRAME.
-Selectively runs either `after-make-console-frame-hooks' or
-`after-make-window-system-frame-hooks'."
-  (with-selected-frame frame
-    (run-hooks
-      (if window-system
-        'after-make-window-system-frame-hooks
-        'after-make-console-frame-hooks))))
-
-(add-hook 'after-make-frame-functions #'run-after-make-frame-hooks)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; The initial frame
-(defconst pes-initial-frame (selected-frame)
-  "The frame (if any) active during Emacs initialization.")
-(add-hook
-  'after-init-hook
-  #'(lambda ()
-      (when pes-initial-frame
-        (run-after-make-frame-hooks pes-initial-frame))))
-(setq switch-to-buffer-obey-display-actions t)
 
 (provide 'init-gui-frames)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -20,13 +20,9 @@
 
 (defvar pes-logo "../resources/2A317673-5ACF-4C0D-94D9-0D27D3808800.png")
 
-(defvar pes-home-path "/Users/ilyaw39/")
+(defvar pes-def-path "/Users/ilyaw39/")
 (defvar pes-dev-path "/Users/ilyaw39/Developer/")
-(defvar pes-org-path "/Users/ilyaw39/Developer/LutwidgeTown/")
-
-;; Homebrew specified path
-(defvar pes-hb-bin-path "/opt/homebrew/bin/")
-(defvar pes-hb-room-path "/opt/homebrew/Caskroom/")
+(defvar pes-org-path "/Users/ilyaw39/.org/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

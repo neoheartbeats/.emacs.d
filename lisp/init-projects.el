@@ -14,13 +14,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Git client Magit
-(use-package magit :ensure t
-  :defer t
+(use-package magit :ensure t :defer t
   :custom
   (magit-diff-refine-hunk t)
   (magit-section-visibility-indicator nil) ; disable showing the bitmap indicators
-  :bind
-  (("C-x g" . magit-status)))
+  :bind ("C-x g" . magit-status))
 
 (provide 'init-projects)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -46,13 +46,12 @@
 ;;
 ;; Fix PATH
 (use-package exec-path-from-shell :ensure t
-  :init
-  (exec-path-from-shell-initialize))
+  :init (exec-path-from-shell-initialize))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Increase how much is read from processes (default is 4kb)
-(setq read-process-output-max #x10000) ; 64kb
+(setq read-process-output-max #x10000)
 
 ;; Don't ping things that look like domain names
 (setq ffap-machine-p-known 'reject)
@@ -65,7 +64,8 @@
   :diminish (gcmh-mode)
   :hook (emacs-startup . gcmh-mode)
   :custom
-  ((gcmh-idle-delay 'auto)
+  (
+  	(gcmh-idle-delay 'auto)
     (gcmh-auto-idle-delay-factor 10)
     (gcmh-high-cons-threshold most-positive-fixnum)))
 
@@ -75,27 +75,18 @@
 (set-charset-priority 'unicode)
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
-
 (setq locale-coding-system 'utf-8)
 (setq system-time-locale "C")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Better compatibilities
-(use-package compat :ensure t :demand t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Locate position history
 (use-package saveplace
-  :hook
-  (after-init . save-place-mode))
+  :hook (after-init . save-place-mode))
 
 (use-package savehist
-  :init
-  (setq history-length 1500)
-  :hook
-  (after-init . savehist-mode))
+  :init (setq history-length 1500)
+  :hook (after-init . savehist-mode))
 
 (use-package emacs
   :init
@@ -200,9 +191,9 @@
 (setq mouse-wheel-scroll-amount '(1
                                    ((shift) . 5)
                                    ((control))))
-
-(add-hook 'after-init-hook #'(lambda ()
-                               (pixel-scroll-precision-mode 1)))
+                                   
+(when (fboundp 'pixel-scroll-precision-mode)
+  (add-hook 'after-init-hook #'pixel-scroll-precision-mode))
 
 ;; Disable auto copying
 (setq mouse-drag-copy-region nil)

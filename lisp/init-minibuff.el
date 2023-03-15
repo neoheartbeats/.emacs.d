@@ -3,10 +3,9 @@
 ;;; Code:
 
 (use-package vertico :ensure t
-  :init
-  (vertico-mode)
+  :init (vertico-mode)
   :config
-
+  
   ;; Load extensions
   (require 'vertico-directory)
 
@@ -34,27 +33,27 @@
     [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
   (global-set-key [remap goto-line] 'consult-goto-line)
   :bind
-  (("C-s" . consult-line)
+  (
+  	("C-s" . consult-line)
     ("M-s" . consult-ripgrep)))
 
 (use-package embark :ensure t
   :init
   (setq prefix-help-command #'embark-prefix-help-command)
   :bind
-  (("M-." . embark-dwim)
+  (
+  	("M-." . embark-dwim)
     ("C-h b" . embark-bindings)))
 
 (use-package embark-consult :ensure t
   :after (embark consult)
-  :hook
-  (embark-collect-mode-hook . consult-preview-at-point-mode))
+  :hook (embark-collect-mode-hook . consult-preview-at-point-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Enable rich annotations
 (use-package marginalia :ensure t
-  :init
-  (marginalia-mode 1))
+  :init (marginalia-mode 1))
 
 (provide 'init-minibuff)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

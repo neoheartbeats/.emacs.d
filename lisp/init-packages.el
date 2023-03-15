@@ -19,10 +19,11 @@
 ;;
 ;; Standard package repos
 (setq package-archives
-  '(("elpa" . "https://elpa.gnu.org/packages/")
-     ("elpa-devel" . "https://elpa.gnu.org/devel/")
-     ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-     ("melpa" . "https://melpa.org/packages/")))
+  '(
+  	("elpa" . "https://elpa.gnu.org/packages/")
+    ("elpa-devel" . "https://elpa.gnu.org/devel/")
+    ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+    ("melpa" . "https://melpa.org/packages/")))
 
 ;; Initialize packages
 (unless (bound-and-true-p package--initialized)
@@ -32,7 +33,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Setup `use-package'
-;;
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
 ;; Should set before loading `use-package'
 (eval-and-compile
   (setq use-package-expand-minimally t)
@@ -42,15 +46,10 @@
   (require 'use-package))
 
 ;; These are required by `use-package'
-(use-package diminish
-  :ensure t
-  :demand t)
-(use-package bind-key
-  :ensure t
-  :demand t)
+(use-package diminish :ensure t :demand t)
+(use-package bind-key :ensure t :demand t)
 
 (provide 'init-packages)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-packages.el ends here

@@ -12,12 +12,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Smart parentheses
-(use-package smartparens :ensure t
-  :config
-  (require 'smartparens-config)
-  :hook
-  ((after-init . smartparens-global-mode)))
+;; Electric parentheses
+(when (fboundp 'electric-pair-mode)
+  (add-hook 'after-init-hook #'electric-pair-mode))
+(add-hook 'after-init-hook #'electric-indent-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -53,9 +51,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Using rainbow delimiters
-(use-package rainbow-delimiters
-  :ensure t
-  :demand t
+(use-package rainbow-delimiters :ensure t :demand t
   :hook
   (prog-mode . rainbow-delimiters-mode))
 

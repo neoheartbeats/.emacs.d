@@ -42,11 +42,10 @@
   (org-modern-list '((?- . "•")))
   (org-modern-checkbox '((?X . "􀃠") (?- . "􀃞") (?\s . "􀂒")))
   (org-modern-block-name '(("src" . ("􀓪" "􀅽"))))
-  (org-modern-table-vertical 1)
+  (org-modern-table-vertical 2)
   (org-modern-block-fringe nil)
   (org-modern-keyword nil)
-  :config
-  (global-org-modern-mode 1)
+  :config (global-org-modern-mode 1)
   :hook
   (org-mode . (lambda ()
                 (setq prettify-symbols-alist
@@ -79,6 +78,14 @@
 ;;
 ;; Org fragments
 (setq org-image-actual-width '(300))
+
+(defun pes-preview-org-fragments ()
+  (interactive)
+  (org-display-inline-images)
+  (org-latex-preview))
+
+(bind-keys :map org-mode-map
+  ("s-p" . pes-preview-org-fragments))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -157,14 +164,6 @@
                   (org-roam-dailies-goto-today)
                   (save-buffer)
                   (goto-char (point-max)))))
-
-(defun pes-preview-org-fragments ()
-  (interactive)
-  (org-display-inline-images)
-  (org-latex-preview))
-
-(bind-keys :map org-mode-map
-  ("s-p" . pes-preview-org-fragments))
 
 (provide 'init-org)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
