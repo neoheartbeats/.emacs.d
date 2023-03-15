@@ -23,34 +23,46 @@
        :image-input-type "dvi"
        :image-output-type "svg"
        :image-size-adjust (1.7 . 1.5)
-       :latex-compiler ("latex -interaction nonstopmode -output-directory %o %f")
-       :image-converter ("dvisvgm %f -e -j -n -b 3 -c %S -o %O"))))
+       :latex-compiler
+       ("latex -interaction nonstopmode -output-directory %o %f")
+       :image-converter
+       ("dvisvgm %f --no-fonts --exact-bbox --scale=%S --output=%O"))))
 
 
 ;;; Match the text baseline of an LaTeX fragment to the surrounding text
-(defun my/org--latex-header-preview (orig &rest args)
-  "Setup dedicated `org-format-latex-header' to `my/org--match-text-baseline-ascent'."
+(defun pes-org--latex-header-preview (orig &rest args)
+  "Setup dedicated `org-format-latex-header' to `pes-org--match-text-baseline-ascent'."
   (let ((org-format-latex-header
           "\\documentclass[preview]{standalone}
 \\usepackage[usenames]{color}
-\\renewcommand{\\geq}{\\geqslant}
-\\renewcommand{\\leq}{\\leqslant}
 \\newcommand{\\vect}[1]{\\textit{\\textbf{#1}}}
 \\newcommand{\\diff}{\\mathop{}\\!\\mathrm{d}}
 \\newcommand{\\Diff}{\\mathop{}\\!\\mathrm{D}}
-[PACKAGES]
-[DEFAULT-PACKAGES]"))
+[DEFAULT-PACKAGES]
+[PACKAGES]"))
     (apply orig args)))
 
-(defun my/org--match-text-baseline-ascent (imagefile)
+(defun pes-org--match-text-baseline-ascent (imagefile)
   "Set `:ascent' to match the text baseline of an image to the surrounding text.
 Calculate `ascent' with the data collected in IMAGEFILE."
-  (advice-add 'org-create-formula-image :around #'my/org--latex-header-preview)
+  (advice-add 'org-create-formula-image :around #'pes-org--latex-header-preview)
   (let* ((viewbox (split-string
                     (xml-get-attribute (car (xml-parse-file imagefile)) 'viewBox)))
-          (min-y (string-to-number (nth 1 viewbox)))
+          (depth (string-to-number (nth 1 viewbox)))
           (height (string-to-number (nth 3 viewbox)))
-          (ascent (round (* -100 (/ min-y height)))))
+          ;; The baseline seems to tend to sit slightly
+          ;; lower than it should be, and a very mild
+          ;; bias seems to improve the visual result.
+          ;; From testing with a collecting of LaTeX
+          ;; maths fonts (cm, cmbright, arev, pxfonts,
+          ;; notomath, nextxsf, eulervm) decreacing the
+          ;; depth measurement by 0.02pt in the baseline
+          ;; calculation seems to work well.
+          ;; I have yet to come across any situation
+          ;; where this results in a negative depth,
+          ;; however we may as well ensure that never
+          ;; occurs.
+          (ascent (round (* -100 (/ (max 0.0 (- depth 0.02) height))))))
     (if (or (< ascent 0) (>= ascent 100))
       'center
       ascent)))
@@ -61,7 +73,7 @@ Argument IMAGETYPE is the extension of the displayed image,
 as a string.  It defaults to \"png\"."
   (let ((ov (make-overlay beg end))
 	     (imagetype (or (intern imagetype) 'png)))
-    (let ((ascent (my/org--match-text-baseline-ascent image)))
+    (let ((ascent (pes-org--match-text-baseline-ascent image)))
       (overlay-put ov 'org-overlay-type 'org-latex-overlay)
       (overlay-put ov 'evaporate t)
       (overlay-put ov
@@ -84,7 +96,8 @@ as a string.  It defaults to \"png\"."
 
 ;; Ensure LaTeX fragments can be displayed correctly on dark backgrounds
 (setq org-format-latex-options
-  '( :foreground default
+  '(
+     :foreground default
      :background "Transparent"
      :scale 1.65
      :html-foreground default

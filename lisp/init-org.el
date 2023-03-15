@@ -92,8 +92,10 @@
 ;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Load languages
-
+;;
 ;; Org source code blocks
 (setq-default org-confirm-babel-evaluate nil)
 (setq-default org-src-preserve-indentation t)
