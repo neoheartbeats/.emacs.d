@@ -33,9 +33,6 @@
 ;;
 ;; Modern Org Mode
 (use-package org-modern :ensure t
-  :init
-  (setq org-ellipsis " 􀍠")
-  (setq org-hide-emphasis-markers t)
   :custom
   (org-modern-star '("􀄩"))
   (org-modern-hide-stars "􀄩")
@@ -59,6 +56,8 @@
                      ("SCHEDULED:" . ?􀧞)
                      ("CLOSED:" .?􁜒)))
                 (prettify-symbols-mode 1))))
+
+(setq org-ellipsis " 􀍠")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -126,7 +125,6 @@
 
 (use-package org-roam :ensure t
   :config
-  (setq org-roam-database-connector 'sqlite-builtin)
   (setq org-roam-db-location (expand-file-name "org-roam.db" org-directory))
   (setq org-roam-directory org-directory)
   (setq org-roam-dailies-directory "dates/")

@@ -26,10 +26,8 @@
 ;;
 ;; Identity
 (use-package modus-themes :ensure t
-  :init
-  (setq modus-themes-disable-other-themes t)
-  :config
-  (load-theme 'modus-vivendi-tinted t))
+  :init (setq modus-themes-disable-other-themes t)
+  :config (load-theme 'modus-vivendi t))
 
 (setq frame-title-format '("Pes 􀄫 %b"))
 (setq icon-title-format frame-title-format)
@@ -56,10 +54,8 @@
 ;;
 ;; The basic mode line pack
 (use-package minions :ensure t
-  :custom
-  (minions-mode-line-lighter "􀌞")
-  :config
-  (minions-mode 1))
+  :custom (minions-mode-line-lighter "􀌞")
+  :config (minions-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -70,9 +66,13 @@
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
 
 (set-face-attribute 'italic nil :slant 'normal)
+
+;; Font ligatures support
+(when (fboundp 'mac-auto-operator-composition-mode)
+  (add-hook 'after-init-hook #'mac-auto-operator-composition-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

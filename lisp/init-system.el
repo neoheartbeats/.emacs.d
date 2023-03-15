@@ -202,7 +202,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Built-in Sqlite support
-(use-package emacsql-sqlite-builtin :ensure t :demand t)
+;; (use-package emacsql-sqlite-builtin :ensure t :demand t)
 
 (provide 'init-system)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
