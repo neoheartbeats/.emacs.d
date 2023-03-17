@@ -58,6 +58,10 @@
   \\mathop{}\\!\\partial\\,%
 }%
 
+\\NewDocumentCommand{\\ddiff}{ O{} }{%
+  \\mathop{}\\!\\Delta\\,%
+}%
+
 \\NewDocumentCommand{\\vect}{ m }{%
   \\textit{\\textbf{#1}}}%
 }%
@@ -94,9 +98,11 @@ Calculate `ascent' with the data collected in IMAGEFILE."
   "Build an overlay between BEG and END using IMAGE file.
 Argument IMAGETYPE is the extension of the displayed image,
 as a string.  It defaults to \"png\"."
-  (let ((ov (make-overlay beg end))
+  (let (
+         (ov (make-overlay beg end))
 	     (imagetype (or (intern imagetype) 'png)))
-    (let ((ascent (pes-org--match-text-baseline-ascent image)))
+    (let (
+           (ascent (pes-org--match-text-baseline-ascent image)))
       (overlay-put ov 'org-overlay-type 'org-latex-overlay)
       (overlay-put ov 'evaporate t)
       (overlay-put ov
@@ -127,7 +133,7 @@ as a string.  It defaults to \"png\"."
   '(
      :foreground default
      :background "Transparent"
-     :scale 1.20
+     :scale 1.55
      :html-foreground default
      :html-background "Transparent"
      :html-scale 1.2

@@ -8,11 +8,10 @@
 ;; Code:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (use-package treesit-auto :ensure t
-;;   :config
-;;   (global-treesit-auto-mode 1))
-;; 
-;; (provide 'init-eglot)
+(use-package treesit-auto :ensure t
+  :config (global-treesit-auto-mode 1))
+ 
+(provide 'init-eglot)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-eglot.el ends here
