@@ -1,4 +1,4 @@
-;;; init.el --- Load the full configuration -*- lexical-binding: t -*-
+;; init.el --- Load the full configuration -*- lexical-binding: t -*-
 ;;
 ;; Copyright (C) 2022-2023 Ilya Wang
 ;;

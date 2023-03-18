@@ -66,7 +66,7 @@
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
 
 (set-face-attribute 'italic nil :slant 'normal)
 

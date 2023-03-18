@@ -58,12 +58,15 @@
   \\mathop{}\\!\\partial\\,%
 }%
 
-\\NewDocumentCommand{\\ddiff}{ O{} }{%
-  \\mathop{}\\!\\Delta\\,%
-}%
-
 \\NewDocumentCommand{\\vect}{ m }{%
   \\textit{\\textbf{#1}}}%
+
+\\NewDocumentCommand{\\PE}{ O{} }{%
+  E_{\\text{p}}%
+}%
+
+\\NewDocumentCommand{\\KE}{ O{} }{%
+  E_{\\text{k}}%
 }%
 "))
     (apply orig args)))
@@ -123,8 +126,7 @@ as a string.  It defaults to \"png\"."
      ("" "xparse" t)
      ("" "upgreek")
      ("" "bm" t)
-     ("version=4" "mhchem" t)
-     ("" "mlmodern" t)))
+     ("version=4" "mhchem" t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
