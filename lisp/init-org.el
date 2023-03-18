@@ -8,7 +8,8 @@
 ;; Code:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package org :ensure t)
+(use-package org
+  :load-path "site-lisp/org-mode/lisp/")
 
 (setq org-log-done t)
 (setq org-edit-timestamp-down-means-later t)
@@ -162,6 +163,70 @@
                   (org-roam-dailies-goto-today)
                   (save-buffer)
                   (goto-char (point-max)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Better LaTeX editor for Org mode
+(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
+
+(use-package cdlatex :ensure t
+  :hook
+  (
+    (LaTeX-mode . turn-on-cdlatex)
+    (org-mode . turn-on-org-cdlatex)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Org LaTeX customizations
+(setq-default org-preview-latex-default-process 'dvisvgm)
+(setq-default org-latex-preview-options
+  (progn
+    (plist-put org-format-latex-options :background "Transparent")
+    (plist-put org-format-latex-options :scale 6.9)
+    (plist-put org-format-latex-options :zoom 1.15)))
+
+(setq-default org-latex-default-packages-alist nil)
+
+(setq org-latex-packages-alist
+  '(
+     ("T1" "fontenc" t)
+     ("" "amsmath" t)
+     ("" "mathtools" t)
+     ("" "siunitx" t)
+     ("" "xparse" t)
+     ("" "upgreek")
+     ("version=4" "mhchem" t)
+     ("" "mlmodern" t)))
+
+
+(setq org-latex-preview-preamble
+  "\\documentclass{article}
+[DEFAULT-PACKAGES]
+[PACKAGES]
+\\usepackage{xcolor}
+
+\\NewDocumentCommand{\\grad}{ O{} }{%
+  \\mathop{}\\!\\nabla_{\\IfValueT{#1}{#1}}\\,%
+}%
+
+\\NewDocumentCommand{\\diff}{ O{} }{%
+  \\mathop{}\\!\\mathrm{d}\\,%
+}%
+
+\\NewDocumentCommand{\\pdiff}{ O{} }{%
+  \\mathop{}\\!\\partial\\,%
+}%
+
+\\NewDocumentCommand{\\vect}{ m }{%
+  \\textit{\\textbf{#1}}}%
+\\NewDocumentCommand{\\PE}{ O{} }{%
+  E_{\\mathrm{p}}%
+}%
+
+\\NewDocumentCommand{\\KE}{ O{} }{%
+  E_{\\mathrm{k}}%
+}%
+")
 
 (provide 'init-org)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
