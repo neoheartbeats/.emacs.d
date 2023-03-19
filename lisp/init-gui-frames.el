@@ -62,23 +62,18 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Pes Mono" :height 145)
+(set-face-attribute 'default nil :family "Source Code Pro" :height 145)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 (set-face-attribute 'italic nil :slant 'normal)
-
-;; Font ligatures support
-(when (fboundp 'mac-auto-operator-composition-mode)
-  (add-hook 'after-init-hook #'mac-auto-operator-composition-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Default startup message
-(defun display-startup-echo-area-message ()
-  (message ""))
+(defun display-startup-echo-area-message () (message ""))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

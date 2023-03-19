@@ -196,7 +196,7 @@
      ("" "xparse" t)
      ("" "upgreek")
      ("version=4" "mhchem" t)
-     ("" "mlmodern" t)))
+     ("" "kpfonts" t)))
 
 
 (setq org-latex-preview-preamble
@@ -204,25 +204,9 @@
 [DEFAULT-PACKAGES]
 [PACKAGES]
 \\usepackage{xcolor}
-
-\\NewDocumentCommand{\\grad}{ O{} }{%
-  \\mathop{}\\!\\nabla_{\\IfValueT{#1}{#1}}\\,%
-}%
-
-\\NewDocumentCommand{\\diff}{ O{} }{%
-  \\mathop{}\\!\\mathrm{d}\\,%
-}%
-
-\\NewDocumentCommand{\\pdiff}{ O{} }{%
-  \\mathop{}\\!\\partial\\,%
-}%
-
-\\NewDocumentCommand{\\vect}{ m }{%
-  \\textit{\\textbf{#1}}}%
 \\NewDocumentCommand{\\PE}{ O{} }{%
   E_{\\mathrm{p}}%
 }%
-
 \\NewDocumentCommand{\\KE}{ O{} }{%
   E_{\\mathrm{k}}%
 }%

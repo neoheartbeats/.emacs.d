@@ -6,8 +6,8 @@
 ;;
 ;; Commentary:
 ;;
-;; This file bootstraps the configuration, which is divided into
-;; number of other files.
+;; This file bootstraps the configuration.
+;;
 ;; This file is inspired by `https://github.com/purcell/emacs.d/'.
 ;;
 ;; Code:
