@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: int
-# key: int
-# --
-\\int\\,$1\\diff{$2}$0

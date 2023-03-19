@@ -1,16 +1,0 @@
-# -*- mode: snippet -*-
-# name: inith
-# key: inith
-# --
-;; init-$1.el --- $2 -*- lexical-binding: t -*-
-;;
-;; Copyright (C) 2022-2023 Ilya Wang
-;;
-;; This file is not part of GNU Emacs.
-;;
-;; Commentary:$3
-;; Code:
-$0
-
-(provide 'init-$1)
-;; init-$1.el ends here

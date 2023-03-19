@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: img
-# key: img
-# --
-#+ATTR_ORG: :width $1
-[[/Users/ilyaw39/Developer/LutwidgeTown/repos/$2]]
-$0

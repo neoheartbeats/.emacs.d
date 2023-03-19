@@ -8,55 +8,46 @@
 ;; Code:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package org
-  :load-path "site-lisp/org-mode/lisp/")
-
-(setq org-log-done t)
-(setq org-edit-timestamp-down-means-later t)
-(setq org-catch-invisible-edits 'show)
 (setq org-export-coding-system 'utf-8)
 (setq org-fast-tag-selection-single-key 'expert)
-(setq org-html-validation-link nil)
 (setq org-export-kill-product-buffer-when-displayed t)
-(setq org-tags-column 80)
 (setq org-fontify-whole-heading-line t)
 
-(setq org-directory pes-org-path)
+(setq org-directory "/Users/ilyaw39/credits/")
 
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
 (bind-keys :map org-mode-map
-  ("C-c l" . org-store-link)
-  ("C-c a" . org-agenda))
+           ("C-c l" . org-store-link))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modern Org Mode
-(use-package org-modern :ensure t
-  :custom
-  (org-modern-star '("􀄩"))
-  (org-modern-hide-stars "􀄩")
-  (org-modern-list '((?- . "•")))
-  (org-modern-checkbox '((?X . "􀃠") (?- . "􀃞") (?\s . "􀂒")))
-  (org-modern-block-name '(("src" . ("􀓪" "􀅽"))))
-  (org-modern-table-vertical 2)
-  (org-modern-block-fringe nil)
-  (org-modern-keyword nil)
-  :config (global-org-modern-mode 1)
-  :hook
-  (org-mode . (lambda ()
-                (setq prettify-symbols-alist
-                  '(
-                     (":PROPERTIES:" . ?􀈣)
-                     (":ID:" . ?􀅳)
-                     (":END:" . ?􀅽)
-                     ("#+TITLE:" . ?􀎞)
-                     ("#+RESULTS:" . ?􀆀)
-                     ("#+ATTR_ORG:" . ?􀣋)
-                     ("SCHEDULED:" . ?􀧞)
-                     ("CLOSED:" .?􁜒)))
-                (prettify-symbols-mode 1))))
+(use-package org-modern :straight t
+  :init
+  (setq org-modern-star '("􀄩"))
+  (setq org-modern-hide-stars "􀄩")
+  (setq org-modern-list '((?- . "•")))
+  (setq org-modern-checkbox '((?X . "􀃠") (?- . "􀃞") (?\s . "􀂒")))
+  (setq org-modern-block-name '(("SRC" . ("􀓪" "􀅽"))))
+  (setq org-modern-table-vertical 2)
+  (setq org-modern-block-fringe nil)
+  (setq org-modern-keyword nil)
+  :config (global-org-modern-mode 1))
+
+(defun pes-iconify-org-buffer ()
+  (progn
+    (push '(":PROPERTIES:" . ?􀈣) prettify-symbols-alist)
+    (push '(":ID:" . ?􀅳) prettify-symbols-alist)
+    (push '(":END:" . ?􀅽) prettify-symbols-alist)
+    (push '("#+TITLE:" . ?􀎞) prettify-symbols-alist)
+    (push '("#+RESULTS:" . ?􀆀)prettify-symbols-alist)
+    (push '("#+ATTR_ORG:" . ?􀣋) prettify-symbols-alist)
+    (push '("SCHEDULED:" . ?􀧞) prettify-symbols-alist)
+    (push '("CLOSED:" .?􁜒) prettify-symbols-alist)))
+
+(add-hook 'org-mode-hook #'pes-iconify-org-buffer)
 
 (setq org-ellipsis " 􀍠")
 
@@ -85,7 +76,7 @@
   (org-latex-preview))
 
 (bind-keys :map org-mode-map
-  ("s-p" . pes-preview-org-fragments))
+           ("s-p" . pes-preview-org-fragments))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -94,7 +85,7 @@
 (setq org-link-elisp-confirm-function nil)
 
 (setq-default org-link-frame-setup ; Open files in current frame
-  (cl-acons 'file #'find-file org-link-frame-setup))
+              (cl-acons 'file #'find-file org-link-frame-setup))
 
 ;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
@@ -111,20 +102,20 @@
 (setq-default org-edit-src-content-indentation 0)
 
 (org-babel-do-load-languages 'org-babel-load-languages
-  '(
-     (shell . t)
-     (emacs-lisp . t)
-     (python . t)
-     (latex . t)))
+                             '((shell . t)
+                               (emacs-lisp . t)
+                               (python . t)
+                               (latex . t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org mode text edition
-;;
-;; Number of empty lines needed to keep an empty line between collapsed trees
-(setq-default org-cycle-separator-lines 2)
-
-(use-package org-roam :ensure t
+(use-package org-roam
+  :straight (org-roam
+             :type git
+             :host github
+             :repo "org-roam/org-roam"
+             :files (:defaults "extensions/*"))
   :config
   (setq org-roam-db-location (expand-file-name "org-roam.db" org-directory))
   (setq org-roam-directory org-directory)
@@ -134,101 +125,76 @@
 
   ;; Capture template for `org-roam-dailies'
   (setq org-roam-dailies-capture-templates
-    '(("d" "default" entry "\n* %?"
-        :target (file+head "%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d • %A>\n")
-        :empty-lines 1)))
+        '(("d" "default" entry "\n* %?"
+           :target (file+head
+                    "%<%Y-%m-%d>.org"
+                    "#+TITLE: %<%Y-%m-%d 􀙬>\n")
+           :empty-lines 1)))
 
   ;; Default capture template for notes
   (setq org-roam-capture-templates
-    '(("d" "default" plain "%?"
-        :target (file+head "notes/${slug}.org" "#+TITLE: ${title}\n")
-        :empty-lines 1
-        :unnarrowed t
-        :immediate-finish t)))
+        '(("d" "default" plain "%?"
+           :target (file+head
+                    "notes/${slug}.org"
+                    "#+TITLE: ${title}\n")
+           :empty-lines 1
+           :unnarrowed t
+           :immediate-finish t)))
 
   (org-roam-db-autosync-mode 1)
-
-  (global-unset-key (kbd "s-n"))
-  (define-key global-map (kbd "s-n j") 'org-roam-dailies-goto-today)
-
-  (define-key org-mode-map (kbd "s-n i") 'org-roam-node-insert)
-  (define-key org-mode-map (kbd "s-n a") 'org-roam-alias-add)
-  (define-key org-mode-map (kbd "s-n f") 'org-roam-node-find)
-
-  (define-key org-mode-map (kbd "s-<up>") 'org-roam-dailies-goto-previous-note)
-  (define-key org-mode-map (kbd "s-<down>") 'org-roam-dailies-goto-next-note)
-  :hook
-  (after-init . (lambda ()
-                  (interactive)
-                  (org-roam-dailies-goto-today)
-                  (save-buffer)
-                  (goto-char (point-max)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Better LaTeX editor for Org mode
-(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
-
-(use-package cdlatex :ensure t
-  :hook
+  :bind
   (
-    (LaTeX-mode . turn-on-cdlatex)
-    (org-mode . turn-on-org-cdlatex)))
+   :map global-map
+   (("s-n" . org-roam-dailies-goto-today))
+   :map org-mode-map
+   (("s-i" . org-roam-node-insert)
+    ("s-f" . org-roam-node-find)
+    ("s-a" . org-roam-alias-add)
+    ("s-<up>" . org-roam-dailies-goto-previous-note)
+    ("s-<down>" . org-roam-dailies-goto-next-note)))
+  :hook
+  (org-roam-dailies-find-file . (lambda ()
+                                  (save-buffer)
+                                  (goto-char (point-max))))
+  (after-init . org-roam-dailies-goto-today))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org LaTeX customizations
 (setq-default org-preview-latex-default-process 'dvisvgm)
 (setq-default org-latex-preview-options
-  (progn
-    (plist-put org-format-latex-options :background "Transparent")
-    (plist-put org-format-latex-options :scale 6.9)
-    (plist-put org-format-latex-options :zoom 1.15)))
-
-(setq-default org-latex-default-packages-alist nil)
+              (progn
+                (plist-put org-format-latex-options :background "Transparent")
+                (plist-put org-format-latex-options :scale 5.0)
+                (plist-put org-format-latex-options :zoom 1.25)))
 
 (setq org-latex-packages-alist
-  '(
-     ("T1" "fontenc" t)
-     ("" "amsmath" t)
-     ("" "mathtools" t)
-     ("" "siunitx" t)
-     ("" "xparse" t)
-     ("" "upgreek")
-     ("version=4" "mhchem" t)
-     ("" "mlmodern" t)))
-
+      '(("T1" "fontenc" t)
+        ("version=4" "mhchem" t)
+        ("" "xparse" t)
+        ("" "amsmath" t)
+        ("" "mathtools" t)
+        ("" "siunitx" t)
+        ("" "physics2" t)
+        ("" "kpfonts" t)))
 
 (setq org-latex-preview-preamble
-  "\\documentclass{article}
+      "\\documentclass{article}
 [DEFAULT-PACKAGES]
 [PACKAGES]
 \\usepackage{xcolor}
-
-\\NewDocumentCommand{\\grad}{ O{} }{%
-  \\mathop{}\\!\\nabla_{\\IfValueT{#1}{#1}}\\,%
-}%
-
-\\NewDocumentCommand{\\diff}{ O{} }{%
-  \\mathop{}\\!\\mathrm{d}\\,%
-}%
-
-\\NewDocumentCommand{\\pdiff}{ O{} }{%
-  \\mathop{}\\!\\partial\\,%
-}%
-
-\\NewDocumentCommand{\\vect}{ m }{%
-  \\textit{\\textbf{#1}}}%
 \\NewDocumentCommand{\\PE}{ O{} }{%
   E_{\\mathrm{p}}%
 }%
-
 \\NewDocumentCommand{\\KE}{ O{} }{%
   E_{\\mathrm{k}}%
 }%
+\\usephysicsmodule{ab,ab.braket}%
 ")
 
+
 (provide 'init-org)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-org.el ends here

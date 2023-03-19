@@ -18,24 +18,31 @@
 (setq-default cursor-in-non-selected-windows nil)
 (setq highlight-nonselected-windows nil)
 
-(setq fast-but-imprecise-scrolling t)
 (setq frame-resize-pixelwise t)
-(setq redisplay-skip-fontification-on-input t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Identity
-(use-package modus-themes :ensure t
-  :init (setq modus-themes-disable-other-themes t)
+;; Themes
+(use-package modus-themes :straight t
+  :init  
+  (setq modus-themes-common-palette-overrides
+        '((border-mode-line-active unspecified)
+          (border-mode-line-inactive unspecified)))
   :config (load-theme 'modus-vivendi t))
 
-(setq frame-title-format '("Pes 􀄫 %b"))
-(setq icon-title-format frame-title-format)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Clean up the title bar content
+(setq-default frame-title-format nil)
+(setq-default ns-use-proxy-icon nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Customize faces
-(set-face-attribute 'button nil :underline "#959595" :foreground 'unspecified)
+(set-face-attribute 'button nil
+                    :underline "#959595"
+                    :foreground 'unspecified)
+
 (set-face-attribute 'link nil :foreground 'unspecified)
 
 (set-face-attribute 'fill-column-indicator nil :height 0.15)
@@ -45,16 +52,15 @@
 ;; Cursor faces
 (setq-default blink-cursor-mode nil)
 (setq-default cursor-type '(bar . 1))
-
-(set-cursor-color "#ff5f59")
+(set-cursor-color "#ff66ff")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Mode line settings
 ;;
 ;; The basic mode line pack
-(use-package minions :ensure t
-  :custom (minions-mode-line-lighter "􀌞")
+(use-package minions :straight t
+  :custom (minions-mode-line-lighter "􀐘")
   :config (minions-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -62,30 +68,33 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Pes Mono" :height 145)
+(set-face-attribute 'default nil :family "Source Code Pro" :height 140)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "HarmonyOS Sans SC")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 (set-face-attribute 'italic nil :slant 'normal)
 
-;; Font ligatures support
-(when (fboundp 'mac-auto-operator-composition-mode)
-  (add-hook 'after-init-hook #'mac-auto-operator-composition-mode))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Use icons
+(global-prettify-symbols-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-  (message ""))
+  (message "􀪾 Funding for this program was made possible by viewers like you."))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Stop showing fringe bitmaps
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
 
+
 (provide 'init-gui-frames)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-gui-frames.el ends here
