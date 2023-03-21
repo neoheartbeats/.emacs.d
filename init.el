@@ -18,10 +18,7 @@
 ;;
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
-
 (setq max-lisp-eval-depth 10000)
-
-;; Don't pass case-insensitive to `auto-mode-alist'
 (setq auto-mode-case-fold nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -35,16 +32,16 @@
   "Update `load-path'."
   (dolist (subdirs '("lisp/"))
     (push (expand-file-name subdirs user-emacs-directory) load-path)))
-
 (advice-add #'package-initialize :after #'pes-update-load-path)
-
 (pes-update-load-path)
+
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(require 'init-packages)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Load essential components
-(require 'init-custom)
-(require 'init-packages)
+;; Site packages
+(use-package org :load-path "site-lisp/org-mode/lisp/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -58,7 +55,6 @@
 (require 'init-projects)
 (require 'init-org)
 (require 'init-eglot)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init.el ends here

@@ -24,14 +24,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Identity
+;; Themes
 (use-package modus-themes :ensure t
   :init (setq modus-themes-disable-other-themes t)
   :config (load-theme 'modus-vivendi t))
 
-(setq frame-title-format '("Pes 􀄫 %b"))
-(setq icon-title-format frame-title-format)
-
+(setq-default frame-title-format nil)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Customize faces
@@ -54,7 +52,7 @@
 ;;
 ;; The basic mode line pack
 (use-package minions :ensure t
-  :custom (minions-mode-line-lighter "􀌞")
+  :custom (minions-mode-line-lighter "􀐘")
   :config (minions-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -62,7 +60,7 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Source Code Pro" :height 145)
+(set-face-attribute 'default nil :family "Pes Mono" :height 140)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")

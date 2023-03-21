@@ -8,20 +8,12 @@
 ;; Code:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package org
-  :load-path "site-lisp/org-mode/lisp/")
-
-(setq org-log-done t)
-(setq org-edit-timestamp-down-means-later t)
-(setq org-catch-invisible-edits 'show)
 (setq org-export-coding-system 'utf-8)
 (setq org-fast-tag-selection-single-key 'expert)
-(setq org-html-validation-link nil)
 (setq org-export-kill-product-buffer-when-displayed t)
-(setq org-tags-column 80)
 (setq org-fontify-whole-heading-line t)
 
-(setq org-directory pes-org-path)
+(setq org-directory "/Users/ilyaw39/Developer/PesBook/")
 
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
@@ -120,16 +112,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org mode text edition
-;;
-;; Number of empty lines needed to keep an empty line between collapsed trees
-(setq-default org-cycle-separator-lines 2)
-
 (use-package org-roam :ensure t
   :config
   (setq org-roam-db-location (expand-file-name "org-roam.db" org-directory))
   (setq org-roam-directory org-directory)
   (setq org-roam-dailies-directory "dates/")
   (setq org-roam-completion-everywhere t)
+  (setq org-roam-node-display-template "${TITLE:*}")
   (setq org-roam-db-gc-threshold most-positive-fixnum)
 
   ;; Capture template for `org-roam-dailies'
@@ -182,8 +171,8 @@
 (setq-default org-latex-preview-options
   (progn
     (plist-put org-format-latex-options :background "Transparent")
-    (plist-put org-format-latex-options :scale 6.9)
-    (plist-put org-format-latex-options :zoom 1.15)))
+    (plist-put org-format-latex-options :scale 5.0)
+    (plist-put org-format-latex-options :zoom 1.25)))
 
 (setq-default org-latex-default-packages-alist nil)
 

@@ -20,10 +20,10 @@
 ;; Standard package repos
 (setq package-archives
   '(
-  	("elpa" . "https://elpa.gnu.org/packages/")
-    ("elpa-devel" . "https://elpa.gnu.org/devel/")
-    ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-    ("melpa" . "https://melpa.org/packages/")))
+  	 ("elpa" . "https://elpa.gnu.org/packages/")
+     ("elpa-devel" . "https://elpa.gnu.org/devel/")
+     ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+     ("melpa" . "https://melpa.org/packages/")))
 
 ;; Initialize packages
 (unless (bound-and-true-p package--initialized)

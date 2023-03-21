@@ -12,16 +12,6 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgroup pes nil
-  "Pes Emacs distribution."
-  :group 'convenience
-  :link '(url-link :tag "Homepage" "https://github.com/ilyaw39/.emacs.d"))
-
-
-(defvar pes-logo "../resources/2A317673-5ACF-4C0D-94D9-0D27D3808800.png")
-
-(defvar pes-def-path "/Users/ilyaw39/")
-(defvar pes-dev-path "/Users/ilyaw39/Developer/")
 (defvar pes-org-path "/Users/ilyaw39/.org/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

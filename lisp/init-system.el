@@ -41,13 +41,6 @@
   ("C-c C-c". eval-buffer))
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Fix PATH
-(use-package exec-path-from-shell :ensure t
-  :init (exec-path-from-shell-initialize))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Increase how much is read from processes (default is 4kb)
@@ -61,7 +54,6 @@
 ;;
 ;; Garbage Collector Magic Hack
 (use-package gcmh :ensure t
-  :diminish (gcmh-mode)
   :hook (emacs-startup . gcmh-mode)
   :custom
   (
@@ -118,7 +110,6 @@
 ;; Misc options
 (setq use-short-answers t)
 (setq delete-by-moving-to-trash t)
-(setq dired-use-ls-dired nil)
 
 (setq-default auto-hscroll-mode 'current-line)
 (setq-default auto-save-default nil)
@@ -135,14 +126,11 @@
 (setq-default truncate-partial-width-windows nil)
 (setq-default help-window-select t)
 (setq-default xref-search-program 'ripgrep)
-
-(setq-default major-mode 'org-mode)
 (setq-default fill-column 80)
 (setq-default tab-width 4)
 (setq-default lisp-indent-offset 2)
 (setq-default indent-tabs-mode nil)
 (setq-default require-final-newline t)
-
 (setq-default inhibit-compacting-font-caches t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
