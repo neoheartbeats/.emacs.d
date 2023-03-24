@@ -13,19 +13,21 @@
 (setq org-export-kill-product-buffer-when-displayed t)
 (setq org-fontify-whole-heading-line t)
 
-(setq org-directory "/Users/ilyaw39/Developer/PesBook/")
+(setq org-directory "/Users/ilyaw39/Developer/SlipBox/")
 
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
-(bind-keys :map org-mode-map
+(bind-keys
+  :map org-mode-map
   ("C-c l" . org-store-link)
   ("C-c a" . org-agenda))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modern Org Mode
-(use-package org-modern :ensure t
+(use-package org-modern
+  :straight t
   :custom
   (org-modern-star '("􀄩"))
   (org-modern-hide-stars "􀄩")
@@ -76,7 +78,8 @@
   (org-display-inline-images)
   (org-latex-preview))
 
-(bind-keys :map org-mode-map
+(bind-keys
+  :map org-mode-map
   ("s-p" . pes-preview-org-fragments))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -112,40 +115,53 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org mode text edition
-(use-package org-roam :ensure t
+(use-package org-roam
+  :straight (org-roam
+              :type git
+              :host github
+              :repo "org-roam/org-roam"
+              :files (:defaults "extensions/*"))
   :config
   (setq org-roam-db-location (expand-file-name "org-roam.db" org-directory))
   (setq org-roam-directory org-directory)
   (setq org-roam-dailies-directory "dates/")
   (setq org-roam-completion-everywhere t)
-  (setq org-roam-node-display-template "${TITLE:*}")
   (setq org-roam-db-gc-threshold most-positive-fixnum)
 
   ;; Capture template for `org-roam-dailies'
   (setq org-roam-dailies-capture-templates
-    '(("d" "default" entry "\n* %?"
-        :target (file+head "%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d • %A>\n")
-        :empty-lines 1)))
+    '(
+       ("d" "default" entry "\n* %?"
+         :target (file+head
+                   "%<%Y-%m-%d>.org"
+                   "#+TITLE: %<%Y-%m-%d 􀙬>\n")
+         :empty-lines 1)))
 
   ;; Default capture template for notes
   (setq org-roam-capture-templates
-    '(("d" "default" plain "%?"
-        :target (file+head "notes/${slug}.org" "#+TITLE: ${title}\n")
-        :empty-lines 1
-        :unnarrowed t
-        :immediate-finish t)))
+    '(
+       ("d" "default" plain "%?"
+         :target (file+head
+                   "notes/${slug}.org"
+                   "#+TITLE: ${title}\n")
+         :empty-lines 1
+         :unnarrowed t
+         :immediate-finish t)))
 
   (org-roam-db-autosync-mode 1)
-
-  (global-unset-key (kbd "s-n"))
-  (define-key global-map (kbd "s-n j") 'org-roam-dailies-goto-today)
-
-  (define-key org-mode-map (kbd "s-n i") 'org-roam-node-insert)
-  (define-key org-mode-map (kbd "s-n a") 'org-roam-alias-add)
-  (define-key org-mode-map (kbd "s-n f") 'org-roam-node-find)
-
-  (define-key org-mode-map (kbd "s-<up>") 'org-roam-dailies-goto-previous-note)
-  (define-key org-mode-map (kbd "s-<down>") 'org-roam-dailies-goto-next-note)
+  :bind
+  (
+    :map global-map
+    (
+      ("C-c n j" . org-roam-dailies-goto-today))
+    :map org-mode-map
+    (
+      ("C-c n i" . org-roam-node-insert)
+      ("C-c n f" . org-roam-node-find)
+      ("C-c n a" . org-roam-alias-add)
+      
+      ("s-<up>" . org-roam-dailies-goto-previous-note)
+      ("s-<down>" . org-roam-dailies-goto-next-note)))
   :hook
   (after-init . (lambda ()
                   (interactive)
@@ -156,9 +172,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Better LaTeX editor for Org mode
-(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
-
-(use-package cdlatex :ensure t
+(use-package cdlatex
+  :straight t
   :hook
   (
     (LaTeX-mode . turn-on-cdlatex)
@@ -201,7 +216,9 @@
 }%
 ")
 
+
 (provide 'init-org)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-org.el ends here

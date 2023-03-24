@@ -23,7 +23,7 @@
   :hook (after-init . delete-selection-mode))
 
 ;; Smart deletion
-(use-package smart-hungry-delete :ensure t
+(use-package smart-hungry-delete :straight t
   :init
   (smart-hungry-delete-add-default-hooks)
   :bind
@@ -48,7 +48,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Using rainbow delimiters
-(use-package rainbow-delimiters :ensure t :demand t
+(use-package rainbow-delimiters :straight t :demand t
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -62,7 +62,9 @@
 (setq-default display-line-numbers-width 3)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
+
 (provide 'init-editing-utils)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-editing-utils.el ends here

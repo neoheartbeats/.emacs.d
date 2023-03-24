@@ -53,7 +53,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Garbage Collector Magic Hack
-(use-package gcmh :ensure t
+(use-package gcmh :straight t
   :hook (emacs-startup . gcmh-mode)
   :custom
   (
@@ -190,7 +190,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Built-in Sqlite support
-(use-package emacsql-sqlite-builtin :ensure t :demand t)
+(use-package emacsql-sqlite-builtin :straight t :demand t)
 
 (provide 'init-system)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

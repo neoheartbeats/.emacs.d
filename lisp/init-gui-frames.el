@@ -25,20 +25,34 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Themes
-(use-package modus-themes :ensure t
-  :init (setq modus-themes-disable-other-themes t)
+(use-package modus-themes
+  :straight t
+  :init
+  (setq modus-themes-disable-other-themes t)
+  
+  ;; Remove the border for Mode line
+  (setq modus-themes-common-palette-overrides
+    '(
+       (border-mode-line-active unspecified)
+       (border-mode-line-inactive unspecified)))
   :config (load-theme 'modus-vivendi t))
 
 (setq-default frame-title-format nil)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Customize faces
-(set-face-attribute 'button nil :underline "#959595" :foreground 'unspecified)
-(set-face-attribute 'link nil :foreground 'unspecified)
+(set-face-attribute 'button nil
+  :underline "#959595"
+  :foreground 'unspecified)
 
-(set-face-attribute 'fill-column-indicator nil :height 0.15)
+(set-face-attribute 'link nil
+  :foreground 'unspecified)
 
-(set-face-background 'fringe (face-attribute 'default :background))
+(set-face-attribute 'fill-column-indicator nil
+  :height 0.15)
+
+(set-face-background 'fringe (face-attribute 'default
+                               :background))
 
 ;; Cursor faces
 (setq-default blink-cursor-mode nil)
@@ -51,7 +65,8 @@
 ;; Mode line settings
 ;;
 ;; The basic mode line pack
-(use-package minions :ensure t
+(use-package minions
+  :straight t
   :custom (minions-mode-line-lighter "􀐘")
   :config (minions-mode 1))
 
@@ -60,25 +75,32 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Pes Mono" :height 140)
+(set-face-attribute 'default nil
+  :family "Pes Mono"
+  :height 140)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
-(set-face-attribute 'italic nil :slant 'normal)
+(set-face-attribute 'italic nil
+  :slant 'normal)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Default startup message
-(defun display-startup-echo-area-message () (message ""))
+(defun display-startup-echo-area-message ()
+  (message ""))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Stop showing fringe bitmaps
-(setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
+(setf (cdr (assq 'continuation fringe-indicator-alist))
+  '(nil nil))
+
 
 (provide 'init-gui-frames)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-gui-frames.el ends here

@@ -13,14 +13,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Add extensions
-(use-package cape :ensure t
-  :config
-  (setq cape-dabbrev-min-length 5)
+(use-package cape
+  :straight t
+  :config (setq cape-dabbrev-min-length 5)
   :hook
-  ((emacs-lisp-mode . (lambda ()
-                        (push 'cape-file completion-at-point-functions)
-                        (push 'cape-symbol completion-at-point-functions)
-                        (push 'cape-keyword completion-at-point-functions)))
+  (
+    (emacs-lisp-mode . (lambda ()
+                         (push 'cape-file completion-at-point-functions)
+                         (push 'cape-symbol completion-at-point-functions)
+                         (push 'cape-keyword completion-at-point-functions)))
     (org-mode . (lambda ()
                   (push 'cape-file completion-at-point-functions)
                   (push 'cape-dict completion-at-point-functions)))))
@@ -28,16 +29,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Build the completion framework
-(use-package orderless :ensure t
+(use-package orderless
+  :straight t
   :init
   (setq completion-styles '(orderless basic))
   (setq completion-category-defaults nil)
   (setq completion-category-override nil)
-
   (setq completion-cycle-threshold 5)
   (setq completion-ignore-case t))
 
-(use-package corfu :ensure t
+(use-package corfu
+  :straight (:files (:defaults "extensions/*"))
   :init
   (add-hook 'after-init-hook #'(lambda ()
                                  (global-corfu-mode 1)))
@@ -61,13 +63,16 @@
                 (setq-local corfu-auto-prefix 1)
                 (setq-local completion-styles '(basic))))
   :bind
-  (:map corfu-map
+  (
+    :map corfu-map
     ("<down>" . corfu-next)
     ("<up>" . corfu-previous)
     ("<space>" . corfu-quit)
     ("<escape>" . corfu-quit)))
 
+
 (provide 'init-corfu)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-corfu.el ends here
