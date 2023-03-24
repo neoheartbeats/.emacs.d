@@ -118,7 +118,6 @@
   (setq org-roam-directory org-directory)
   (setq org-roam-dailies-directory "dates/")
   (setq org-roam-completion-everywhere t)
-  (setq org-roam-node-display-template "${TITLE:*}")
   (setq org-roam-db-gc-threshold most-positive-fixnum)
 
   ;; Capture template for `org-roam-dailies'

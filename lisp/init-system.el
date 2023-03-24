@@ -179,7 +179,7 @@
 (setq mouse-wheel-scroll-amount '(1
                                    ((shift) . 5)
                                    ((control))))
-                                   
+
 (when (fboundp 'pixel-scroll-precision-mode)
   (add-hook 'after-init-hook #'pixel-scroll-precision-mode))
 
