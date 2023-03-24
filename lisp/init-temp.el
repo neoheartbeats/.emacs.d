@@ -1,17 +1,37 @@
-;;; init-temp.el --- Configure Tempel -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
+;; init-comp.el ---  Modern template system -*- lexical-binding: t -*-
+;;
+;; Copyright (C) 2022-2023 Ilya Wang
+;;
+;; This file is not part of GNU Emacs.
+;;
+;; Commentary:
+;; Code:
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Configure Tempel
+(use-package tempel
+  :straight t
+  :bind
+  (
+    ("s-." . tempel-expand)
+    ("s-/" . tempel-insert))
+  :init
 
-
-(use-package yasnippet :straight t
-  :diminish (yas-minor-mode)
+  ;; Setup completion at point
+  (defun tempel-setup-capf ()
+    "Add the Tempel Capf to `completion-at-point-functions'."
+    (setq-local completion-at-point-functions
+      (cons #'tempel-expand
+        completion-at-point-functions)))
+
+  (add-hook 'org-mode-hook #'tempel-setup-capf)
   :config
-  (setq yas-snippet-dirs
-        (list (expand-file-name "snippets/" user-emacs-directory)))
-  (setq yas-triggers-in-field t)
-  (setq yas-visit-from-menu t)
-  (yas-global-mode 1))
+  (setq tempel-path "/Users/ilyaw39/.emacs.d/temp.eld"))
 
-
+
 (provide 'init-temp)
-;;; init-temp ends here
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; init-temp ends here

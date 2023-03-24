@@ -25,19 +25,25 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Themes
-(use-package modus-themes
+;; (use-package modus-themes
+;;   :straight t
+;;   :init
+;;   (setq modus-themes-disable-other-themes t)
+;;  
+;;   ;; Remove the border for Mode line
+;;   (setq modus-themes-common-palette-overrides
+;;     '(
+;;        (border-mode-line-active unspecified)
+;;        (border-mode-line-inactive unspecified)))
+;;   :config (load-theme 'modus-vivendi t))
+
+(use-package ef-themes
   :straight t
-  :init
-  (setq modus-themes-disable-other-themes t)
-  
-  ;; Remove the border for Mode line
-  (setq modus-themes-common-palette-overrides
-    '(
-       (border-mode-line-active unspecified)
-       (border-mode-line-inactive unspecified)))
-  :config (load-theme 'modus-vivendi t))
+  :init (mapc #'disable-theme custom-enabled-themes)
+  :config (load-theme 'ef-bio :no-confirm))
 
 (setq-default frame-title-format nil)
+(setq-default ns-use-proxy-icon nil)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Customize faces
@@ -57,8 +63,6 @@
 ;; Cursor faces
 (setq-default blink-cursor-mode nil)
 (setq-default cursor-type '(bar . 1))
-
-(set-cursor-color "#ff5f59")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

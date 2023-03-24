@@ -41,6 +41,12 @@
   ("C-c C-c". eval-buffer))
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Disable these keys
+(global-unset-key (kbd "<pinch>"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Increase how much is read from processes (default is 4kb)
@@ -53,7 +59,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Garbage Collector Magic Hack
-(use-package gcmh :straight t
+(use-package gcmh
+  :straight t
   :hook (emacs-startup . gcmh-mode)
   :custom
   (
@@ -65,10 +72,14 @@
 ;;
 ;; Set UTF-8 as the default coding system
 (set-charset-priority 'unicode)
+(set-default-coding-systems 'utf-8)
 (set-selection-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-clipboard-coding-system 'utf-8)
+(set-file-name-coding-system 'utf-8)
+(set-buffer-file-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 (setq locale-coding-system 'utf-8)
-(setq system-time-locale "C")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -89,7 +100,8 @@
               crm-separator)
             (car args))
       (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+  (advice-add #'completing-read-multiple
+    :filter-args #'crm-indicator)
 
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
@@ -157,13 +169,9 @@
     (indent-region (point-min) (point-max) nil)
     (save-buffer)))
 
-(defun pes-find-init-file ()
-  (interactive)
-  (find-file (expand-file-name "init.el" user-emacs-directory)))
-
-(bind-keys :map global-map
-  ("C-x k" . delete-current-file)
-  ("<f12>" . pes-find-init-file))
+(bind-keys
+  :map global-map
+  ("C-x k" . delete-current-file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -171,28 +179,39 @@
 ;;
 ;; Smoother and nicer scrolling
 (setq scroll-step 1)
-(setq scroll-conservatively 15)
+(setq scroll-conservatively 105)
 (setq scroll-margin 15)
+(setq scroll-up-aggressively 0.01)
+(setq scroll-down-aggressively 0.01)
 (setq scroll-preserve-screen-position 'always)
 (setq mouse-wheel-follow-mouse t)
 (setq mouse-wheel-progressive-speed t)
-(setq mouse-wheel-scroll-amount '(1
-                                   ((shift) . 5)
-                                   ((control))))
+(setq auto-window-vscroll nil)
 
-(when (fboundp 'pixel-scroll-precision-mode)
-  (add-hook 'after-init-hook #'pixel-scroll-precision-mode))
+(add-hook 'after-init-hook #'pixel-scroll-precision-mode)
 
 ;; Disable auto copying
 (setq mouse-drag-copy-region nil)
+(setq select-enable-primary nil)
+(setq select-enable-clipboard t)
 (setq search-default-mode 'char-fold-to-regexp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Clipboard
+(setq kill-ring-max 250)
+(setq kill-do-not-save-duplicates t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Built-in Sqlite support
-(use-package emacsql-sqlite-builtin :straight t :demand t)
+(use-package emacsql-sqlite-builtin
+  :straight t
+  :demand t)
+
 
 (provide 'init-system)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-system.el ends here

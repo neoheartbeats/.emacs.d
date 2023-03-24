@@ -171,16 +171,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Better LaTeX editor for Org mode
-(use-package cdlatex
-  :straight t
-  :hook
-  (
-    (LaTeX-mode . turn-on-cdlatex)
-    (org-mode . turn-on-org-cdlatex)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Org LaTeX customizations
 (setq-default org-preview-latex-default-process 'dvisvgm)
 (setq-default org-latex-preview-options

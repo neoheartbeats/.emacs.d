@@ -22,16 +22,6 @@
 (use-package delsel
   :hook (after-init . delete-selection-mode))
 
-;; Smart deletion
-(use-package smart-hungry-delete :straight t
-  :init
-  (smart-hungry-delete-add-default-hooks)
-  :bind
-  (
-    ([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
-	([remap delete-backward-char] . smart-hungry-delete-backward-char)
-	([remap delete-char] . smart-hungry-delete-forward-char)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Automatically reload files was modified by external program

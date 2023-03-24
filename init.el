@@ -30,7 +30,7 @@
 ;;
 ;; Load path
 ;;
-;; Force `lisp' and `site-lisp' at head to reduce the startup time
+;; Force `lisp' at head to reduce the startup time
 (defun pes-update-load-path (&rest _)
   "Update `load-path'."
   (dolist (subdirs '("lisp/"))
@@ -86,10 +86,9 @@
 (require 'init-system)
 (require 'init-gui-frames)
 (require 'init-editing-utils)
-(require 'init-minibuff)
-(require 'init-corfu)
-(require 'init-temp)
 (require 'init-projects)
+(require 'init-comp)
+(require 'init-temp)
 (require 'init-org)
 (require 'init-eglot)
 
