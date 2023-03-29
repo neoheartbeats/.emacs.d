@@ -80,7 +80,7 @@
 ;;
 ;; Main typeface
 (set-face-attribute 'default nil
-  :family "Pes Mono"
+  :family "M PLUS 1 Code"
   :height 140)
 
 ;; Font settings

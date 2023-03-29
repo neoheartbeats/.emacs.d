@@ -24,6 +24,13 @@
 ;; Fix the error while installing `straight.el'
 (defvar native-comp-deferred-compilation-deny-list nil)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Setup network
+(setq url-gateway-method 'socks)
+(setq socks-server '("Default server" "127.0.0.1" 1081 5))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Bootstrap process
@@ -51,8 +58,7 @@
                        :repo "https://git.tecosaur.net/tec/org-mode.git"
                        :branch "dev"
                        :remote "tecosaur")
-               :files (
-                        :defaults "etc")
+               :files (:defaults "etc")
                :build t
                :pre-build
                (with-temp-file "org-version.el"
