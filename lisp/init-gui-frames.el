@@ -25,22 +25,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Themes
-;; (use-package modus-themes
-;;   :straight t
-;;   :init
-;;   (setq modus-themes-disable-other-themes t)
-;;  
-;;   ;; Remove the border for Mode line
-;;   (setq modus-themes-common-palette-overrides
-;;     '(
-;;        (border-mode-line-active unspecified)
-;;        (border-mode-line-inactive unspecified)))
-;;   :config (load-theme 'modus-vivendi t))
-
-(use-package ef-themes
+(use-package modus-themes
   :straight t
-  :init (mapc #'disable-theme custom-enabled-themes)
-  :config (load-theme 'ef-bio :no-confirm))
+  :init
+  (setq modus-themes-disable-other-themes t)
+  
+  ;; Remove the border for Mode line
+  (setq modus-themes-common-palette-overrides
+    '(
+       (border-mode-line-active unspecified)
+       (border-mode-line-inactive unspecified)))
+  :config (load-theme 'modus-vivendi t))
 
 (setq-default frame-title-format nil)
 (setq-default ns-use-proxy-icon nil)
@@ -80,7 +75,7 @@
 ;;
 ;; Main typeface
 (set-face-attribute 'default nil
-  :family "M PLUS 1 Code"
+  :family "Source Code Pro"
   :height 140)
 
 ;; Font settings

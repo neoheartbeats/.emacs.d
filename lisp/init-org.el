@@ -78,8 +78,7 @@
   (org-display-inline-images)
   (org-latex-preview))
 
-(bind-keys
-  :map org-mode-map
+(bind-keys :map org-mode-map
   ("s-p" . pes-preview-org-fragments))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -188,7 +187,6 @@
      ("" "mathtools" t)
      ("" "siunitx" t)
      ("" "xparse" t)
-     ("" "upgreek")
      ("version=4" "mhchem" t)
      ("" "kpfonts" t)))
 

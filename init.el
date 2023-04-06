@@ -24,7 +24,6 @@
 ;; Fix the error while installing `straight.el'
 (defvar native-comp-deferred-compilation-deny-list nil)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Setup network
