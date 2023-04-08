@@ -24,7 +24,8 @@
      ("<return>" . vertico-directory-enter)
      ("<backspace>" . vertico-directory-delete-char))))
 
-(use-package consult :straight t
+(use-package consult
+  :straight t
   :init
   (global-set-key (kbd "s-b") 'switch-to-buffer)
   (global-set-key [remap switch-to-buffer] 'consult-buffer)
@@ -38,7 +39,8 @@
   	("C-s" . consult-line)
     ("M-s" . consult-ripgrep)))
 
-(use-package embark :straight t
+(use-package embark
+  :straight t
   :init
   (setq prefix-help-command #'embark-prefix-help-command)
   :bind
@@ -46,14 +48,16 @@
   	("M-." . embark-dwim)
     ("C-h b" . embark-bindings)))
 
-(use-package embark-consult :straight t
+(use-package embark-consult
+  :straight t
   :after (embark consult)
   :hook (embark-collect-mode-hook . consult-preview-at-point-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Enable rich annotations
-(use-package marginalia :straight t
+(use-package marginalia
+  :straight t
   :init (marginalia-mode 1))
 
 (provide 'init-minibuff)

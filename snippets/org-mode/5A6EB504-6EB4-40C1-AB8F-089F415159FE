@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: pp
-# key: pp
-# --
-\\frac{\\partial $1}{\\partial $0}

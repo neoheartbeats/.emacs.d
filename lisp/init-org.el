@@ -13,7 +13,7 @@
 (setq org-export-kill-product-buffer-when-displayed t)
 (setq org-fontify-whole-heading-line t)
 
-(setq org-directory "/Users/ilyaw39/Developer/SlipBox/")
+(setq org-directory "/Users/ilyaw39/FlandreRecords/")
 
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
@@ -105,8 +105,7 @@
 (setq-default org-edit-src-content-indentation 0)
 
 (org-babel-do-load-languages 'org-babel-load-languages
-  '(
-     (shell . t)
+  '((shell . t)
      (emacs-lisp . t)
      (python . t)
      (latex . t)))
@@ -185,8 +184,9 @@
      ("T1" "fontenc" t)
      ("" "amsmath" t)
      ("" "mathtools" t)
-     ("" "siunitx" t)
      ("" "xparse" t)
+     ("" "siunitx" t)
+     ("" "physics2" t)
      ("version=4" "mhchem" t)
      ("" "kpfonts" t)))
 

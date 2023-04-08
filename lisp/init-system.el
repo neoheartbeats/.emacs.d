@@ -141,6 +141,7 @@
 (setq-default fill-column 80)
 (setq-default tab-width 4)
 (setq-default lisp-indent-offset 2)
+(setq-default lisp-indent-function nil)
 (setq-default indent-tabs-mode nil)
 (setq-default require-final-newline t)
 (setq-default inhibit-compacting-font-caches t)

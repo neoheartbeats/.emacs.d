@@ -75,8 +75,8 @@
 ;;
 ;; Main typeface
 (set-face-attribute 'default nil
-  :family "Source Code Pro"
-  :height 140)
+  :family "Flandre fonts"
+  :height 150)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
@@ -84,6 +84,17 @@
 
 (set-face-attribute 'italic nil
   :slant 'normal)
+
+;; Support font ligatures
+(use-package ligature
+  :straight t
+  :config
+  (ligature-set-ligatures t
+    '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->" "<---->" "<!--"
+       "<==" "<===" "<=" "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
+       "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "===" "!=="
+       ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:" "<******>" "++" "+++"))
+  (global-ligature-mode t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

@@ -38,19 +38,31 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Using rainbow delimiters
-(use-package rainbow-delimiters :straight t :demand t
+(use-package rainbow-delimiters
+  :straight t
+  :demand t
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Fill columns
 (setq display-fill-column-indicator-character ?\u254e)
-(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
-(add-hook 'org-mode-hook #'display-fill-column-indicator-mode)
+(global-display-fill-column-indicator-mode 1)
 
 ;; Display line numbers
 (setq-default display-line-numbers-width 3)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Auto formatting elisp code
+(use-package elisp-autofmt
+  :straight t
+  :demand t
+  :init
+  (setq elisp-autofmt-python-bin "python3")
+  :config
+  (setq elisp-autofmt-style 'native))
 
 
 (provide 'init-editing-utils)
