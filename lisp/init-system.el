@@ -17,28 +17,28 @@
 (setq mac-command-modifier 'super)
 
 (bind-keys
-  ([(super a)] . mark-whole-buffer)
-  ([(super c)] . kill-ring-save)
-  ([(super i)] . indent-current-buffer)
-  ([(super l)] . goto-line)
-  ([(super q)] . save-buffers-kill-emacs)
-  ([(super s)] . save-buffer)
-  ([(super v)] . yank)
-  ([(super w)] . kill-current-buffer)
-  ([(super e)] . delete-window)
-  ([(super z)] . undo)
-  ([(super f)] . find-file))
+ ([(super a)] . mark-whole-buffer)
+ ([(super c)] . kill-ring-save)
+ ([(super i)] . indent-current-buffer)
+ ([(super l)] . goto-line)
+ ([(super q)] . save-buffers-kill-emacs)
+ ([(super s)] . save-buffer)
+ ([(super v)] . yank)
+ ([(super w)] . kill-current-buffer)
+ ([(super e)] . delete-window)
+ ([(super z)] . undo)
+ ([(super d)] . find-file))
 
 (bind-keys :map global-map
-  ("s-1" . delete-other-windows)
-  ("s-2" . split-window-below)
-  ("s-3" . split-window-right)
-  ("s-<backspace>" . kill-whole-line)
-  ("<s-right>" . switch-to-next-buffer)
-  ("<s-left>" . switch-to-prev-buffer))
+           ("s-1" . delete-other-windows)
+           ("s-2" . split-window-below)
+           ("s-3" . split-window-right)
+           ("s-<backspace>" . kill-whole-line)
+           ("<s-right>" . switch-to-next-buffer)
+           ("<s-left>" . switch-to-prev-buffer))
 
 (bind-keys :map emacs-lisp-mode-map
-  ("C-c C-c". eval-buffer))
+           ("C-c C-c". eval-buffer))
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
@@ -62,11 +62,10 @@
 (use-package gcmh
   :straight t
   :hook (emacs-startup . gcmh-mode)
-  :custom
-  (
-  	(gcmh-idle-delay 'auto)
-    (gcmh-auto-idle-delay-factor 10)
-    (gcmh-high-cons-threshold most-positive-fixnum)))
+  :config
+  (setq gcmh-idle-delay 'auto)
+  (setq gcmh-auto-idle-delay-factor 10)
+  (setq gcmh-high-cons-threshold most-positive-fixnum))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -84,28 +83,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Locate position history
-(use-package saveplace
-  :hook (after-init . save-place-mode))
-
-(use-package savehist
-  :init (setq history-length 1500)
-  :hook (after-init . savehist-mode))
+(use-package saveplace :config (save-place-mode 1))
 
 (use-package emacs
   :init
   (defun crm-indicator (args)
     (cons (format "[CRM%s] %s"
-            (replace-regexp-in-string
-              "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-              crm-separator)
-            (car args))
-      (cdr args)))
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
   (advice-add #'completing-read-multiple
-    :filter-args #'crm-indicator)
+              :filter-args #'crm-indicator)
 
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
-    '(read-only t cursor-intangible t face minibuffer-prompt))
+        '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
   ;; Enable recursive minibuffers
@@ -140,8 +134,6 @@
 (setq-default xref-search-program 'ripgrep)
 (setq-default fill-column 80)
 (setq-default tab-width 4)
-(setq-default lisp-indent-offset 2)
-(setq-default lisp-indent-function nil)
 (setq-default indent-tabs-mode nil)
 (setq-default require-final-newline t)
 (setq-default inhibit-compacting-font-caches t)
@@ -155,8 +147,8 @@
   (unless (buffer-file-name)
     (error "No file is currently being edited"))
   (when (yes-or-no-p
-          (format "Really delete '%s'?"
-            (file-name-nondirectory buffer-file-name)))
+         (format "Really delete '%s'?"
+                 (file-name-nondirectory buffer-file-name)))
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
 
@@ -170,9 +162,8 @@
     (indent-region (point-min) (point-max) nil)
     (save-buffer)))
 
-(bind-keys
-  :map global-map
-  ("C-x k" . delete-current-file))
+(bind-keys :map global-map
+           ("C-x k" . delete-current-file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -206,9 +197,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Built-in Sqlite support
-(use-package emacsql-sqlite-builtin
-  :straight t
-  :demand t)
+(use-package emacsql-sqlite-builtin :straight t :demand t)
 
 
 (provide 'init-system)

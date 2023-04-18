@@ -14,13 +14,11 @@
 ;;
 ;; Electric parentheses
 (add-hook 'after-init-hook #'electric-pair-mode)
-(add-hook 'after-init-hook #'electric-indent-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Delete selection if you insert
-(use-package delsel
-  :hook (after-init . delete-selection-mode))
+(use-package delsel :hook (after-init . delete-selection-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -32,15 +30,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Framework for mode-specific buffer indexes
-(use-package imenu
-  :bind ("s-m" . imenu))
+(use-package imenu :bind ("s-m" . imenu))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Using rainbow delimiters
-(use-package rainbow-delimiters
-  :straight t
-  :demand t
+(use-package rainbow-delimiters :straight t
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -52,17 +47,6 @@
 ;; Display line numbers
 (setq-default display-line-numbers-width 3)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Auto formatting elisp code
-(use-package elisp-autofmt
-  :straight t
-  :demand t
-  :init
-  (setq elisp-autofmt-python-bin "python3")
-  :config
-  (setq elisp-autofmt-style 'native))
 
 
 (provide 'init-editing-utils)
