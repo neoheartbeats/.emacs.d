@@ -1,5 +1,26 @@
-This is a simple setup for GNU Emacs focusing on scientific writing in Org mode.
+This is a simple setup for GNU Emacs focusing on scientific writing in Org Mode.
 
-*** DEMO PICTURE
+* DEMO PICTURE
 
 [[./resources/demo.png]]
+
+-----
+
+* TODO PROJECT STRUCTURE
+
+- [ ] Rebuild the package management system.
+- [ ] Enhance displaying with specific fonts.
+- [ ] Build the custom system.
+- [ ] Improve compatibility between different systems.
+
+** TODO Enhance LaTeX input experience
+
+- [ ] Integrate with CDLaTeX.
+- [ ] Build TeXmacs liked templating system.
+- [-] Following the Org LaTeX preview improvement project.
+- [ ] Enhance export system for LaTeX projects.
+- [ ] Build the reference & citation system for academic usage.
+
+** TODO Build the schedule management system (Maybe)
+
+-----
