@@ -12,7 +12,7 @@
 (setq org-fast-tag-selection-single-key 'expert)
 (setq org-export-kill-product-buffer-when-displayed t)
 (setq org-fontify-whole-heading-line t)
-(setq org-directory "/Users/ilyaw39/Developer/regrets/")
+(setq org-directory "~/Developer/regrets/")
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
@@ -22,7 +22,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modern Org Mode
-(use-package org-modern :straight t
+(use-package org-modern :ensure t
   :init
   (setq org-modern-star '(""))
   (setq org-modern-hide-stars "")
@@ -108,12 +108,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org mode text edition
-(use-package org-roam
-  :straight (org-roam
-             :type git
-             :host github
-             :repo "org-roam/org-roam"
-             :files (:defaults "extensions/*"))
+(use-package org-roam :ensure t
+  ;; :ensure (org-roam
+  ;;            :type git
+  ;;            :host github
+  ;;            :repo "org-roam/org-roam"
+  ;;            :files (:defaults "extensions/*"))
   :config
   (setq org-roam-db-location (expand-file-name "org-roam.db" org-directory))
   (setq org-roam-directory org-directory)

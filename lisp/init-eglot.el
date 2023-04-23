@@ -8,7 +8,7 @@
 ;; Code:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package treesit-auto :straight t
+(use-package treesit-auto :ensure t
   :config (global-treesit-auto-mode 1))
 
 

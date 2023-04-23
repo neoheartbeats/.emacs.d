@@ -23,7 +23,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Themes
-(use-package modus-themes :straight t
+(use-package modus-themes :ensure t
   :init  
   (setq modus-themes-common-palette-overrides
         '((border-mode-line-active unspecified)
