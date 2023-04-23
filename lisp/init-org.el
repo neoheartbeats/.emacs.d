@@ -12,9 +12,7 @@
 (setq org-fast-tag-selection-single-key 'expert)
 (setq org-export-kill-product-buffer-when-displayed t)
 (setq org-fontify-whole-heading-line t)
-
-(setq org-directory "/Users/ilyaw39/credits/")
-
+(setq org-directory "/Users/ilyaw39/Developer/regrets/")
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
@@ -26,11 +24,12 @@
 ;; Modern Org Mode
 (use-package org-modern :straight t
   :init
-  (setq org-modern-star '("􀄩"))
-  (setq org-modern-hide-stars "􀄩")
+  (setq org-modern-star '(""))
+  (setq org-modern-hide-stars "")
   (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X . "􀃠") (?- . "􀃞") (?\s . "􀂒")))
-  (setq org-modern-block-name '(("SRC" . ("􀓪" "􀅽"))))
+  (setq org-modern-checkbox '((?X . "") (?- . "") (?\s . "")))
+  (setq org-modern-block-name '(("SRC" . ("" ""))
+                                ("QUOTE" . ("" ""))))
   (setq org-modern-table-vertical 2)
   (setq org-modern-block-fringe nil)
   (setq org-modern-keyword nil)
@@ -38,18 +37,17 @@
 
 (defun pes-iconify-org-buffer ()
   (progn
-    (push '(":PROPERTIES:" . ?􀈣) prettify-symbols-alist)
-    (push '(":ID:" . ?􀅳) prettify-symbols-alist)
-    (push '(":END:" . ?􀅽) prettify-symbols-alist)
-    (push '("#+TITLE:" . ?􀎞) prettify-symbols-alist)
-    (push '("#+RESULTS:" . ?􀆀)prettify-symbols-alist)
-    (push '("#+ATTR_ORG:" . ?􀣋) prettify-symbols-alist)
-    (push '("SCHEDULED:" . ?􀧞) prettify-symbols-alist)
-    (push '("CLOSED:" .?􁜒) prettify-symbols-alist)))
+    (push '(":PROPERTIES:" . ?) prettify-symbols-alist)
+    (push '(":ID:" . ?) prettify-symbols-alist)
+    (push '(":END:" . ?) prettify-symbols-alist)
+    (push '("#+TITLE:" . ?) prettify-symbols-alist)
+    (push '("#+AUTHOR:" . ?) prettify-symbols-alist)
+    (push '("#+RESULTS:" . ?) prettify-symbols-alist)
+    (push '("#+ATTR_ORG:" . ?) prettify-symbols-alist)))
 
 (add-hook 'org-mode-hook #'pes-iconify-org-buffer)
 
-(setq org-ellipsis " 􀍠")
+(setq org-ellipsis " ")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -128,14 +126,14 @@
         '(("d" "default" entry "\n* %?"
            :target (file+head
                     "%<%Y-%m-%d>.org"
-                    "#+TITLE: %<%Y-%m-%d 􀙬>\n")
+                    "#+TITLE: %<%Y-%m-%d >\n")
            :empty-lines 1)))
 
   ;; Default capture template for notes
   (setq org-roam-capture-templates
         '(("d" "default" plain "%?"
            :target (file+head
-                    "notes/${slug}.org"
+                    "notes/%<%Y%m%d%H%M%S>-${slug}.org"
                     "#+TITLE: ${title}\n")
            :empty-lines 1
            :unnarrowed t
@@ -171,12 +169,11 @@
 (setq org-latex-packages-alist
       '(("T1" "fontenc" t)
         ("version=4" "mhchem" t)
-        ("" "xparse" t)
         ("" "amsmath" t)
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-        ("" "kpfonts" t)))
+        ("" "mlmodern" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
@@ -191,6 +188,9 @@
 }%
 \\usephysicsmodule{ab,ab.braket}%
 ")
+
+(setq org-latex-preview-auto-generate 'live)
+(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
 
 
 (provide 'init-org)
