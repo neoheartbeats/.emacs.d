@@ -10,9 +10,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Completion for minibuffers
-(use-package vertico
-  :straight (:files (:defaults "extensions/*"))
-  :init (vertico-mode 1)
+(use-package vertico :ensure t
+;;  :ensure (:files (:defaults "extensions/*"))
+  :init (vertico-mode)
   :config
   
   ;; Load extensions
@@ -37,7 +37,7 @@
   (setq savehist-file (expand-file-name "savehist" user-emacs-directory))
   (savehist-mode))
 
-(use-package consult :straight t
+(use-package consult :ensure t
   :init
   (global-set-key (kbd "s-b") 'switch-to-buffer)
   (global-set-key [remap switch-to-buffer] 'consult-buffer)
@@ -50,20 +50,20 @@
   (("C-s" . consult-line)
    ("M-s" . consult-ripgrep)))
 
-(use-package embark :straight t
+(use-package embark :ensure t
   :init (setq prefix-help-command #'embark-prefix-help-command)
   :bind
   (("M-." . embark-dwim)
    ("C-h b" . embark-bindings)))
 
-(use-package embark-consult :straight t
+(use-package embark-consult :ensure t
   :after (embark consult)
   :hook (embark-collect-mode-hook . consult-preview-at-point-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Enable rich annotations
-(use-package marginalia :straight t
+(use-package marginalia :ensure t
   :init (marginalia-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -74,7 +74,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Add extensions
-(use-package cape :straight t
+(use-package cape :ensure t
   :config (setq cape-dabbrev-min-length 5)
   :hook
   ((emacs-lisp-mode . (lambda ()
@@ -90,7 +90,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Build the completion framework
-(use-package orderless :straight t
+(use-package orderless :ensure t
   :init
   (setq completion-styles '(orderless basic))
   (setq completion-category-defaults nil)
@@ -100,8 +100,8 @@
   (setq read-file-name-completion-ignore-case t)
   (setq read-buffer-completion-ignore-case t))
 
-(use-package corfu
-  :straight (:files (:defaults "extensions/*"))
+(use-package corfu :ensure t
+;;  :ensure (:files (:defaults "extensions/*"))
   :init (add-hook 'after-init-hook #'global-corfu-mode)
   :config
   (setq corfu-auto t)

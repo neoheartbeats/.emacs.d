@@ -11,19 +11,16 @@
 ;;
 ;; Configure Tempel
 (use-package tempel
-  :straight t
+  :ensure t
   :bind
-  (
-    ("s-." . tempel-expand)
-    ("s-/" . tempel-insert))
-  :init
-
-  ;; Setup completion at point
+  (("s-." . tempel-expand)
+   ("s-/" . tempel-insert))
+  :init ;; Setup completion at point
   (defun tempel-setup-capf ()
     "Add the Tempel Capf to `completion-at-point-functions'."
     (setq-local completion-at-point-functions
-      (cons #'tempel-expand
-        completion-at-point-functions)))
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
 
   (add-hook 'org-mode-hook #'tempel-setup-capf)
   :config
