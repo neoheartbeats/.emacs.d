@@ -8,9 +8,12 @@
 ;; Code:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package treesit-auto :ensure t
+(use-package treesit-auto
+  :ensure t
   :config (global-treesit-auto-mode 1))
 
+
+(use-package eglot :ensure t :defer t)
 
 (provide 'init-eglot)
 

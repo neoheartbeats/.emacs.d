@@ -6,18 +6,14 @@
 ;;
 ;; Commentary:
 ;;
-;; This file is inspired by https://github.com/purcell/emacs.d/.
-;;
 ;; Code:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Optimization
 (setq idle-update-delay 1.0)
-
 (setq-default cursor-in-non-selected-windows nil)
 (setq highlight-nonselected-windows nil)
-
 (setq frame-resize-pixelwise t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -39,7 +35,6 @@
         (bg-hover bg-green-subtle) ; Make the background subtle green
         (bg-line-number-inactive unspecified) ; Make line numbers less intense
         (bg-line-number-active unspecified)))
-
 (load-theme 'modus-vivendi :no-confirm)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -99,7 +94,6 @@
 
 
 (provide 'init-gui-frames)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

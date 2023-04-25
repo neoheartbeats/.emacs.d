@@ -29,11 +29,8 @@
   (setq org-modern-hide-stars "􀄩")
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '((?X . "􀃰") (?- . "􀃞") (?\s . "􀂒")))
-  ;; (setq org-modern-block-name '(("src" . ("􀓪" "􀅽"))
-  ;;                               ("quote" . ("􀌮" "􀅽"))))
   (setq org-modern-progress '("􀛪" "􀛩" "􀺶" "􀺸" "􀛨"))
   (setq org-modern-table-vertical 2)
-  ;; (setq org-modern-block-fringe nil)
   (setq org-modern-keyword nil)
   :config (global-org-modern-mode 1))
 
@@ -41,18 +38,17 @@
   (progn
     (push '(":PROPERTIES:" . ?􀈭) prettify-symbols-alist)
     (push '(":ID:      " . ?􀐚) prettify-symbols-alist)
+    (push '(":ROAM_ALIASES:" . ?􀅷) prettify-symbols-alist)
     (push '(":END:" . ?􀅽) prettify-symbols-alist)
     (push '("#+TITLE:" . ?􀈷) prettify-symbols-alist)
     (push '("#+AUTHOR:" . ?􀉩) prettify-symbols-alist)
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
     (push '("#+ATTR_ORG:" . ?􀌞) prettify-symbols-alist))
-
-  ;; 􀅷
   (prettify-symbols-mode 1))
-
 (add-hook 'org-mode-hook #'pes-iconify-org-buffer)
 
 (setq org-ellipsis " 􀍠")
+(setq org-hide-emphasis-markers t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -145,7 +141,7 @@
    :map org-mode-map
    (("s-i" . org-roam-node-insert)
     ("s-f" . org-roam-node-find)
-    ("s-a" . org-roam-alias-add)
+    ("s-p" . org-roam-alias-add)
     ("s-<up>" . org-roam-dailies-goto-previous-note)
     ("s-<down>" . org-roam-dailies-goto-next-note)))
   :hook
