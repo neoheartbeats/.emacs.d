@@ -15,7 +15,7 @@
   :bind
   (("s-." . tempel-expand)
    ("s-/" . tempel-insert))
-  :init ;; Setup completion at point
+  :init ; Setup completion at point
   (defun tempel-setup-capf ()
     "Add the Tempel Capf to `completion-at-point-functions'."
     (setq-local completion-at-point-functions
@@ -24,7 +24,7 @@
 
   (add-hook 'org-mode-hook #'tempel-setup-capf)
   :config
-  (setq tempel-path "/Users/ilyaw39/.emacs.d/temp.eld"))
+  (setq tempel-path "~/.emacs.d/temp.eld"))
 
 
 (provide 'init-temp)

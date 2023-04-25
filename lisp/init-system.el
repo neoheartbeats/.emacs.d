@@ -83,7 +83,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Locate position history
-(use-package saveplace :config (save-place-mode 1))
+(use-package saveplace
+  :config (save-place-mode 1))
 
 (use-package emacs
   :init

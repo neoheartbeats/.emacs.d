@@ -1,15 +1,24 @@
 This is a simple setup for GNU Emacs focusing on scientific writing in Org Mode.
 
+-----
+
 * DEMO PICTURE
 
 [[./resources/demo.png]]
 
 -----
 
+* INSTALLATION:
+
+#+BEGIN_SRC shell
+git clone https://github.com/ilyaw39/.emacs.d.git ~/.emacs.d
+cd ~/.emacs.d/ && chmod +x setup.sh && ./setup.sh
+#+END_SRC
+
 * TODO PROJECT STRUCTURE
 
 - [ ] Rebuild the package management system.
-- [ ] Enhance displaying with specific fonts.
+- [X] Enhance displaying with specific fonts.
 - [ ] Build the custom system.
 - [ ] Improve compatibility between different systems.
 

@@ -17,9 +17,9 @@
 (use-package magit
   :ensure t
   :defer t
-  :custom
-  (magit-diff-refine-hunk t)
-  (magit-section-visibility-indicator nil) ; disable showing the bitmap indicators
+  :config
+  (setq magit-diff-refine-hunk t)
+  (setq magit-section-visibility-indicator nil) ; Disable showing the bitmap indicators
   :bind ("C-x g" . magit-status))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
