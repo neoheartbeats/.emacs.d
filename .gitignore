@@ -1,3 +1,11 @@
 
 .DS_Store
 transient/history.el
+.org-id-locations
+bookmarks
+*.eln
+/elpa/
+/org-roam.db
+/places
+/projectile-bookmarks.eld
+/savehist

@@ -12,7 +12,7 @@
 (setq org-fast-tag-selection-single-key 'expert)
 (setq org-export-kill-product-buffer-when-displayed t)
 (setq org-fontify-whole-heading-line t)
-(setq org-directory "~/Developer/regrets/")
+(setq org-directory "~/Shelter/")
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
@@ -22,32 +22,37 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modern Org Mode
-(use-package org-modern :ensure t
+(use-package org-modern
+  :ensure t
   :init
-  (setq org-modern-star '(""))
-  (setq org-modern-hide-stars "")
+  (setq org-modern-star '("􀄩"))
+  (setq org-modern-hide-stars "􀄩")
   (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X . "") (?- . "") (?\s . "")))
-  (setq org-modern-block-name '(("SRC" . ("" ""))
-                                ("QUOTE" . ("" ""))))
+  (setq org-modern-checkbox '((?X . "􀃰") (?- . "􀃞") (?\s . "􀂒")))
+  ;; (setq org-modern-block-name '(("src" . ("􀓪" "􀅽"))
+  ;;                               ("quote" . ("􀌮" "􀅽"))))
+  (setq org-modern-progress '("􀛪" "􀛩" "􀺶" "􀺸" "􀛨"))
   (setq org-modern-table-vertical 2)
-  (setq org-modern-block-fringe nil)
+  ;; (setq org-modern-block-fringe nil)
   (setq org-modern-keyword nil)
   :config (global-org-modern-mode 1))
 
 (defun pes-iconify-org-buffer ()
   (progn
-    (push '(":PROPERTIES:" . ?) prettify-symbols-alist)
-    (push '(":ID:" . ?) prettify-symbols-alist)
-    (push '(":END:" . ?) prettify-symbols-alist)
-    (push '("#+TITLE:" . ?) prettify-symbols-alist)
-    (push '("#+AUTHOR:" . ?) prettify-symbols-alist)
-    (push '("#+RESULTS:" . ?) prettify-symbols-alist)
-    (push '("#+ATTR_ORG:" . ?) prettify-symbols-alist)))
+    (push '(":PROPERTIES:" . ?􀈭) prettify-symbols-alist)
+    (push '(":ID:      " . ?􀐚) prettify-symbols-alist)
+    (push '(":END:" . ?􀅽) prettify-symbols-alist)
+    (push '("#+TITLE:" . ?􀈷) prettify-symbols-alist)
+    (push '("#+AUTHOR:" . ?􀉩) prettify-symbols-alist)
+    (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
+    (push '("#+ATTR_ORG:" . ?􀌞) prettify-symbols-alist))
+
+  ;; 􀅷
+  (prettify-symbols-mode 1))
 
 (add-hook 'org-mode-hook #'pes-iconify-org-buffer)
 
-(setq org-ellipsis " ")
+(setq org-ellipsis " 􀍠")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -108,14 +113,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org mode text edition
-(use-package org-roam :ensure t
-  ;; :ensure (org-roam
-  ;;            :type git
-  ;;            :host github
-  ;;            :repo "org-roam/org-roam"
-  ;;            :files (:defaults "extensions/*"))
+(use-package org-roam
+  :ensure t
   :config
-  (setq org-roam-db-location (expand-file-name "org-roam.db" org-directory))
   (setq org-roam-directory org-directory)
   (setq org-roam-dailies-directory "dates/")
   (setq org-roam-completion-everywhere t)
@@ -126,7 +126,7 @@
         '(("d" "default" entry "\n* %?"
            :target (file+head
                     "%<%Y-%m-%d>.org"
-                    "#+TITLE: %<%Y-%m-%d >\n")
+                    "#+TITLE: %<%Y-%m-%d 􀉉>\n")
            :empty-lines 1)))
 
   ;; Default capture template for notes
@@ -141,9 +141,7 @@
 
   (org-roam-db-autosync-mode 1)
   :bind
-  (
-   :map global-map
-   (("s-n" . org-roam-dailies-goto-today))
+  (("s-n" . org-roam-dailies-goto-today)
    :map org-mode-map
    (("s-i" . org-roam-node-insert)
     ("s-f" . org-roam-node-find)
