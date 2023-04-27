@@ -136,6 +136,7 @@
            :immediate-finish t)))
 
   (org-roam-db-autosync-mode 1)
+  (global-unset-key (kbd "s-p"))
   :bind
   (("s-n" . org-roam-dailies-goto-today)
    :map org-mode-map
