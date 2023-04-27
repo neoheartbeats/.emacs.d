@@ -66,6 +66,9 @@
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
 
+(bind-keys :map global-map
+           ("C-c d" . my-delete-this-file))
+
 
 (provide 'init-editing-utils)
 

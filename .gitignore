@@ -1,12 +1,12 @@
-
 .DS_Store
 transient/history.el
 .org-id-locations
 bookmarks
-*.eln
 /elpa/
 /org-roam.db
 /places
 /projectile-bookmarks.eld
 /savehist
-site-lisp/org-lisp/
+/eln-cache/
+/site-lisp/
+/org-persist/

@@ -33,12 +33,12 @@
 ;; Load path
 ;;
 ;; Force `lisp' at head to reduce the startup time
-(defun pes-update-load-path (&rest _)
+(defun my-update-load-path (&rest _)
   "Update `load-path'."
   (dolist (subdirs '("lisp/"))
     (push (expand-file-name subdirs user-emacs-directory) load-path)))
-(advice-add #'package-initialize :after #'pes-update-load-path)
-(pes-update-load-path)
+(advice-add #'package-initialize :after #'my-update-load-path)
+(my-update-load-path)
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (require 'init-packages)

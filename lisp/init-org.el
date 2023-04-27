@@ -34,7 +34,7 @@
   (setq org-modern-keyword nil)
   :config (global-org-modern-mode 1))
 
-(defun pes-iconify-org-buffer ()
+(defun my-iconify-org-buffer ()
   (progn
     (push '(":PROPERTIES:" . ?􀈭) prettify-symbols-alist)
     (push '(":ID:      " . ?􀐚) prettify-symbols-alist)
@@ -45,7 +45,7 @@
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
     (push '("#+ATTR_ORG:" . ?􀌞) prettify-symbols-alist))
   (prettify-symbols-mode 1))
-(add-hook 'org-mode-hook #'pes-iconify-org-buffer)
+(add-hook 'org-mode-hook #'my-iconify-org-buffer)
 
 (setq org-ellipsis " 􀍠")
 (setq org-hide-emphasis-markers t)
@@ -53,12 +53,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Draw fringes in Org mode
-(defun pes-toggle-internal-fringes ()
+(defun my-toggle-internal-fringes ()
   (setq left-margin-width 15)
   (setq right-margin-width 15)
   (set-window-buffer nil (current-buffer)))
 
-(add-hook 'org-mode-hook #'pes-toggle-internal-fringes)
+(add-hook 'org-mode-hook #'my-toggle-internal-fringes)
 
 ;; Fold drawers by default
 (setq org-hide-drawer-startup t)
@@ -69,13 +69,13 @@
 ;; Org fragments
 (setq org-image-actual-width '(300))
 
-(defun pes-preview-org-fragments ()
+(defun my-preview-org-fragments ()
   (interactive)
   (org-display-inline-images)
   (org-latex-preview))
 
 (bind-keys :map org-mode-map
-           ("s-p" . pes-preview-org-fragments))
+           ("s-p" . my-preview-org-fragments))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
