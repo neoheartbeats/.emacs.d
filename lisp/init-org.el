@@ -136,13 +136,13 @@
            :immediate-finish t)))
 
   (org-roam-db-autosync-mode 1)
-  (global-unset-key (kbd "s-p"))
+  (global-unset-key (kbd "s-o"))
   :bind
   (("s-n" . org-roam-dailies-goto-today)
    :map org-mode-map
    (("s-i" . org-roam-node-insert)
     ("s-f" . org-roam-node-find)
-    ("s-p" . org-roam-alias-add)
+    ("s-o" . org-roam-alias-add)
     ("s-<up>" . org-roam-dailies-goto-previous-note)
     ("s-<down>" . org-roam-dailies-goto-next-note)))
   :hook
@@ -154,13 +154,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org LaTeX customizations
-(setq-default org-preview-latex-default-process 'dvisvgm)
-(setq-default org-latex-preview-options
-              (progn
-                (plist-put org-format-latex-options :background "Transparent")
-                (plist-put org-format-latex-options :scale 5.0)
-                (plist-put org-format-latex-options :zoom 1.25)))
-
+(setq org-preview-latex-default-process 'dvisvgm)
 (setq org-latex-packages-alist
       '(("T1" "fontenc" t)
         ("version=4" "mhchem" t)
@@ -168,24 +162,20 @@
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-        ("" "mlmodern" t)))
+        ("" "txfonts" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
 [DEFAULT-PACKAGES]
 [PACKAGES]
 \\usepackage{xcolor}
-\\NewDocumentCommand{\\PE}{ O{} }{%
-  E_{\\mathrm{p}}%
-}%
-\\NewDocumentCommand{\\KE}{ O{} }{%
-  E_{\\mathrm{k}}%
-}%
 \\usephysicsmodule{ab,ab.braket}%
 ")
 
-(setq org-latex-preview-auto-generate 'live)
-(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
+;; Use `CDLaTeX' to improve editing experiences
+(use-package cdlatex
+  :ensure t
+  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 
 (provide 'init-org)

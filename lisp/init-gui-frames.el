@@ -23,7 +23,6 @@
 (setq modus-themes-custom-auto-reload nil)
 (setq modus-themes-italic-constructs nil)
 (setq modus-themes-bold-constructs nil)
-(setq modus-themes-org-blocks 'gray-background)
 (setq modus-themes-common-palette-overrides
       '((border-mode-line-active unspecified) ; Remove the border of mode-line
         (border-mode-line-inactive unspecified)
@@ -71,7 +70,7 @@
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 (set-face-attribute 'italic nil :slant 'normal)
 
