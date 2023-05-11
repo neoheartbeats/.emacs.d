@@ -1,7 +1,5 @@
 ;; init-projects.el --- Project management in Emacs -*- lexical-binding: t -*-
 ;;
-;; Copyright (C) 2022-2023 Ilya Wang
-;;
 ;; This file is not part of GNU Emacs.
 ;;
 ;; Commentary:
@@ -14,8 +12,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Git client Magit
-(use-package magit
-  :ensure t
+(use-package magit :ensure t
   :defer t
   :config
   (setq magit-diff-refine-hunk t)
@@ -25,8 +22,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Project management
-(use-package projectile
-  :ensure t
+(use-package projectile :ensure t
   :init
   (let ((local-project-path "~/Developer/")
         (project-path-list '()))

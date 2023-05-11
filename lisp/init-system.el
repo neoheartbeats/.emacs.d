@@ -1,7 +1,5 @@
 ;; init-system.el --- Configs specific to macOS -*- lexical-binding: t -*-
 ;;
-;; Copyright (C) 2022-2023 Ilya Wang
-;;
 ;; This file is not part of GNU Emacs.
 ;;
 ;; Commentary:
@@ -58,17 +56,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Garbage Collector Magic Hack
-(use-package gcmh
-  :ensure t
-  :hook (emacs-startup . gcmh-mode)
-  :config
-  (setq gcmh-idle-delay 'auto)
-  (setq gcmh-auto-idle-delay-factor 10)
-  (setq gcmh-high-cons-threshold most-positive-fixnum))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Set UTF-8 as the default coding system
 (set-charset-priority 'unicode)
 (set-default-coding-systems 'utf-8)
@@ -83,8 +70,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Locate position history
-(use-package saveplace
+(use-package saveplace :defer 2
   :config (save-place-mode 1))
+
+(use-package savehist :defer 2
+  :config
+  (setq savehist-file (expand-file-name "savehist" user-emacs-directory))
+  (setq history-length 1000)
+  (setq history-delete-duplicates t)
+  (setq savehist-save-minibuffer-history t)
+  (savehist-mode 1))
 
 (use-package emacs
   :init
