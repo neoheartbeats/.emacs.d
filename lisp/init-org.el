@@ -162,7 +162,7 @@
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-        ("" "mlmodern" t)))
+        ("" "mlmodern")))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
