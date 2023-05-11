@@ -9,25 +9,6 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;
-;; Bootstrap `straight.el'
-;; (defvar bootstrap-version)
-;; (let ((bootstrap-file
-;;         (expand-file-name "straight/repos/straight.el/bootstrap.el"
-;;           user-emacs-directory))
-;;        (bootstrap-version 6))
-;;   (unless (file-exists-p bootstrap-file)
-;;     (with-current-buffer
-;;       (url-retrieve-synchronously
-;;         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-;;         'silent 'inhibit-cookies)
-;;       (goto-char (point-max))
-;;       (eval-print-last-sexp)))
-;;   (load bootstrap-file nil 'nomessage))
-;;
-;; ;; Shadow clone git repo to improve the speed
-;; (setq straight-vc-git-default-clone-depth 1)
-;;
 ;; Initialize packages
 (require 'package)
 
@@ -41,19 +22,14 @@
   (package-initialize))
 
 ;; Setup `use-package'
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(eval-and-compile
-  (setq use-package-enable-imenu-support t))
-
-(eval-when-compile
+(eval-when-compile ; Required by `use-package'
+  (setq use-package-verbose nil
+        use-package-compute-statistics nil
+        use-package-minimum-reported-time 0.01
+        use-package-enable-imenu-support t)
   (require 'use-package))
 
-;; (straight-use-package 'use-package)
-;;
-;; Required by `use-package'
+;; Packages bundled with `use-package'
 (use-package diminish :ensure t)
 (use-package bind-key :ensure t)
 
@@ -62,7 +38,6 @@
 
 
 (provide 'init-packages)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-packages.el ends here

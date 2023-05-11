@@ -1,10 +1,9 @@
 ;; init-org.el --- Org mode configuration  -*- lexical-binding: t -*-
 ;;
-;; Copyright (C) 2022-2023 Ilya Wang
-;;
 ;; This file is not part of GNU Emacs.
 ;;
 ;; Commentary:
+;;
 ;; Code:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -22,8 +21,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modern Org Mode
-(use-package org-modern
-  :ensure t
+(use-package org-modern :ensure t
   :init
   (setq org-modern-star '("􀄩"))
   (setq org-modern-hide-stars "􀄩")
@@ -109,8 +107,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org mode text edition
-(use-package org-roam
-  :ensure t
+(use-package org-roam :ensure t
   :config
   (setq org-roam-directory org-directory)
   (setq org-roam-dailies-directory "dates/")
@@ -157,12 +154,11 @@
 (setq org-preview-latex-default-process 'dvisvgm)
 (setq org-latex-packages-alist
       '(("T1" "fontenc" t)
-        ("version=4" "mhchem" t)
         ("" "amsmath" t)
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-        ("" "mlmodern")))
+        ("noDcommand" "kpfonts")))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
@@ -172,10 +168,15 @@
 \\usephysicsmodule{ab,ab.braket}%
 ")
 
+(plist-put org-latex-preview-options :scale 2.0)
+(plist-put org-latex-preview-options :zoom 1.25)
+
 ;; Use `CDLaTeX' to improve editing experiences
-(use-package cdlatex
-  :ensure t
+(use-package cdlatex :ensure t
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+
+(add-hook 'org-mode-hook #'(lambda ()
+                             (org-latex-preview-auto-mode 1)))
 
 
 (provide 'init-org)
