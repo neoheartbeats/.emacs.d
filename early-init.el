@@ -20,8 +20,9 @@
 ;; Enhance darwing the frame when initialization
 ;;
 ;; Faster to disable these here (before they've been initialized)
-(push '(width . 145) default-frame-alist)
+(push '(width . 175) default-frame-alist)
 (push '(height . 58) default-frame-alist)
+(push '(alpha . (90 . 90)) default-frame-alist)
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
