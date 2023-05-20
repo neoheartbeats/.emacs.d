@@ -12,3 +12,5 @@ bookmarks
 /org-persist/
 custom.el
 /eshell/
+/auto-save-list/
+/tree-sitter/

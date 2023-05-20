@@ -66,13 +66,38 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Pes Mono" :height 140)
+(set-face-attribute 'default nil :family "Pes Mono" :height 145)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 (set-face-attribute 'italic nil :slant 'normal)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Enable ligatures
+(use-package ligature :ensure t
+  :config
+  (ligature-set-ligatures 'prog-mode
+                          '("<---" "<--"  "<<-" "<-" "->" "-->" "--->"
+                            "<->" "<-->" "<--->" "<---->" "<!--"
+                            "<==" "<===" "<=" "=>" "=>>" "==>"
+                            "===>" ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
+                            "<~~" "<~" "~>" "~~>" "::" ":::"
+                            "==" "!=" "===" "!==" ":=" ":-" ":+" "<*"
+                            "<*>" "*>" "<|" "<|>" "|>" "+:" "-:"
+                            "=:" "<******>" "++" "+++"))
+  (ligature-set-ligatures 'text-mode
+                          '("<---" "<--"  "<<-" "<-" "->" "-->" "--->"
+                            "<->" "<-->" "<--->" "<---->" "<!--"
+                            "<==" "<===" "<=" "=>" "=>>" "==>"
+                            "===>" ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
+                            "<~~" "<~" "~>" "~~>" "::" ":::"
+                            "==" "!=" "===" "!==" ":=" ":-" ":+" "<*"
+                            "<*>" "*>" "<|" "<|>" "|>" "+:" "-:"
+                            "=:" "<******>" "++" "+++"))
+  (global-ligature-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

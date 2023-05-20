@@ -8,12 +8,20 @@
 ;; Code:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Setup `treesit'
 (use-package treesit-auto
   :ensure t
   :config (global-treesit-auto-mode 1))
 
+;; Remap modes to use `treesit'
+(setq major-mode-remap-alist '((python-mode . python-ts-mode)))
 
-(use-package eglot :ensure t :defer t)
+;; Initialize `eglot'
+(use-package eglot :ensure t
+  :config
+  (add-hook 'python-ts-mode-hook #'eglot-ensure))
+
 
 (provide 'init-eglot)
 

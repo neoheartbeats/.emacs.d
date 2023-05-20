@@ -169,14 +169,12 @@
 (setq scroll-step 1)
 (setq scroll-conservatively 105)
 (setq scroll-margin 15)
-(setq scroll-up-aggressively 0.01)
-(setq scroll-down-aggressively 0.01)
-(setq scroll-preserve-screen-position 'always)
+(setq scroll-preserve-screen-position t)
 (setq mouse-wheel-follow-mouse t)
 (setq mouse-wheel-progressive-speed t)
 (setq auto-window-vscroll nil)
 
-(add-hook 'after-init-hook #'pixel-scroll-precision-mode)
+(pixel-scroll-precision-mode 1)
 
 ;; Disable auto copying
 (setq mouse-drag-copy-region nil)
@@ -187,7 +185,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Clipboard
-(setq kill-ring-max 250)
+(setq kill-ring-max 512)
 (setq kill-do-not-save-duplicates t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
