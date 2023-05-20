@@ -6,7 +6,7 @@ fontsDIr="$HOME/.local/share/fonts"
 make_orglisp(){
 	[ -d ${siteLispDir} ] || mkdir -p ${siteLispDir}
 	git clone https://git.tecosaur.net/tec/org-mode.git ${siteLispDir}/org-mode
-	if [ "$?"-ne 0]; then echo "Failed."; exit 1; fi
+	if [ "$?" -ne 0 ]; then echo "Failed."; exit 1; fi
 	cd ${siteLispDir}/org-mode/ && make autoloads
 	mv ${siteLispDir}/org-mode/lisp/ ${siteLispDir}/org-lisp/
 	rm -rf ${siteLispDir}/org-mode/
@@ -17,7 +17,7 @@ create_dir(){
 	echo -e '1. "~/Developer/"\n2. "~/Shelter/"'
 	read -e -p "Whether to create the above folder? [Y/n]" args
 	[[ -z "${args}" ]] && args="y"
-	[ "$args" = [Yy] ] && mkdir -p ~/Shelter/{dates,notes,repos} ~/Developer
+	[[ "$args" == [Yy] ]] && mkdir -p $HOME/Shelter/{dates,notes,repos} $HOME/Developer
 }
 
 install_fonts(){
@@ -38,15 +38,15 @@ install_dep(){
 	elif cat /etc/issue | grep -q -E -i "debian|ubuntu";then
 		COMMAND="sudo apt-get"
 	else
-		echo -e "\033[033[31mFor unsupported systems, please install the dependencies manually.\033[0m"
+		echo -e "\033[033;31mFor unsupported systems, please install the dependencies manually.\033[0m"
 		exit 1
 	fi
 	[ $(command -v rg >/dev/null 2>&1) ] || $COMMAND install ripgrep
 	[ $(command -v sqlite3 >/dev/null 2>&1) ] || $COMMAND install sqlite3
 }
 
-[ -d ~/Shelter/dates ] && [ -d ~/Shelter/notes ] && [ -d ~/Shelter/repos ] && \
-	[ -d ~/Developer ] || create_dir
+[ -d $HOME/Shelter/dates ] && [ -d $HOME/Shelter/notes ] && [ -d $HOME/Shelter/repos ] && \
+	[ -d $HOME/Developer ] || create_dir
 make_orglisp
 install_fonts
 install_dep
