@@ -1,7 +1,5 @@
 ;; init-gui-frames.el --- Behaviours of GUI frames -*- lexical-binding: t -*-
 ;;
-;; Copyright (C) 2022-2023 Ilya Wang
-;;
 ;; This file is not part of GNU Emacs.
 ;;
 ;; Commentary:
@@ -11,9 +9,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Optimization
-(setq idle-update-delay 1.0)
 (setq-default cursor-in-non-selected-windows nil)
 (setq highlight-nonselected-windows nil)
+(setq idle-update-delay 1.0)
 (setq frame-resize-pixelwise t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -24,10 +22,7 @@
 (setq modus-themes-italic-constructs nil)
 (setq modus-themes-bold-constructs nil)
 (setq modus-themes-common-palette-overrides
-      '((border-mode-line-active unspecified) ; Remove the border of mode-line
-        (border-mode-line-inactive unspecified)
-        (fringe unspecified) ; Make the fringe invisible
-        (underline-link border) ; Subtle underlines
+      '((underline-link border) ; Subtle underlines
         (underline-link-visited border)
         (underline-link-symbolic border)
         (string green-cooler) ; Use green strings
@@ -54,9 +49,9 @@
 (set-face-background 'fringe (face-attribute 'default :background))
 
 ;; Cursor faces
+;; (setq-default cursor-type '(bar . 1))
+;; (set-cursor-color "#ff66ff")
 (setq-default blink-cursor-mode nil)
-(setq-default cursor-type '(bar . 1))
-(set-cursor-color "#ff66ff")
 
 ;; highlight current line
 (add-hook 'after-init-hook #'global-hl-line-mode)
@@ -66,7 +61,7 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Pes Mono" :height 145)
+(set-face-attribute 'default nil :family "Pes Mono" :height 150)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
@@ -74,30 +69,19 @@
 
 (set-face-attribute 'italic nil :slant 'normal)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Enable ligatures
-(use-package ligature :ensure t
+;; Add font ligatures support
+(use-package ligature
+  :ensure t
   :config
   (ligature-set-ligatures 'prog-mode
-                          '("<---" "<--"  "<<-" "<-" "->" "-->" "--->"
-                            "<->" "<-->" "<--->" "<---->" "<!--"
-                            "<==" "<===" "<=" "=>" "=>>" "==>"
-                            "===>" ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
-                            "<~~" "<~" "~>" "~~>" "::" ":::"
-                            "==" "!=" "===" "!==" ":=" ":-" ":+" "<*"
-                            "<*>" "*>" "<|" "<|>" "|>" "+:" "-:"
-                            "=:" "<******>" "++" "+++"))
-  (ligature-set-ligatures 'text-mode
-                          '("<---" "<--"  "<<-" "<-" "->" "-->" "--->"
-                            "<->" "<-->" "<--->" "<---->" "<!--"
-                            "<==" "<===" "<=" "=>" "=>>" "==>"
-                            "===>" ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
-                            "<~~" "<~" "~>" "~~>" "::" ":::"
-                            "==" "!=" "===" "!==" ":=" ":-" ":+" "<*"
-                            "<*>" "*>" "<|" "<|>" "|>" "+:" "-:"
-                            "=:" "<******>" "++" "+++"))
-  (global-ligature-mode 1))
+                          '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->"
+                            "<-->" "<--->" "<---->" "<!--" "<==" "<===" "<="
+                            "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
+                            "<====>" "<!---" "<~~" "<~" "~>" "~~>" "::" ":::"
+                            "==" "!=" "===" "!==" ":=" ":-" ":+" "<*" "<*>"
+                            "*>" "<|" "<|>" "|>" "+:" "-:" "=:" "<******>" "++"
+                            "+++" "__"))
+  (global-ligature-mode t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -115,7 +99,7 @@
 ;;
 ;; Mode Line settings
 (setq-default line-number-mode nil)
-
+(setq-default mode-line-compact t)
 
 (provide 'init-gui-frames)
 

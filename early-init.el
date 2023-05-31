@@ -1,7 +1,5 @@
 ;; early-init.el --- Emacs 29+ pre-initialisation config
 ;;
-;; Copyright (C) 2022-2023 Ilya Wang
-;;
 ;; This file is not part of GNU Emacs.
 ;;
 ;; Commentary:
@@ -20,9 +18,8 @@
 ;; Enhance darwing the frame when initialization
 ;;
 ;; Faster to disable these here (before they've been initialized)
-(push '(width . 175) default-frame-alist)
-(push '(height . 58) default-frame-alist)
-(push '(alpha . (90 . 90)) default-frame-alist)
+(push '(width . 165) default-frame-alist)
+(push '(height . 60) default-frame-alist)
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
@@ -53,11 +50,6 @@
 ;; Prevent unwanted runtime compilation for GccEmacs
 (setq native-comp-deferred-compilation nil) ; obsolete since 29.1
 (setq native-comp-jit-compilation nil)
-
-(setq load-prefer-newer t)
-
-;; This must be set before loading `use-package'
-(setq use-package-enable-imenu-support t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

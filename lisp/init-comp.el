@@ -9,13 +9,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Completion for minibuffers
-(use-package vertico :ensure t
+(use-package vertico
+  :ensure t
   :after minibuffer
   :init (vertico-mode 1)
   :config
   (setq vertico-count 15)
   (setq vertico-cycle t)
-  (setq vertico-resize t)
   
   ;; Load extensions
   (require 'vertico-directory)
@@ -31,7 +31,8 @@
          ("<return>" . vertico-directory-enter)
          ("<backspace>" . vertico-directory-delete-char))))
 
-(use-package consult :ensure t
+(use-package consult
+  :ensure t
   :init
   (global-set-key (kbd "s-b") 'switch-to-buffer)
   (global-set-key [remap switch-to-buffer] 'consult-buffer)
@@ -44,20 +45,23 @@
   (("C-s" . consult-line)
    ("M-s" . consult-ripgrep)))
 
-(use-package embark :ensure t
+(use-package embark
+  :ensure t
   :init (setq prefix-help-command #'embark-prefix-help-command)
   :bind
   (("M-." . embark-dwim)
    ("C-h b" . embark-bindings)))
 
-(use-package embark-consult :ensure t
+(use-package embark-consult
+  :ensure t
   :after (embark consult)
   :hook (embark-collect-mode-hook . consult-preview-at-point-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Enable rich annotations
-(use-package marginalia :ensure t
+(use-package marginalia
+  :ensure t
   :init (marginalia-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -84,7 +88,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Add extensions
-(use-package cape :ensure t
+(use-package cape
+  :ensure t
   :config (setq cape-dabbrev-min-length 5)
   :hook
   ((prog-mode . (lambda ()
@@ -100,7 +105,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Build the completion framework
-(use-package orderless :ensure t
+(use-package orderless
+  :ensure t
   :init
   (setq completion-styles '(orderless basic))
   (setq completion-category-defaults nil)
@@ -110,7 +116,8 @@
   (setq read-file-name-completion-ignore-case t)
   (setq read-buffer-completion-ignore-case t))
 
-(use-package corfu :ensure t
+(use-package corfu
+  :ensure t
   :init (add-hook 'after-init-hook #'global-corfu-mode)
   :config
   (setq corfu-auto t)
