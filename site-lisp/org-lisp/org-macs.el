@@ -217,7 +217,7 @@ If BUFFER is nil, use base buffer for `current-buffer'."
      (let* ((org-called-with-limited-levels t)
             (org-outline-regexp (org-get-limited-outline-regexp))
             (outline-regexp org-outline-regexp)
-            (org-outline-regexp-bol (concat "^" org-outline-regexp)))
+            (org-outline-regexp-bol (org-get-limited-outline-regexp t)))
        ,@body)))
 
 (defmacro org-eval-in-environment (environment form)
@@ -653,7 +653,13 @@ it for output."
       (when (bound-and-true-p org-batch-test)
         (message "org-compile-file log ::\n-----\n%s\n-----\n"
                  (with-current-buffer log-buf (buffer-string))))
-      (error (format "File %S wasn't produced%s" output err-msg)))
+      (error
+       (format
+        "File %S wasn't produced%s"
+        output
+        (if (org-string-nw-p err-msg)
+            (concat "  " (org-trim err-msg))
+          err-msg))))
     output))
 
 (defun org-compile-file-commands (source process ext &optional spec err-msg)
@@ -1064,22 +1070,54 @@ get an unnecessary O(N²) space complexity, so you're usually better off using
       (eval form t)
     (error (format "%%![Error: %s]" error))))
 
+(defvar org--headline-re-cache-no-bol nil
+  "Plist holding association between headline level regexp.")
+(defvar org--headline-re-cache-bol nil
+  "Plist holding association between headline level regexp.")
+(defsubst org-headline-re (true-level &optional no-bol)
+  "Generate headline regexp for TRUE-LEVEL.
+When NO-BOL is non-nil, regexp will not demand the regexp to start at
+beginning of line."
+  (or (plist-get
+       (if no-bol
+           org--headline-re-cache-no-bol
+         org--headline-re-cache-bol)
+       true-level)
+      (let ((re (rx-to-string
+                 (if no-bol
+                     `(seq (** 1 ,true-level "*") " ")
+                   `(seq line-start (** 1 ,true-level "*") " ")))))
+        (if no-bol
+            (setq org--headline-re-cache-no-bol
+                  (plist-put
+                   org--headline-re-cache-no-bol
+                   true-level re))
+          (setq org--headline-re-cache-bol
+                (plist-put
+                 org--headline-re-cache-bol
+                 true-level re)))
+        re)))
+
 (defvar org-outline-regexp) ; defined in org.el
+(defvar org-outline-regexp-bol) ; defined in org.el
 (defvar org-odd-levels-only) ; defined in org.el
 (defvar org-inlinetask-min-level) ; defined in org-inlinetask.el
-(defun org-get-limited-outline-regexp ()
+(defun org-get-limited-outline-regexp (&optional with-bol)
   "Return outline-regexp with limited number of levels.
-The number of levels is controlled by `org-inlinetask-min-level'."
+The number of levels is controlled by `org-inlinetask-min-level'.
+Match at beginning of line when WITH-BOL is non-nil."
   (cond ((not (derived-mode-p 'org-mode))
-	 outline-regexp)
+         (if (string-prefix-p "^" outline-regexp)
+             (if with-bol outline-regexp (substring outline-regexp 1))
+           (if with-bol (concat "^" outline-regexp) outline-regexp)))
 	((not (featurep 'org-inlinetask))
-	 org-outline-regexp)
+	 (if with-bol org-outline-regexp-bol org-outline-regexp))
 	(t
 	 (let* ((limit-level (1- org-inlinetask-min-level))
 		(nstars (if org-odd-levels-only
 			    (1- (* limit-level 2))
 			  limit-level)))
-	   (format "\\*\\{1,%d\\} " nstars)))))
+           (org-headline-re nstars (not with-bol))))))
 
 (defun org--line-empty-p (n)
   "Is the Nth next line empty?
@@ -1189,7 +1227,7 @@ Return nil when PROP is not set at POS."
        (<= (match-beginning n) pos)
        (>= (match-end n) pos)))
 
-(defun org-skip-whitespace ()
+(defsubst org-skip-whitespace ()
   "Skip over space, tabs and newline characters."
   (skip-chars-forward " \t\n\r"))
 

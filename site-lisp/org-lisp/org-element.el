@@ -1147,11 +1147,9 @@ Assume point is at beginning of the headline."
 	   (time-props (org-element--get-time-properties))
 	   (end
             (save-excursion
-              (let ((re (rx-to-string
-                         `(seq line-start (** 1 ,true-level "*") " "))))
-                (if (re-search-forward re nil t)
-                    (line-beginning-position)
-                  (point-max)))))
+              (if (re-search-forward (org-headline-re true-level) nil t)
+                  (line-beginning-position)
+                (point-max))))
 	   (contents-begin (save-excursion
 			     (forward-line)
 			     (skip-chars-forward " \r\t\n" end)
@@ -1190,6 +1188,7 @@ Assume point is at beginning of the headline."
 			  :contents-end contents-end
                           :robust-begin robust-begin
                           :robust-end robust-end
+                          :true-level true-level
 			  :level level
 			  :priority priority
 			  :tags tags
@@ -1858,14 +1857,15 @@ containing `:begin', `:end', `:contents-begin', `contents-end',
     ;; Beginning of section is the beginning of the first non-blank
     ;; line after previous headline.
     (let* ((begin (point))
-	   (end (progn (org-with-limited-levels (outline-next-heading))
-		       (point)))
+	   (end
+            (if (re-search-forward (org-get-limited-outline-regexp t) nil 'move)
+                (goto-char (match-beginning 0))
+	      (point)))
 	   (pos-before-blank (progn (skip-chars-backward " \r\t\n")
 				    (line-beginning-position 2)))
            (robust-end (when (> (- pos-before-blank 2) begin)
                          (- pos-before-blank 2)))
-           (robust-begin (when robust-end begin))
-           )
+           (robust-begin (when robust-end begin)))
       (list 'section
 	    (list :begin begin
 		  :end end
@@ -4186,8 +4186,9 @@ Assume point is at the first equal sign marker."
 ;; It returns the Lisp representation of the element starting at
 ;; point.
 
+(defvar org-inlinetask-min-level); Declared in org-inlinetask.el
 (defvar org-element--cache-sync-requests); Declared later
-(defun org-element--current-element (limit &optional granularity mode structure add-to-cache)
+(defun org-element--current-element (limit &optional granularity mode structure)
   "Parse the element starting at point.
 
 Return value is a list like (TYPE PROPS) where TYPE is the type
@@ -4212,200 +4213,176 @@ Optional argument MODE, when non-nil, can be either
 If STRUCTURE isn't provided but MODE is set to `item', it will be
 computed.
 
-Optional argument ADD-TO-CACHE, when non-nil, and when cache is active,
-will also add current element to cache if it is not yet there.  Use
-this argument with care, as validity of the element in parse tree is
-not checked.
-
 This function assumes point is always at the beginning of the
 element it has to parse."
-  (let* ((element (and (not (buffer-narrowed-p))
-                       (org-element--cache-active-p)
-                       (not org-element--cache-sync-requests)
-                       (org-element--cache-find (point) t)))
-         (element (progn (while (and element
-                                     (not (and (eq (point) (org-element-property :begin element))
-                                               (eq mode (org-element-property :mode element)))))
-                           (setq element (org-element-property :parent element)))
-                         element))
-         (old-element element)
-         (element (when
-                      (pcase (org-element-property :granularity element)
-                        (`nil t)
-                        (`object t)
-                        (`element (not (memq granularity '(nil object))))
-                        (`greater-element (not (memq granularity '(nil object element))))
-                        (`headline (eq granularity 'headline)))
-                    element)))
-    (if element
-        element
-      (save-excursion
-        (let ((case-fold-search t)
-	      ;; Determine if parsing depth allows for secondary strings
-	      ;; parsing.  It only applies to elements referenced in
-	      ;; `org-element-secondary-value-alist'.
-	      (raw-secondary-p (and granularity (not (eq granularity 'object))))
-              result)
-          (setq
-           result
-           (cond
-            ;; Item.
-            ((eq mode 'item)
-	     (org-element-item-parser limit structure raw-secondary-p))
-            ;; Table Row.
-            ((eq mode 'table-row) (org-element-table-row-parser limit))
-            ;; Node Property.
-            ((eq mode 'node-property) (org-element-node-property-parser limit))
-            ;; Headline.
-            ((org-with-limited-levels (looking-at-p org-outline-regexp-bol))
-             (org-element-headline-parser limit raw-secondary-p))
-            ;; Sections (must be checked after headline).
-            ((eq mode 'section) (org-element-section-parser limit))
-            ((eq mode 'first-section)
-	     (org-element-section-parser
-	      (or (save-excursion (org-with-limited-levels (outline-next-heading)))
-	          limit)))
-            ;; Comments.
-            ((looking-at "^[ \t]*#\\(?: \\|$\\)")
-	     (org-element-comment-parser limit))
-            ;; Planning.
-            ((and (eq mode 'planning)
-	          (eq ?* (char-after (line-beginning-position 0)))
-	          (looking-at org-element-planning-line-re))
-	     (org-element-planning-parser limit))
-            ;; Property drawer.
-            ((and (pcase mode
-	            (`planning (eq ?* (char-after (line-beginning-position 0))))
-	            ((or `property-drawer `top-comment)
-		     (save-excursion
-		       (beginning-of-line 0)
-		       (not (looking-at "[[:blank:]]*$"))))
-	            (_ nil))
-	          (looking-at org-property-drawer-re))
-	     (org-element-property-drawer-parser limit))
-            ;; When not at bol, point is at the beginning of an item or
-            ;; a footnote definition: next item is always a paragraph.
-            ((not (bolp)) (org-element-paragraph-parser limit (list (point))))
-            ;; Clock.
-            ((looking-at org-element-clock-line-re)
-             (org-element-clock-parser limit))
-            ;; Inlinetask.
-            ((looking-at "^\\*+ ")
-	     (org-element-inlinetask-parser limit raw-secondary-p))
-            ;; From there, elements can have affiliated keywords.
-            (t (let ((affiliated (org-element--collect-affiliated-keywords
-			          limit (memq granularity '(nil object)))))
-	         (cond
-	          ;; Jumping over affiliated keywords put point off-limits.
-	          ;; Parse them as regular keywords.
-	          ((and (cdr affiliated) (>= (point) limit))
-	           (goto-char (car affiliated))
-	           (org-element-keyword-parser limit nil))
-	          ;; LaTeX Environment.
-	          ((looking-at org-element--latex-begin-environment)
-	           (org-element-latex-environment-parser limit affiliated))
-	          ;; Drawer.
-	          ((looking-at org-element-drawer-re)
-	           (org-element-drawer-parser limit affiliated))
-	          ;; Fixed Width
-	          ((looking-at "[ \t]*:\\( \\|$\\)")
-	           (org-element-fixed-width-parser limit affiliated))
-	          ;; Inline Comments, Blocks, Babel Calls, Dynamic Blocks and
-	          ;; Keywords.
-	          ((looking-at "[ \t]*#\\+")
-	           (goto-char (match-end 0))
-	           (cond
-	            ((looking-at "BEGIN_\\(\\S-+\\)")
-		     (beginning-of-line)
-		     (funcall (pcase (upcase (match-string 1))
-			        ("CENTER"  #'org-element-center-block-parser)
-			        ("COMMENT" #'org-element-comment-block-parser)
-			        ("EXAMPLE" #'org-element-example-block-parser)
-			        ("EXPORT"  #'org-element-export-block-parser)
-			        ("QUOTE"   #'org-element-quote-block-parser)
-			        ("SRC"     #'org-element-src-block-parser)
-			        ("VERSE"   #'org-element-verse-block-parser)
-			        (_         #'org-element-special-block-parser))
-			      limit
-			      affiliated))
-	            ((looking-at "CALL:")
-		     (beginning-of-line)
-		     (org-element-babel-call-parser limit affiliated))
-	            ((save-excursion
-                       (beginning-of-line)
-                       (looking-at org-element-dynamic-block-open-re))
-		     (beginning-of-line)
-		     (org-element-dynamic-block-parser limit affiliated))
-	            ((looking-at "\\S-+:")
-		     (beginning-of-line)
-		     (org-element-keyword-parser limit affiliated))
-	            (t
-		     (beginning-of-line)
-		     (org-element-paragraph-parser limit affiliated))))
-	          ;; Footnote Definition.
-	          ((looking-at org-footnote-definition-re)
-	           (org-element-footnote-definition-parser limit affiliated))
-	          ;; Horizontal Rule.
-	          ((looking-at "[ \t]*-\\{5,\\}[ \t]*$")
-	           (org-element-horizontal-rule-parser limit affiliated))
-	          ;; Diary Sexp.
-	          ((looking-at "%%(")
-	           (org-element-diary-sexp-parser limit affiliated))
-	          ;; Table.
-	          ((or (looking-at "[ \t]*|")
-		       ;; There is no strict definition of a table.el
-		       ;; table.  Try to prevent false positive while being
-		       ;; quick.
-		       (let ((rule-regexp
-			      (rx (zero-or-more (any " \t"))
-			          "+"
-			          (one-or-more (one-or-more "-") "+")
-			          (zero-or-more (any " \t"))
-			          eol))
-			     (non-table.el-line
-			      (rx bol
-			          (zero-or-more (any " \t"))
-			          (or eol (not (any "+| \t")))))
-			     (next (line-beginning-position 2)))
-		         ;; Start with a full rule.
-		         (and
-		          (looking-at rule-regexp)
-		          (< next limit) ;no room for a table.el table
-		          (save-excursion
-		            (end-of-line)
-		            (cond
-			     ;; Must end with a full rule.
-			     ((not (re-search-forward non-table.el-line limit 'move))
-			      (if (bolp) (forward-line -1) (beginning-of-line))
-			      (looking-at rule-regexp))
-			     ;; Ignore pseudo-tables with a single
-			     ;; rule.
-			     ((= next (line-beginning-position))
-			      nil)
-			     ;; Must end with a full rule.
-			     (t
-			      (forward-line -1)
-			      (looking-at rule-regexp)))))))
-	           (org-element-table-parser limit affiliated))
-	          ;; List.
-	          ((looking-at (org-item-re))
-	           (org-element-plain-list-parser
-	            limit affiliated
-	            (or structure (org-element--list-struct limit))))
-	          ;; Default element: Paragraph.
-	          (t (org-element-paragraph-parser limit affiliated)))))))
-          (when result
-            (org-element-put-property result :mode mode)
-            (org-element-put-property result :granularity granularity))
-          (when (and (not (buffer-narrowed-p))
-                     (org-element--cache-active-p)
-                     (not org-element--cache-sync-requests)
-                     add-to-cache)
-            (if (not old-element)
-                (setq result (org-element--cache-put result))
-              (org-element-set-element old-element result)
-              (setq result old-element)))
-          result)))))
+  (save-excursion
+    (let ((case-fold-search t)
+	  ;; Determine if parsing depth allows for secondary strings
+	  ;; parsing.  It only applies to elements referenced in
+	  ;; `org-element-secondary-value-alist'.
+	  (raw-secondary-p (and granularity (not (eq granularity 'object))))
+          result at-task?)
+      (setq
+       result
+       ;; Regexp matches below should avoid modifying match data,
+       ;; if possible.  Doing it unnecessarily degrades regexp
+       ;; matching performance an order of magnitude, which
+       ;; becomes important when parsing large buffers with huge
+       ;; amount of elements to be parsed.
+       ;;
+       ;; In general, the checks below should be as efficient as
+       ;; possible, especially early in the `cond' form.  (The
+       ;; early checks will contribute to al subsequent parsers as
+       ;; well).
+       (cond
+        ;; Item.
+        ((eq mode 'item) (org-element-item-parser limit structure raw-secondary-p))
+        ;; Table Row.
+        ((eq mode 'table-row) (org-element-table-row-parser limit))
+        ;; Node Property.
+        ((eq mode 'node-property) (org-element-node-property-parser limit))
+        ;; Headline.
+        ((and (looking-at-p "^\\*+ ")
+              (setq at-task? t)
+              (or (not (featurep 'org-inlinetask))
+                  (save-excursion
+                    (< (skip-chars-forward "*")
+                       (if org-odd-levels-only
+			   (1- (* org-inlinetask-min-level 2))
+			 org-inlinetask-min-level)))))
+         (org-element-headline-parser limit raw-secondary-p))
+        ;; Sections (must be checked after headline).
+        ((memq mode '(section first-section)) (org-element-section-parser nil))
+        ;; Comments.
+        ((looking-at-p "^[ \t]*#\\(?: \\|$\\)") (org-element-comment-parser limit))
+        ;; Planning.
+        ((and (eq mode 'planning)
+	      (eq ?* (char-after (line-beginning-position 0)))
+	      (looking-at-p org-element-planning-line-re))
+	 (org-element-planning-parser limit))
+        ;; Property drawer.
+        ((and (pcase mode
+	        (`planning (eq ?* (char-after (line-beginning-position 0))))
+	        ((or `property-drawer `top-comment)
+		 (save-excursion
+		   (beginning-of-line 0)
+		   (not (looking-at-p "[[:blank:]]*$"))))
+	        (_ nil))
+	      (looking-at-p org-property-drawer-re))
+	 (org-element-property-drawer-parser limit))
+        ;; When not at bol, point is at the beginning of an item or
+        ;; a footnote definition: next item is always a paragraph.
+        ((not (bolp)) (org-element-paragraph-parser limit (list (point))))
+        ;; Clock.
+        ((looking-at-p org-element-clock-line-re) (org-element-clock-parser limit))
+        ;; Inlinetask.
+        (at-task? (org-element-inlinetask-parser limit raw-secondary-p))
+        ;; From there, elements can have affiliated keywords.
+        (t (let ((affiliated (org-element--collect-affiliated-keywords
+			      limit (memq granularity '(nil object)))))
+	     (cond
+	      ;; Jumping over affiliated keywords put point off-limits.
+	      ;; Parse them as regular keywords.
+	      ((and (cdr affiliated) (>= (point) limit))
+	       (goto-char (car affiliated))
+	       (org-element-keyword-parser limit nil))
+	      ;; LaTeX Environment.
+	      ((looking-at-p org-element--latex-begin-environment)
+	       (org-element-latex-environment-parser limit affiliated))
+	      ;; Drawer.
+	      ((looking-at-p org-element-drawer-re)
+	       (org-element-drawer-parser limit affiliated))
+	      ;; Fixed Width
+	      ((looking-at-p "[ \t]*:\\( \\|$\\)")
+	       (org-element-fixed-width-parser limit affiliated))
+	      ;; Inline Comments, Blocks, Babel Calls, Dynamic Blocks and
+	      ;; Keywords.
+	      ((looking-at "[ \t]*#\\+")
+	       (goto-char (match-end 0))
+	       (cond
+	        ((looking-at "BEGIN_\\(\\S-+\\)")
+		 (beginning-of-line)
+		 (funcall (pcase (upcase (match-string 1))
+			    ("CENTER"  #'org-element-center-block-parser)
+			    ("COMMENT" #'org-element-comment-block-parser)
+			    ("EXAMPLE" #'org-element-example-block-parser)
+			    ("EXPORT"  #'org-element-export-block-parser)
+			    ("QUOTE"   #'org-element-quote-block-parser)
+			    ("SRC"     #'org-element-src-block-parser)
+			    ("VERSE"   #'org-element-verse-block-parser)
+			    (_         #'org-element-special-block-parser))
+			  limit
+			  affiliated))
+	        ((looking-at-p "CALL:")
+		 (beginning-of-line)
+		 (org-element-babel-call-parser limit affiliated))
+	        ((save-excursion
+                   (beginning-of-line)
+                   (looking-at-p org-element-dynamic-block-open-re))
+		 (beginning-of-line)
+		 (org-element-dynamic-block-parser limit affiliated))
+	        ((looking-at-p "\\S-+:")
+		 (beginning-of-line)
+		 (org-element-keyword-parser limit affiliated))
+	        (t
+		 (beginning-of-line)
+		 (org-element-paragraph-parser limit affiliated))))
+	      ;; Footnote Definition.
+	      ((looking-at-p org-footnote-definition-re)
+	       (org-element-footnote-definition-parser limit affiliated))
+	      ;; Horizontal Rule.
+	      ((looking-at-p "[ \t]*-\\{5,\\}[ \t]*$")
+	       (org-element-horizontal-rule-parser limit affiliated))
+	      ;; Diary Sexp.
+	      ((looking-at-p "%%(")
+	       (org-element-diary-sexp-parser limit affiliated))
+	      ;; Table.
+	      ((or (looking-at-p "[ \t]*|")
+		   ;; There is no strict definition of a table.el
+		   ;; table.  Try to prevent false positive while being
+		   ;; quick.
+		   (let ((rule-regexp
+			  (rx (zero-or-more (any " \t"))
+			      "+"
+			      (one-or-more (one-or-more "-") "+")
+			      (zero-or-more (any " \t"))
+			      eol))
+			 (non-table.el-line
+			  (rx bol
+			      (zero-or-more (any " \t"))
+			      (or eol (not (any "+| \t")))))
+			 (next (line-beginning-position 2)))
+		     ;; Start with a full rule.
+		     (and
+		      (looking-at-p rule-regexp)
+		      (< next limit) ;no room for a table.el table
+		      (save-excursion
+		        (end-of-line)
+		        (cond
+			 ;; Must end with a full rule.
+			 ((not (re-search-forward non-table.el-line limit 'move))
+			  (if (bolp) (forward-line -1) (beginning-of-line))
+			  (looking-at-p rule-regexp))
+			 ;; Ignore pseudo-tables with a single
+			 ;; rule.
+			 ((= next (line-beginning-position))
+			  nil)
+			 ;; Must end with a full rule.
+			 (t
+			  (forward-line -1)
+			  (looking-at-p rule-regexp)))))))
+	       (org-element-table-parser limit affiliated))
+	      ;; List.
+	      ((looking-at-p (org-item-re))
+	       (org-element-plain-list-parser
+	        limit affiliated
+	        (or structure (org-element--list-struct limit))))
+	      ;; Default element: Paragraph.
+	      (t (org-element-paragraph-parser limit affiliated)))))))
+      (when result
+        (org-element-put-property result :mode mode)
+        (org-element-put-property result :granularity granularity))
+      result)))
 
 
 ;; Most elements can have affiliated keywords.  When looking for an
@@ -4817,20 +4794,7 @@ Elements are accumulated into ACC."
 	      (when (and (eolp) (not (eobp))) (forward-char)))
 	  ;; Find current element's type and parse it accordingly to
 	  ;; its category.
-	  (let* ((element (org-element-copy
-                           ;; `org-element--current-element' may return cached
-                           ;; elements.  Below code reassigns
-                           ;; `:parent' property of the element and
-                           ;; may interfere with cache
-                           ;; synchronization if parent element is not
-                           ;; yet in cache.  Moreover, the returned
-                           ;; structure may be altered by caller code
-                           ;; arbitrarily.  Hence, we return a copy of
-                           ;; the potentially cached element to make
-                           ;; potential modifications safe for element
-                           ;; cache.
-                           (org-element--current-element
-			    end granularity mode structure)))
+	  (let* ((element (org-element--current-element end granularity mode structure))
 		 (type (org-element-type element))
 		 (cbeg (org-element-property :contents-begin element)))
 	    (goto-char (org-element-property :end element))
@@ -5593,23 +5557,24 @@ cache during the synchronization get a new key generated with
 Such keys are stored inside the element property
 `:org-element--cache-sync-key'.  The property is a cons containing
 current `org-element--cache-sync-keys-value' and the element key."
-  (or (when (eq org-element--cache-sync-keys-value (car (org-element-property :org-element--cache-sync-key element)))
-        (cdr (org-element-property :org-element--cache-sync-key element)))
+  (or (when-let ((key-cons (org-element-property :org-element--cache-sync-key element)))
+        (when (eq org-element--cache-sync-keys-value (car key-cons))
+          (cdr key-cons)))
       (let* ((begin (org-element-property :begin element))
+             (type (org-element-type element))
 	     ;; Increase beginning position of items (respectively
 	     ;; table rows) by one, so the first item can get
 	     ;; a different key from its parent list (respectively
 	     ;; table).
-	     (key (if (memq (org-element-type element) '(item table-row))
-		      (1+ begin)
-                    ;; Decrease beginning position of sections by one,
-                    ;; so that the first element of the section get
-                    ;; different key from the parent section.
-                    (if (eq (org-element-type element) 'section)
-                        (1- begin)
-                      (if (eq (org-element-type element) 'org-data)
-                          (- begin 2)
-		        begin)))))
+	     (key
+              (cond
+               ((memq type '(item table-row)) (1+ begin))
+               ;; Decrease beginning position of sections by one,
+               ;; so that the first element of the section get
+               ;; different key from the parent section.
+               ((eq type 'section) (1- begin))
+               ((eq type 'org-data) (- begin 2))
+               (t begin))))
         (when org-element--cache-sync-requests
 	  (org-element-put-property
            element
@@ -5710,7 +5675,7 @@ position."
 	;; than B (A is longer).  Therefore, return nil.
 	(and (null a) b)))))
 
-(defun org-element--cache-compare (a b)
+(defsubst org-element--cache-compare (a b)
   "Non-nil when element A is located before element B."
   (org-element--cache-key-less-p (org-element--cache-key a) (org-element--cache-key b)))
 
@@ -6508,7 +6473,10 @@ the expected result."
             ;; buffer above.  This comes at the cost of not calculating
             ;; `:parent' property for headings.
             ((not cached)
-             (if (org-with-limited-levels (outline-previous-heading))
+             (end-of-line) ; ensure the end of current heading.
+             (if (re-search-backward
+                  (org-get-limited-outline-regexp t)
+                  nil 'move)
                  (progn
                    (setq element (org-element-headline-parser nil 'fast))
 	           (setq mode 'planning)
@@ -6538,11 +6506,11 @@ the expected result."
              (let ((up cached)
                    (pos (if (= (point-max) pos) (1- pos) pos)))
                (while (and up (<= (org-element-property :end up) pos))
-                 (goto-char (org-element-property :end up))
-                 (setq element up
+                 (setq next (org-element-property :end up)
+                       element up
                        mode (org-element--next-mode (org-element-property :mode element) (org-element-type element) nil)
-                       up (org-element-property :parent up)
-                       next (point)))
+                       up (org-element-property :parent up)))
+               (when next (goto-char next))
                (when up (setq element up)))))
            ;; Parse successively each element until we reach POS.
            (let ((end (or (org-element-property :end element) (point-max)))
@@ -6570,17 +6538,16 @@ If you observe Emacs hangs frequently, please report this to Org mode mailing li
                  (unless (save-excursion
                            (org-skip-whitespace)
                            (eobp))
-                   (org-element-with-disabled-cache
-                     (setq element (org-element--current-element
-			            end 'element mode
-			            (org-element-property :structure parent)))))
+                   (setq element (org-element--current-element
+			          end 'element mode
+			          (org-element-property :structure parent))))
                  ;; Make sure that we return referenced element in cache
                  ;; that can be altered directly.
                  (if element
                      (setq element (or (org-element--cache-put element) element))
                    ;; Nothing to parse (i.e. empty file).
                    (throw 'exit parent))
-                 (unless (or (not (org-element--cache-active-p)) parent)
+                 (unless (or parent (not (org-element--cache-active-p)))
                    (org-element--cache-warn
                     "Got empty parent while parsing. Please report it to Org mode mailing list (M-x org-submit-bug-report).\n Backtrace:\n%S"
                     (when (and (fboundp 'backtrace-get-frames)
@@ -6601,13 +6568,9 @@ If you observe Emacs hangs frequently, please report this to Org mode mailing li
                    (goto-char elem-end)
                    (when (eq type 'headline)
                      (save-match-data
-                       (unless (when (and (/= 1 (org-element-property :level element))
+                       (unless (when (and (/= 1 (org-element-property :true-level element))
                                           (re-search-forward
-                                           (rx-to-string
-                                            `(and bol (repeat 1 ,(1- (let ((level (org-element-property :level element)))
-                                                                       (if org-odd-levels-only (1- (* level 2)) level)))
-                                                              "*")
-                                                  " "))
+                                           (org-headline-re (1- (org-element-property :true-level element)))
                                            pos t))
                                  (beginning-of-line)
                                  t)
@@ -6619,11 +6582,7 @@ If you observe Emacs hangs frequently, please report this to Org mode mailing li
                          (goto-char pos)
                          (unless
                              (re-search-backward
-                              (rx-to-string
-                               `(and bol (repeat ,(let ((level (org-element-property :level element)))
-                                                    (if org-odd-levels-only (1- (* level 2)) level))
-                                                 "*")
-                                     " "))
+                              (org-headline-re (org-element-property :true-level element))
                               elem-end t)
                            ;; Roll-back to normal parsing.
                            (goto-char elem-end)))))

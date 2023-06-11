@@ -10,7 +10,7 @@
       tramp-container-connection-local-default-flatpak-profile)
      ((:application tramp :machine "localhost")
       tramp-connection-local-darwin-ps-profile)
-     ((:application tramp :machine "deusilence.lan")
+     ((:application tramp :machine "deusilence.local")
       tramp-connection-local-darwin-ps-profile)
      ((:application tramp)
       tramp-connection-local-default-system-profile tramp-connection-local-default-shell-profile)))
@@ -92,7 +92,7 @@
       (path-separator . ":")
       (null-device . "/dev/null"))))
  '(package-selected-packages
-   '(gcmh conda hl-indent-scope org-modern magit corfu smart-hungry-delete cdlatex gptel projectile ligature treesit-auto vertico anaconda-mode markdown-mode orderless marginalia org-roam cape rainbow-delimiters emacsql-sqlite-builtin highlight-indent-guides ein tempel embark-consult editorconfig)))
+   '(hl-indent-scope conda org-modern magit corfu smart-hungry-delete modus-themes cdlatex projectile ligature rainbow-mode treesit-auto vertico anaconda-mode orderless marginalia org-roam rainbow-delimiters emacsql-sqlite-builtin highlight-indent-guides ein tempel embark-consult editorconfig cape gcmh)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

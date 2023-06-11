@@ -17,19 +17,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modus Themes
-(require-theme 'modus-themes)
-(setq modus-themes-custom-auto-reload nil)
-(setq modus-themes-italic-constructs nil)
-(setq modus-themes-bold-constructs nil)
-(setq modus-themes-common-palette-overrides
-      '((underline-link border) ; Subtle underlines
-        (underline-link-visited border)
-        (underline-link-symbolic border)
-        (string green-cooler) ; Use green strings
-        (bg-hover bg-green-subtle) ; Make the background subtle green
-        (bg-line-number-inactive unspecified) ; Make line numbers less intense
-        (bg-line-number-active unspecified)))
-(load-theme 'modus-vivendi :no-confirm)
+(use-package modus-themes
+  :ensure t
+  :init
+  (setq modus-themes-italic-constructs nil)
+  (setq modus-themes-common-palette-overrides
+        '((underline-link border) ; Subtle underlines
+          (underline-link-visited border)
+          (underline-link-symbolic border)
+          (string green-cooler)))
+  :config
+  (load-theme 'modus-vivendi :no-confirm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

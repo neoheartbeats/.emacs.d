@@ -30,6 +30,8 @@
 ;; Remap modes to use `treesit'
 (setq major-mode-remap-alist '((python-mode . python-ts-mode)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Initialize `eglot'
 (use-package eglot
   :ensure t
@@ -66,22 +68,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Emacs IPython Notebook
-(use-package ein
+;; Preview colors from code
+(use-package rainbow-mode
   :ensure t
+  :diminish t
   :config
-  (setq ein:use-auto-complete t)
-  (setq ein:use-smartrep t))
+  (add-hook 'prog-mode-hook #'(lambda ()
+                                (rainbow-mode 1))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Indentation guide
-(use-package highlight-indent-guides
-  :ensure t
-  :hook (python-ts-mode . highlight-indent-guides-mode)
-  :config
-  (set-face-foreground 'highlight-indent-guides-character-face "")
-  (setq highlight-indent-guides-method 'character))
 
 (provide 'init-eglot)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

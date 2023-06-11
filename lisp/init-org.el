@@ -84,6 +84,10 @@
 (setq-default org-link-frame-setup ; Open files in current frame
               (cl-acons 'file #'find-file org-link-frame-setup))
 
+;; Quick jump to link
+(bind-keys :map org-mode-map
+           ("s-<return>" . org-open-at-point))
+
 ;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
 
@@ -159,42 +163,6 @@
         ("" "siunitx" t)
         ("" "physics2" t)
         ("noDcommand" "kpfonts")))
-
-(setq org-latex-preview-process-alist
-      '((dvipng
-         :programs ("latex" "dvipng")
-         :description "dvi > png"
-         :message "you need to install the programs: latex and dvipng."
-         :image-input-type "dvi"
-         :image-output-type "png"
-         :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
-         :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
-         :image-converter ("dvipng --follow -D %D -T tight --depth --height -o %B-%%09d.png %f")
-         :transparent-image-converter
-         ("dvipng --follow -D %D -T tight -bg Transparent --depth --height -o %B-%%09d.png %f"))
-        (dvisvgm
-         :programs ("latex" "dvisvgm")
-         :description "dvi > svg"
-         :message "you need to install the programs: latex and dvisvgm."
-         :image-input-type "dvi"
-         :image-output-type "svg"
-         :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
-         :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
-         ;; With dvisvgm the --bbox=preview flag is needed to emit the preview.sty-provided
-         ;; height+width+depth information. The --optimise, --clipjoin, and --relative flags
-         ;; cause dvisvgm do do some extra work to tidy up the SVG output, but barely add to
-         ;; the overall dvisvgm runtime (<1% increace, from testing).
-         :image-converter ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts --bbox=preview --exact-bbox -o %B-%%9p.svg %f"))
-        (imagemagick
-         :programs ("pdflatex" "convert")
-         :description "pdf > png"
-         :message "you need to install the programs: latex and imagemagick."
-         :image-input-type "pdf"
-         :image-output-type "png"
-         :latex-compiler ("pdflatex -interaction nonstopmode -output-directory %o %f")
-         :latex-precompiler ("pdftex -output-directory %o -ini -jobname=%b \"&pdflatex\" mylatexformat.ltx %f")
-         :image-converter
-         ("convert -density %D -trim -antialias %f -quality 100 %B-%%09d.png"))))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
