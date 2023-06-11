@@ -53,8 +53,6 @@
 ;; Garbage Collector Magic Hack
 (use-package gcmh
   :ensure t
-  :diminish t
-  :defer 2
   :config
   (setq gcmh-idle-delay 'auto)
   (setq gcmh-auto-idle-delay-factor 10)
@@ -77,11 +75,11 @@
 (use-package org
   :load-path "site-lisp/org-lisp/")
 
-;; (use-package hl-column
-;;   :load-path "site-lisp/emacs-hl-column/"
-;;   :config
-;;   (add-hook 'prog-mode-hook #'(lambda ()
-;;                                 (hl-column-mode 1))))
+(use-package hl-column
+  :load-path "site-lisp/emacs-hl-column/"
+  :config
+  (add-hook 'prog-mode-hook #'(lambda ()
+                                (hl-column-mode 1))))
 
 (use-package copilot
   :load-path "site-lisp/copilot.el/"

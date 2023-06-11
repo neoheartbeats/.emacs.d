@@ -4539,7 +4539,21 @@ This is for getting out of special buffers like capture.")
 (defvar org-agenda-file-menu-enabled t
   "When non-nil, refresh Agenda files in Org menu when loading Org.")
 
+(defvar org-mode-syntax-table
+  (let ((st (make-syntax-table outline-mode-syntax-table)))
+    (modify-syntax-entry ?\" "\"" st)
+    (modify-syntax-entry ?\\ "_" st)
+    (modify-syntax-entry ?~ "_" st)
+    (modify-syntax-entry ?< "(>" st)
+    (modify-syntax-entry ?> ")<" st)
+    st)
+  "Standard syntax table for Org mode buffers.")
+
 (defvar org-mode-tags-syntax-table
+  (let ((st (make-syntax-table org-mode-syntax-table)))
+    (modify-syntax-entry ?@ "w" st)
+    (modify-syntax-entry ?_ "w" st)
+    st)
   "Syntax table including \"@\" and \"_\" as word constituents.")
 
 ;;;###autoload
@@ -4569,7 +4583,7 @@ The following commands are available:
              (eq org-fold-core-style 'overlays))
     (add-to-invisibility-spec '(org-link)))
   (org-fold-initialize (or (and (stringp org-ellipsis) (not (equal "" org-ellipsis)) org-ellipsis)
-                        "..."))
+                           "..."))
   (make-local-variable 'org-link-descriptive)
   (when (eq org-fold-core-style 'overlays) (add-to-invisibility-spec '(org-hide-block . t)))
   (if org-link-descriptive
@@ -4592,18 +4606,9 @@ The following commands are available:
     (org-set-tag-faces 'org-tag-faces org-tag-faces))
   ;; Calc embedded
   (setq-local calc-embedded-open-mode "# ")
-  ;; Modify a few syntax entries
-  (modify-syntax-entry ?\" "\"")
-  (modify-syntax-entry ?\\ "_")
-  (modify-syntax-entry ?~ "_")
-  (modify-syntax-entry ?< "(>")
-  (modify-syntax-entry ?> ")<")
-  ;; Set tags syntax table.
-  (setq org-mode-tags-syntax-table
-        (make-syntax-table org-mode-syntax-table))
-  ;; @ and _ are allowed as word-components in tags.
-  (modify-syntax-entry ?@ "w" org-mode-tags-syntax-table)
-  (modify-syntax-entry ?_ "w" org-mode-tags-syntax-table)
+  ;; Set syntax table.  Ensure that buffer-local changes to the syntax
+  ;; table do not affect other Org buffers.
+  (set-syntax-table (make-syntax-table org-mode-syntax-table))
   (setq-local font-lock-unfontify-region-function 'org-unfontify-region)
   ;; Activate before-change-function
   (setq-local org-table-may-need-update t)
@@ -17089,8 +17094,8 @@ When optional INDENT argument is non-nil, call
 and INTERACTIVE.
 
 When `org-return-follows-link' is non-nil and point is on
-a timestamp or a link, call `org-open-at-point'.  However, it
-will not happen if point is in a table or on a \"dead\"
+a timestamp, a link or a citation, call `org-open-at-point'.
+However, it will not happen if point is in a table or on a \"dead\"
 object (e.g., within a comment).  In these case, you need to use
 `org-open-at-point' directly."
   (interactive "i\nP\np")
@@ -17110,8 +17115,8 @@ object (e.g., within a comment).  In these case, you need to use
 	  (insert "\n")
 	(org-table-justify-field-maybe)
 	(call-interactively #'org-table-next-row)))
-     ;; On a link or a timestamp, call `org-open-at-point' if
-     ;; `org-return-follows-link' allows it.  Tolerate fuzzy
+     ;; On a link, a timestamp or a citation, call `org-open-at-point'
+     ;; if `org-return-follows-link' allows it.  Tolerate fuzzy
      ;; locations, e.g., in a comment, as `org-open-at-point'.
      ((and org-return-follows-link
 	   (or (and (eq 'link element-type)
@@ -17123,6 +17128,7 @@ object (e.g., within a comment).  In these case, you need to use
 			(> (point) origin))))
 	       (org-in-regexp org-ts-regexp-both nil t)
 	       (org-in-regexp org-tsr-regexp-both nil  t)
+               (org-element-lineage context '(citation citation-reference) 'include-self)
 	       (org-in-regexp org-link-any-re nil t)))
       (call-interactively #'org-open-at-point))
      ;; Insert newline in heading, but preserve tags.
@@ -18383,8 +18389,7 @@ Also align node properties according to `org-property-format'."
              ;; signals org-src--edit-element to preserve the indentation on exit
              (when (and (looking-at-p "^[[:space:]]*$")
                         (not org-src-preserve-indentation))
-               (let ((element (org-element-at-point))
-                     block-content-ind some-ind)
+               (let (block-content-ind some-ind)
                  (org-with-point-at (org-element-property :begin element)
                    (setq block-content-ind (+ (org-current-text-indentation)
                                               org-edit-src-content-indentation))

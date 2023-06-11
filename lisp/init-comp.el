@@ -45,18 +45,18 @@
   (("C-s" . consult-line)
    ("M-s" . consult-ripgrep)))
 
-(use-package embark
-  :ensure t
-  :init (setq prefix-help-command #'embark-prefix-help-command)
-  :bind
-  (("M-." . embark-dwim)
-   ("C-h b" . embark-bindings)))
-
-(use-package embark-consult
-  :ensure t
-  :after (embark consult)
-  :hook (embark-collect-mode-hook . consult-preview-at-point-mode))
-
+;; (use-package embark
+;;   :ensure t
+;;   :init (setq prefix-help-command #'embark-prefix-help-command)
+;;   :bind
+;;   (("M-." . embark-dwim)
+;;    ("C-h b" . embark-bindings)))
+;;
+;; (use-package embark-consult
+;;   :ensure t
+;;   :after (embark consult)
+;;   :hook (embark-collect-mode-hook . consult-preview-at-point-mode))
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Enable rich annotations
