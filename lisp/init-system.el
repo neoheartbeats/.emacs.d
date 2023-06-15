@@ -70,10 +70,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Locate position history
-(use-package saveplace :defer 2
+(use-package saveplace
+  :defer 2
   :config (save-place-mode 1))
 
-(use-package savehist :defer 2
+(use-package savehist 
   :config
   (setq savehist-file (expand-file-name "savehist" user-emacs-directory))
   (setq history-length 1000)

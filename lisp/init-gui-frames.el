@@ -22,7 +22,9 @@
   :init
   (setq modus-themes-italic-constructs nil)
   (setq modus-themes-common-palette-overrides
-        '((underline-link border) ; Subtle underlines
+        '((border-mode-line-active unspecified)
+          (border-mode-line-inactive unspecified) ; No borders for mode lines
+          (underline-link border) ; Subtle underlines
           (underline-link-visited border)
           (underline-link-symbolic border)
           (string green-cooler)))
@@ -47,8 +49,8 @@
 (set-face-background 'fringe (face-attribute 'default :background))
 
 ;; Cursor faces
-;; (setq-default cursor-type '(bar . 1))
-;; (set-cursor-color "#ff66ff")
+(set-cursor-color "#ff66ff")
+(setq-default cursor-type '(bar . 1))
 (setq-default blink-cursor-mode nil)
 
 ;; highlight current line
@@ -59,7 +61,7 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Pes Mono" :height 150)
+(set-face-attribute 'default nil :family "Pes Code" :height 150)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
@@ -72,6 +74,14 @@
   :ensure t
   :config
   (ligature-set-ligatures 'prog-mode
+                          '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->"
+                            "<-->" "<--->" "<---->" "<!--" "<==" "<===" "<="
+                            "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
+                            "<====>" "<!---" "<~~" "<~" "~>" "~~>" "::" ":::"
+                            "==" "!=" "===" "!==" ":=" ":-" ":+" "<*" "<*>"
+                            "*>" "<|" "<|>" "|>" "+:" "-:" "=:" "<******>" "++"
+                            "+++" "__"))
+  (ligature-set-ligatures 'text-mode
                           '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->"
                             "<-->" "<--->" "<---->" "<!--" "<==" "<===" "<="
                             "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>"

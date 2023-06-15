@@ -257,12 +257,17 @@ Each function in this hook is called with three arguments:
 
 - The exit-code of the preview generation process. More
   specifically, this is the exit-code of the image-converter, the
-  final process in the chain of processes that generates a latex
+  final process in the chain of processes that generates a LaTeX
   preview image.
 
 - The process buffer.
 
-- The info plist. ;;TODO: Improve this."
+- The processing-info plist, containing the state of the LaTeX
+  preview process. See `org-latex-preview--create-image-async'
+  for details.
+
+This hook can be used for introspection of or additional
+processing after the LaTeX preview process."
   :group 'org-latex-preview
   :type 'hook)
 
@@ -340,7 +345,7 @@ This can take a few forms, namely:
           (float :tag "Proportional width")
           (const :tag "Unset" nil)))
 
-(defcustom org-latex-preview-use-precompilation t
+(defcustom org-latex-preview-precompile t
   "Use LaTeX header precompilation when previewing fragments.
 This causes a slight delay the first time `org-latex-pdf-process'
 is called in a buffer, but subsequent calls will be faster.
@@ -351,15 +356,32 @@ This requires the LaTeX package \"mylatexformat\" to be installed."
   :type 'boolean)
 
 (defcustom org-latex-preview-auto-generate t
-  "Whether `org-latex-preview-auto-mode' should apply to new fragments.
+  "Whether `org-latex-preview-auto-mode' should apply to new and edited fragments.
 
-When non-nil, newly inserted/typed LaTeX fragments and
-environments will be automatically previewed.  Otherwise, only
-existing LaTeX previews will be automatically hidden/shown on
-cursor movement and regenerated after edits."
+When `org-latex-preview-auto-mode' is on, existing LaTeX previews
+will be automatically hidden/shown on cursor movement and
+regenerated after edits.  This option controls how newly inserted
+and edited fragments are previewed.
+
+The following values are supported:
+
+- t: Generate previews for newly inserted fragments.
+
+- nil: Do not generate previews for newly inserted fragments.
+
+- live: (symbol) same as `t', but also update previews for
+        existing fragments continuously with each keystroke.
+        These live previews are shown according to
+        `org-latex-preview-live-display-type', which see.
+
+Note that existing previews are always updated after the cursor
+moves out of them."
   :group 'org-latex
   :package-version '(Org . "9.7")
-  :type 'boolean)
+  :type '(choice
+          (const :tag "Auto-generate" t)
+          (const :tag "Don't auto-generate" nil)
+          (const :tag "Auto-generate continuously" live)))
 
 (defconst org-latex-preview--tentative-math-re
   "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}"
@@ -862,7 +884,8 @@ them or vice-versa, customize the variable `org-latex-preview-auto-generate'."
 ;; - When the cursor exits the boundaries of the fragment, the
 ;;   `after-string' property of the preview overlay is removed.
 
-(defvar-local org-latex-preview-live--docstring " ")
+(defvar-local org-latex-preview-live--docstring " "
+  "String that holds the live LaTeX preview image as a text property.")
 (defvar-local org-latex-preview-live--element-type nil)
 (defvar-local org-latex-preview-live--generator nil)
 (defcustom org-latex-preview-live-preview-fragments t
@@ -871,7 +894,21 @@ LaTeX environments."
   :group 'org-latex-preview
   :type 'boolean)
 (defcustom org-latex-preview-live-display-type 'buffer
-  ";;TODO: "
+  "How to display live-updating previews of LaTeX snippets.
+
+This option is meaningful when live previews are enabled, by
+setting `org-latex-preview-auto-generate' to `live' and enabling
+`org-latex-preview-auto-mode'.
+
+The currently supported options are the symbols
+
+- buffer: Display live previews next to or under the LaTeX
+  fragment in the Org buffer.
+
+- eldoc: Display live previews using Eldoc.  Requires
+  `eldoc-mode' to be turned on in the Org buffer.  Note that
+  Eldoc in turn offers various display functions, such as the
+  echo area, the dedicated `eldoc-doc-buffer' and more."
   :group 'org-latex-preview
   :type  '(choice
            (const :tag "Display next to fragment" 'buffer)
@@ -921,12 +958,15 @@ updated no more than once in this interval of time."
                      (lambda () (setq waiting nil)))))))
 
 (defun org-latex-preview-live--clearout (ov)
-  ";TODO: "
+  "Clear out the live LaTeX preview for the preview overlay OV."
   (setq org-latex-preview-live--element-type nil)
   (overlay-put ov 'after-string nil))
 
 (defun org-latex-preview-live--regenerate (beg end _)
-  ";TODO: "
+  "Regenerate the LaTeX preview overlay that overlaps BEG and END.
+
+This is meant to be run via the `after-change-functions' hook in
+Org buffers when using live-updating LaTeX previews."
   (pcase-let ((`(,type . ,ov)
                (get-char-property-and-overlay (point) 'org-overlay-type)))
     (when (and ov (eq type 'org-latex-overlay)
@@ -937,7 +977,9 @@ updated no more than once in this interval of time."
         (org-latex-preview-live--clearout ov)))))
 
 (defun org-latex-preview-live--update-props (image-spec &optional box-face)
-  ";TODO: "
+  "Update the live preview string with the IMAGE-SPEC display property.
+
+BOX-FACE is the face to apply in addition."
   (let ((l (length org-latex-preview-live--docstring)))
     (put-text-property
      (1- l) l 'display image-spec
@@ -948,21 +990,26 @@ updated no more than once in this interval of time."
        org-latex-preview-live--docstring))))
 
 (defun org-latex-preview-live--ensure-overlay (&optional ov)
-  ";TODO: "
+  "Set up a live preview for the LaTeX fragment with overlay OV."
   (when-let*
       ((ov (or ov
                (let ((props (get-char-property-and-overlay 'org-overlay-type)))
                  (and (eq (car props) 'org-latex-overlay)
                       (cdr props)))))
        (end (overlay-end ov)))
-    (let ((latex-env-p (progn
-                         (unless org-latex-preview-live--element-type
-                           (let* ((elm (org-element-context))
-                                  (elm-type (org-element-type elm)))
-                             (setq org-latex-preview-live--element-type
-                                   elm-type)))
-                         (eq org-latex-preview-live--element-type
-                             'latex-environment))))
+    (let ((latex-env-p
+           (progn
+             (unless org-latex-preview-live--element-type
+               (let* ((elm (org-element-context)))
+                 ;; Treat \[ ... \] as a latex-environment for the
+                 ;; purposes of live-previews.
+                 (setq org-latex-preview-live--element-type
+                       (or (and (string-prefix-p
+                                 "\\[" (org-element-property :value elm))
+                                'latex-environment)
+                           (org-element-type elm)))))
+             (eq org-latex-preview-live--element-type
+                 'latex-environment))))
       (when (or latex-env-p org-latex-preview-live-preview-fragments)
         (when (eq org-latex-preview-live-display-type 'buffer)
           (unless (overlay-get ov 'after-string)
@@ -1000,7 +1047,9 @@ updated no more than once in this interval of time."
 ;; TODO: Replace with `org-latex-preview-live--update-overlay-run',
 ;; which see.
 (defun org-latex-preview-live--update-overlay (ov)
-  (when (memq ov (overlays-at (point)))
+  "Update the live LaTeX preview for overlay OV."
+  (when (and (memq ov (overlays-at (point)))
+             (overlay-get ov 'view-text))
     (if (or (overlay-get ov 'after-string)
             (eq org-latex-preview-live-display-type
                 'eldoc))
@@ -1010,14 +1059,29 @@ updated no more than once in this interval of time."
 
 ;; Code for previews in org-src buffers
 (defun org-latex-preview-live--src-buffer-setup ()
-  ";TODO: "
+  "Set up the org-src buffer for live LaTeX previews.
+
+If `org-latex-preview-auto-generate' is set to `live' and
+`org-latex-preview-auto-mode' is turned on, live LaTeX previews
+are generated when editing a LaTeX fragment or environment using
+`org-edit-special'.
+
+If the source Org buffer is visible, these previews are displayed
+over the original fragment.  Otherwise previews are displayed in
+the org-src buffer.
+
+This is meant to be called via `org-src-mode-hook'."
   (when (and (equal major-mode (org-src-get-lang-mode "latex"))
              (buffer-local-value 'org-latex-preview-auto-mode
-                                 (marker-buffer org-src--beg-marker)))
+                                 (marker-buffer org-src--beg-marker))
+             (equal
+              (buffer-local-value 'org-latex-preview-auto-generate
+                                  (marker-buffer org-src--beg-marker))
+              'live))
     (let* ((org-buf (marker-buffer org-src--beg-marker))
            (src-buf (current-buffer))
            (org-buf-visible-p (window-live-p (get-buffer-window org-buf)))
-           (preamble (org-latex-preview--get-preamble org-buf))
+           (preamble)
            (element (org-element-context))
            ;; Do not use (org-element-property :begin element) to
            ;; find the bounds -- this is fragile under typos.
@@ -1036,7 +1100,10 @@ updated no more than once in this interval of time."
                       (and (eq (car props) 'org-latex-overlay)
                            (cdr props))))
           (org-latex-preview-live--clearout orig-ov)
-          (setq ov (copy-overlay orig-ov))
+          (setq ov (copy-overlay orig-ov)
+                preamble (or org-latex-preview--preamble-content
+                             (setq org-latex-preview--preamble-content
+                                   (org-latex-preview--get-preamble))))
           (overlay-put ov 'view-text t)
           (move-overlay ov beg end src-buf))
         (org-latex-preview-auto--close-previous-overlay))
@@ -1102,7 +1169,10 @@ updated no more than once in this interval of time."
 
 ;; Eldoc support for live previews
 (defun org-latex-preview-live--display-in-eldoc (callback)
-  ";;TODO: "
+  "Eldoc documentation function for live LaTeX previews.
+
+CALLBACK is supplied by Eldoc, see
+`eldoc-documentation-functions'."
   (when (and org-latex-preview-live--docstring
              (get-char-property (point) 'org-overlay-type))
     (funcall callback org-latex-preview-live--docstring)))
@@ -1113,6 +1183,9 @@ updated no more than once in this interval of time."
 
 ;; Live preview setup and teardown.
 (defun org-latex-preview-live--setup ()
+  "Set up hooks for live LaTeX previews.
+
+See `org-latex-preview-auto-generate' for details."
   (setq org-latex-preview-live--docstring " ")
   (setq-local org-latex-preview-live--generator
                  (thread-first #'org-latex-preview-live--regenerate
@@ -1131,6 +1204,9 @@ updated no more than once in this interval of time."
   (add-hook 'org-latex-preview-update-overlay-functions #'org-latex-preview-live--update-overlay nil 'local))
 
 (defun org-latex-preview-live--teardown ()
+  "Remove hooks for live LaTeX previews.
+
+See `org-latex-preview-auto-generate' for details."
   (when-let* ((props (get-char-property-and-overlay (point) 'org-overlay-type))
               ((eq (car props) 'org-latex-overlay))
               (ov (cdr props)))
@@ -1784,11 +1860,15 @@ previews."
           (and (not org-latex-preview-numbered)
                org-latex-preview--single-eqn-format)))))))
 
+(defconst org-latex-preview--include-preview-string
+  "\n\\usepackage[active,tightpage,auctex]{preview}\n"
+  "A LaTeX preamble snippet that includes preview.sty for previews.")
+
 (defun org-latex-preview--create-tex-file (processing-info fragments)
   "Create a LaTeX file based on PROCESSING-INFO and FRAGMENTS.
 
 More specifically, a preamble will be generated based on
-PROCESSING-INFO.  Then, if `org-latex-preview-use-precompilation' is
+PROCESSING-INFO.  Then, if `org-latex-preview-precompile' is
 non-nil, a precompiled format file will be generated if needed
 and used.  Otherwise the preamble is used normally.
 
@@ -1800,13 +1880,14 @@ The path of the created LaTeX file is returned."
   (let* ((header
           (concat
            (plist-get processing-info :latex-header)
-           (let ((w org-latex-preview-width))
-             (cond
-              ((stringp w)
-               (format "\n\\setlength{\\textwidth}{%s}\n" w))
-              ((and (floatp w) (<= 0.0 w 1.0))
-               (format "\n\\setlength{\\textwidth}{%s\\paperwidth}\n" w))))
-           "\n\\usepackage[active,tightpage,auctex]{preview}\n"))
+           org-latex-preview--include-preview-string))
+         (textwidth
+          (let ((w org-latex-preview-width))
+            (cond
+             ((stringp w)
+              (format "\n\\setlength{\\textwidth}{%s}\n" w))
+             ((and (floatp w) (<= 0.0 w 1.0))
+              (format "\n\\setlength{\\textwidth}{%s\\paperwidth}\n" w)))))
          (relative-file-p
           (string-match-p "\\(?:\\\\input{\\|\\\\include{\\)[^/]" header))
          (remote-file-p (file-remote-p default-directory))
@@ -1815,32 +1896,38 @@ The path of the created LaTeX file is returned."
            (concat (make-temp-name "org-tex-") ".tex")
            (and remote-file-p temporary-file-directory)))
          (write-region-inhibit-fsync t)
-         (coding-system-for-write buffer-file-coding-system))
+         (coding-system-for-write buffer-file-coding-system)
+         (precompile-failed-msg))
     (when (and relative-file-p remote-file-p)
       (error "Org LaTeX Preview does not currently support \\input/\\include in remote files"))
-    (when org-latex-preview-use-precompilation
-      (if-let ((format-file (org-latex-preview-precompile processing-info header)))
-          ;; Replace header with .fmt file path.
-          (setq header (concat "%& " (file-name-sans-extension format-file)))
+    (when org-latex-preview-precompile
+      (pcase (plist-get processing-info :latex-processor)
+        ("pdflatex"
+         (if-let ((format-file (org-latex-preview--precompile processing-info header
+                                                             (not relative-file-p))))
+             (setq header (concat "%& " (file-name-sans-extension format-file)))
+           (setq precompile-failed-msg
+                 "Precompile failed.")))
+        ((or "xelatex" "lualatex")
+         (setq precompile-failed-msg
+               (concat
+                (plist-get processing-info :latex-processor)
+                " does not support precompilation."))))
+      (when precompile-failed-msg
         (display-warning
          '(org latex-preview disable-local-precompile)
-         (concat "Precompile failed, disabling LaTeX preview precompile in this buffer."
-                 "\n  To renable, run `(setq-local org-latex-preview-use-precompilation t)' or reopen this buffer."
-                 (pcase (plist-get processing-info :latex-processor)
-                   ("lualatex"
-                    "\n  LuaLaTeX is known to be problematic, if you might be able to help please get in touch with emacs-orgmode@gnu.org.")
-                   ("xelatex"
-                    ;; Note: <https://tex.stackexchange.com/questions/395965/precompile-with-xelatex-and-fontspec> might be helpful.
-                    "\n  The current XeTeX approach does not support fontspec, if you might be able to help please get in touch with emacs-orgmode@gnu.org."))
-                 "\n "))
-        (setq-local org-latex-preview-use-precompilation nil)))
+         (concat
+          precompile-failed-msg
+          " Disabling LaTeX preview precompile in this buffer.\n To re-enable, run `(setq-local org-latex-preview-precompile t)' or reopen this buffer."))
+        (setq-local org-latex-preview-precompile nil)))
     (with-temp-file tex-temp-name
       (insert header)
       ;; The \abovedisplayskip length must be set after \begin{document} because
       ;; it is usually set during the font size intialisation that occurs at
       ;; \begin{document}.  We can either modify the \normalsize command to set
       ;; the \abovedisplayskip length, or just set it after \begin{document}.
-      (insert "\n\\begin{document}\n\n"
+      (insert textwidth
+              "\n\\begin{document}\n\n"
               "\\setlength\\abovedisplayskip{0pt}"
               " % Remove padding before equation environments.\n\n")
       (dolist (fragment-info fragments)
@@ -2085,7 +2172,7 @@ fragments in EXTENDED-INFO."
       ;; as it is currently known to cause issues.
       (save-excursion
         (goto-char (point-min))
-        (when (if (and org-latex-preview-use-precompilation
+        (when (if (and org-latex-preview-precompile
                        (re-search-forward "^PRELOADED FILES:" nil t))
                   (re-search-forward "^ *hyperref\\.sty" nil t)
                 (re-search-forward "^(.*hyperref/hyperref\\.sty" nil t))
@@ -2433,11 +2520,12 @@ the *entire* preview cache will be cleared, and `org-persist-gc' run."
     (or org-latex-preview--preamble-content
         (setq org-latex-preview--preamble-content
               (org-latex-preview--get-preamble)))
-    (dolist (compiler org-latex-compilers)
-      (org-latex--remove-cached-preamble
-       compiler org-latex-preview--preamble-content nil)
-      (org-latex--remove-cached-preamble
-       compiler org-latex-preview--preamble-content t)))
+    (let ((full-preamble
+           (concat org-latex-preview--preamble-content
+                   org-latex-preview--include-preview-string)))
+      (dolist (compiler org-latex-compilers)
+        (org-latex--remove-cached-preamble compiler full-preamble nil)
+        (org-latex--remove-cached-preamble compiler full-preamble t))))
   (org-latex-preview-clear-overlays beg end)
   (if clear-entire-cache
       (let ((n 0))
@@ -2483,7 +2571,7 @@ the *entire* preview cache will be cleared, and `org-persist-gc' run."
   (when (or clear-entire-cache (not (or beg end)))
     (org-latex-preview--clear-preamble-cache)))
 
-(defun org-latex-preview-precompile (processing-info preamble &optional tempfile-p)
+(defun org-latex-preview--precompile (processing-info preamble &optional tempfile-p)
   "Precompile/dump LaTeX PREAMBLE text.
 
 The path to the format file (.fmt) is returned.  If the format
