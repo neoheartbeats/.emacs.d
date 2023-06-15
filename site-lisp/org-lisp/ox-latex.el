@@ -2109,9 +2109,20 @@ specified in `org-latex-default-packages-alist' or
              "\n"))
            (format-file
             (and org-latex-precompile
-                 (org-latex--precompile
-                  info preamble
-                  (string-match-p "\\(?:\\\\input{\\|\\\\include{\\)[^/]" preamble)))))
+                 ;; Precompilation is disabled for xelatex/lualatex for now.
+                 (if (member (plist-get info :latex-compiler)
+                             '("xelatex" "lualatex"))
+                     (progn
+                       (display-warning
+                        '(org latex-export disable-local-precompile)
+                        (format "%s does not support precompilation, disabling LaTeX precompile in this buffer.\n To re-enable, run `(setq-local org-latex-precompile t)' or reopen this buffer."
+                                (plist-get info :latex-compiler)))
+                       (setf (buffer-local-value
+                              'org-latex-precompile (get-buffer (plist-get info :input-buffer)))
+                             nil))
+                   (org-latex--precompile
+                    info preamble
+                    (string-match-p "\\(?:\\\\input{\\|\\\\include{\\)[^/]" preamble))))))
       (when (and format-file (not snippet?))
         (let ((preamble-parts (split-string preamble (regexp-quote header-split))))
           (setq preamble (car preamble-parts)

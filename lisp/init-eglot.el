@@ -45,18 +45,32 @@
 ;;
 ;; Python
 ;;
+;; Python environment management
+;;
+;;
 ;; Configure `conda' environment
 (use-package conda
   :ensure t
   :init
-  (setq conda-anaconda-home "/opt/homebrew/Caskroom/miniconda/base/")
+  (setq conda-anaconda-home "~/anaconda3/")
+  (setq conda-env-home-directory (expand-file-name "~/anaconda3/"))
+  (setq conda-env-autoactivate-mode t)
   :config
   (conda-env-initialize-interactive-shells)
   (conda-env-initialize-eshell))
 
+(setq python-shell-interpreter (expand-file-name
+                                "envs/my_labs/bin/python" conda-anaconda-home)
+      python-shell-interpreter-args "-i"
+      python-shell--interpreter python-shell-interpreter
+      python-shell--interpreter-args python-shell-interpreter-args
+      python-shell-prompt-detect-failure-warning nil
+      python-shell-completion-native-enable nil)
+
 ;; Code navigation, documentation lookup and completion for Python
 (use-package anaconda-mode
   :ensure t
+  :diminish (anaconda-mode anaconda-eldoc-mode)
   :hook (python-ts-mode . anaconda-mode)
   :bind
   (:map anaconda-mode-map

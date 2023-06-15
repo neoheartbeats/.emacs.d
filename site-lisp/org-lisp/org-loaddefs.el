@@ -4195,9 +4195,6 @@ EXT-PLIST, when provided, is a property list with external
 parameters overriding Org default settings, but still inferior to
 file-local settings.
 
-When optional argument PUB-DIR is set, use it as the publishing
-directory.
-
 Return INFO file's name.
 
 (fn &optional ASYNC SUBTREEP VISIBLE-ONLY BODY-ONLY EXT-PLIST)" t)
