@@ -48,11 +48,19 @@
   (setq package-enable-at-startup nil)
   (package-initialize))
 
+(use-package diminish
+  :ensure t
+  :config
+  (diminish 'eldoc-mode))
+
+(use-package bind-key :ensure t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Garbage Collector Magic Hack
 (use-package gcmh
   :ensure t
+  :diminish (gcmh-mode)
   :config
   (setq gcmh-idle-delay 'auto)
   (setq gcmh-auto-idle-delay-factor 10)
@@ -77,12 +85,14 @@
 
 (use-package hl-column
   :load-path "site-lisp/emacs-hl-column/"
+  :diminish (hl-column-mode)
   :config
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (hl-column-mode 1))))
 
 (use-package copilot
   :load-path "site-lisp/copilot.el/"
+  :diminish (copilot-mode)
   :init
   (use-package dash :ensure t)
   (use-package editorconfig :ensure t)

@@ -38,7 +38,7 @@
     (push '(":ID:      " . ?􀐚) prettify-symbols-alist)
     (push '(":ROAM_ALIASES:" . ?􀅷) prettify-symbols-alist)
     (push '(":END:" . ?􀅽) prettify-symbols-alist)
-    (push '("#+TITLE:" . ?􀈷) prettify-symbols-alist)
+    (push '("#+TITLE:" . ?􀧵) prettify-symbols-alist)
     (push '("#+AUTHOR:" . ?􀉩) prettify-symbols-alist)
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
     (push '("#+ATTR_ORG:" . ?􀌞) prettify-symbols-alist))
@@ -176,7 +176,9 @@
 (plist-put org-latex-preview-options :zoom 1.25)
 
 ;; Use `CDLaTeX' to improve editing experiences
-(use-package cdlatex :ensure t
+(use-package cdlatex
+  :ensure t
+  :diminish (org-cdlatex-mode)
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 (add-hook 'org-mode-hook #'(lambda ()
