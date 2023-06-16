@@ -105,6 +105,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Display keybindings instructions
+(use-package which-key
+  :ensure t
+  :diminish (which-key-mode)
+  :config
+  (which-key-mode 1))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Mode Line settings
 (setq-default line-number-mode nil)
 (setq-default mode-line-compact t)
