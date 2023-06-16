@@ -12,7 +12,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Git client Magit
-(use-package magit :ensure t
+(use-package magit
+  :ensure t
   :defer t
   :config
   (setq magit-diff-refine-hunk t)
@@ -22,14 +23,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Project management
-(use-package projectile :ensure t
+(use-package projectile
+  :ensure t
   :init
   (let ((local-project-path "~/Developer/")
         (project-path-list '()))
     (push local-project-path project-path-list)
     (setq projectile-project-search-path project-path-list))
   (setq-default projectile-generic-command "rg --files --hidden")
-  :config (projectile-mode 1)
+  :config
+  (setq projectile-mode-line-prefix " 􀤞")
+  (projectile-mode 1)
   :bind
   ((:map projectile-mode-map
          ("C-c p" . 'projectile-command-map))))

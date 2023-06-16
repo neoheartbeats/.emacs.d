@@ -85,7 +85,7 @@
 ;; Preview colors from code
 (use-package rainbow-mode
   :ensure t
-  :diminish t
+  :diminish (rainbow-mode)
   :config
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (rainbow-mode 1))))
