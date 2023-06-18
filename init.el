@@ -69,6 +69,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; To measure the startup time
+(use-package benchmark-init
+  :ensure t
+  :config
+  (add-hook 'after-init-hook #'benchmark-init/deactivate))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Bootstrap process
 ;;
 ;; Load path
@@ -85,6 +93,7 @@
 
 (use-package hl-column
   :load-path "site-lisp/emacs-hl-column/"
+  :defer t
   :diminish (hl-column-mode)
   :config
   (add-hook 'prog-mode-hook #'(lambda ()
@@ -92,6 +101,7 @@
 
 (use-package copilot
   :load-path "site-lisp/copilot.el/"
+  :defer t
   :diminish (copilot-mode)
   :init
   (use-package dash :ensure t)

@@ -21,7 +21,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modern Org Mode
-(use-package org-modern :ensure t
+(use-package org-modern
+  :ensure t
+  :after (org)
   :init
   (setq org-modern-star '("􀄩"))
   (setq org-modern-hide-stars "􀄩")
@@ -74,7 +76,7 @@
   (org-latex-preview))
 
 (bind-keys :map org-mode-map
-           ("s-p" . my-preview-org-fragments))
+           ("m-p" . my-preview-org-fragments))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -112,7 +114,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org mode text edition
-(use-package org-roam :ensure t
+(use-package org-roam
+  :ensure t
+  :defer t
   :config
   (setq org-roam-directory org-directory)
   (setq org-roam-dailies-directory "dates/")
@@ -144,7 +148,7 @@
    :map org-mode-map
    (("s-i" . org-roam-node-insert)
     ("s-f" . org-roam-node-find)
-    ("s-o" . org-roam-alias-add)
+    ("s-a" . org-roam-alias-add)
     ("s-<up>" . org-roam-dailies-goto-previous-note)
     ("s-<down>" . org-roam-dailies-goto-next-note)))
   :hook
@@ -214,6 +218,7 @@
 ;; Use `CDLaTeX' to improve editing experiences
 (use-package cdlatex
   :ensure t
+  :defer t
   :diminish (org-cdlatex-mode)
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 

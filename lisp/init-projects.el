@@ -23,20 +23,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Project management
-(use-package projectile
-  :ensure t
-  :init
-  (let ((local-project-path "~/Developer/")
-        (project-path-list '()))
-    (push local-project-path project-path-list)
-    (setq projectile-project-search-path project-path-list))
-  (setq-default projectile-generic-command "rg --files --hidden")
-  :config
-  (setq projectile-mode-line-prefix " 􀤞")
-  (projectile-mode 1)
+(use-package project
+  :diminish t
+  :defer t
   :bind
-  ((:map projectile-mode-map
-         ("C-c p" . 'projectile-command-map))))
+  (("s-p" . project-find-file)
+   ("M-p" . project-switch-project)))
 
 
 (provide 'init-projects)
