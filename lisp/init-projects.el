@@ -28,7 +28,7 @@
   :defer t
   :bind
   (("s-p" . project-find-file)
-   ("M-p" . project-switch-project)))
+   ("C-c p" . project-switch-project)))
 
 
 (provide 'init-projects)

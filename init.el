@@ -93,7 +93,6 @@
 
 (use-package hl-column
   :load-path "site-lisp/emacs-hl-column/"
-  :defer t
   :diminish (hl-column-mode)
   :config
   (add-hook 'prog-mode-hook #'(lambda ()
@@ -104,8 +103,12 @@
   :defer t
   :diminish (copilot-mode)
   :init
-  (use-package dash :ensure t)
-  (use-package editorconfig :ensure t)
+  (use-package dash
+    :ensure t
+    :demand t)
+  (use-package editorconfig
+    :ensure t
+    :demand t)
   :config
   (define-key copilot-completion-map (kbd "s-.") 'copilot-accept-completion)
   (add-hook 'prog-mode-hook #'(lambda ()
