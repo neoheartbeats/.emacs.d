@@ -76,7 +76,7 @@
   (org-latex-preview))
 
 (bind-keys :map org-mode-map
-           ("m-p" . my-preview-org-fragments))
+           ("C-x p" . my-preview-org-fragments))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
