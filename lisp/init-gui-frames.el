@@ -61,7 +61,7 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Pes Code" :height 150)
+(set-face-attribute 'default nil :family "Pes Code" :height 140)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
@@ -108,7 +108,7 @@
 ;;
 ;; Mode Line settings
 (setq-default mode-line-compact t)
-(setq-default column-number-mode t)
+(setq-default line-number-mode nil)
 
 (provide 'init-gui-frames)
 

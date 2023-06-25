@@ -63,7 +63,7 @@
   (conda-env-initialize-eshell))
 
 (setq python-shell-interpreter (expand-file-name
-                                "envs/my_labs/bin/python" conda-anaconda-home)
+                                "envs/Navras/bin/python" conda-anaconda-home)
       python-shell-interpreter-args "-i"
       python-shell--interpreter python-shell-interpreter
       python-shell--interpreter-args python-shell-interpreter-args
