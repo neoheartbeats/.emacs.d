@@ -85,30 +85,35 @@
 ;; Setup `custom.el'
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
-;; Call the function to setup Org Mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Site packages
-(use-package org
-  :load-path "site-lisp/org-lisp/")
+;;
+;; Call the function to setup Org Mode
+(use-package org :load-path "site-lisp/org-lisp/")
 
-(use-package hl-column
-  :load-path "site-lisp/emacs-hl-column/"
-  :diminish (hl-column-mode)
-  :config
-  (add-hook 'prog-mode-hook #'(lambda ()
-                                (hl-column-mode 1))))
+;; Xah Fly Keys
+;; (use-package xah-fly-keys
+;;   :load-path "site-lisp/xah-fly-keys/"
+;;   :config
+;;   (xah-fly-keys-set-layout "qwerty")
+;;   (xah-fly-keys 1))
+;;
+;; ;; Highlight current column
+;; (use-package hl-column
+;;   :load-path "site-lisp/emacs-hl-column/"
+;;   :diminish (hl-column-mode)
+;;   :config
+;;   (add-hook 'prog-mode-hook #'(lambda ()
+;;                                 (hl-column-mode 1))))
 
+;; Setup GitHub Copilot
 (use-package copilot
   :load-path "site-lisp/copilot.el/"
-  :defer t
   :diminish (copilot-mode)
   :init
-  (use-package dash
-    :ensure t
-    :demand t)
-  (use-package editorconfig
-    :ensure t
-    :demand t)
+  (use-package dash :ensure t :demand t)
+  (use-package editorconfig :ensure t :demand t)
   :config
   (define-key copilot-completion-map (kbd "s-.") 'copilot-accept-completion)
   (add-hook 'prog-mode-hook #'(lambda ()
