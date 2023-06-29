@@ -45,18 +45,6 @@
   (("C-s" . consult-line)
    ("M-s" . consult-ripgrep)))
 
-;; (use-package embark
-;;   :ensure t
-;;   :init (setq prefix-help-command #'embark-prefix-help-command)
-;;   :bind
-;;   (("M-." . embark-dwim)
-;;    ("C-h b" . embark-bindings)))
-;;
-;; (use-package embark-consult
-;;   :ensure t
-;;   :after (embark consult)
-;;   :hook (embark-collect-mode-hook . consult-preview-at-point-mode))
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Enable rich annotations
@@ -109,6 +97,8 @@
   :ensure t
   :init
   (setq completion-styles '(orderless basic))
+  (setq completion-category-overrides
+        '((file (styles . (partial-completion)))))
   (setq completion-category-defaults nil)
   (setq completion-category-override nil)
   (setq completion-cycle-threshold 5)
@@ -133,8 +123,6 @@
   :hook
   (eshell-mode .  (lambda ()
                     (setq-local corfu-auto nil)))
-  (org-mode . (lambda ()
-                (setq-local completion-styles '(basic))))
   :bind
   (:map corfu-map
         ("<down>" . corfu-next)

@@ -220,6 +220,9 @@ target       Specification of where the captured item should be placed.
              (clock)
                 File to the entry that is currently being clocked
 
+             (here)
+                The position of point
+
              (function function-finding-location)
                 Most general way: write your own function which both visits
                 the file and moves point to the right location
@@ -991,7 +994,8 @@ Store them in the capture property list."
   (let ((target-entry-p t))
     (save-excursion
       (pcase (or target (org-capture-get :target))
-	(`here
+	((or `here
+             `(here))
 	 (org-capture-put :exact-position (point) :insert-here t))
 	(`(file ,path)
 	 (set-buffer (org-capture-target-buffer path))
@@ -1500,8 +1504,11 @@ Of course, if exact position has been required, just put it there."
       (org-with-point-at pos
 	(when org-capture-bookmark
 	  (let ((bookmark (plist-get org-bookmark-names-plist :last-capture)))
-	    (when bookmark (with-demoted-errors "Bookmark set error: %S"
-	                     (bookmark-set bookmark)))))
+	    (when bookmark
+              (condition-case err
+	          (bookmark-set bookmark)
+                (error
+                 (message (format "Bookmark set error: %S" err)))))))
 	(move-marker org-capture-last-stored-marker (point))))))
 
 (defun org-capture-narrow (beg end)

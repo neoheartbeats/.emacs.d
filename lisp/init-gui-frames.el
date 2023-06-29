@@ -18,7 +18,7 @@
 ;;
 ;; Modus Themes
 (use-package modus-themes
-  :ensure t
+  :ensure t ; The latest version is preferred
   :init
   (setq modus-themes-italic-constructs nil)
   (setq modus-themes-common-palette-overrides
@@ -50,7 +50,7 @@
 
 ;; Cursor faces
 (set-cursor-color "#ff66ff")
-(setq-default cursor-type '(bar . 1))
+;; (setq-default cursor-type '(bar . 1))
 (setq-default blink-cursor-mode nil)
 
 ;; highlight current line
@@ -61,42 +61,20 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Pes Code" :height 140)
+(set-face-attribute 'default nil :family "Monaco" :height 140)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'han "Songti SC")
 
 (set-face-attribute 'italic nil :slant 'normal)
-
-;; Add font ligatures support
-(use-package ligature
-  :ensure t
-  :demand t
-  :config
-  (ligature-set-ligatures 'prog-mode
-                          '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->"
-                            "<-->" "<--->" "<---->" "<!--" "<==" "<===" "<="
-                            "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
-                            "<====>" "<!---" "<~~" "<~" "~>" "~~>" "::" ":::"
-                            "==" "!=" "===" "!==" ":=" ":-" ":+" "<*" "<*>"
-                            "*>" "<|" "<|>" "|>" "+:" "-:" "=:" "<******>" "++"
-                            "+++" "__"))
-  (ligature-set-ligatures 'text-mode
-                          '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->"
-                            "<-->" "<--->" "<---->" "<!--" "<==" "<===" "<="
-                            "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
-                            "<====>" "<!---" "<~~" "<~" "~>" "~~>" "::" ":::"
-                            "==" "!=" "===" "!==" ":=" ":-" ":+" "<*" "<*>"
-                            "*>" "<|" "<|>" "|>" "+:" "-:" "=:" "<******>" "++"
-                            "+++" "__"))
-  (global-ligature-mode t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-  (let ((text "Funding for this program was made possible by viewers like you."))
+  (let
+      ((text "Funding for this program was made possible by viewers like you."))
     (message "􀪾 %s" text)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

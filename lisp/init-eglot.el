@@ -11,37 +11,26 @@
 ;; Setup `treesit'
 (use-package treesit-auto
   :ensure t
-  :defer t
   :config (global-treesit-auto-mode 1))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Configure and install language modules
-(setq treesit-language-source-alist
-      '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-        (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-        (html "https://github.com/tree-sitter/tree-sitter-html")
-        (json "https://github.com/tree-sitter/tree-sitter-json")
-        (make "https://github.com/alemuller/tree-sitter-make")
-        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-        (python "https://github.com/tree-sitter/tree-sitter-python")
-        (toml "https://github.com/tree-sitter/tree-sitter-toml")
-        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
-
-;; Remap modes to use `treesit'
-(setq major-mode-remap-alist '((python-mode . python-ts-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Initialize `eglot'
 (use-package eglot
   :ensure t
-  :defer t
   :config
   (add-hook 'python-ts-mode-hook #'eglot-ensure)
+  (add-hook 'js-ts-mode-hook #'eglot-ensure)
+  (add-hook 'typescript-ts-mode #'eglot-ensure)
   :bind
-  ((:map python-ts-mode-map
+  ((:map python-mode-map
+         ("s-i" . eglot-format-buffer))
+   (:map js-ts-mode-map
          ("s-i" . eglot-format-buffer))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Debugging (TODO)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -84,6 +73,9 @@
         ("M-r" . anaconda-mode-find-references)
         ("M-*" . anaconda-mode-go-back)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; JavaScript and TypeScript (TODO)
 
 (provide 'init-eglot)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
