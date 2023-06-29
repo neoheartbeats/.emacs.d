@@ -69,14 +69,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; To measure the startup time
-(use-package benchmark-init
-  :ensure t
-  :config
-  (add-hook 'after-init-hook #'benchmark-init/deactivate))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Bootstrap process
 ;;
 ;; Load path
@@ -99,26 +91,6 @@
 ;;   (xah-fly-keys-set-layout "qwerty")
 ;;   (xah-fly-keys 1))
 ;;
-;; ;; Highlight current column
-;; (use-package hl-column
-;;   :load-path "site-lisp/emacs-hl-column/"
-;;   :diminish (hl-column-mode)
-;;   :config
-;;   (add-hook 'prog-mode-hook #'(lambda ()
-;;                                 (hl-column-mode 1))))
-
-;; Setup GitHub Copilot
-(use-package copilot
-  :load-path "site-lisp/copilot.el/"
-  :diminish (copilot-mode)
-  :init
-  (use-package dash :ensure t :demand t)
-  (use-package editorconfig :ensure t :demand t)
-  :config
-  (define-key copilot-completion-map (kbd "s-.") 'copilot-accept-completion)
-  (add-hook 'prog-mode-hook #'(lambda ()
-                                (copilot-mode 1))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Load components

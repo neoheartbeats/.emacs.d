@@ -5627,8 +5627,7 @@ needs to be inserted at a specific position in the font-lock sequence.")
             `("\u200b"
               (0 '(face shadow display ,org-semantic-seperator-displayed))))
 	  ;; Checkboxes
-	  '("^[ \t]*\\(?:[-+*]\\|[0-9]+[.)]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\(\\[[- X]\\]\\)"
-	    1 'org-checkbox prepend)
+	  `(,org-list-full-item-re 3 'org-checkbox prepend lax)
 	  (when (cdr (assq 'checkbox org-list-automatic-rules))
 	    '("\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]"
 	      (0 (org-get-checkbox-statistics-face) prepend)))
@@ -6307,19 +6306,22 @@ Set it to HEADING when provided."
   (interactive)
   (org-insert-heading '(4) invisible-ok))
 
-(defun org-insert-todo-heading-respect-content (&optional _)
-  "Insert TODO heading with `org-insert-heading-respect-content' set to t."
-  (interactive)
+(defun org-insert-todo-heading-respect-content (&optional arg)
+  "Call `org-insert-todo-heading', inserting after current subtree.
+ARG is passed to `org-insert-todo-heading'.
+This command temporarily sets `org-insert-heading-respect-content' to t."
+  (interactive "P")
   (let ((org-insert-heading-respect-content t))
-    (org-insert-todo-heading '(4) t)))
+    (org-insert-todo-heading arg t)))
 
 (defun org-insert-todo-heading (arg &optional force-heading)
   "Insert a new heading with the same level and TODO state as current heading.
 
 If the heading has no TODO state, or if the state is DONE, use
-the first state (TODO by default).  Also with one prefix arg,
-force first state.  With two prefix args, force inserting at the
-end of the parent subtree.
+the first state (TODO by default).  Also with `\\[universal-argument]'
+prefix, force first state.  With a `\\[universal-argument]
+\\[universal-argument]' prefix, force inserting at the end of the
+parent subtree.
 
 When called at a plain list item, insert a new item with an
 unchecked check box."
@@ -10733,9 +10735,8 @@ or a character."
 
 (defalias 'org-show-priority 'org-priority-show)
 (defun org-priority-show ()
-  "Show the priority of the current item.
-This priority is composed of the main priority given with the [#A] cookies,
-and by additional input from the age of a schedules or deadline entry."
+  "Show the priority of the current item as number.
+Return the priority value."
   (interactive)
   (let ((pri (if (eq major-mode 'org-agenda-mode)
 		 (org-get-at-bol 'priority)
@@ -15619,7 +15620,8 @@ conventions:
 
   2. Its description consists in a single link of the previous
      type.  In this case, that link must be a well-formed plain
-     or angle link, i.e., it must have an explicit \"file\" type.
+     or angle link, i.e., it must have an explicit \"file\" or
+     \"attachment\" type.
 
 Equip each image with the key-map `image-map'.
 
@@ -15650,7 +15652,7 @@ buffer boundaries with possible narrowing."
 	       ;; "file:" links.  Also check link abbreviations since
 	       ;; some might expand to "file" links.
 	       (file-types-re
-		(format "\\[\\[\\(?:file%s:\\|attachment:\\|[./~]\\)\\|\\]\\[\\(<?file:\\)"
+		(format "\\[\\[\\(?:file%s:\\|attachment:\\|[./~]\\)\\|\\]\\[\\(<?\\(?:file\\|attachment\\):\\)"
 			(if (not link-abbrevs) ""
 			  (concat "\\|" (regexp-opt link-abbrevs))))))
 	  (while (re-search-forward file-types-re end t)
@@ -15689,7 +15691,9 @@ buffer boundaries with possible narrowing."
 			     ;; description.
 			     (= (org-element-property :contents-end link)
 				(match-end 0))
-			     (match-string 2)))))))
+			     (progn
+                               (setq linktype (match-string 1))
+                               (match-string 2))))))))
 	      (when (and path (string-match-p file-extension-re path))
 		(let ((file (if (equal "attachment" linktype)
 				(progn
@@ -16667,7 +16671,11 @@ See the individual commands for more information."
 (defun org-edit-special (&optional arg)
   "Call a special editor for the element at point.
 When at a table, call the formula editor with `org-table-edit-formulas'.
-When in a source code block, call `org-edit-src-code'.
+When at table.el table, edit it in dedicated buffer.
+When in a source code block, call `org-edit-src-code'; with prefix
+  argument, switch to session buffer.
+When in an example block, call `org-edit-src-code'.
+When in an inline code block, call `org-edit-inline-src-code'.
 When in a fixed-width region, call `org-edit-fixed-width-region'.
 When in an export block, call `org-edit-export-block'.
 When in a comment block, call `org-edit-comment-block'.
@@ -18364,13 +18372,16 @@ Also align node properties according to `org-property-format'."
   (interactive)
   (let* ((element (save-excursion (beginning-of-line) (org-element-at-point-no-context)))
 	 (type (org-element-type element)))
-    (unless (or (org-at-heading-p)
+    (unless (or (org-at-heading-p) ; headline has no indent ever.
+                ;; Do not indent first element after headline data.
                 (and (eq org-adapt-indentation 'headline-data)
                      (not (org--at-headline-data-p nil element))
-                     (save-excursion
-                       (goto-char (1- (org-element-property :begin element)))
-                       (or (org-at-heading-p)
-                           (org--at-headline-data-p)))))
+                     ;; Not at headline data and previous is headline data/headline.
+                     (or (memq type '(headline inlinetask)) ; blank lines after heading
+                         (save-excursion
+                           (goto-char (1- (org-element-property :begin element)))
+                           (or (org-at-heading-p)
+                               (org--at-headline-data-p))))))
       (cond ((and (memq type '(plain-list item))
 		  (= (line-beginning-position)
 		     (org-element-property :post-affiliated element)))
@@ -20109,7 +20120,7 @@ non-nil it will also look at invisible ones."
 	(if backward? (goto-char (point-min)) (outline-next-heading))
       (org-back-to-heading invisible-ok)
       (unless backward? (end-of-line))	;do not match current headline
-      (let ((level (- (match-end 0) (match-beginning 0) 1))
+      (let ((level (org-current-level))
 	    (f (if backward? #'re-search-backward #'re-search-forward))
 	    (count (if arg (abs arg) 1))
 	    (result (point)))

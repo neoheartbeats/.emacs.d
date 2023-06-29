@@ -33,6 +33,7 @@
   (setq org-modern-table-vertical 2)
   (setq org-modern-block-name nil)
   (setq org-modern-keyword nil)
+  (setq org-modern-timestamp nil)
   :config (global-org-modern-mode 1))
 
 (defun my-iconify-org-buffer ()

@@ -37,7 +37,6 @@
 ;;   (setq yas-triggers-in-field t)
 ;;   (yas-global-mode 1))
 
-
 (provide 'init-temp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

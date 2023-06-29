@@ -113,6 +113,7 @@
 ;; Misc options
 (setq use-short-answers t)
 (setq delete-by-moving-to-trash t)
+(setq dired-use-ls-dired nil)
 
 (setq-default auto-hscroll-mode 'current-line)
 (setq-default auto-save-default nil)
@@ -192,10 +193,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Built-in Sqlite support
-(use-package emacsql-sqlite-builtin
-  :ensure t
-  :demand t)
-
+(use-package emacsql-sqlite-builtin :ensure t :demand t)
 
 (provide 'init-system)
 

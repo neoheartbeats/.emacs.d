@@ -6767,6 +6767,11 @@ that range.  See `after-change-functions' for more information."
 (defun org-element--cache-setup-change-functions ()
   "Setup `before-change-functions' and `after-change-functions'."
   (when (and (derived-mode-p 'org-mode) org-element-use-cache)
+    ;; Clear copied local cache to avoid extra memory usage.
+    ;; We only use cache stored in the base buffer.
+    (when (buffer-base-buffer)
+      (setq-local org-element--cache nil
+                  org-element--headline-cache nil))
     (add-hook 'before-change-functions
 	      #'org-element--cache-before-change nil t)
     ;; Run `org-element--cache-after-change' early to handle cases
@@ -7708,7 +7713,8 @@ the cache."
                             ;; it to real beginning then despite
                             ;; START being larger.
                             (setq start nil)
-                            (move-start-to-next-match nil)
+                            (let ((data nil)) ; data may not be valid. ignore it.
+                              (move-start-to-next-match nil))
                             ;; The new element may now start before
                             ;; or at already processed position.
                             ;; Make sure that we continue from an

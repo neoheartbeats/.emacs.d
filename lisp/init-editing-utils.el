@@ -13,12 +13,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Electric parentheses
-(add-hook 'after-init-hook #'electric-pair-mode)
+(add-hook 'after-init-hook #'(lambda ()
+                               (electric-pair-mode 1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Delete selection if you insert
-(use-package delsel :hook (after-init . delete-selection-mode))
+(use-package delsel
+  :hook (after-init . delete-selection-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -41,17 +43,6 @@
                                 (rainbow-delimiters-mode 1)))
   (add-hook 'text-mode-hook #'(lambda ()
                                 (rainbow-delimiters-mode 1))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Smart deletion
-(use-package smart-hungry-delete
-  :ensure t
-  :bind
-  (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
-   ([remap delete-backward-char] . smart-hungry-delete-backward-char)
-   ([remap delete-char] . smart-hungry-delete-forward-char))
-  :init (smart-hungry-delete-add-default-hooks))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
