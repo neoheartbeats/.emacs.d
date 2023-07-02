@@ -11,10 +11,10 @@
 ;; Completion for minibuffers
 (use-package vertico
   :ensure t
-  :after minibuffer
+  :after (minibuffer)
   :init (vertico-mode 1)
   :config
-  (setq vertico-count 15)
+  (setq vertico-count 10)
   (setq vertico-cycle t)
   
   ;; Load extensions
@@ -34,16 +34,21 @@
 (use-package consult
   :ensure t
   :init
-  (global-set-key (kbd "s-b") 'switch-to-buffer)
+  (global-set-key (kbd "s-b") 'Switch-To-Buffer)
   (global-set-key [remap switch-to-buffer] 'consult-buffer)
   (global-set-key
    [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
   (global-set-key
    [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
+  (global-set-key [remap project-switch-to-buffer] 'consult-project-buffer)
   (global-set-key [remap goto-line] 'consult-goto-line)
+  (global-set-key [remap imenu] 'consult-imenu)
   :bind
   (("C-s" . consult-line)
-   ("M-s" . consult-ripgrep)))
+   ("C-v" . consult-yank-from-kill-ring)
+   ("M-s" . consult-ripgrep)
+   ("s-o" . consult-outline)
+   ("s-k" . consult-recent-file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -121,8 +126,8 @@
   (setq corfu-history-mode 1)
   (setq corfu-popupinfo-mode 1)
   :hook
-  (eshell-mode .  (lambda ()
-                    (setq-local corfu-auto nil)))
+  (eshell-mode . (lambda ()
+                   (setq-local corfu-auto nil)))
   :bind
   (:map corfu-map
         ("<down>" . corfu-next)
@@ -130,9 +135,7 @@
         ("<space>" . corfu-quit)
         ("<escape>" . corfu-quit)))
 
-
 (provide 'init-comp)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-comp.el ends here

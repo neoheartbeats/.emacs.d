@@ -69,7 +69,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org fragments
-(setq org-image-actual-width '(300))
+(setq org-image-actual-width '(420))
 
 (defun my-preview-org-fragments ()
   (interactive)
@@ -117,7 +117,7 @@
 ;; Org mode text edition
 (use-package org-roam
   :ensure t
-  :defer t
+  :after (org)
   :config
   (setq org-roam-directory org-directory)
   (setq org-roam-dailies-directory "dates/")
@@ -143,13 +143,10 @@
            :immediate-finish t)))
 
   (org-roam-db-autosync-mode 1)
-  (global-unset-key (kbd "s-o"))
   :bind
   (("s-n" . org-roam-dailies-goto-today)
    :map org-mode-map
    (("s-i" . org-roam-node-insert)
-    ("s-f" . org-roam-node-find)
-    ("s-a" . org-roam-alias-add)
     ("s-<up>" . org-roam-dailies-goto-previous-note)
     ("s-<down>" . org-roam-dailies-goto-next-note)))
   :hook
@@ -190,7 +187,6 @@
 
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
-
 
 (provide 'init-org)
 

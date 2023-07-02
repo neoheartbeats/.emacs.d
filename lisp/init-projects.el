@@ -17,7 +17,9 @@
   :defer t
   :config
   (setq magit-diff-refine-hunk t)
-  (setq magit-section-visibility-indicator nil) ; Disable showing the bitmap indicators
+
+  ;; Disable showing the bitmap indicators
+  (setq magit-section-visibility-indicator nil)
   :bind ("C-x g" . magit-status))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -27,8 +29,7 @@
   :diminish t
   :defer t
   :bind
-  (("s-p" . project-find-file)
-   ("C-c p" . project-switch-project)))
+  (("s-p" . project-find-file)))
 
 
 (provide 'init-projects)

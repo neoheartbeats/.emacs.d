@@ -18,9 +18,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Misc settings
+(setq undo-limit (* 160000 500)) ; Raise undo-limit to 80 Mb
+(setq truncate-string-ellipsis "􀍠")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Delete selection if you insert
-(use-package delsel
-  :hook (after-init . delete-selection-mode))
+(use-package delsel :hook (after-init . delete-selection-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -37,28 +42,26 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Using rainbow delimiters
-(use-package rainbow-delimiters :ensure t
+(use-package rainbow-delimiters
+  :ensure t
+  :diminish (rainbow-delimiters-mode)
   :config
   (add-hook 'prog-mode-hook #'(lambda ()
-                                (rainbow-delimiters-mode 1)))
-  (add-hook 'text-mode-hook #'(lambda ()
                                 (rainbow-delimiters-mode 1))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Fill columns
 (setq display-fill-column-indicator-character ?\u254e)
-(global-display-fill-column-indicator-mode 1)
+(add-hook 'after-init-hook #'(lambda ()
+                               (global-display-fill-column-indicator-mode 1)))
 
 ;; Display line numbers
 (setq display-line-numbers-width-start t)
-(setq display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook #'(lambda ()
                               (display-line-numbers-mode 1)))
 
-
 (provide 'init-editing-utils)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-editing-utils.el ends here
