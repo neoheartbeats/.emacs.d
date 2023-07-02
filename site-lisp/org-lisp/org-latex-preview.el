@@ -101,11 +101,10 @@ All available processes and theirs documents can be found in
      :image-output-type "svg"
      :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
      :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
-     ;; With dvisvgm the --bbox=preview flag is needed to emit the preview.sty-provided
-     ;; height+width+depth information. The --optimise, --clipjoin, and --relative flags
-     ;; cause dvisvgm do do some extra work to tidy up the SVG output, but barely add to
+     ;; The --optimise, --clipjoin, and --relative flags cause dvisvgm to
+     ;; do some extra work to tidy up the SVG output, but barely add to
      ;; the overall dvisvgm runtime (<1% increace, from testing).
-     :image-converter ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts --bbox=preview -o %B-%%9p.svg %f"))
+     :image-converter ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts --exact-bbox -o %B-%%9p.svg %f"))
     (imagemagick
      :programs ("pdflatex" "convert")
      :description "pdf > png"
