@@ -18,6 +18,7 @@
 ;; Initialize `eglot'
 (use-package eglot
   :ensure t
+  :defer t
   :config
   (add-hook 'python-ts-mode-hook #'eglot-ensure)
   (add-hook 'js-ts-mode-hook #'eglot-ensure)
@@ -52,12 +53,15 @@
   (conda-env-initialize-eshell))
 
 (setq python-shell-interpreter (expand-file-name
-                                "envs/Navras/bin/python" conda-anaconda-home)
+                                "/bin/python" conda-anaconda-home)
       python-shell-interpreter-args "-i"
       python-shell--interpreter python-shell-interpreter
       python-shell--interpreter-args python-shell-interpreter-args
       python-shell-prompt-detect-failure-warning nil
       python-shell-completion-native-enable nil)
+
+(setq python-indent-guess-indent-offset t)
+(setq python-indent-guess-indent-offset-verbose nil)
 
 ;; Code navigation, documentation lookup and completion for Python
 (use-package anaconda-mode

@@ -50,11 +50,12 @@
 
 ;; Cursor faces
 (set-cursor-color "#ff66ff")
-;; (setq-default cursor-type '(bar . 1))
+(setq-default cursor-type '(bar . 1))
 (setq-default blink-cursor-mode nil)
 
 ;; highlight current line
-(add-hook 'after-init-hook #'global-hl-line-mode)
+(add-hook 'after-init-hook #'(lambda ()
+                               (global-hl-line-mode 1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -65,7 +66,7 @@
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "Songti SC")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 (set-face-attribute 'italic nil :slant 'normal)
 

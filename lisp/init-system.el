@@ -82,26 +82,38 @@
   (setq savehist-save-minibuffer-history t)
   (savehist-mode 1))
 
-(use-package emacs
-  :init
-  (defun crm-indicator (args)
-    (cons (format "[CRM%s] %s"
-                  (replace-regexp-in-string
-                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                   crm-separator)
-                  (car args))
-          (cdr args)))
-  (advice-add #'completing-read-multiple
-              :filter-args #'crm-indicator)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Save history for recent files
+(use-package recentf
+  :hook
+  (after-init . (lambda ()
+                  (recentf-mode 1))))
 
-  ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-  ;; Enable recursive minibuffers
-  (setq enable-recursive-minibuffers t))
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; TODO
+;;
+;; (use-package emacs
+;;   :init
+;;   (defun crm-indicator (args)
+;;     (cons (format "[CRM%s] %s"
+;;                   (replace-regexp-in-string
+;;                    "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+;;                    crm-separator)
+;;                   (car args))
+;;           (cdr args)))
+;;   (advice-add #'completing-read-multiple
+;;               :filter-args #'crm-indicator)
+;;
+;;   ;; Do not allow the cursor in the minibuffer prompt
+;;   (setq minibuffer-prompt-properties
+;;         '(read-only t cursor-intangible t face minibuffer-prompt))
+;;   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+;;
+;;   ;; Enable recursive minibuffers
+;;   (setq enable-recursive-minibuffers t))
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; The rules of minimalism
@@ -196,7 +208,6 @@
 (use-package emacsql-sqlite-builtin :ensure t :demand t)
 
 (provide 'init-system)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-system.el ends here

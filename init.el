@@ -29,6 +29,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; Personal information for GPG authorization
+(setq user-full-name "Navras")
+(setq user-mail-address "contact@navras.org")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Initialize packages
 (require 'package)
 (require 'cl-lib)
@@ -67,6 +73,12 @@
   (setq gcmh-high-cons-threshold most-positive-fixnum)
   (gcmh-mode 1))
 
+;; TMP
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Bootstrap process
@@ -76,6 +88,8 @@
 
 ;; Setup `custom.el'
 (setq custom-file (locate-user-emacs-file "custom.el"))
+(when (file-exists-p custom-file)
+  (load custom-file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -84,13 +98,6 @@
 ;; Call the function to setup Org Mode
 (use-package org :load-path "site-lisp/org-lisp/")
 
-;; Xah Fly Keys
-;; (use-package xah-fly-keys
-;;   :load-path "site-lisp/xah-fly-keys/"
-;;   :config
-;;   (xah-fly-keys-set-layout "qwerty")
-;;   (xah-fly-keys 1))
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Load components
