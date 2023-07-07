@@ -6,8 +6,6 @@
 ;;
 ;; Commentary:
 ;;
-;; This file is inspired by https://github.com/purcell/emacs.d/.
-;;
 ;; Code:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

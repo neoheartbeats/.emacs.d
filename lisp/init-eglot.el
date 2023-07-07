@@ -45,15 +45,16 @@
   :ensure t
   :defer t
   :init
-  (setq conda-anaconda-home "~/anaconda3/")
-  (setq conda-env-home-directory (expand-file-name "~/anaconda3/"))
+  (setq conda-anaconda-home "/opt/homebrew/Caskroom/miniconda/")
+  (setq conda-env-home-directory
+        (expand-file-name "/opt/homebrew/Caskroom/miniconda/"))
   (setq conda-env-autoactivate-mode t)
   :config
   (conda-env-initialize-interactive-shells)
   (conda-env-initialize-eshell))
 
-(setq python-shell-interpreter (expand-file-name
-                                "/bin/python" conda-anaconda-home)
+(setq python-shell-interpreter
+      (expand-file-name "/base/bin/python" conda-anaconda-home)
       python-shell-interpreter-args "-i"
       python-shell--interpreter python-shell-interpreter
       python-shell--interpreter-args python-shell-interpreter-args
@@ -80,6 +81,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; JavaScript and TypeScript (TODO)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Configure the ChatGPT client
+(use-package gptel
+  :ensure t
+  :defer t
+  :init
+  (defun get-env-var-from-zshrc (var-name)
+    "Return the value of the environment variable VAR-NAME in the .zshrc file."
+    (let* ((command (concat "source ~/.zshrc; echo $" var-name))
+           (output (shell-command-to-string command))
+           (matched (string-match "\\(.*\\)\n" output)))
+      (if matched
+          (match-string 1 output)
+        (error "Variable %s not found in .zshrc" var-name))))
+  :config
+  (setq gptel-api-key (lambda ()
+                        (get-env-var-from-zshrc "OPENAI_API_KEY")))
+  (setq gptel-default-mode #'org-mode)
+  :bind
+  ("C-x c" . gptel))
 
 (provide 'init-eglot)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
