@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>org-xlatex</title>
+        <script>
+         MathJax = {
+             tex: {
+                 inlineMath: [['$', '$'], ['\\(', '\\)']]
+             },
+             svg: {
+                 fontCache: 'global'
+             }
+         };
+        </script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>
+         function oxlTypeset(latex) {
+             MathJax.startup.promise = MathJax.startup.promise
+                                              .then(() => {
+                                                  MathJax.typesetClear([document.body]);
+                                                  MathJax.texReset();
+                                                  document.body.innerHTML = latex;
+                                                  return MathJax.typesetPromise([document.body]);
+                                              })
+                                              .catch((err) => console.log('Typeset failed: ' + err.message));
+             return null;
+         }
+         function oxlSize() {
+             var el = document.getElementsByTagName('mjx-math')[0];
+             var w = 0;
+             var h = 0;
+             if (el) {
+                 w = el.offsetWidth;
+                 h = el.offsetHeight;
+             }
+             return [w,h];
+         }
+        </script>
+        <style>
+         * {}
+         body { display: block; margin: 0 auto; }
+        </style>
+    </head>
+    <body></body>
+</html>
