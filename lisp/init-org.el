@@ -50,8 +50,8 @@
 (add-hook 'org-mode-hook #'my-iconify-org-buffer)
 
 (setq org-ellipsis " 􀍠")
-(setq org-hide-emphasis-markers t)
-
+;; (setq org-hide-emphasis-markers t)
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Draw fringes in Org mode
@@ -165,7 +165,7 @@
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-        ("" "kpfonts" t)))
+        ("" "mlmodern" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
@@ -181,7 +181,6 @@
 ;; Use `CDLaTeX' to improve editing experiences
 (use-package cdlatex
   :ensure t
-  :defer t
   :diminish (org-cdlatex-mode)
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 

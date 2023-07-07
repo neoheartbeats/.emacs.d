@@ -74,11 +74,11 @@
   (gcmh-mode 1))
 
 ;; TMP
-(use-package exec-path-from-shell
-  :ensure t
-  :config
-  (exec-path-from-shell-initialize))
-
+;; (use-package exec-path-from-shell
+;;   :ensure t
+;;   :config
+;;   (exec-path-from-shell-initialize))
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Bootstrap process
@@ -97,6 +97,12 @@
 ;;
 ;; Call the function to setup Org Mode
 (use-package org :load-path "site-lisp/org-lisp/")
+
+;;
+(use-package org-xlatex
+  :load-path "site-lisp/org-xlatex/"
+  :after (org)
+  :hook (org-mode . org-xlatex-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

@@ -62,7 +62,7 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Monaco" :height 140)
+(set-face-attribute 'default nil :family "Monaco" :height 155)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
@@ -90,7 +90,6 @@
 (setq-default line-number-mode nil)
 
 (provide 'init-gui-frames)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-gui-frames.el ends here
