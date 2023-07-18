@@ -59,8 +59,9 @@
 
 (declare-function org-babel-lob-get-info "ob-lob" (&optional datum no-eval))
 (declare-function org-element-at-point "org-element" (&optional pom cached-only))
-(declare-function org-element-property "org-element" (property element))
-(declare-function org-element-type "org-element" (element))
+(declare-function org-element-property "org-element-ast" (property node))
+(declare-function org-element-post-affiliated "org-element" (node))
+(declare-function org-element-type "org-element-ast" (node &optional anonymous))
 (declare-function org-end-of-meta-data "org" (&optional full))
 (declare-function org-find-property "org" (property &optional value))
 (declare-function org-id-find-id-file "org-id" (id))
@@ -171,7 +172,7 @@ Emacs Lisp representation of the value of the variable."
 			 (let ((e (org-element-at-point)))
 			   (when (equal (org-element-property :name e) ref)
 			     (goto-char
-			      (org-element-property :post-affiliated e))
+			      (org-element-post-affiliated e))
 			     (pcase (org-element-type e)
 			       (`babel-call
 				(throw :found

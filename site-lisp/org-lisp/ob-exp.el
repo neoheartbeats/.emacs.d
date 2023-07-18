@@ -32,8 +32,10 @@
 (declare-function org-babel-lob-get-info "ob-lob" (&optional datum no-eval))
 (declare-function org-element-at-point "org-element" (&optional pom cached-only))
 (declare-function org-element-context "org-element" (&optional element))
-(declare-function org-element-property "org-element" (property element))
-(declare-function org-element-type "org-element" (element))
+(declare-function org-element-property "org-element-ast" (property node))
+(declare-function org-element-begin "org-element" (node))
+(declare-function org-element-end "org-element" (node))
+(declare-function org-element-type "org-element-ast" (node &optional anonymous))
 (declare-function org-escape-code-in-string "org-src" (s))
 (declare-function org-export-copy-buffer "ox"
                   (&optional buffer drop-visibility
@@ -171,7 +173,7 @@ this template."
 	    ;; buffer.
 	    (org-fold-core-ignore-modifications
 	      (while (re-search-forward regexp nil t)
-		(setq element (org-element-at-point))
+		(setq element (save-match-data (org-element-at-point)))
 		(unless (save-match-data
 			  (or (org-in-commented-heading-p nil element)
 			      (org-in-archived-heading-p nil element)))
@@ -195,11 +197,11 @@ this template."
 			     nil)
 			    (type type)))
 			 (begin
-			  (copy-marker (org-element-property :begin element)))
+			  (copy-marker (org-element-begin element)))
 			 (end
 			  (copy-marker
 			   (save-excursion
-			     (goto-char (org-element-property :end element))
+			     (goto-char (org-element-end element))
 			     (skip-chars-backward " \r\t\n")
 			     (point)))))
 		    (pcase type
@@ -277,7 +279,7 @@ this template."
 				 ((equal replacement "")
 				  (goto-char end)
 				  (skip-chars-forward " \r\t\n")
-				  (beginning-of-line)
+				  (forward-line 0)
 				  (delete-region begin (point)))
 				 (t
 				  (if (or org-src-preserve-indentation

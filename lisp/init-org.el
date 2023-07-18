@@ -11,7 +11,7 @@
 (setq org-fast-tag-selection-single-key 'expert)
 (setq org-export-kill-product-buffer-when-displayed t)
 (setq org-fontify-whole-heading-line t)
-(setq org-directory "~/navras/")
+(setq org-directory "~/.org-files/")
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
@@ -45,7 +45,8 @@
     (push '("#+TITLE:" . ?􀧵) prettify-symbols-alist)
     (push '("#+AUTHOR:" . ?􀉩) prettify-symbols-alist)
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
-    (push '("#+ATTR_ORG:" . ?􀌞) prettify-symbols-alist))
+    (push '("#+ATTR_ORG:" . ?􀌞) prettify-symbols-alist)
+    (push '("#+STARTUP: " . ?􀖆) prettify-symbols-alist))
   (prettify-symbols-mode 1))
 (add-hook 'org-mode-hook #'my-iconify-org-buffer)
 
@@ -56,8 +57,8 @@
 ;;
 ;; Draw fringes in Org mode
 (defun my-toggle-internal-fringes ()
-  (setq left-margin-width 15)
-  (setq right-margin-width 15)
+  (setq left-margin-width 10)
+  (setq right-margin-width 0)
   (set-window-buffer nil (current-buffer)))
 
 (add-hook 'org-mode-hook #'my-toggle-internal-fringes)
@@ -150,10 +151,36 @@
     ("s-<up>" . org-roam-dailies-goto-previous-note)
     ("s-<down>" . org-roam-dailies-goto-next-note)))
   :hook
-  (org-roam-dailies-find-file . (lambda ()
+  (org-roam-dailies-find-file . (lambda ()                                  
                                   (save-buffer)
                                   (goto-char (point-max))))
   (after-init . org-roam-dailies-goto-today))
+
+;; Add some Org-roam extensions
+(use-package consult-org-roam
+  :ensure t
+  :after (org-roam)
+  :init
+  (require 'consult-org-roam)
+  ;; Activate the minor mode
+  (consult-org-roam-mode 1)
+  :custom
+  ;; Use `ripgrep' for searching with `consult-org-roam-search'
+  (consult-org-roam-grep-func #'consult-ripgrep)
+  ;; Configure a custom narrow key for `consult-buffer'
+  (consult-org-roam-buffer-narrow-key ?r)
+  ;; Display org-roam buffers right after non-org-roam buffers
+  ;; in consult-buffer (and not down at the bottom)
+  (consult-org-roam-buffer-after-buffers t)
+  :config
+  ;; Eventually suppress previewing for certain functions
+  (consult-customize
+   consult-org-roam-forward-links
+   :preview-key (kbd "M-."))
+  :bind
+  (:map org-mode-map ; Define some convenient keybindings as an addition
+        ("s-f" . consult-org-roam-file-find)
+        ("s-l" . consult-org-roam-backlinks)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -187,8 +214,11 @@
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
 
-(provide 'init-org)
+;; (add-hook 'org-mode-hook #'(lambda ()
+;;                              (org-num-mode 1)))
 
+
+(provide 'init-org)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; init-org.el ends here

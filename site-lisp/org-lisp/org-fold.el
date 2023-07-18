@@ -2,7 +2,7 @@
 ;;
 ;; Copyright (C) 2020-2023 Free Software Foundation, Inc.
 ;;
-;; Author: Ihor Radchenko <yantar92 at gmail dot com>
+;; Author: Ihor Radchenko <yantar92 at posteo dot net>
 ;; Keywords: folding, invisible text
 ;; URL: https://orgmode.org
 ;;
@@ -61,11 +61,12 @@
 (defvar org-element-headline-re)
 
 (declare-function isearch-filter-visible "isearch" (beg end))
-(declare-function org-element-type "org-element" (element))
+(declare-function org-element-type "org-element-ast" (node &optional anonymous))
 (declare-function org-element-at-point "org-element" (&optional pom cached-only))
-(declare-function org-element-property "org-element" (property element))
+(declare-function org-element-property "org-element-ast" (property node))
+(declare-function org-element-end "org-element" (node))
+(declare-function org-element-post-affiliated "org-element" (node))
 (declare-function org-element--current-element "org-element" (limit &optional granularity mode structure))
-(declare-function org-element--cache-active-p "org-element" ())
 (declare-function org-toggle-custom-properties-visibility "org" ())
 (declare-function org-item-re "org-list" ())
 (declare-function org-up-heading-safe "org" ())
@@ -388,7 +389,7 @@ of the current heading, or to 1 if the current line is not a heading."
   (interactive (list
 		(cond
 		 (current-prefix-arg (prefix-numeric-value current-prefix-arg))
-		 ((save-excursion (beginning-of-line)
+		 ((save-excursion (forward-line 0)
 				  (looking-at outline-regexp))
 		  (funcall outline-level))
 		 (t 1))))
@@ -528,12 +529,12 @@ Return a non-nil value when toggling is successful."
                         comment-block dynamic-block example-block export-block
                         quote-block special-block src-block verse-block))
               (_ (error "Unknown category: %S" category))))
-      (let* ((post (org-element-property :post-affiliated element))
+      (let* ((post (org-element-post-affiliated element))
              (start (save-excursion
                       (goto-char post)
                       (line-end-position)))
              (end (save-excursion
-                    (goto-char (org-element-property :end element))
+                    (goto-char (org-element-end element))
                     (skip-chars-backward " \t\n")
                     (line-end-position))))
         ;; Do nothing when not before or at the block opening line or
@@ -614,7 +615,7 @@ Return a non-nil value when toggling is successful."
             ;; Make sure to skip drawer entirely or we might flag it
             ;; another time when matching its ending line with
             ;; `org-drawer-regexp'.
-            (goto-char (org-element-property :end drawer))))))))
+            (goto-char (org-element-end drawer))))))))
 
 (defun org-fold-hide-archived-subtrees (beg end)
   "Re-hide all archived subtrees after a visibility state change."
@@ -623,7 +624,7 @@ Return a non-nil value when toggling is successful."
 	 (re (concat org-outline-regexp-bol ".*:" org-archive-tag ":")))
      (goto-char beg)
      ;; Include headline point is currently on.
-     (beginning-of-line)
+     (forward-line 0)
      (while (and (< (point) end) (re-search-forward re end t))
        (when (member org-archive-tag (org-get-tags nil t))
 	 (org-fold-subtree t)
@@ -658,32 +659,33 @@ DETAIL is either nil, `minimal', `local', `ancestors',
     (when (org-invisible-p)
       ;; FIXME: No clue why, but otherwise the following might not work.
       (redisplay)
-      (let ((region (org-fold-get-region-at-point)))
-        ;; Reveal emphasis markers.
-        (when (eq detail 'local)
-          (let (org-hide-emphasis-markers
-                org-link-descriptive
-                org-pretty-entities
-                (org-hide-macro-markers nil)
-                (region (or (org-find-text-property-region (point) 'org-emphasis)
-                            (org-find-text-property-region (point) 'org-macro)
-                            (org-find-text-property-region (point) 'invisible)
-                            region)))
-            ;; Silence byte-compiler.
-            (ignore org-hide-macro-markers)
-            (when region
-              (org-with-point-at (car region)
-                (beginning-of-line)
-                (let (font-lock-extend-region-functions)
-                  (font-lock-fontify-region (max (point-min) (1- (car region))) (cdr region))))))
-          ;; Unfold links.
+      ;; Reveal emphasis markers.
+      (when (eq detail 'local)
+        (let (org-hide-emphasis-markers
+              org-link-descriptive
+              org-pretty-entities
+              (org-hide-macro-markers nil)
+              (region (or (org-find-text-property-region (point) 'org-emphasis)
+                          (org-find-text-property-region (point) 'org-macro)
+                          (org-find-text-property-region (point) 'invisible))))
+          ;; Silence byte-compiler.
+          (ignore org-hide-macro-markers)
           (when region
-            (dolist (spec '(org-link org-link-description))
-              (org-fold-region (car region) (cdr region) nil spec))))
-        (when region
-          (dolist (spec (org-fold-core-folding-spec-list))
-            ;; Links are taken care by above.
-            (unless (memq spec '(org-link org-link-description))
+            (org-with-point-at (car region)
+              (forward-line 0)
+              (let (font-lock-extend-region-functions)
+                (font-lock-fontify-region (max (point-min) (1- (car region))) (cdr region))))))
+        ;; Unfold links.
+        (let (region)
+          (dolist (spec '(org-link org-link-description))
+            (setq region (org-fold-get-region-at-point spec))
+            (when region (org-fold-region (car region) (cdr region) nil spec)))))
+      (let (region)
+        (dolist (spec (org-fold-core-folding-spec-list))
+          ;; Links are taken care by above.
+          (unless (memq spec '(org-link org-link-description))
+            (setq region (org-fold-get-region-at-point spec))
+            (when region
               (org-fold-region (car region) (cdr region) nil spec))))))
     (unless (org-before-first-heading-p)
       (org-with-limited-levels
@@ -729,9 +731,10 @@ go to the parent and show the entire tree."
 
 ;;; Make isearch search in some text hidden via text properties.
 
-(defun org-fold--isearch-reveal (&rest _)
+(defun org-fold--isearch-reveal (pos)
   "Reveal text at POS found by isearch."
-  (org-fold-show-context 'isearch))
+  (org-with-point-at pos
+    (org-fold-show-context 'isearch)))
 
 ;;; Handling changes in folded elements
 
@@ -756,7 +759,7 @@ the contents consists of blank lines.
 
 Assume that point is located at the header line."
   (org-with-wide-buffer
-   (beginning-of-line)
+   (forward-line 0)
    (org-fold-region
     (max (point-min) (1- (point)))
     (let ((endl (line-end-position)))
@@ -784,7 +787,7 @@ This function is intended to be used as :fragile property of
      ;; The line before beginning of the fold should be either a
      ;; headline or a list item.
      (backward-char)
-     (beginning-of-line)
+     (forward-line 0)
      ;; Make sure that headline is not partially hidden.
      (unless (org-fold-folded-p nil 'headline)
        (org-fold--reveal-headline-at-point))
@@ -796,14 +799,14 @@ This function is intended to be used as :fragile property of
            (org-fold--reveal-headline-at-point))))
      ;; Make sure that headline after is not partially hidden.
      (goto-char (cdr region))
-     (beginning-of-line)
+     (forward-line 0)
      (unless (org-fold-folded-p nil 'headline)
        (when (looking-at-p org-element-headline-re)
          (org-fold--reveal-headline-at-point)))
      ;; Check the validity of headline
      (goto-char (car region))
      (backward-char)
-     (beginning-of-line)
+     (forward-line 0)
      (unless (let ((case-fold-search t))
 	       (looking-at (rx-to-string
                             `(or (regex ,(org-item-re))
@@ -839,7 +842,7 @@ This function is intended to be used as :fragile property of
 	      ;; The line before beginning of the fold should be the
 	      ;; first line of the drawer/block.
 	      (backward-char)
-	      (beginning-of-line)
+	      (forward-line 0)
 	      (unless (let ((case-fold-search t))
 			(looking-at begin-re)) ; the match-data will be used later
 		(throw :exit (setq unfold? t))))
@@ -859,7 +862,7 @@ This function is intended to be used as :fragile property of
 	    ;; The last line of the folded text should match `end-re'.
 	    (save-excursion
 	      (goto-char fold-end)
-	      (beginning-of-line)
+	      (forward-line 0)
 	      (unless (let ((case-fold-search t))
 			(looking-at end-re))
 		(throw :exit (setq unfold? t))))

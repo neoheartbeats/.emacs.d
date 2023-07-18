@@ -111,15 +111,22 @@
 (declare-function org-element-at-point "org-element" (&optional pom cached-only))
 (declare-function org-element-context "org-element" (&optional element))
 (declare-function org-element-interpret-data "org-element" (data))
-(declare-function org-element-lineage "org-element" (blob &optional types with-self))
+(declare-function org-element-lineage "org-element-ast" (blob &optional types with-self))
 (declare-function org-element-macro-interpreter "org-element" (macro ##))
 (declare-function org-element-map "org-element" (data types fun &optional info first-match no-recursion with-affiliated))
 (declare-function org-element-normalize-string "org-element" (s))
-(declare-function org-element-parse-buffer "org-element" (&optional granularity visible-only))
-(declare-function org-element-property "org-element" (property element))
-(declare-function org-element-put-property "org-element" (element property value))
-(declare-function org-element-set-element "org-element" (old new))
-(declare-function org-element-type "org-element" (element))
+(declare-function org-element-parse-buffer "org-element" (&optional granularity visible-only keep-deferred))
+(declare-function org-element-property "org-element-ast" (property node))
+(declare-function org-element-begin "org-element" (node))
+(declare-function org-element-end "org-element" (node))
+(declare-function org-element-contents-begin "org-element" (node))
+(declare-function org-element-contents-end "org-element" (node))
+(declare-function org-element-post-affiliated "org-element" (node))
+(declare-function org-element-post-blank "org-element" (node))
+(declare-function org-element-parent "org-element-ast" (node))
+(declare-function org-element-put-property "org-element-ast" (node property value))
+(declare-function org-element-set "org-element-ast" (old new))
+(declare-function org-element-type-p "org-element-ast" (node types))
 (declare-function org-element-update-syntax "org-element" ())
 (declare-function org-end-of-meta-data "org" (&optional full))
 (declare-function org-entry-get "org" (pom property &optional inherit literal-nil))
@@ -366,7 +373,7 @@ group 4: description tag")
 
 (defvar org--item-re-cache nil
   "Results cache for `org-item-re'.")
-(defun org-item-re ()
+(defsubst org-item-re ()
   "Return the correct regular expression for plain lists."
   (or (plist-get
        (plist-get org--item-re-cache
@@ -416,7 +423,7 @@ group 4: description tag")
 (defun org-in-item-p ()
   "Return item beginning position when in a plain list, nil otherwise."
   (save-excursion
-    (beginning-of-line)
+    (forward-line 0)
     (let* ((case-fold-search t)
 	   (context (org-list-context))
 	   (lim-up (car context))
@@ -464,7 +471,7 @@ group 4: description tag")
 		     (re-search-backward "^[ \t]*#\\+begin_" lim-up t)))
 	       ((and (looking-at "^[ \t]*:END:")
 		     (re-search-backward org-drawer-regexp lim-up t))
-		(beginning-of-line))
+		(forward-line 0))
 	       ((and inlinetask-re (looking-at inlinetask-re))
 		(org-inlinetask-goto-beginning)
 		(forward-line -1))
@@ -478,11 +485,18 @@ group 4: description tag")
 		(forward-line -1))
 	       (t (forward-line -1)))))))))))
 
+;; FIXME: We should make use of org-element API in more places here.
 (defun org-at-item-p ()
-  "Is point in a line starting a hand-formatted item?"
+  "Is point in a line starting a hand-formatted item?
+Modify match data, matching against `org-item-re'."
   (save-excursion
-    (beginning-of-line)
-    (and (looking-at (org-item-re)) (org-list-in-valid-context-p))))
+    (forward-line 0)
+    (and
+     (org-element-type-p
+      (org-element-at-point)
+      '(plain-list item))
+     ;; Set match data.
+     (looking-at (org-item-re)))))
 
 (defun org-at-item-bullet-p ()
   "Is point at the bullet of a plain list item?"
@@ -524,7 +538,7 @@ Contexts `block' and `invalid' refer to `org-list-forbidden-blocks'."
   (save-match-data
     (save-excursion
       (org-with-limited-levels
-       (beginning-of-line)
+       (forward-line 0)
        (let ((case-fold-search t) (pos (point)) beg end context-type
 	     ;; Get positions of surrounding headings.  This is the
 	     ;; default context.
@@ -611,7 +625,7 @@ will get the following structure:
 
 Assume point is at an item."
   (save-excursion
-    (beginning-of-line)
+    (forward-line 0)
     (let* ((case-fold-search t)
 	   (context (org-list-context))
 	   (lim-up (car context))
@@ -679,7 +693,7 @@ Assume point is at an item."
 		     (re-search-backward "^[ \t]*#\\+begin_" lim-up t)))
 	       ((and (looking-at "^[ \t]*:END:")
 		     (re-search-backward org-drawer-regexp lim-up t))
-		(beginning-of-line))
+		(forward-line 0))
 	       ((and inlinetask-re (looking-at inlinetask-re))
 		(org-inlinetask-goto-beginning)
 		(forward-line -1))
@@ -1847,7 +1861,7 @@ Initial position of cursor is restored after the changes."
 	  (lambda (end beg delta)
 	    (goto-char end)
 	    (skip-chars-backward " \r\t\n")
-	    (beginning-of-line)
+	    (forward-line 0)
 	    (while (or (> (point) beg)
 		       (and (= (point) beg)
 			    (not (looking-at item-re))))
@@ -2234,7 +2248,7 @@ item is invisible."
 	  (setq struct (org-list-insert-item pos struct prevs checkbox desc))
 	  (org-list-write-struct struct (org-list-parents-alist struct))
 	  (when checkbox (org-update-checkbox-count-maybe))
-          (beginning-of-line)
+          (forward-line 0)
 	  (looking-at org-list-full-item-re)
 	  (goto-char (if (and (match-beginning 4)
 			      (save-match-data
@@ -2264,7 +2278,7 @@ is an integer, 0 means `-', 1 means `+' etc.  If WHICH is
   (interactive "P")
   (unless (org-at-item-p) (error "Not at an item"))
   (let ((origin (point-marker)))
-    (beginning-of-line)
+    (forward-line 0)
     (let* ((struct (org-list-struct))
            (parents (org-list-parents-alist struct))
            (prevs (org-list-prevs-alist struct))
@@ -2326,14 +2340,14 @@ is an integer, 0 means `-', 1 means `+' etc.  If WHICH is
       (setq struct (org-list-struct))
       (cond
        ((>= origin-offset2 0)
-        (beginning-of-line)
+        (forward-line 0)
         (move-marker origin (+ (point)
                                (org-list-get-ind (point) struct)
                                (length (org-list-get-bullet (point) struct))
                                origin-offset2))
         (goto-char origin))
        ((>= origin-offset 0)
-        (beginning-of-line)
+        (forward-line 0)
         (move-marker origin (+ (point)
                                (org-list-get-ind (point) struct)
                                origin-offset))
@@ -2378,15 +2392,15 @@ is an integer, 0 means `-', 1 means `+' etc.  If WHICH is
 (defun org-at-radio-list-p ()
   "Is point at a list item with radio buttons?"
   (when (org-match-line (org-item-re))	;short-circuit
-    (let* ((e (save-excursion (beginning-of-line) (org-element-at-point))))
+    (let* ((e (save-excursion (forward-line 0) (org-element-at-point))))
       ;; Check we're really on a line with a bullet.
-      (when (memq (org-element-type e) '(item plain-list))
+      (when (org-element-type-p e '(item plain-list))
 	;; Look for ATTR_ORG attribute in the current plain list.
-	(let ((plain-list (org-element-lineage e '(plain-list) t)))
-	  (org-with-point-at (org-element-property :post-affiliated plain-list)
+	(let ((plain-list (org-element-lineage e 'plain-list t)))
+	  (org-with-point-at (org-element-post-affiliated plain-list)
 	    (let ((case-fold-search t)
 		  (regexp "^[ \t]*#\\+attr_org:.* :radio \\(\\S-+\\)")
-		  (begin (org-element-property :begin plain-list)))
+		  (begin (org-element-begin plain-list)))
 	      (and (re-search-backward regexp begin t)
 		   (not (string-equal "nil" (match-string 1)))))))))))
 
@@ -2508,7 +2522,7 @@ subtree, ignoring planning line and any drawer following it."
 	  (while (< (point) end)
 	    (when (org-at-item-checkbox-p)
 	      (replace-match "[ ]" t t nil 1))
-	    (beginning-of-line 2)))
+	    (forward-line 1)))
 	(org-update-checkbox-count-maybe 'all)))))
 
 (defun org-update-checkbox-count (&optional all)
@@ -2555,9 +2569,9 @@ With optional prefix argument ALL, do this for the whole buffer."
 			  (t (org-list-get-all-items
 			      (org-list-get-top-point s) s pre))))
 			(cookies (delq nil (mapcar
-					    (lambda (e)
-					      (org-list-get-checkbox e s))
-					    items))))
+					  (lambda (e)
+					    (org-list-get-checkbox e s))
+					  items))))
 		   (cl-incf c-all (length cookies))
 		   (cl-incf c-on (cl-count "[X]" cookies :test #'equal)))))))
 	  cookies-list cache)
@@ -2572,7 +2586,7 @@ With optional prefix argument ALL, do this for the whole buffer."
      (while (re-search-forward cookie-re end t)
        (let ((context (save-excursion (backward-char)
 				      (save-match-data (org-element-context)))))
-	 (when (and (eq (org-element-type context) 'statistics-cookie)
+	 (when (and (org-element-type-p context 'statistics-cookie)
                     (not (string-match-p "\\<todo\\>" cookie-data)))
 	   (push
 	    (append
@@ -2583,7 +2597,7 @@ With optional prefix argument ALL, do this for the whole buffer."
 		      '(drawer center-block dynamic-block inlinetask item
 			       quote-block special-block verse-block)))
 		    (beg (if container
-			     (org-element-property :contents-begin container)
+			     (org-element-contents-begin container)
 			   (save-excursion
 			     (org-with-limited-levels
 			      (outline-previous-heading))
@@ -2593,29 +2607,29 @@ With optional prefix argument ALL, do this for the whole buffer."
 		     (goto-char beg)
 		     (let ((end
 			    (if container
-				(org-element-property :contents-end container)
+				(org-element-contents-end container)
 			      (save-excursion
 				(org-with-limited-levels (outline-next-heading))
 				(point))))
 			   structs)
 		       (while (re-search-forward box-re end t)
 			 (let ((element (org-element-at-point)))
-			   (when (eq (org-element-type element) 'item)
+			   (when (org-element-type-p element 'item)
 			     (push (org-element-property :structure element)
 				   structs)
 			     ;; Skip whole list since we have its
 			     ;; structure anyway.
 			     (while (setq element (org-element-lineage
-						   element '(plain-list)))
+						   element 'plain-list))
 			       (goto-char
-				(min (org-element-property :end element)
+				(min (org-element-end element)
 				     end))))))
 		       ;; Cache count for cookies applying to the same
 		       ;; area.  Then return it.
 		       (let ((count
 			      (funcall count-boxes
-				       (and (eq (org-element-type container)
-						'item)
+				       (and (org-element-type-p
+                                             container 'item)
 					    (org-element-property
 					     :begin container))
 				       structs
@@ -2977,7 +2991,7 @@ function is being called interactively."
 	     (now (current-time))
 	     (next-record (lambda ()
 			    (skip-chars-forward " \r\t\n")
-			    (or (eobp) (beginning-of-line))))
+			    (or (eobp) (forward-line 0))))
 	     (end-record (lambda ()
 			   (goto-char (org-list-get-item-end-before-blank
 				       (point) struct))))
@@ -3048,28 +3062,25 @@ With a prefix argument ARG, change the region in a single item."
              (save-excursion
                (while (re-search-forward org-footnote-definition-re end t)
                  (setq element (org-element-at-point))
-                 (when (eq 'footnote-definition
-                           (org-element-type element))
+                 (when (org-element-type-p element 'footnote-definition)
                    (push (buffer-substring-no-properties
-                          (org-element-property :begin element)
-                          (org-element-property :end element))
+                          (org-element-begin element)
+                          (org-element-end element))
                          definitions)
                    ;; Ensure at least 2 blank lines after the last
                    ;; footnote definition, thus not slurping the
                    ;; following element.
-                   (unless (<= 2 (org-element-property
-                                 :post-blank
-                                 (org-element-at-point)))
+                   (unless (<= 2 (org-element-post-blank
+                                  (org-element-at-point)))
                      (setf (car definitions)
                            (concat (car definitions)
                                    (make-string
-                                    (- 2 (org-element-property
-                                          :post-blank
+                                    (- 2 (org-element-post-blank
                                           (org-element-at-point)))
                                     ?\n))))
                    (delete-region
-                    (org-element-property :begin element)
-                    (org-element-property :end element))))
+                    (org-element-begin element)
+                    (org-element-end element))))
                definitions))))
         (shift-text
 	 (lambda (ind end)
@@ -3176,8 +3187,8 @@ With a prefix argument ARG, change the region in a single item."
 			"[X]"
 		      "[ ]"))
 		   (org-list-write-struct struct
-				  (org-list-parents-alist struct)
-				  old)))
+				          (org-list-parents-alist struct)
+				          old)))
 	       ;; Ensure all text down to END (or SECTION-END) belongs
 	       ;; to the newly created item.
 	       (let ((section-end (save-excursion
@@ -3189,7 +3200,7 @@ With a prefix argument ARG, change the region in a single item."
            (when footnote-definitions
              (goto-char end)
              ;; Insert footnote definitions after the list.
-             (unless (bolp) (beginning-of-line 2))
+             (unless (bolp) (forward-line 1))
              ;; At (point-max).
              (unless (bolp) (insert "\n"))
              (dolist (def footnote-definitions)
@@ -3216,13 +3227,12 @@ With a prefix argument ARG, change the region in a single item."
                (when footnote-definitions
                  ;; If the new list is followed by same-level items,
                  ;; move past them as well.
-                 (goto-char (org-element-property
-                             :end
+                 (goto-char (org-element-end
                              (org-element-lineage
                               (org-element-at-point (1- end))
-                              '(plain-list) t)))
+                              'plain-list t)))
                  ;; Insert footnote definitions after the list.
-                 (unless (bolp) (beginning-of-line 2))
+                 (unless (bolp) (forward-line 1))
                  ;; At (point-max).
                  (unless (bolp) (insert "\n"))
                  (dolist (def footnote-definitions)
@@ -3439,7 +3449,7 @@ Valid parameters are:
 		      (if (consp e) (funcall insert-list e)
 			(insert e)
 			(insert "\n")))
-		    (beginning-of-line)
+		    (forward-line 0)
 		    (save-excursion
 		      (let ((ind (if (eq type 'ordered) 3 2)))
 			(while (> (point) start)
@@ -3459,7 +3469,7 @@ Valid parameters are:
     (when (and backend (plist-get params :raw))
       (org-element-map data org-element-all-objects
 	(lambda (object)
-	  (org-element-set-element
+	  (org-element-set
 	   object (org-element-interpret-data object)))))
     ;; We use a low-level mechanism to export DATA so as to skip all
     ;; usual pre-processing and post-processing, i.e., hooks, filters,
@@ -3472,7 +3482,7 @@ Valid parameters are:
 (defun org-list--depth (element)
   "Return the level of ELEMENT within current plain list.
 ELEMENT is either an item or a plain list."
-  (cl-count-if (lambda (ancestor) (eq (org-element-type ancestor) 'plain-list))
+  (cl-count-if (lambda (ancestor) (org-element-type-p ancestor 'plain-list))
 	       (org-element-lineage element nil t)))
 
 (defun org-list--trailing-newlines (string)
@@ -3549,7 +3559,7 @@ PARAMS is a plist used to tweak the behavior of the transcoder."
 	(ddend (plist-get params :ddend)))
     (lambda (item contents info)
       (let* ((type
-	      (org-element-property :type (org-element-property :parent item)))
+	      (org-element-property :type (org-element-parent item)))
 	     (tag (org-element-property :tag item))
 	     (depth (org-list--depth item))
 	     (separator (and (org-export-get-next-element item info)

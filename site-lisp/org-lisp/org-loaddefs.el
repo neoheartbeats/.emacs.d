@@ -1646,10 +1646,13 @@ the cache.
 
 (fn FUNC &key (GRANULARITY \\='headline+inlinetask) RESTRICT-ELEMENTS NEXT-RE FAIL-RE FROM-POS (TO-POS (point-max-marker)) AFTER-ELEMENT LIMIT-COUNT NARROW)")
 (autoload 'org-element-at-point "org-element" "\
-Determine closest element around point or POM.
+Determine closest element around point or EPOM.
+
+When EPOM is an element, return it immediately.
+Otherwise, determine element at EPOM marker or position.
 
 Only check cached element when CACHED-ONLY is non-nil and return nil
-unconditionally when element at POM is not in cache.
+unconditionally when element at EPOM is not in cache.
 
 Return value is a list like (TYPE PROPS) where TYPE is the type
 of the element and PROPS a plist of properties associated to the
@@ -1668,13 +1671,15 @@ instead of the first row.
 When point is at the end of the buffer, return the innermost
 element ending there.
 
-(fn &optional POM CACHED-ONLY)")
+This function may modify the match data.
+
+(fn &optional EPOM CACHED-ONLY)")
 (defsubst org-element-at-point-no-context (&optional pom) "\
 Quickly find element at point or POM.
 
 It is a faster version of `org-element-at-point' that is not
-guaranteed to return correct `:parent' properties even when cache is
-enabled." (or (org-element-at-point pom 'cached-only) (org-element-with-disabled-cache (org-element-at-point pom))))
+guaranteed to return cached element.  `:parent' element may be
+deferred and slow to retrieve." (or (org-element-at-point pom 'cached-only) (org-element-with-disabled-cache (org-element-at-point pom))))
 (autoload 'org-element-context "org-element" "\
 Return smallest element or object around point.
 
@@ -1694,8 +1699,15 @@ Optional argument ELEMENT, when non-nil, is the closest element
 containing point, as returned by `org-element-at-point'.
 Providing it allows for quicker computation.
 
+This function may modify match data.
+
 (fn &optional ELEMENT)")
 (register-definition-prefixes "org-element" '("org-element-"))
+
+
+;;; Generated autoloads from org-element-ast.el
+
+(register-definition-prefixes "org-element-ast" '("org-element-"))
 
 
 ;;; Generated autoloads from org-entities.el
@@ -1808,14 +1820,15 @@ With optional argument FORCE, force the creation of a new ID.
 Copy the ID of the entry at point to the kill ring.
 Create an ID if necessary." t)
 (autoload 'org-id-get "org-id" "\
-Get the ID property of the entry at point-or-marker POM.
-If POM is nil, refer to the entry at point.
+Get the ID property of the entry at EPOM.
+EPOM is an element, marker, or buffer position.
+If EPOM is nil, refer to the entry at point.
 If the entry does not have an ID, the function returns nil.
 However, when CREATE is non-nil, create an ID if none is present already.
 PREFIX will be passed through to `org-id-new'.
 In any case, the ID of the entry is returned.
 
-(fn &optional POM CREATE PREFIX)")
+(fn &optional EPOM CREATE PREFIX)")
 (autoload 'org-id-get-with-outline-path-completion "org-id" "\
 Use `outline-path-completion' to retrieve the ID of an entry.
 TARGETS may be a setting for `org-refile-targets' to define
@@ -3386,7 +3399,7 @@ publishing directory.
 Return output file name.
 
 (fn PLIST FILENAME PUB-DIR)")
-(register-definition-prefixes "ox-ascii" '("org-ascii-"))
+(register-definition-prefixes "ox-ascii" '("org-"))
 
 
 ;;; Generated autoloads from ox-beamer.el
@@ -3967,7 +3980,7 @@ publishing directory.
 Return output file name.
 
 (fn PLIST FILENAME PUB-DIR)")
-(register-definition-prefixes "ox-md" '("org-md-"))
+(register-definition-prefixes "ox-md" '("org-"))
 
 
 ;;; Generated autoloads from ox-odt.el
@@ -4213,7 +4226,7 @@ Assume the current region has Org syntax, and convert it to Texinfo.
 This can be used in any buffer.  For example, you can write an
 itemized list in Org syntax in an Texinfo buffer and use this
 command to convert it." t)
-(register-definition-prefixes "ox-texinfo" '("org-texinfo-"))
+(register-definition-prefixes "ox-texinfo" '("org-"))
 
 ;;; End of scraped data
 

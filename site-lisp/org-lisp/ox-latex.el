@@ -48,6 +48,7 @@
 (defvar engrave-faces-latex-output-style)
 (defvar engrave-faces-current-preset-style)
 (defvar engrave-faces-latex-mathescape)
+(defvar engrave-faces-latex-colorbox-strut)
 
 
 ;;; Define Backend
@@ -1267,9 +1268,10 @@ will produce
 
 % Define a Code environment to prettily wrap the fontified code.
 \\usepackage[breakable,xparse]{tcolorbox}
+\\providecommand{\\codefont}{\\footnotesize}
 \\DeclareTColorBox[]{Code}{o}%
 {colback=EfD!98!EFD, colframe=EfD!95!EFD,
-  fontupper=\\footnotesize\\setlength{\\fboxsep}{0pt},
+  fontupper=\\setlength{\\fboxsep}{0pt}\\codefont,
   colupper=EFD,
   IfNoValueTF={#1}%
   {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
@@ -1293,7 +1295,9 @@ as long as it:
 In the default value the colors \"EFD\" and \"EfD\" are provided
 as they are respectively the foreground and background colors,
 just in case they aren't provided by the generated preamble, so
-we can assume they are always set.
+we can assume they are always set.  The command \"\\codefont\" is
+also provided (defaulting to \"\\footnotesize\"), to allow the
+font used in \"Code\" environments to be easily tweaked.
 
 Within this preamble there are two recognized macro-like placeholders:
 
@@ -1389,7 +1393,19 @@ which are given by `org-latex-engraved-preamble' and
                (alist-get 'default
                           (if theme
                               (engrave-faces-get-theme (intern theme))
-                            engrave-faces-current-preset-style)))))))
+                            engrave-faces-current-preset-style))))))
+         (gen-theme-command
+          (lambda (theme)
+            (format "\n\\newcommand{\\engravedtheme%s}{%%\n%s\n}"
+                    (replace-regexp-in-string
+                     "[^A-Za-z]" "" (symbol-name theme))
+                    (replace-regexp-in-string
+                     "\\\\newcommand\\\\efstrut[^\n]*\n" ""
+                     (replace-regexp-in-string
+                      "\\\\newcommand{\\(.+?\\)}\\[1\\]" "\\\\long\\\\def\\1##1"
+                      (replace-regexp-in-string
+                       "#1" "##1"
+                       (funcall gen-theme-spec theme))))))))
     (when (stringp engraved-theme)
       (setq engraved-theme (intern engraved-theme)))
     (when (string-match "^[ \t]*\\[FVEXTRA-SETUP\\][ \t]*\n?" engraved-preamble)
@@ -1424,26 +1440,24 @@ which are given by `org-latex-engraved-preamble' and
      (if (require 'engrave-faces-latex nil t)
          (if engraved-themes
              (concat
+              ;; We don't want to re-define the efstrut, so we now need to
+              ;; define it seperately.
+              (format "\\newcommand\\efstrut{%s}\n\n"
+                      engrave-faces-latex-colorbox-strut)
+              ;; Define default theme
+              (funcall gen-theme-command engraved-theme)
+              "\n"
+              ;; Define other themes
               (mapconcat
-               (lambda (theme)
-                 (format
-                  "\n\\newcommand{\\engravedtheme%s}{%%\n%s\n}"
-                  (replace-regexp-in-string "[^A-Za-z]" "" (symbol-name theme))
-                  (replace-regexp-in-string
-                   "newcommand" "renewcommand"
-                   (replace-regexp-in-string
-                    "#" "##"
-                    (funcall gen-theme-spec theme)))))
-               engraved-themes
+               gen-theme-command
+               (cl-remove-if (lambda (theme) (string= theme (symbol-name engraved-theme)))
+                             engraved-themes)
                "\n")
-              "\n\n"
-              (cond
-               ((memq engraved-theme engraved-themes)
-                (concat "\\engravedtheme"
-                        (replace-regexp-in-string
-                         "[^A-Za-z]" "" engraved-theme)
-                        "\n"))
-               (t (funcall gen-theme-spec engraved-theme))))
+              ;; Load the default theme
+              "\n\n\\engravedtheme"
+              (replace-regexp-in-string
+               "[^A-Za-z]" "" (symbol-name engraved-theme))
+              "\n")
            (funcall gen-theme-spec engraved-theme))
        (warn "Cannot engrave source blocks. Consider installing `engrave-faces'.")
        "% WARNING syntax highlighting unavailable as engrave-faces-latex was missing.\n")
@@ -2463,7 +2477,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
     (concat
      ;; Insert separator between two footnotes in a row.
      (let ((prev (org-export-get-previous-element footnote-reference info)))
-       (when (eq (org-element-type prev) 'footnote-reference)
+       (when (org-element-type-p prev 'footnote-reference)
 	 (plist-get info :latex-footnote-separator)))
      (cond
       ;; Use `:latex-footnote-defined-format' if the footnote has
@@ -2479,8 +2493,8 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
       ((or (org-element-lineage footnote-reference
 				'(footnote-reference footnote-definition
 						     table-cell verse-block))
-	   (eq 'item (org-element-type
-		      (org-export-get-parent-element footnote-reference))))
+	   (org-element-type-p
+	    (org-element-parent-element footnote-reference) 'item))
        "\\footnotemark")
       ;; Otherwise, define it with \footnote command.
       (t
@@ -2614,7 +2628,7 @@ holding contextual information."
 		(let ((case-fold-search t)
 		      (section
 		       (let ((first (car (org-element-contents headline))))
-			 (and (eq (org-element-type first) 'section) first))))
+			 (and (org-element-type-p first 'section) first))))
 		  (org-element-map section 'keyword
 		    (lambda (k)
 		      (and (equal (org-element-property :key k) "TOC")
@@ -2710,8 +2724,11 @@ INFO, CODE, and LANG are provided by `org-latex-inline-src-block'."
 (defun org-latex-inline-src-block--engraved (info code lang)
   "Transcode an inline src block's content from Org to LaTeX, using engrave-faces.
 INFO, CODE, and LANG are provided by `org-latex-inline-src-block'."
-  (org-latex-src--engrave-code
-   code lang nil (plist-get info :latex-engraved-options) t))
+  (let ((engraved-theme (plist-get info :latex-engraved-theme)))
+    (org-latex-src--engrave-code
+     code lang
+     (and engraved-theme (intern engraved-theme)) nil
+     (plist-get info :latex-engraved-options) t)))
 
 (defun org-latex-inline-src-block--listings (info code lang)
   "Transcode an inline src block's content from Org to LaTeX, using lstlistings.
@@ -2784,16 +2801,16 @@ contextual information."
 CONTENTS holds the contents of the item.  INFO is a plist holding
 contextual information."
   (let* ((orderedp (eq (org-element-property
-			:type (org-export-get-parent item))
+			:type (org-element-parent item))
 		       'ordered))
 	 (level
 	  ;; Determine level of current item to determine the
 	  ;; correct LaTeX counter to use (enumi, enumii...).
 	  (let ((parent item) (level 0))
-	    (while (memq (org-element-type
-			  (setq parent (org-export-get-parent parent)))
-			 '(plain-list item))
-	      (when (and (eq (org-element-type parent) 'plain-list)
+	    (while (org-element-type-p
+		    (setq parent (org-element-parent parent))
+		    '(plain-list item))
+	      (when (and (org-element-type-p parent 'plain-list)
 			 (eq (org-element-property :type parent)
 			     'ordered))
 		(cl-incf level)))
@@ -2834,11 +2851,11 @@ contextual information."
 	     ((and contents
 		   (string-match-p "\\`[ \t]*\\[" contents)
 		   (not (let ((e (car (org-element-contents item))))
-			  (and (eq (org-element-type e) 'paragraph)
-			       (let ((o (car (org-element-contents e))))
-				 (and (eq (org-element-type o) 'export-snippet)
-				      (eq (org-export-snippet-backend o)
-					  'latex)))))))
+			(and (org-element-type-p e 'paragraph)
+			     (let ((o (car (org-element-contents e))))
+			       (and (org-element-type-p o 'export-snippet)
+				    (eq (org-export-snippet-backend o)
+					'latex)))))))
 	      "\\relax ")
 	     (t " "))
 	    (and contents (org-trim contents)))))
@@ -2859,7 +2876,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 	(cond
 	 ((string-match-p "\\<headlines\\>" value)
 	  (let* ((localp (string-match-p "\\<local\\>" value))
-		 (parent (org-element-lineage keyword '(headline)))
+		 (parent (org-element-lineage keyword 'headline))
 		 (level (if (not (and localp parent)) 0
 			  (org-export-get-relative-level parent info)))
 		 (depth
@@ -2971,7 +2988,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
   "Return LaTeX code for an inline image.
 LINK is the link pointing to the inline image.  INFO is a plist
 used as a communication channel."
-  (let* ((parent (org-export-get-parent-element link))
+  (let* ((parent (org-element-parent-element link))
 	 (path (let ((raw-path (org-element-property :path link)))
 		 (if (not (file-name-absolute-p raw-path)) raw-path
 		   (expand-file-name raw-path))))
@@ -3002,7 +3019,7 @@ used as a communication channel."
 	 (center
 	  (cond
 	   ;; If link is an image link, do not center.
-	   ((eq 'link (org-element-type (org-export-get-parent link))) nil)
+	   ((org-element-type-p (org-element-parent link) 'link) nil)
 	   ((plist-member attr :center) (plist-get attr :center))
 	   (t (plist-get info :latex-images-centered))))
 	 (comment-include (if (plist-get attr :comment-include) "%" ""))
@@ -3381,9 +3398,8 @@ it."
 			(plist-get info :latex-default-table-mode))))
 	  (when (and (member mode '("inline-math" "math"))
 		     ;; Do not wrap twice the same table.
-		     (not (eq (org-element-type
-			       (org-element-property :parent table))
-			      'latex-matrices)))
+		     (not (org-element-type-p
+			 (org-element-parent table) 'latex-matrices)))
 	    (let* ((caption (and (not (string= mode "inline-math"))
 				 (org-element-property :caption table)))
 		   (name (and (not (string= mode "inline-math"))
@@ -3406,7 +3422,7 @@ it."
 	      (while (and
 		      (zerop (or (org-element-property :post-blank previous) 0))
 		      (setq next (org-export-get-next-element previous info))
-		      (eq (org-element-type next) 'table)
+		      (org-element-type-p next 'table)
 		      (eq (org-element-property :type next) 'org)
 		      (string= (or (org-export-read-attribute
 				    :attr_latex next :mode)
@@ -3414,8 +3430,8 @@ it."
 			       mode))
 		(org-element-put-property table :name nil)
 		(org-element-put-property table :caption nil)
-		(org-element-extract-element previous)
-		(org-element-adopt-elements matrices previous)
+		(org-element-extract previous)
+		(org-element-adopt matrices previous)
 		(setq previous next))
 	      ;; Inherit `:post-blank' from the value of the last
 	      ;; swallowed table.  Set the latter's `:post-blank'
@@ -3425,8 +3441,8 @@ it."
 	      (org-element-put-property previous :post-blank 0)
 	      (org-element-put-property table :name nil)
 	      (org-element-put-property table :caption nil)
-	      (org-element-extract-element previous)
-	      (org-element-adopt-elements matrices previous))))))
+	      (org-element-extract previous)
+	      (org-element-adopt matrices previous))))))
     info)
   data)
 
@@ -3469,24 +3485,23 @@ containing export options.  Modify DATA by side-effect and return it."
     (org-element-map data '(entity latex-fragment)
       (lambda (object)
 	;; Skip objects already wrapped.
-	(when (and (not (eq (org-element-type
-			     (org-element-property :parent object))
-			    'latex-math-block))
+	(when (and (not (org-element-type-p
+		       (org-element-parent object) 'latex-math-block))
 		   (funcall valid-object-p object))
 	  (let ((math-block (list 'latex-math-block nil))
 		(next-elements (org-export-get-next-element object info t))
 		(last object))
 	    ;; Wrap MATH-BLOCK around OBJECT in DATA.
 	    (org-element-insert-before math-block object)
-	    (org-element-extract-element object)
-	    (org-element-adopt-elements math-block object)
+	    (org-element-extract object)
+	    (org-element-adopt math-block object)
 	    (when (zerop (or (org-element-property :post-blank object) 0))
 	      ;; MATH-BLOCK swallows consecutive math objects.
 	      (catch 'exit
 		(dolist (next next-elements)
 		  (unless (funcall valid-object-p next) (throw 'exit nil))
-		  (org-element-extract-element next)
-		  (org-element-adopt-elements math-block next)
+		  (org-element-extract next)
+		  (org-element-adopt math-block next)
 		  ;; Eschew the case: \beta$x$ -> \(\betax\).
 		  (org-element-put-property last :post-blank 1)
 		  (setq last next)
@@ -3741,7 +3756,7 @@ and FLOAT are extracted from SRC-BLOCK and INFO in `org-latex-src-block'."
       (when (eq mathescape 'yes)
         (or engrave-faces-latex-mathescape t)))))
 
-(defun org-latex-src--engrave-code (content lang &optional theme options inline)
+(defun org-latex-src--engrave-code (content lang &optional theme explicit-theme-p options inline)
   "Engrave CONTENT to LaTeX in a LANG-mode buffer, and give the result.
 When the THEME symbol is non-nil, that theme will be used.
 
@@ -3782,12 +3797,12 @@ to the Verbatim environment or Verb command."
                 (concat "\\begin{Code}\n\\begin{Verbatim}" engraved-options "\n"
                         engraved-code "\n\\end{Verbatim}\n\\end{Code}"))))
         (kill-buffer engraved-buffer)
-        (if theme
-            (concat "{\\engravedtheme"
+        (if (and theme explicit-theme-p)
+            (concat "\\begingroup\\engravedtheme"
                     (replace-regexp-in-string "[^A-Za-z]" ""
                                               (symbol-name theme))
                     engraved-wrapped
-                    "}")
+                    "\\endgroup")
           engraved-wrapped))
     (user-error "Cannot engrave code as `engrave-faces-latex' is unavailable.")))
 
@@ -3821,7 +3836,9 @@ and FLOAT are extracted from SRC-BLOCK and INFO in `org-latex-src-block'."
                `(("linenos")
                  ("firstnumber" ,(number-to-string (1+ num-start)))))
              (and local-options `((,local-options))))))
-         (engraved-theme (plist-get attributes :engraved-theme))
+         (engraved-doc-theme (plist-get info :latex-engraved-theme))
+         (engraved-theme (or (plist-get attributes :engraved-theme)
+                             engraved-doc-theme))
          (content
           (let* ((code-info (org-export-unravel-code src-block))
                  (max-width
@@ -3847,7 +3864,8 @@ and FLOAT are extracted from SRC-BLOCK and INFO in `org-latex-src-block'."
                  (org-latex-src--engrave-mathescape-p info options)))
             (org-latex-src--engrave-code
              content lang
-             (when engraved-theme (intern engraved-theme))
+             (and engraved-theme (intern engraved-theme))
+             (not (eq engraved-theme engraved-doc-theme))
              options))))
     (concat (car float-env) body (cdr float-env))))
 
@@ -4248,7 +4266,7 @@ This function assumes TABLE has `org' as its `:type' property and
 CONTENTS is the cell contents.  INFO is a plist used as
 a communication channel."
   (let ((type (org-export-read-attribute
-               :attr_latex (org-export-get-parent-table table-cell) :mode))
+               :attr_latex (org-element-lineage table-cell 'table) :mode))
         (scientific-format (plist-get info :latex-table-scientific-notation)))
     (concat
      (if (and contents
@@ -4271,7 +4289,7 @@ a communication channel."
 CONTENTS is the contents of the row.  INFO is a plist used as
 a communication channel."
   (let* ((attr (org-export-read-attribute :attr_latex
-					  (org-export-get-parent table-row)))
+					  (org-element-parent table-row)))
 	 (booktabsp (if (plist-member attr :booktabs) (plist-get attr :booktabs)
 		      (plist-get info :latex-tables-booktabs)))
 	 (longtablep
@@ -4298,7 +4316,7 @@ a communication channel."
 	;; Special case for long tables.  Define header and footers.
 	((and longtablep (org-export-table-row-ends-header-p table-row info))
 	 (let ((columns (cdr (org-export-table-dimensions
-			      (org-export-get-parent-table table-row) info))))
+			      (org-element-lineage table-row 'table) info))))
 	   (format "%s
 \\endfirsthead
 \\multicolumn{%d}{l}{%s} \\\\[0pt]
@@ -4462,6 +4480,8 @@ command to convert it."
   (interactive)
   (org-export-replace-region-by 'latex))
 
+(defalias 'org-export-region-to-latex #'org-latex-convert-region-to-latex)
+
 ;;;###autoload
 (defun org-latex-export-to-latex
     (&optional async subtreep visible-only body-only ext-plist)
@@ -4552,7 +4572,7 @@ produced."
 		(and (search-forward-regexp (regexp-opt org-latex-compilers)
 					    (line-end-position 2)
 					    t)
-		     (progn (beginning-of-line) (looking-at-p "%"))
+		     (progn (forward-line 0) (eq (char-after) ?%))
 		     (match-string 0)))
               ;; Cannot find the compiler inserted by
               ;; `org-latex-template' -> `org-latex--insert-compiler'.

@@ -61,8 +61,10 @@
 (declare-function org-datetree-find-month-create (d &optional keep-restriction))
 (declare-function org-decrypt-entry "org-crypt" ())
 (declare-function org-element-at-point "org-element" (&optional pom cached-only))
-(declare-function org-element-lineage "org-element" (datum &optional types with-self))
-(declare-function org-element-property "org-element" (property element))
+(declare-function org-element-lineage "org-element-ast" (datum &optional types with-self))
+(declare-function org-element-property "org-element-ast" (property node))
+(declare-function org-element-contents-end "org-element" (node))
+(declare-function org-element-post-affiliated "org-element" (node))
 (declare-function org-encrypt-entry "org-crypt" ())
 (declare-function org-insert-link "ol" (&optional complete-file link-location default-description))
 (declare-function org-link-make-string "ol" (link &optional description))
@@ -1027,11 +1029,11 @@ Store them in the capture property list."
 	 (if (re-search-forward (format org-complex-heading-regexp-format
 					(regexp-quote headline))
 				nil t)
-	     (beginning-of-line)
+	     (forward-line 0)
 	   (goto-char (point-max))
 	   (unless (bolp) (insert "\n"))
 	   (insert "* " headline "\n")
-	   (beginning-of-line 0)))
+	   (forward-line -1)))
 	(`(file+olp ,path . ,outline-path)
 	 (let ((m (org-find-olp (cons (org-capture-expand-file path)
 				      outline-path))))
@@ -1272,7 +1274,7 @@ may have been stored before."
 	(catch :found
 	  (while (re-search-forward item-regexp end t)
 	    (when (setq item (org-element-lineage
-			      (org-element-at-point) '(plain-list) t))
+			      (org-element-at-point) 'plain-list t))
 	      (goto-char (org-element-property (if prepend? :post-affiliated
 						 :contents-end)
 					       item))
@@ -1314,7 +1316,7 @@ may have been stored before."
 		   (point-marker))))
 	(when item
 	  (let ((i (save-excursion
-		     (goto-char (org-element-property :post-affiliated item))
+		     (goto-char (org-element-post-affiliated item))
 		     (org-current-text-indentation))))
 	    (save-excursion
 	      (goto-char beg)
@@ -1377,13 +1379,13 @@ may have been stored before."
     ;; Narrow to the table, possibly creating one if necessary.
     (catch :found
       (while (re-search-forward org-table-dataline-regexp end t)
-	(pcase (org-element-lineage (org-element-at-point) '(table) t)
+	(pcase (org-element-lineage (org-element-at-point) 'table t)
 	  (`nil nil)
 	  ((pred (lambda (e) (eq 'table.el (org-element-property :type e))))
 	   nil)
 	  (table
-	   (goto-char (org-element-property :contents-end table))
-	   (narrow-to-region (org-element-property :post-affiliated table)
+	   (goto-char (org-element-contents-end table))
+	   (narrow-to-region (org-element-post-affiliated table)
 			     (point))
 	   (throw :found t))))
       ;; No table found.  Create it with an empty header.
@@ -1413,7 +1415,7 @@ may have been stored before."
       (goto-char (point-min))
       (cond
        ((not (re-search-forward org-table-hline-regexp nil t)))
-       ((re-search-forward org-table-dataline-regexp nil t) (beginning-of-line))
+       ((re-search-forward org-table-dataline-regexp nil t) (forward-line 0))
        (t (goto-char (org-table-end)))))
      (t
       (goto-char (org-table-end))))

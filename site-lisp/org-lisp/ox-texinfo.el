@@ -501,10 +501,8 @@ Return new tree."
 	(when contents
 	  (let ((first (org-element-map contents '(headline section)
 			 #'identity info t)))
-	    (unless (eq (org-element-type first) 'section)
-	      (apply #'org-element-set-contents
-		     hl
-		     (cons `(section (:parent ,hl)) contents)))))))
+	    (unless (org-element-type-p first 'section)
+              (org-element-create 'section nil contents))))))
     info)
   tree)
 
@@ -559,7 +557,7 @@ node or anchor name is unique."
 	  ;; Consequently, we ensure that every parent headline gets
 	  ;; its node beforehand.  As a recursive operation, this
 	  ;; achieves the desired effect.
-	  (let ((parent (org-element-lineage datum '(headline))))
+	  (let ((parent (org-element-lineage datum 'headline)))
 	    (when (and parent (not (assq parent cache)))
 	      (org-texinfo--get-node parent info)
 	      (setq cache (plist-get info :texinfo-node-cache))))
@@ -657,7 +655,7 @@ Return new tree."
 		  (org-texinfo--massage-key-item plain-list item args info))
 		(push item items)))))
 	  (unless (org-element-contents plain-list)
-	    (org-element-extract-element plain-list)))))
+	    (org-element-extract plain-list)))))
     info)
   tree)
 
@@ -687,9 +685,9 @@ specified by CMD and ARGS."
 	    (list :type cmd
 		  :attr_texinfo (list (format ":options %s" args))
 		  :post-blank (if contents 1 0))
-	    (mapc #'org-element-extract-element contents))
+	    (mapc #'org-element-extract contents))
      plain-list))
-  (org-element-extract-element item))
+  (org-element-extract item))
 
 (defun org-texinfo--split-plain-list (plain-list items)
   "Insert a new plain list before the plain list PLAIN-LIST.
@@ -700,7 +698,7 @@ new plain list."
 	  (list :type 'descriptive
                 :attr_texinfo (org-element-property :attr_texinfo plain-list)
                 :post-blank 1)
-	  (mapc #'org-element-extract-element items))
+	  (mapc #'org-element-extract items))
    plain-list))
 
 (defun org-texinfo--massage-key-item (plain-list item args info)
@@ -747,7 +745,7 @@ INFO is a plist used as a communication channel."
 	         (org-not-nil
 	          (org-export-read-attribute :attr_texinfo plain-list :compact)))
 	     (not (org-element-contents item))
-	     (eq 1 (org-element-property :post-blank item)))
+	     (eq 1 (org-element-post-blank item)))
 	(org-element-put-property next-item :findex findex)
 	(org-element-put-property next-item :kindex kindex)
 	(org-element-put-property item :findex nil)
@@ -1046,7 +1044,7 @@ plist holding contextual information."
             ;; character before the closing brace.  However, when the
             ;; footnote ends with a paragraph, it is visually pleasing
             ;; to move the brace right after its end.
-            (if (eq 'paragraph (org-element-type (org-last contents)))
+            (if (org-element-type-p (org-last contents) 'paragraph)
                 (org-trim data)
               data))))
 
@@ -1179,21 +1177,21 @@ contextual information."
 CONTENTS holds the contents of the item.  INFO is a plist holding
 contextual information."
   (let* ((tag (org-element-property :tag item))
-         (plain-list (org-element-property :parent item))
+         (plain-list (org-element-parent item))
          (compact (and (eq (org-element-property :type plain-list) 'descriptive)
                        (or (plist-get info :texinfo-compact-itemx)
                            (org-not-nil (org-export-read-attribute
-                                         :attr_texinfo plain-list :compact)))))
+                                       :attr_texinfo plain-list :compact)))))
          (previous-item nil))
     (when (and compact
                (org-export-get-next-element item info)
                (not (org-element-contents item))
-               (eq 1 (org-element-property :post-blank item)))
+               (eq 1 (org-element-post-blank item)))
       (org-element-put-property item :post-blank 0))
     (if (and compact
              (setq previous-item (org-export-get-previous-element item info))
              (not (org-element-contents previous-item))
-	     (eq 0 (org-element-property :post-blank previous-item)))
+	     (eq 0 (org-element-post-blank previous-item)))
         (format "@itemx%s\n%s"
                 (if tag (concat " " (org-export-data tag info)) "")
                 (or contents ""))
@@ -1350,10 +1348,11 @@ INFO is a plist holding contextual information.  See
 	       ;; @anchor{}, so we refer to the headline parent
 	       ;; directly.
 	       (and `target
-		    (guard (eq 'headline
-			       (org-element-type
-				(org-element-property :parent destination))))))
-	   (let ((headline (org-element-lineage destination '(headline) t)))
+		    (guard
+		     (org-element-type-p
+		      (org-element-parent destination)
+                      'headline))))
+	   (let ((headline (org-element-lineage destination 'headline t)))
 	     (org-texinfo--@ref headline desc info)))
 	  (_ (org-texinfo--@ref destination desc info)))))
      ((string= type "mailto")
@@ -1371,7 +1370,7 @@ INFO is a plist holding contextual information.  See
   "Return Texinfo code for an inline image.
 LINK is the link pointing to the inline image.  INFO is the
 current state of the export, as a plist."
-  (let* ((parent (org-export-get-parent-element link))
+  (let* ((parent (org-element-parent-element link))
 	 (label (and (org-element-property :name parent)
 		     (org-texinfo--get-node parent info)))
 	 (caption (org-export-get-caption parent))
@@ -1652,7 +1651,7 @@ contextual information."
   "Transcode a SECTION element from Org to Texinfo.
 CONTENTS holds the contents of the section.  INFO is a plist
 holding contextual information."
-  (let ((parent (org-export-get-parent-headline section)))
+  (let ((parent (org-element-lineage section 'headline)))
     (when parent   ;first section is handled in `org-texinfo-template'
       (org-trim
        (concat contents
@@ -1770,8 +1769,8 @@ a communication channel."
 	      ;; approximation of the length of the cell in the
 	      ;; output.  It can sometimes fail (e.g. it considers
 	      ;; "/a/" being larger than "ab").
-	      (let ((w (- (org-element-property :contents-end cell)
-			  (org-element-property :contents-begin cell))))
+	      (let ((w (- (org-element-contents-end cell)
+			  (org-element-contents-begin cell))))
 		(aset widths idx (max w (aref widths idx))))
 	      (cl-incf idx))
 	    info)))
@@ -1809,7 +1808,7 @@ a communication channel."
     (let ((rowgroup-tag
 	   (if (and (= 1 (org-export-table-row-group table-row info))
 		    (org-export-table-has-header-p
-		     (org-export-get-parent-table table-row) info))
+		     (org-element-lineage table-row 'table) info))
 	       "@headitem "
 	     "@item ")))
       (concat rowgroup-tag contents "\n"))))
@@ -1992,6 +1991,8 @@ itemized list in Org syntax in an Texinfo buffer and use this
 command to convert it."
   (interactive)
   (org-export-replace-region-by 'texinfo))
+
+(defalias 'org-export-region-to-texinfo #'org-texinfo-convert-region-to-texinfo)
 
 (defun org-texinfo-compile (file)
   "Compile a texinfo file.

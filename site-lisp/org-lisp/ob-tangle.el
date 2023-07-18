@@ -40,11 +40,11 @@
 (declare-function org-babel-update-block-body "ob-core" (new-body))
 (declare-function org-back-to-heading "org" (&optional invisible-ok))
 (declare-function org-before-first-heading-p "org" ())
-(declare-function org-element--cache-active-p "org-element" ())
-(declare-function org-element-lineage "org-element" (datum &optional types with-self))
-(declare-function org-element-property "org-element" (property element))
+(declare-function org-element-lineage "org-element-ast" (datum &optional types with-self))
+(declare-function org-element-property "org-element-ast" (property node))
+(declare-function org-element-begin "org-element" (node))
 (declare-function org-element-at-point "org-element" (&optional pom cached-only))
-(declare-function org-element-type "org-element" (element))
+(declare-function org-element-type-p "org-element-ast" (node types))
 (declare-function org-heading-components "org" ())
 (declare-function org-in-commented-heading-p "org" (&optional no-inheritance))
 (declare-function org-in-archived-heading-p "org" (&optional no-inheritance))
@@ -378,7 +378,7 @@ references."
   (goto-char (point-min))
   (while (or (re-search-forward "\\[\\[file:.*\\]\\[.*\\]\\]" nil t)
              (re-search-forward (org-babel-noweb-wrap) nil t))
-    (delete-region (save-excursion (beginning-of-line 1) (point))
+    (delete-region (save-excursion (forward-line) (point))
                    (save-excursion (end-of-line 1) (forward-char 1) (point)))))
 
 (defun org-babel-spec-to-string (spec)
@@ -457,10 +457,11 @@ code blocks by target file."
   (let ((counter 0) last-heading-pos blocks)
     (org-babel-map-src-blocks (buffer-file-name)
       (let ((current-heading-pos
-             (if (org-element--cache-active-p)
-                 (or (org-element-property :begin (org-element-lineage (org-element-at-point) '(headline) t)) 1)
-	       (org-with-wide-buffer
-	        (org-with-limited-levels (outline-previous-heading))))))
+             (or (org-element-begin
+                  (org-element-lineage
+                   (org-element-at-point)
+                   'headline t))
+                 1)))
 	(if (eq last-heading-pos current-heading-pos) (cl-incf counter)
 	  (setq counter 1)
 	  (setq last-heading-pos current-heading-pos)))
@@ -673,8 +674,7 @@ which enable the original code blocks to be found."
 	      (org-back-to-heading t))
 	    ;; Do not skip the first block if it begins at point min.
 	    (cond ((or (org-at-heading-p)
-		       (not (eq (org-element-type (org-element-at-point))
-				'src-block)))
+		       (not (org-element-type-p (org-element-at-point) 'src-block)))
 		   (org-babel-next-src-block n))
 		  ((= n 1))
 		  (t (org-babel-next-src-block (1- n)))))
