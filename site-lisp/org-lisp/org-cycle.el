@@ -2,7 +2,7 @@
 ;;
 ;; Copyright (C) 2020-2023 Free Software Foundation, Inc.
 ;;
-;; Maintainer: Ihor Radchenko <yantar92 at gmail dot com>
+;; Maintainer: Ihor Radchenko <yantar92 at posteo dot net>
 ;; Keywords: folding, visibility cycling, invisible text
 ;; URL: https://orgmode.org
 ;;
@@ -35,9 +35,10 @@
 (require 'org-macs)
 (require 'org-fold)
 
-(declare-function org-element-type "org-element" (element))
-(declare-function org-element-property "org-element" (property element))
-(declare-function org-element-lineage "org-element" (datum &optional types with-self))
+(declare-function org-element-type-p "org-element-ast" (node types))
+(declare-function org-element-property "org-element-ast" (property node))
+(declare-function org-element-post-affiliated "org-element" (node))
+(declare-function org-element-lineage "org-element-ast" (datum &optional types with-self))
 (declare-function org-element-at-point "org-element" (&optional pom cached-only))
 (declare-function org-display-inline-images "org" (&optional include-linked refresh beg end))
 (declare-function org-get-tags "org" (&optional pos local fontify))
@@ -388,8 +389,8 @@ same as `S-TAB') also when called without prefix argument."
 	   ((org-fold-hide-drawer-toggle nil t element))
 	   ;; Table: enter it or move to the next field.
 	   ((and (org-match-line "[ \t]*[|+]")
-		 (org-element-lineage element '(table) t))
-	    (if (and (eq 'table (org-element-type element))
+		 (org-element-lineage element 'table t))
+	    (if (and (org-element-type-p element 'table)
 		     (eq 'table.el (org-element-property :type element)))
 		(message (substitute-command-keys "\\<org-mode-map>\
 Use `\\[org-edit-special]' to edit table.el tables"))
@@ -404,8 +405,8 @@ Use `\\[org-edit-special]' to edit table.el tables"))
 							   t)))
 			    (and item
 				 (= (line-beginning-position)
-				    (org-element-property :post-affiliated
-							  item)))))
+				    (org-element-post-affiliated
+				     item)))))
 		     (org-match-line org-outline-regexp))
 		 (or (bolp) (not (eq org-cycle-emulate-tab 'exc-hl-bol))))
 	    (org-cycle-internal-local))
@@ -421,7 +422,7 @@ Use `\\[org-edit-special]' to edit table.el tables"))
 	    (call-interactively (global-key-binding (kbd "TAB"))))
 	   ((or (eq org-cycle-emulate-tab t)
 		(and (memq org-cycle-emulate-tab '(white whitestart))
-		     (save-excursion (beginning-of-line 1) (looking-at "[ \t]*"))
+		     (save-excursion (forward-line 0) (looking-at "[ \t]*"))
 		     (or (and (eq org-cycle-emulate-tab 'white)
 			      (= (match-end 0) (line-end-position)))
 			 (and (eq org-cycle-emulate-tab 'whitestart)
@@ -480,7 +481,7 @@ Use `\\[org-edit-special]' to edit table.el tables"))
     (save-excursion
       (if (org-at-item-p)
 	  (progn
-	    (beginning-of-line)
+	    (forward-line 0)
 	    (setq struct (org-list-struct))
 	    (setq eoh (line-end-position))
 	    (setq eos (org-list-get-item-end-before-blank (point) struct))
@@ -502,16 +503,16 @@ Use `\\[org-edit-special]' to edit table.el tables"))
 		    (save-excursion
 		      (org-list-search-forward (org-item-beginning-re) eos t))))))
       ;; Determine end invisible part of buffer (EOL)
-      (beginning-of-line 2)
+      (forward-line 1)
       (if (eq org-fold-core-style 'text-properties)
           (while (and (not (eobp))		;this is like `next-line'
 		      (org-fold-folded-p (1- (point))))
 	    (goto-char (org-fold-next-visibility-change nil nil t))
-	    (and (eolp) (beginning-of-line 2)))
+	    (and (eolp) (forward-line 1)))
         (while (and (not (eobp))		;this is like `next-line'
 		    (get-char-property (1- (point)) 'invisible))
 	  (goto-char (next-single-char-property-change (point) 'invisible))
-	  (and (eolp) (beginning-of-line 2))))
+	  (and (eolp) (forward-line 1))))
       (setq eol (point)))
     ;; Find out what to do next and set `this-command'
     (cond
@@ -545,7 +546,7 @@ Use `\\[org-edit-special]' to edit table.el tables"))
 	  (save-excursion
 	    (org-back-to-heading)
 	    (while (org-list-search-forward (org-item-beginning-re) eos t)
-	      (beginning-of-line 1)
+	      (forward-line 0)
 	      (let* ((struct (org-list-struct))
 		     (prevs (org-list-prevs-alist struct))
 		     (end (org-list-get-bottom-point struct)))

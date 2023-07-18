@@ -155,15 +155,24 @@ If BUFFER is nil, use base buffer for `current-buffer'."
                             (or ,buffer (current-buffer)))
      ,@body))
 
-(defmacro org-with-point-at (pom &rest body)
-  "Move to buffer and point of point-or-marker POM for the duration of BODY."
+(defmacro org-with-point-at (epom &rest body)
+  "Move to buffer and point of EPOM for the duration of BODY.
+EPOM is an element, point, or marker."
   (declare (debug (form body)) (indent 1))
-  (org-with-gensyms (mpom)
-    `(let ((,mpom ,pom))
+  (require 'org-element-ast)
+  (org-with-gensyms (mepom)
+    `(let ((,mepom ,epom))
        (save-excursion
-	 (when (markerp ,mpom) (set-buffer (marker-buffer ,mpom)))
+         (cond
+          ((markerp ,mepom)
+           (set-buffer (marker-buffer ,mepom)))
+          ((numberp ,mepom))
+          (t
+           (when (org-element-property :buffer ,mepom)
+             (set-buffer (org-element-property :buffer ,mepom)))
+           (setq ,mepom (org-element-property :begin ,mepom))))
 	 (org-with-wide-buffer
-	  (goto-char (or ,mpom (point)))
+	  (goto-char (or ,mepom (point)))
 	  ,@body)))))
 
 (defmacro org-with-remote-undo (buffer &rest body)
@@ -619,96 +628,6 @@ in target-prerequisite files relation."
   (let ((mtime (file-attribute-modification-time (file-attributes file))))
     (and mtime (or (not time) (time-less-p time mtime)))))
 
-(defun org-compile-file (source process ext &optional err-msg log-buf spec)
-  "Compile a SOURCE file using PROCESS.
-
-See `org-compile-file-commands' for information on PROCESS, EXT, and SPEC.
-If PROCESS fails, an error will be raised.  The error message can
-then be refined by providing string ERR-MSG, which is appended to
-the standard message.
-
-PROCESS must create a file with the same base name and directory
-as SOURCE, but ending with EXT.  The function then returns its
-filename.  Otherwise, it raises an error.
-
-When PROCESS is a list of commands, optional argument LOG-BUF can
-be set to a buffer or a buffer name.  `shell-command' then uses
-it for output."
-  (let* ((commands (org-compile-file-commands source process ext spec err-msg))
-         (output (expand-file-name (concat (file-name-base source) "." ext)
-                                   (file-name-directory source)))
-         (log-buf (and log-buf (get-buffer-create log-buf)))
-         (time (file-attribute-modification-time (file-attributes output))))
-    (save-window-excursion
-      (dolist (command commands)
-        (cond
-         ((functionp command)
-          (funcall command (shell-quote-argument (file-relative-name source))))
-         ((stringp command) (shell-command command log-buf)))))
-    ;; Check for process failure.  Output file is expected to be
-    ;; located in the same directory as SOURCE.
-    (unless (org-file-newer-than-p output time)
-      (ignore (defvar org-batch-test))
-      ;; Display logs when running tests.
-      (when (bound-and-true-p org-batch-test)
-        (message "org-compile-file log ::\n-----\n%s\n-----\n"
-                 (with-current-buffer log-buf (buffer-string))))
-      (error
-       (format
-        "File %S wasn't produced%s"
-        output
-        (if (org-string-nw-p err-msg)
-            (concat "  " (org-trim err-msg))
-          err-msg))))
-    output))
-
-(defun org-compile-file-commands (source process ext &optional spec err-msg)
-  "Return list of commands used to compile SOURCE file.
-
-The commands are formed from PROCESS, which is either a function or
-a list of shell commands, as strings.  EXT is a file extension, without
-the leading dot, as a string.  After PROCESS has been executed,
-a file with the same basename and directory as SOURCE but with the
-file extension EXT is expected to be produced.
-Failure to produce this file will be interpreted as PROCESS failing.
-
-If PROCESS is a function, it is called with a single argument:
-the SOURCE file.
-
-If PROCESS is a list of commands, each of them is called using
-`shell-command'.  By default, in each command, %b, %f, %F, %o and
-%O are replaced with, respectively, SOURCE base name, name, full
-name, directory and absolute output file name.  It is possible,
-however, to use more place-holders by specifying them in optional
-argument SPEC, as an alist following the pattern
-
-  (CHARACTER . REPLACEMENT-STRING).
-
-Throw an error if PROCESS does not satisfy the described patterns.
-The error string will be appended with ERR-MSG, when it is a string."
-  (let* ((base-name (file-name-base source))
-	 (full-name (file-truename source))
-         (relative-name (file-relative-name source))
-	 (out-dir (if (file-name-directory source)
-                      ;; Expand "~".  Shell expansion will be disabled
-                      ;; in the shell command call.
-                      (file-name-directory full-name)
-                    "./"))
-	 (output (expand-file-name (concat (file-name-base source) "." ext) out-dir))
-	 (err-msg (if (stringp err-msg) (concat ".  " err-msg) "")))
-    (pcase process
-      ((pred functionp) (list process))
-      ((pred consp)
-       (let ((spec (append spec
-			   `((?b . ,(shell-quote-argument base-name))
-			     (?f . ,(shell-quote-argument relative-name))
-			     (?F . ,(shell-quote-argument full-name))
-			     (?o . ,(shell-quote-argument out-dir))
-			     (?O . ,(shell-quote-argument output))))))
-         (mapcar (lambda (command) (format-spec command spec)) process)))
-      (_ (error "No valid command to process %S%s" source err-msg)))))
-
-
 
 ;;; Indentation
 
@@ -740,9 +659,12 @@ line.  Return nil if it fails."
         (when skip-fl (forward-line))
 	(while (not (eobp))
 	  (let ((ind (progn (skip-chars-forward " \t") (current-column))))
-	    (cond ((eolp) (delete-region (line-beginning-position) (point)))
-		  ((< ind n) (throw :exit nil))
-		  (t (indent-line-to (- ind n))))
+	    (cond ((< ind n)
+                   (if (eolp) (delete-region (line-beginning-position) (point))
+                     (throw :exit nil)))
+		  (t (delete-region (line-beginning-position)
+                                    (progn (move-to-column n t)
+                                           (point)))))
 	    (forward-line)))
 	;; Signal success.
 	t))))
@@ -1120,29 +1042,28 @@ Match at beginning of line when WITH-BOL is non-nil."
            (org-headline-re nstars (not with-bol))))))
 
 (defun org--line-empty-p (n)
-  "Is the Nth next line empty?
-Counts the current line as N = 1 and the previous line as N = 0;
-see `beginning-of-line'."
+  "Is the Nth next line empty?"
   (and (not (bobp))
        (save-excursion
-	 (beginning-of-line n)
-	 (looking-at-p "[ \t]*$"))))
+	 (forward-line n)
+         (skip-chars-forward "[ \t]")
+         (eolp))))
 
 (defun org-previous-line-empty-p ()
   "Is the previous line a blank line?
 When NEXT is non-nil, check the next line instead."
-  (org--line-empty-p 0))
+  (org--line-empty-p -1))
 
 (defun org-next-line-empty-p ()
   "Is the previous line a blank line?
 When NEXT is non-nil, check the next line instead."
-  (org--line-empty-p 2))
+  (org--line-empty-p 1))
 
 (defun org-id-uuid ()
   "Return string with random (version 4) UUID."
   (let ((rnd (md5 (format "%s%s%s%s%s%s%s"
 			  (random)
-			  (time-convert nil 'list)
+			  (org-time-convert-to-list nil)
 			  (user-uid)
 			  (emacs-pid)
 			  (user-full-name)
@@ -1234,7 +1155,7 @@ Return nil when PROP is not set at POS."
 (defun org-match-line (regexp)
   "Match REGEXP at the beginning of the current line."
   (save-excursion
-    (beginning-of-line)
+    (forward-line 0)
     (looking-at regexp)))
 
 (defun org-match-any-p (re list)
@@ -1256,7 +1177,7 @@ match."
     (let ((pos (point))
           (eol (line-end-position (if nlines (1+ nlines) 1))))
       (save-excursion
-	(beginning-of-line (- 1 (or nlines 0)))
+	(forward-line (- (or nlines 0)))
 	(while (and (re-search-forward regexp eol t)
 		    (<= (match-beginning 0) pos))
 	  (let ((end (match-end 0)))
@@ -1897,6 +1818,9 @@ Return 0. if S is not recognized as a valid value."
        ((string-match org-ts-regexp0 s) (org-2ft s))
        (t 0.)))))
 
+
+;;; Misc
+
 (defun org-scroll (key &optional additional-keys)
   "Receive KEY and scroll the current window accordingly.
 When ADDITIONAL-KEYS is not nil, also include SPC and DEL in the
@@ -1950,6 +1874,94 @@ When COUNTER is non-nil, return safe hash for (COUNTER . OBJ)."
 	  (puthash hash obj org-sxhash-objects)
 	  (puthash obj hash org-sxhash-hashes)))))
 
+(defun org-compile-file (source process ext &optional err-msg log-buf spec)
+  "Compile a SOURCE file using PROCESS.
+
+See `org-compile-file-commands' for information on PROCESS, EXT, and SPEC.
+If PROCESS fails, an error will be raised.  The error message can
+then be refined by providing string ERR-MSG, which is appended to
+the standard message.
+
+PROCESS must create a file with the same base name and directory
+as SOURCE, but ending with EXT.  The function then returns its
+filename.  Otherwise, it raises an error.
+
+When PROCESS is a list of commands, optional argument LOG-BUF can
+be set to a buffer or a buffer name.  `shell-command' then uses
+it for output."
+  (let* ((commands (org-compile-file-commands source process ext spec err-msg))
+         (output (expand-file-name (concat (file-name-base source) "." ext)
+                                   (file-name-directory source)))
+         (log-buf (and log-buf (get-buffer-create log-buf)))
+         (time (file-attribute-modification-time (file-attributes output))))
+    (save-window-excursion
+      (dolist (command commands)
+        (cond
+         ((functionp command)
+          (funcall command (shell-quote-argument (file-relative-name source))))
+         ((stringp command) (shell-command command log-buf)))))
+    ;; Check for process failure.  Output file is expected to be
+    ;; located in the same directory as SOURCE.
+    (unless (org-file-newer-than-p output time)
+      (ignore (defvar org-batch-test))
+      ;; Display logs when running tests.
+      (when (bound-and-true-p org-batch-test)
+        (message "org-compile-file log ::\n-----\n%s\n-----\n"
+                 (with-current-buffer log-buf (buffer-string))))
+      (error
+       (format
+        "File %S wasn't produced%s"
+        output
+        (if (org-string-nw-p err-msg)
+            (concat "  " (org-trim err-msg))
+          err-msg))))
+    output))
+
+(defun org-compile-file-commands (source process ext &optional spec err-msg)
+  "Return list of commands used to compile SOURCE file.
+
+The commands are formed from PROCESS, which is either a function or
+a list of shell commands, as strings.  EXT is a file extension, without
+the leading dot, as a string.  After PROCESS has been executed,
+a file with the same basename and directory as SOURCE but with the
+file extension EXT is expected to be produced.
+Failure to produce this file will be interpreted as PROCESS failing.
+
+If PROCESS is a function, it is called with a single argument:
+the SOURCE file.
+
+If PROCESS is a list of commands, each of them is called using
+`shell-command'.  By default, in each command, %b, %f, %F, %o and
+%O are replaced with, respectively, SOURCE base name, name, full
+name, directory and absolute output file name.  It is possible,
+however, to use more place-holders by specifying them in optional
+argument SPEC, as an alist following the pattern
+
+  (CHARACTER . REPLACEMENT-STRING).
+
+Throw an error if PROCESS does not satisfy the described patterns.
+The error string will be appended with ERR-MSG, when it is a string."
+  (let* ((base-name (file-name-base source))
+	 (full-name (file-truename source))
+         (relative-name (file-relative-name source))
+	 (out-dir (if (file-name-directory source)
+                      ;; Expand "~".  Shell expansion will be disabled
+                      ;; in the shell command call.
+                      (file-name-directory full-name)
+                    "./"))
+	 (output (expand-file-name (concat (file-name-base source) "." ext) out-dir))
+	 (err-msg (if (stringp err-msg) (concat ".  " err-msg) "")))
+    (pcase process
+      ((pred functionp) (list process))
+      ((pred consp)
+       (let ((spec (append spec
+			   `((?b . ,(shell-quote-argument base-name))
+			     (?f . ,(shell-quote-argument relative-name))
+			     (?F . ,(shell-quote-argument full-name))
+			     (?o . ,(shell-quote-argument out-dir))
+			     (?O . ,(shell-quote-argument output))))))
+         (mapcar (lambda (command) (format-spec command spec)) process)))
+      (_ (error "No valid command to process %S%s" source err-msg)))))
 
 (provide 'org-macs)
 

@@ -64,8 +64,15 @@
 (declare-function org-element-at-point-no-context "org-element" (&optional pom))
 (declare-function org-element-context "org-element" (&optional element))
 (declare-function org-element-normalize-string "org-element" (s))
-(declare-function org-element-property "org-element" (property element))
-(declare-function org-element-type "org-element" (element))
+(declare-function org-element-property "org-element-ast" (property node))
+(declare-function org-element-begin "org-element" (node))
+(declare-function org-element-end "org-element" (node))
+(declare-function org-element-post-affiliated "org-element" (node))
+(declare-function org-element-contents-begin "org-element" (node))
+(declare-function org-element-contents-end "org-element" (node))
+(declare-function org-element-parent "org-element-ast" (node))
+(declare-function org-element-type "org-element-ast" (node &optional anonymous))
+(declare-function org-element-type-p "org-element-ast" (node &optional types))
 (declare-function org-entry-get "org" (pom property &optional inherit literal-nil))
 (declare-function org-escape-code-in-region "org-src" (beg end))
 (declare-function org-forward-heading-same-level "org" (arg &optional invisible-ok))
@@ -318,8 +325,7 @@ environment, to override this check."
   "Execute BODY if point is in a source block and return t.
 
 Otherwise do nothing and return nil."
-  `(if (memq (org-element-type (org-element-context))
-	     '(inline-src-block src-block))
+  `(if (org-element-type-p (org-element-context) '(inline-src-block src-block))
        (progn
 	 ,@body
 	 t)
@@ -650,7 +656,7 @@ Remove final newline character and spurious indentation."
 	 (body (if (string-suffix-p "\n" value)
 		   (substring value 0 -1)
 		 value)))
-    (cond ((eq (org-element-type datum) 'inline-src-block)
+    (cond ((org-element-type-p datum 'inline-src-block)
 	   ;; Newline characters and indentation in an inline
 	   ;; src-block are not meaningful, since they could come from
 	   ;; some paragraph filling.  Treat them as a white space.
@@ -716,7 +722,7 @@ a list with the following pattern:
 		       ;; If DATUM is provided, make sure we get node
 		       ;; properties applicable to its location within
 		       ;; the document.
-		       (org-with-point-at (org-element-property :begin datum)
+		       (org-with-point-at (org-element-begin datum)
 			 (org-babel-params-from-properties lang no-eval))
 		       (mapcar (lambda (h)
 				 (org-babel-parse-header-arguments h no-eval))
@@ -1134,7 +1140,7 @@ Return t if a code block was found at point, nil otherwise."
 	  ;; we want to restore this location after executing BODY.
 	  (outside-position
 	   (and (<= (line-beginning-position)
-		    (org-element-property :post-affiliated element))
+		    (org-element-post-affiliated element))
 		(point-marker)))
 	  (org-src-window-setup 'switch-invisibly))
      (when (and (org-babel-where-is-src-block-head element)
@@ -1161,8 +1167,9 @@ evaluation mechanisms."
 (defvar org-link-bracket-re)
 
 (defun org-babel-active-location-p ()
-  (memq (org-element-type (save-match-data (org-element-context)))
-	'(babel-call inline-babel-call inline-src-block src-block)))
+  (org-element-type-p
+   (save-match-data (org-element-context))
+   '(babel-call inline-babel-call inline-src-block src-block)))
 
 ;;;###autoload
 (defun org-babel-open-src-block-result (&optional re-run)
@@ -1274,9 +1281,9 @@ buffer."
 	 (goto-char (point-min))
 	 (while (re-search-forward "src_\\S-" nil t)
 	   (let ((,datum (save-match-data (org-element-context))))
-	     (when (eq (org-element-type ,datum) 'inline-src-block)
+	     (when (org-element-type-p ,datum 'inline-src-block)
 	       (goto-char (match-beginning 0))
-	       (let ((,end (copy-marker (org-element-property :end ,datum))))
+	       (let ((,end (copy-marker (org-element-end ,datum))))
 		 ,@body
 		 (goto-char ,end)
 		 (set-marker ,end nil))))))
@@ -1302,10 +1309,9 @@ buffer."
 	 (goto-char (point-min))
 	 (while (re-search-forward "call_\\S-\\|^[ \t]*#\\+CALL:" nil t)
 	   (let ((,datum (save-match-data (org-element-context))))
-	     (when (memq (org-element-type ,datum)
-			 '(babel-call inline-babel-call))
+	     (when (org-element-type-p ,datum '(babel-call inline-babel-call))
 	       (goto-char (match-beginning 0))
-	       (let ((,end (copy-marker (org-element-property :end ,datum))))
+	       (let ((,end (copy-marker (org-element-end ,datum))))
 		 ,@body
 		 (goto-char ,end)
 		 (set-marker ,end nil))))))
@@ -1332,11 +1338,11 @@ buffer."
 	 (while (re-search-forward
 		 "\\(call\\|src\\)_\\|^[ \t]*#\\+\\(BEGIN_SRC\\|CALL:\\)" nil t)
 	   (let ((,datum (save-match-data (org-element-context))))
-	     (when (memq (org-element-type ,datum)
-			 '(babel-call inline-babel-call inline-src-block
-				      src-block))
+	     (when (org-element-type-p
+                    ,datum
+                    '(babel-call inline-babel-call inline-src-block src-block))
 	       (goto-char (match-beginning 0))
-	       (let ((,end (copy-marker (org-element-property :end ,datum))))
+	       (let ((,end (copy-marker (org-element-end ,datum))))
 		 ,@body
 		 (goto-char ,end)
 		 (set-marker ,end nil))))))
@@ -1352,8 +1358,8 @@ the current buffer."
   (org-babel-eval-wipe-error-buffer)
   (org-save-outline-visibility t
     (org-babel-map-executables nil
-      (if (memq (org-element-type (org-element-context))
-		'(babel-call inline-babel-call))
+      (if (org-element-type-p
+           (org-element-context) '(babel-call inline-babel-call))
           (org-babel-lob-execute-maybe)
         (org-babel-execute-src-block arg)))))
 
@@ -1518,11 +1524,11 @@ portions of results lines."
   "Toggle the visibility of the current result."
   (interactive)
   (save-excursion
-    (beginning-of-line)
+    (forward-line 0)
     (let ((case-fold-search t))
       (unless (re-search-forward org-babel-result-regexp nil t)
 	(error "Not looking at a result line")))
-    (let ((start (progn (beginning-of-line 2) (1- (point))))
+    (let ((start (progn (forward-line 1) (1- (point))))
 	  (end (progn
 		 (while (looking-at org-babel-multi-line-header-regexp)
 		   (forward-line 1))
@@ -1862,14 +1868,14 @@ match-data relatively to `org-babel-src-block-regexp', which see.
 If the point is not on a source block or within blank lines after an
 src block, then return nil."
   (let ((element (or src-block (org-element-at-point))))
-    (when (eq (org-element-type element) 'src-block)
-      (let ((end (org-element-property :end element)))
+    (when (org-element-type-p element 'src-block)
+      (let ((end (org-element-end element)))
 	(org-with-wide-buffer
 	 ;; Ensure point is not on a blank line after the block.
-	 (beginning-of-line)
+	 (forward-line 0)
 	 (skip-chars-forward " \r\t\n" end)
 	 (when (< (point) end)
-	   (prog1 (goto-char (org-element-property :post-affiliated element))
+	   (prog1 (goto-char (org-element-post-affiliated element))
 	     (looking-at org-babel-src-block-regexp))))))))
 
 ;;;###autoload
@@ -1934,7 +1940,7 @@ to `org-babel-named-src-block-regexp'."
 	    (names nil))
 	(while (re-search-forward regexp nil t)
 	  (let ((element (org-element-at-point)))
-	    (when (eq 'src-block (org-element-type element))
+	    (when (org-element-type-p element 'src-block)
 	      (let ((name (org-element-property :name element)))
 		(when name (push name names))))))
 	names))))
@@ -1965,9 +1971,9 @@ buffer or nil if no such result exists."
       (catch :found
 	(while (re-search-forward re nil t)
 	  (let ((element (org-element-at-point)))
-	    (when (or (eq (org-element-type element) 'keyword)
+	    (when (or (org-element-type-p element 'keyword)
 		      (< (point)
-			 (org-element-property :post-affiliated element)))
+			 (org-element-post-affiliated element)))
 	      (throw :found (line-beginning-position)))))))))
 
 (defun org-babel-result-names (&optional file)
@@ -2099,7 +2105,7 @@ the results hash, or nil.  Leave point before the keyword."
   ;;
   ;;   : fixed-width area, unrelated to the above.
   (unless (looking-at "^[ \t]*$") (save-excursion (insert "\n")))
-  (beginning-of-line 0)
+  (forward-line -1)
   (when hash (org-babel-hide-hash)))
 
 (defun org-babel--clear-results-maybe (hash)
@@ -2114,11 +2120,11 @@ leave point where new results should be inserted."
     (let ((case-fold-search t)) (looking-at org-babel-result-regexp))
     (unless (string= (match-string 1) hash)
       (let* ((e (org-element-at-point))
-	     (post (copy-marker (org-element-property :post-affiliated e))))
+	     (post (copy-marker (org-element-post-affiliated e))))
 	;; Delete contents.
 	(delete-region post
 		       (save-excursion
-			 (goto-char (org-element-property :end e))
+			 (goto-char (org-element-end e))
 			 (skip-chars-backward " \t\n")
 			 (line-beginning-position 2)))
 	;; Delete RESULT keyword.  However, if RESULTS keyword is
@@ -2153,32 +2159,32 @@ to HASH."
 	 ((or `inline-babel-call `inline-src-block)
 	  ;; Results for inline objects are located right after them.
 	  ;; There is no RESULTS line to insert either.
-	  (let ((limit (pcase (org-element-type (org-element-property :parent context))
-                         (`section (org-element-property
-		                    :end (org-element-property :parent context)))
-                         (_ (org-element-property
-		             :contents-end (org-element-property :parent context))))))
-	    (goto-char (org-element-property :end context))
+	  (let ((limit (pcase (org-element-type (org-element-parent context))
+                         (`section (org-element-end
+                                    (org-element-parent context)))
+                         (_ (org-element-contents-end
+		             (org-element-parent context))))))
+	    (goto-char (org-element-end context))
 	    (skip-chars-forward " \t\n" limit)
 	    (throw :found
 		   (and
 		    (< (point) limit)
 		    (let ((result (org-element-context)))
-		      (and (eq (org-element-type result) 'macro)
+		      (and (org-element-type-p result 'macro)
 			   (string= (org-element-property :key result)
 				    "results")
 			   (if (not insert) (point)
 			     (delete-region
 			      (point)
 			      (progn
-				(goto-char (org-element-property :end result))
+				(goto-char (org-element-end result))
 				(skip-chars-backward " \t")
 				(point)))
 			     (point))))))))
 	 ((or `babel-call `src-block)
 	  (let* ((name (org-element-property :name context))
 		 (named-results (and name (org-babel-find-named-result name))))
-	    (goto-char (or named-results (org-element-property :end context)))
+	    (goto-char (or named-results (org-element-end context)))
 	    (cond
 	     ;; Existing results named after the current source.
 	     (named-results
@@ -2190,23 +2196,23 @@ to HASH."
 	     ;; No possible anonymous results at the very end of
 	     ;; buffer or outside CONTEXT parent.
 	     ((eq (point)
-		  (or (pcase (org-element-type (org-element-property :parent context))
-                        ((or `section `org-data) (org-element-property
-		                                  :end (org-element-property :parent context)))
-                        (_ (org-element-property
-		            :contents-end (org-element-property :parent context))))
+		  (or (pcase (org-element-type (org-element-parent context))
+                        ((or `section `org-data)
+                         (org-element-end (org-element-parent context)))
+                        (_ (org-element-contents-end
+                            (org-element-parent context))))
 		      (point-max))))
 	     ;; Check if next element is an anonymous result below
 	     ;; the current block.
 	     ((let* ((next (org-element-at-point))
 		     (end (save-excursion
 			    (goto-char
-			     (org-element-property :post-affiliated next))
+			     (org-element-post-affiliated next))
 			    (line-end-position)))
 		     (empty-result-re (concat org-babel-result-regexp "$"))
 		     (case-fold-search t))
 		(re-search-forward empty-result-re end t))
-	      (beginning-of-line)
+	      (forward-line 0)
 	      (when (org-babel--clear-results-maybe hash)
 		(org-babel--insert-results-keyword nil hash))
 	      (throw :found (point))))))
@@ -2217,7 +2223,7 @@ to HASH."
       ;; after the previous element.
       (when insert
 	(save-excursion
-	  (goto-char (min (org-element-property :end context) (point-max)))
+	  (goto-char (min (org-element-end context) (point-max)))
 	  (skip-chars-backward " \t\n")
 	  (forward-line)
 	  (unless (bolp) (insert "\n"))
@@ -2230,7 +2236,7 @@ to HASH."
   "Read ELEMENT into emacs-lisp.
 Return nil if ELEMENT cannot be read."
   (org-with-wide-buffer
-   (goto-char (org-element-property :post-affiliated element))
+   (goto-char (org-element-post-affiliated element))
    (pcase (org-element-type element)
      (`fixed-width
       (let ((v (org-trim (org-element-property :value element))))
@@ -2252,24 +2258,24 @@ Return nil if ELEMENT cannot be read."
 	       (save-excursion
 		 (goto-char (match-end 0))
 		 (skip-chars-forward " \r\t\n")
-		 (<= (org-element-property :end element)
+		 (<= (org-element-end element)
 		     (point))))
 	  (org-babel-read-link)
 	(buffer-substring-no-properties
-	 (org-element-property :contents-begin element)
-	 (org-element-property :contents-end element))))
+	 (org-element-contents-begin element)
+	 (org-element-contents-end element))))
      ((or `center-block `quote-block `verse-block `special-block)
       (org-remove-indentation
        (buffer-substring-no-properties
-	(org-element-property :contents-begin element)
-	(org-element-property :contents-end element))))
+	(org-element-contents-begin element)
+	(org-element-contents-end element))))
      (_ nil))))
 
 (defun org-babel-read-result ()
   "Read the result at point into emacs-lisp."
   (and (not (save-excursion
-	      (beginning-of-line)
-	      (looking-at-p "[ \t]*$")))
+	    (forward-line 0)
+	    (looking-at-p "[ \t]*$")))
        (org-babel-read-element (org-element-at-point))))
 
 (defun org-babel-read-table ()
@@ -2412,8 +2418,8 @@ INFO may provide the values of these header arguments (in the
       (progn (message (replace-regexp-in-string "%" "%%" (format "%S" result)))
 	     result)
     (let ((inline (let ((context (org-element-context)))
-		    (and (memq (org-element-type context)
-			       '(inline-babel-call inline-src-block))
+		    (and (org-element-type-p
+                          context '(inline-babel-call inline-src-block))
 			 context))))
       (when inline
 	(let ((warning
@@ -2427,8 +2433,8 @@ INFO may provide the values of these header arguments (in the
 	(let* ((visible-beg (point-min-marker))
 	       (visible-end (copy-marker (point-max) t))
 	       (inline (let ((context (org-element-context)))
-			 (and (memq (org-element-type context)
-				    '(inline-babel-call inline-src-block))
+			 (and (org-element-type-p
+                               context '(inline-babel-call inline-src-block))
 			      context)))
 	       (existing-result (org-babel-where-is-src-block-result t nil hash))
 	       (results-switches (cdr (assq :results_switches (nth 2 info))))
@@ -2449,7 +2455,7 @@ INFO may provide the values of these header arguments (in the
 	      (progn
 		(when outside-scope (widen))
 		(if existing-result (goto-char existing-result)
-		  (goto-char (org-element-property :end inline))
+		  (goto-char (org-element-end inline))
 		  (skip-chars-backward " \t"))
 		(unless inline
 		  (setq indent (current-indentation))
@@ -2681,21 +2687,21 @@ The result must be wrapped in a `results' macro to be removed.
 Leading white space is trimmed."
   (interactive)
   (let* ((el (or datum (org-element-context))))
-    (when (memq (org-element-type el) '(inline-src-block inline-babel-call))
+    (when (org-element-type-p el '(inline-src-block inline-babel-call))
       (org-with-wide-buffer
-       (goto-char (org-element-property :end el))
+       (goto-char (org-element-end el))
        (skip-chars-backward " \t")
        (let ((result (save-excursion
 		       (skip-chars-forward
 			" \t\n"
-			(org-element-property
-			 :contents-end (org-element-property :parent el)))
+			(org-element-contents-end
+			 (org-element-parent el)))
 		       (org-element-context))))
-	 (when (and (eq (org-element-type result) 'macro)
+	 (when (and (org-element-type-p result 'macro)
 		    (string= (org-element-property :key result) "results"))
 	   (delete-region		; And leading whitespace.
 	    (point)
-	    (progn (goto-char (org-element-property :end result))
+	    (progn (goto-char (org-element-end result))
 		   (skip-chars-backward " \t\n")
 		   (point)))))))))
 
@@ -2715,14 +2721,15 @@ in the buffer."
 	 (line-beginning-position 2))
 	(t
 	 (let ((element (org-element-at-point)))
-	   (if (memq (org-element-type element)
-		     ;; Possible results types.
-                     '(drawer example-block export-block fixed-width
-                              special-block src-block item plain-list table
-                              latex-environment))
+	   (if (org-element-type-p
+                element
+		;; Possible results types.
+                '(drawer example-block export-block fixed-width
+                         special-block src-block item plain-list table
+                         latex-environment))
 	       (save-excursion
 		 (goto-char (min (point-max) ;for narrowed buffers
-				 (org-element-property :end element)))
+				 (org-element-end element)))
 		 (skip-chars-backward " \r\t\n")
 		 (line-beginning-position 2))
 	     (point))))))
@@ -2791,7 +2798,7 @@ specified as an an \"attachment:\" style link."
 		((< size org-babel-min-lines-for-block-output)
 		 (goto-char beg)
 		 (dotimes (_ size)
-		   (beginning-of-line 1) (insert ": ") (forward-line 1)))
+		   (forward-line 0) (insert ": ") (forward-line 1)))
 		(t
 		 (goto-char beg)
 		 (insert (if results-switches
@@ -2807,7 +2814,7 @@ specified as an an \"attachment:\" style link."
 (defun org-babel-update-block-body (new-body)
   "Update the body of the current code block to NEW-BODY."
   (let ((element (org-element-at-point)))
-    (unless (eq (org-element-type element) 'src-block)
+    (unless (org-element-type-p element 'src-block)
       (error "Not in a source block"))
     (goto-char (org-babel-where-is-src-block-head element))
     (let* ((ind (org-current-text-indentation))
@@ -2825,7 +2832,7 @@ specified as an an \"attachment:\" style link."
 		      (buffer-string))))))
       (delete-region body-start
 		     (org-with-wide-buffer
-		      (goto-char (org-element-property :end element))
+		      (goto-char (org-element-end element))
 		      (skip-chars-backward " \t\n")
 		      (line-beginning-position)))
       (goto-char body-start)

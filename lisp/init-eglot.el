@@ -53,8 +53,15 @@
   (conda-env-initialize-interactive-shells)
   (conda-env-initialize-eshell))
 
-(setq python-shell-interpreter
-      (expand-file-name "/base/bin/python" conda-anaconda-home)
+;; (setq python-shell-interpreter
+;;       (expand-file-name "/base/bin/python" conda-anaconda-home)
+;;       python-shell-interpreter-args "-i"
+;;       python-shell--interpreter python-shell-interpreter
+;;       python-shell--interpreter-args python-shell-interpreter-args
+;;       python-shell-prompt-detect-failure-warning nil
+;;       python-shell-completion-native-enable nil)
+
+(setq python-shell-interpreter "/opt/homebrew/bin/python3"
       python-shell-interpreter-args "-i"
       python-shell--interpreter python-shell-interpreter
       python-shell--interpreter-args python-shell-interpreter-args

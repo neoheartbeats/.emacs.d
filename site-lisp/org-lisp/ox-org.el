@@ -129,7 +129,7 @@ we make sure it is always called."
 	    (new-section (org-element-create 'section)))
 	(pcase (org-element-type first-child)
 	  (`section nil)
-	  (`nil (org-element-adopt-elements h new-section))
+	  (`nil (org-element-adopt h new-section))
 	  (_ (org-element-insert-before new-section first-child))))))
   tree)
 
@@ -226,7 +226,7 @@ a communication channel."
    ;; them are included in the result.
    (let ((footnotes
 	  (org-element-map
-	      (list (org-export-get-parent-headline section) section)
+	      (list (org-element-lineage section 'headline) section)
 	      'footnote-reference
 	    (lambda (fn)
 	      (and (eq (org-element-property :type fn) 'standard)

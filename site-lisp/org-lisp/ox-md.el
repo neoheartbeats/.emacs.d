@@ -166,11 +166,11 @@ Assume BACKEND is `md'."
     (lambda (e)
       (org-element-put-property
        e :post-blank
-       (if (and (eq (org-element-type e) 'paragraph)
-		(eq (org-element-type (org-element-property :parent e)) 'item)
+       (if (and (org-element-type-p e 'paragraph)
+		(org-element-type-p (org-element-parent e) 'item)
 		(org-export-first-sibling-p e info)
 		(let ((next (org-export-get-next-element e info)))
-		  (and (eq (org-element-type next) 'plain-list)
+		  (and (org-element-type-p next 'plain-list)
 		       (not (org-export-get-next-element next info)))))
 	   0
 	 1))))
@@ -195,7 +195,7 @@ of contents can refer to headlines."
       (lambda (h)
 	(let ((section (car (org-element-contents h))))
 	  (and
-	   (eq 'section (org-element-type section))
+	   (org-element-type-p section 'section)
 	   (org-element-map section 'keyword
 	     (lambda (keyword)
 	       (when (equal "TOC" (org-element-property :key keyword))
@@ -437,7 +437,7 @@ as a communication channel."
   "Transcode ITEM element into Markdown format.
 CONTENTS is the item contents.  INFO is a plist used as
 a communication channel."
-  (let* ((type (org-element-property :type (org-export-get-parent item)))
+  (let* ((type (org-element-property :type (org-element-parent item)))
 	 (struct (org-element-property :structure item))
 	 (bullet (if (not (eq type 'ordered)) "-"
 		   (concat (number-to-string
@@ -590,7 +590,7 @@ INFO is a plist holding contextual information.  See
 			(t (expand-file-name raw-path))))
 	    (caption (org-export-data
 		      (org-export-get-caption
-		       (org-export-get-parent-element link))
+		       (org-element-parent-element link))
 		      info)))
 	(format "![img](%s)"
 		(if (not (org-string-nw-p caption)) path
@@ -764,6 +764,7 @@ this command to convert it."
   (interactive)
   (org-export-replace-region-by 'md))
 
+(defalias 'org-export-region-to-md #'org-md-convert-region-to-md)
 
 ;;;###autoload
 (defun org-md-export-to-markdown (&optional async subtreep visible-only)

@@ -98,12 +98,12 @@
 ;; Call the function to setup Org Mode
 (use-package org :load-path "site-lisp/org-lisp/")
 
+;; Live preview for LaTeX editing
+;; (use-package org-xlatex
+;;   :load-path "site-lisp/org-xlatex/"
+;;   :after (org)
+;;   :hook (org-mode . org-xlatex-mode))
 ;;
-(use-package org-xlatex
-  :load-path "site-lisp/org-xlatex/"
-  :after (org)
-  :hook (org-mode . org-xlatex-mode))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Load components
