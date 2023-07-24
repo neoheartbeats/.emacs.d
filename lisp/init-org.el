@@ -51,8 +51,8 @@
 (add-hook 'org-mode-hook #'my-iconify-org-buffer)
 
 (setq org-ellipsis " 􀍠")
-;; (setq org-hide-emphasis-markers t)
-;;
+(setq org-hide-emphasis-markers t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Draw fringes in Org mode
@@ -98,23 +98,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Load languages
-;;
-;; Org source code blocks
-(setq-default org-confirm-babel-evaluate nil)
-(setq-default org-src-preserve-indentation t)
-(setq-default org-src-fontify-natively t)
-(setq-default org-src-tab-acts-natively t)
-(setq-default org-edit-src-content-indentation 0)
-
-(org-babel-do-load-languages 'org-babel-load-languages
-                             '((shell . t)
-                               (emacs-lisp . t)
-                               (python . t)
-                               (latex . t)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Org mode text edition
 (use-package org-roam
   :ensure t
@@ -156,32 +139,6 @@
                                   (goto-char (point-max))))
   (after-init . org-roam-dailies-goto-today))
 
-;; Add some Org-roam extensions
-(use-package consult-org-roam
-  :ensure t
-  :after (org-roam)
-  :init
-  (require 'consult-org-roam)
-  ;; Activate the minor mode
-  (consult-org-roam-mode 1)
-  :custom
-  ;; Use `ripgrep' for searching with `consult-org-roam-search'
-  (consult-org-roam-grep-func #'consult-ripgrep)
-  ;; Configure a custom narrow key for `consult-buffer'
-  (consult-org-roam-buffer-narrow-key ?r)
-  ;; Display org-roam buffers right after non-org-roam buffers
-  ;; in consult-buffer (and not down at the bottom)
-  (consult-org-roam-buffer-after-buffers t)
-  :config
-  ;; Eventually suppress previewing for certain functions
-  (consult-customize
-   consult-org-roam-forward-links
-   :preview-key (kbd "M-."))
-  :bind
-  (:map org-mode-map ; Define some convenient keybindings as an addition
-        ("s-f" . consult-org-roam-file-find)
-        ("s-l" . consult-org-roam-backlinks)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org LaTeX customizations
@@ -189,6 +146,7 @@
 (setq org-latex-packages-alist
       '(("T1" "fontenc" t)
         ("" "amsmath" t)
+        ("" "bm" t) ; Bold math required
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
@@ -199,11 +157,11 @@
 [DEFAULT-PACKAGES]
 [PACKAGES]
 \\usepackage{xcolor}
-\\usephysicsmodule{ab,ab.braket}%
+\\usephysicsmodule{ab,ab.braket,diagmat,xmat}%
 ")
 
-(plist-put org-latex-preview-options :scale 2.30)
-(plist-put org-latex-preview-options :zoom 1.15)
+(plist-put org-latex-preview-options :scale 2.20)
+(plist-put org-latex-preview-options :zoom 1.10)
 
 ;; Use `CDLaTeX' to improve editing experiences
 (use-package cdlatex
@@ -214,9 +172,26 @@
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
 
-;; (add-hook 'org-mode-hook #'(lambda ()
-;;                              (org-num-mode 1)))
+;; To display LaTeX symbols as unicode
+(setq org-pretty-entities t)
+(setq org-pretty-entities-include-sub-superscripts nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Load languages
+;;
+;; Org source code blocks
+(setq-default org-confirm-babel-evaluate nil)
+(setq-default org-src-preserve-indentation t)
+(setq-default org-src-fontify-natively t)
+(setq-default org-src-tab-acts-natively t)
+(setq-default org-edit-src-content-indentation 0)
+
+(org-babel-do-load-languages 'org-babel-load-languages
+                             '((shell . t)
+                               (emacs-lisp . t)
+                               (python . t)
+                               (latex . t)))
 
 (provide 'init-org)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
