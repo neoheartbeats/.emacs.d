@@ -172,8 +172,15 @@
     (indent-region (point-min) (point-max) nil)
     (save-buffer)))
 
+;; To access the `.emacs.d' root
+(defun open-emacs-config-dir ()
+  "Open the Emacs configuration directory."
+  (interactive)
+  (find-file "~/.emacs.d/lisp/"))
+
 (bind-keys :map global-map
-           ("C-x k" . delete-current-file))
+           ("C-x k" . delete-current-file)
+           ("<f12>" . open-emacs-config-dir))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
