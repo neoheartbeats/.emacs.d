@@ -196,6 +196,9 @@
 (setq auto-window-vscroll nil)
 
 (pixel-scroll-precision-mode 1)
+(setq pixel-scroll-precision-interpolate-page t)
+(defalias 'scroll-up-command #'pixel-scroll-interpolate-down)
+(defalias 'scroll-down-command #'pixel-scroll-interpolate-up)
 
 ;; Disable auto copying
 (setq mouse-drag-copy-region nil)
