@@ -51,7 +51,6 @@
   (conda-env-initialize-eshell))
 
 ;; TODO
-(setenv "TG_TOKEN" "5754204406:AAGMzH4pXoEEBxgmu_EduH9zIhZmrne29tc")
 (setq python-shell-interpreter "/opt/homebrew/Caskroom/miniconda/base/envs/gussie_telegram_bot/bin/python"
       python-shell-interpreter-args "-i"
       python-shell--interpreter python-shell-interpreter
