@@ -42,16 +42,16 @@
   :ensure t
   :defer t
   :init
-  (setq conda-anaconda-home "/opt/homebrew/Caskroom/miniconda/")
+  (setq conda-anaconda-home "/opt/homebrew/anaconda3/")
   (setq conda-env-home-directory
-        (expand-file-name "/opt/homebrew/Caskroom/miniconda/base/envs/"))
+        (expand-file-name "/opt/homebrew/anaconda3/envs/"))
   (setq conda-env-autoactivate-mode t)
   :config
   (conda-env-initialize-interactive-shells)
   (conda-env-initialize-eshell))
 
 ;; TODO
-(setq python-shell-interpreter "/opt/homebrew/Caskroom/miniconda/base/envs/gussie_telegram_bot/bin/python"
+(setq python-shell-interpreter "/opt/homebrew/anaconda3/bin/python"
       python-shell-interpreter-args "-i"
       python-shell--interpreter python-shell-interpreter
       python-shell--interpreter-args python-shell-interpreter-args
