@@ -334,7 +334,6 @@ it is disabled.
 
 (fn &optional ARG)" t)
 (register-definition-prefixes "vertico-unobtrusive" '("vertico-unobtrusive--orig-count"))
-
 
 ;;; End of scraped data
 

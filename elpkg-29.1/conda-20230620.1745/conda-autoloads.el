@@ -74,7 +74,6 @@ it is disabled.
 
 (fn &optional ARG)" t)
 (register-definition-prefixes "conda" '("conda-"))
-
 
 ;;; End of scraped data
 

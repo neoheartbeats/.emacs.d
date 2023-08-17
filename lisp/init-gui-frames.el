@@ -62,7 +62,7 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Font-100" :height 155)
+(set-face-attribute 'default nil :family "Gussie Mono" :height 160)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")

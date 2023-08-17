@@ -454,50 +454,57 @@ DATUM is an element or an object.  Consider blank lines or white
 spaces after it as being outside."
   (and (>= (point) (org-element-begin datum))
        (<= (point)
-	   (org-with-wide-buffer
-	    (goto-char (org-element-end datum))
-	    (skip-chars-backward " \r\t\n")
-	    (if (eq (org-element-class datum) 'element)
-		(line-end-position)
-	      (point))))))
+	  (org-with-wide-buffer
+	   (goto-char (org-element-end datum))
+	   (skip-chars-backward " \r\t\n")
+	   (if (eq (org-element-class datum) 'element)
+	       (line-end-position)
+	     (point))))))
 
-(defun org-src--contents-for-write-back (write-back-buf)
-  "Populate WRITE-BACK-BUF with contents in the appropriate format.
-Assume point is in the corresponding edit buffer."
-  (let ((indentation-offset
-	 (if org-src--preserve-indentation 0
-	   (+ (or org-src--block-indentation 0)
-	      (if (memq org-src--source-type '(example-block src-block))
-		  org-src--content-indentation
-		0))))
-	(use-tabs? (and (> org-src--tab-width 0) t))
-        (preserve-fl (eq org-src--source-type 'latex-fragment))
-	(source-tab-width org-src--tab-width)
-	(contents (org-with-wide-buffer
-                   (let ((eol (line-end-position)))
-                     (list (buffer-substring (point-min) eol)
-                           (buffer-substring eol (point-max))))))
-	(write-back org-src--allow-write-back)
-        marker indent-str)
-    ;; Compute the exact sequence of tabs and spaces used to indent up
-    ;; to `indentation-offset' in the Org buffer.
-    (setq indent-str
-          (with-temp-buffer
-            ;; Reproduce indentation parameters from org buffer.
-            (setq indent-tabs-mode use-tabs?)
-            (when (> source-tab-width 0) (setq tab-width source-tab-width))
-            (indent-to indentation-offset)
-            (buffer-string)))
+(defun org-src-preserve-indentation-p (&optional node)
+  "Non-nil when indentation should be preserved within NODE.
+When NODE is not passed, assume element at point."
+  (let ((node (or node (org-element-at-point))))
+    (and (org-element-type-p node '(example-block src-block))
+         (or (org-element-property :preserve-indent node)
+	     org-src-preserve-indentation))))
+
+(defun org-src--contents-for-write-back-1
+    ( write-back-buf contents
+      &optional indentation-offset preserve-fl source-tab-width write-back)
+  "Populate WRITE-BACK-BUF with CONTENTS in the appropriate format.
+
+INDENTATION-OFFSET, when non-nil is additional indentation to be applied
+to all the lines.  PRESERVE-FL means that first line should not be
+indented (useful for inline blocks contents that belong to paragraph).
+The original indentation, if any, is not altered.
+
+TAB-WIDTH is `tab-width' to be used when indenting.  The value of 0
+means that tabs should not be used.
+
+WRITE-BACK, when non-nil, is a function to be called with point at
+WRITE-BACK-BUF after inserting the original contents, but before
+applying extra indentation."
+  (let ((use-tabs? (and (> source-tab-width 0) t))
+        indent-str)
     (with-current-buffer write-back-buf
       ;; Apply WRITE-BACK function on edit buffer contents.
-      (insert (org-no-properties (car contents)))
-      (setq marker (point-marker))
-      (insert (org-no-properties (car (cdr contents))))
+      (insert (org-no-properties contents))
       (goto-char (point-min))
       (when (functionp write-back) (save-excursion (funcall write-back)))
       ;; Add INDENTATION-OFFSET to every line in buffer,
       ;; unless indentation is meant to be preserved.
-      (when (> indentation-offset 0)
+      (when (and indentation-offset (> indentation-offset 0))
+        ;; The exact sequence of tabs and spaces used to indent
+        ;; up to `indentation-offset' in the Org buffer.
+        (setq indent-str
+              (with-temp-buffer
+                ;; Reproduce indentation parameters.
+                (setq indent-tabs-mode use-tabs?)
+                (when (> source-tab-width 0)
+                  (setq tab-width source-tab-width))
+                (indent-to indentation-offset)
+                (buffer-string)))
         ;; LaTeX-fragments are inline. Do not add indentation to their
         ;; first line.
         (when preserve-fl (forward-line))
@@ -505,9 +512,29 @@ Assume point is in the corresponding edit buffer."
           ;; Keep empty src lines empty, even when src block is
           ;; indented on Org side.
           ;; See https://list.orgmode.org/725763.1632663635@apollo2.minshall.org/T/
-          (when (not (eolp)) (insert indent-str)) ; not an empty line
-	  (forward-line)))
-      (set-marker marker nil))))
+          (when (not (eolp)) ; not an empty line
+            (insert indent-str))
+	  (forward-line))))))
+
+(defun org-src--contents-for-write-back (write-back-buf)
+  "Populate WRITE-BACK-BUF with contents in the appropriate format.
+Assume point is in the corresponding edit buffer."
+  (org-src--contents-for-write-back-1
+   write-back-buf
+   ;; CONTENTS
+   (org-with-wide-buffer (buffer-string))
+   ;; INDENTATION
+   (if org-src--preserve-indentation 0
+     (+ (or org-src--block-indentation 0)
+	(if (memq org-src--source-type '(example-block src-block))
+	    org-src--content-indentation
+	  0)))
+   ;; PRESERVE-FL
+   (eq org-src--source-type 'latex-fragment)
+   ;; TAB-WIDTH
+   org-src--tab-width
+   ;; WRITE-BACK
+   org-src--allow-write-back))
 
 (defun org-src--edit-element
     (datum name &optional initialize write-back contents remote)
@@ -558,10 +585,7 @@ Leave point in edit buffer."
                              (org-element-parent datum) nil))
                            (t (org-current-text-indentation)))))
 	     (content-ind org-edit-src-content-indentation)
-	     (preserve-ind
-	      (and (memq type '(example-block src-block))
-		   (or (org-element-property :preserve-indent datum)
-		       org-src-preserve-indentation)))
+	     (preserve-ind (org-src-preserve-indentation-p datum))
 	     ;; Store relative positions of mark (if any) and point
 	     ;; within the edited area.
 	     (point-coordinates (and (not remote)
@@ -716,7 +740,7 @@ as `org-src-fontify-natively' is non-nil."
     (save-excursion
       (goto-char start)
       (let ((indent-offset
-	     (if org-src-preserve-indentation 0
+	     (if (org-src-preserve-indentation-p) 0
 	       (+ (progn (backward-char)
                          (org-current-text-indentation))
 	          org-edit-src-content-indentation))))

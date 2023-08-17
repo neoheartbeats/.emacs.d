@@ -57,7 +57,6 @@ A prefix argument causes the SQL to be printed into the current buffer.
 ;;; Generated autoloads from emacsql-sqlite-module.el
 
 (register-definition-prefixes "emacsql-sqlite-module" '("emacsql-sqlite-module-connection"))
-
 
 ;;; End of scraped data
 

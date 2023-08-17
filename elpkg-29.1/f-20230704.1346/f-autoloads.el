@@ -12,7 +12,6 @@
 ;;; Generated autoloads from f.el
 
 (register-definition-prefixes "f" '("f-"))
-
 
 ;;; End of scraped data
 

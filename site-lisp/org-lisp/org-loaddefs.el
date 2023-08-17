@@ -39,8 +39,12 @@
 
 ;;; Generated autoloads from ob-core.el
 
-(autoload 'org-babel-execute-safely-maybe "ob-core")
-(autoload 'org-babel-execute-maybe "ob-core" nil t)
+(autoload 'org-babel-execute-safely-maybe "ob-core" "\
+Maybe `org-babel-execute-maybe'.
+This function does nothing unless `org-babel-no-eval-on-ctrl-c-ctrl-c'
+is non-nil.")
+(autoload 'org-babel-execute-maybe "ob-core" "\
+Execute src block or babel call at point." t)
 (autoload 'org-babel-view-src-block-info "ob-core" "\
 Display information on the current source block.
 This includes header arguments, language and name, and is largely
@@ -301,7 +305,7 @@ Mark current source block." t)
 
 ;;; Generated autoloads from ob-lilypond.el
 
-(register-definition-prefixes "ob-lilypond" '("lilypond-mode" "ob-lilypond-header-args" "org-babel-"))
+(register-definition-prefixes "ob-lilypond" '("ob-lilypond-header-args" "org-babel-"))
 
 
 ;;; Generated autoloads from ob-lisp.el

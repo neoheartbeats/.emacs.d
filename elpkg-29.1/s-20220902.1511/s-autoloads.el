@@ -12,7 +12,6 @@
 ;;; Generated autoloads from s.el
 
 (register-definition-prefixes "s" '("s-"))
-
 
 ;;; End of scraped data
 

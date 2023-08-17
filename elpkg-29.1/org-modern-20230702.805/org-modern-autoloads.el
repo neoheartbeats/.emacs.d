@@ -55,7 +55,6 @@ See `org-modern-mode' for more information on Org-Modern mode.
 
 (fn &optional ARG)" t)
 (register-definition-prefixes "org-modern" '("org-modern-"))
-
 
 ;;; End of scraped data
 

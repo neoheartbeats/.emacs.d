@@ -65,7 +65,6 @@ See `yas-minor-mode' for more information on Yas minor mode.
 (fn &optional ARG)" t)
 (autoload 'snippet-mode "yasnippet" "A mode for editing yasnippets" t nil)
 (register-definition-prefixes "yasnippet" '("help-snippet-def" "snippet-mode-map" "yas"))
-
 
 ;;; End of scraped data
 

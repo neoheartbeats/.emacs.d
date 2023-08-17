@@ -109,7 +109,7 @@ Version mismatch is commonly encountered in the following situations:
 (declare-function org-fold-core-with-forced-fontification "org-fold" (&rest body))
 (declare-function org-fold-folded-p "org-fold" (&optional pos limit ignore-hidden-p previous-p))
 (declare-function string-collate-lessp "org-compat" (s1 s2 &optional locale ignore-case))
-(declare-function org-time-convert-to-integer "org-compat" (time))
+(declare-function org-time-convert-to-list "org-compat" (time))
 
 (defvar org-ts-regexp0)
 (defvar ffap-url-regexp)
@@ -1372,8 +1372,10 @@ Return width in pixels when PIXELS is non-nil."
                      (push el result)))
                  result)))
           (current-char-property-alias-alist char-property-alias-alist))
-      (with-temp-buffer
-        (setq-local display-line-numbers nil)
+      (with-current-buffer (get-buffer-create " *Org string width*")
+        (setq-local display-line-numbers nil
+                    line-prefix nil
+                    wrap-prefix nil)
         (setq-local buffer-invisibility-spec
                     (if (listp current-invisibility-spec)
                         (mapcar (lambda (el)
@@ -1391,39 +1393,11 @@ Return width in pixels when PIXELS is non-nil."
           (with-silent-modifications
             (erase-buffer)
             (insert string)
-            (setq pixel-width
-                  (if (get-buffer-window (current-buffer))
-                      (car (window-text-pixel-size
-                            nil (line-beginning-position) (point-max)))
-                    (let ((dedicatedp (window-dedicated-p))
-                          (oldbuffer (window-buffer)))
-                      (unwind-protect
-                          (progn
-                            ;; Do not throw error in dedicated windows.
-                            (set-window-dedicated-p nil nil)
-                            (set-window-buffer nil (current-buffer))
-                            (car (window-text-pixel-size
-                                  nil (line-beginning-position) (point-max))))
-                        (set-window-buffer nil oldbuffer)
-                        (set-window-dedicated-p nil dedicatedp)))))
+            (setq pixel-width (org-buffer-text-pixel-width))
             (unless pixels
               (erase-buffer)
               (insert "a")
-              (setq symbol-width
-                    (if (get-buffer-window (current-buffer))
-                        (car (window-text-pixel-size
-                              nil (line-beginning-position) (point-max)))
-                      (let ((dedicatedp (window-dedicated-p))
-                            (oldbuffer (window-buffer)))
-                        (unwind-protect
-                            (progn
-                              ;; Do not throw error in dedicated windows.
-                              (set-window-dedicated-p nil nil)
-                              (set-window-buffer nil (current-buffer))
-                              (car (window-text-pixel-size
-                                    nil (line-beginning-position) (point-max))))
-                          (set-window-buffer nil oldbuffer)
-                          (set-window-dedicated-p nil dedicatedp)))))))
+              (setq symbol-width (org-buffer-text-pixel-width))))
           (if pixels
               pixel-width
             (/ pixel-width symbol-width)))))))
@@ -1563,7 +1537,7 @@ so values can contain further %-escapes if they are define later in TABLE."
       (setq re (concat "%-?[0-9.]*" (substring (car e) 1)))
       (when (and (cdr e) (string-match re (cdr e)))
         (let ((sref (substring (cdr e) (match-beginning 0) (match-end 0)))
-              (safe "SREF"))
+              (safe (copy-sequence "SREF")))
           (add-text-properties 0 3 (list 'sref sref) safe)
           (setcdr e (replace-match safe t t (cdr e)))))
       (while (string-match re string)
@@ -1890,15 +1864,20 @@ When PROCESS is a list of commands, optional argument LOG-BUF can
 be set to a buffer or a buffer name.  `shell-command' then uses
 it for output."
   (let* ((commands (org-compile-file-commands source process ext spec err-msg))
-         (output (expand-file-name (concat (file-name-base source) "." ext)
-                                   (file-name-directory source)))
+         (output (concat (file-name-sans-extension source) "." ext))
+         ;; Resolve symlinks in default-directory to correctly handle
+         ;; absolute source paths or relative paths with ..
+         (relname (if (file-name-absolute-p source)
+                      (let ((pwd (file-truename default-directory)))
+                        (file-relative-name source pwd))
+                    source))
          (log-buf (and log-buf (get-buffer-create log-buf)))
          (time (file-attribute-modification-time (file-attributes output))))
     (save-window-excursion
       (dolist (command commands)
         (cond
          ((functionp command)
-          (funcall command (shell-quote-argument (file-relative-name source))))
+          (funcall command (shell-quote-argument relname)))
          ((stringp command) (shell-command command log-buf)))))
     ;; Check for process failure.  Output file is expected to be
     ;; located in the same directory as SOURCE.
@@ -1932,33 +1911,35 @@ the SOURCE file.
 
 If PROCESS is a list of commands, each of them is called using
 `shell-command'.  By default, in each command, %b, %f, %F, %o and
-%O are replaced with, respectively, SOURCE base name, name, full
-name, directory and absolute output file name.  It is possible,
-however, to use more place-holders by specifying them in optional
-argument SPEC, as an alist following the pattern
+%O are replaced with, respectively, SOURCE base name, relative
+file name, absolute file name, relative directory and absolute
+output file name.  It is possible, however, to use more
+place-holders by specifying them in optional argument SPEC, as an
+alist following the pattern
 
   (CHARACTER . REPLACEMENT-STRING).
 
 Throw an error if PROCESS does not satisfy the described patterns.
 The error string will be appended with ERR-MSG, when it is a string."
-  (let* ((base-name (file-name-base source))
-	 (full-name (file-truename source))
-         (relative-name (file-relative-name source))
-	 (out-dir (if (file-name-directory source)
-                      ;; Expand "~".  Shell expansion will be disabled
-                      ;; in the shell command call.
-                      (file-name-directory full-name)
-                    "./"))
-	 (output (expand-file-name (concat (file-name-base source) "." ext) out-dir))
+  (let* ((basename (file-name-base source))
+         ;; Resolve symlinks in default-directory to correctly handle
+         ;; absolute source paths or relative paths with ..
+         (pwd (file-truename default-directory))
+         (absname (expand-file-name source pwd))
+         (relname (if (file-name-absolute-p source)
+                        (file-relative-name source pwd)
+                      source))
+	 (relpath (or (file-name-directory relname) "./"))
+	 (output (concat (file-name-sans-extension absname) "." ext))
 	 (err-msg (if (stringp err-msg) (concat ".  " err-msg) "")))
     (pcase process
       ((pred functionp) (list process))
       ((pred consp)
        (let ((spec (append spec
-			   `((?b . ,(shell-quote-argument base-name))
-			     (?f . ,(shell-quote-argument relative-name))
-			     (?F . ,(shell-quote-argument full-name))
-			     (?o . ,(shell-quote-argument out-dir))
+			   `((?b . ,(shell-quote-argument basename))
+			     (?f . ,(shell-quote-argument relname))
+			     (?F . ,(shell-quote-argument absname))
+			     (?o . ,(shell-quote-argument relpath))
 			     (?O . ,(shell-quote-argument output))))))
          (mapcar (lambda (command) (format-spec command spec)) process)))
       (_ (error "No valid command to process %S%s" source err-msg)))))

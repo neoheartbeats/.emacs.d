@@ -35,7 +35,6 @@ Enable `rainbow-delimiters-mode'.")
 (autoload 'rainbow-delimiters-mode-disable "rainbow-delimiters" "\
 Disable `rainbow-delimiters-mode'.")
 (register-definition-prefixes "rainbow-delimiters" '("rainbow-delimiters-"))
-
 
 ;;; End of scraped data
 

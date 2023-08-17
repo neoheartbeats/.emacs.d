@@ -18,7 +18,6 @@ Activate python VIRTUALENV.
 (autoload 'pythonic-deactivate "pythonic" "\
 Deactivate python virtual environment." t)
 (register-definition-prefixes "pythonic" '("pythonic-"))
-
 
 ;;; End of scraped data
 

@@ -41,7 +41,6 @@ a value in `ivy-re-builders-alist'.
 
 (fn STR)")
 (register-definition-prefixes "orderless" '("orderless-"))
-
 
 ;;; End of scraped data
 
