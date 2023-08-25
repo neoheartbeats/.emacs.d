@@ -29,7 +29,7 @@
           (underline-link-symbolic border)
           (string green-cooler)))
   :config
-  (load-theme 'modus-vivendi :no-confirm))
+  (load-theme 'modus-vivendi-tinted :no-confirm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -62,7 +62,7 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Pes Mono" :height 155)
+(set-face-attribute 'default nil :family "Gussie Mono" :height 160)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
