@@ -29,7 +29,8 @@
   :diminish t
   :defer t
   :bind
-  (("s-p" . project-find-file)))
+  (("C-c p p" . project-find-file)
+   ("C-c p s" . project-switch-project)))
 
 
 (provide 'init-projects)

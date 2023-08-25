@@ -34,7 +34,7 @@
 (use-package consult
   :ensure t
   :init
-  (global-set-key (kbd "s-b") 'Switch-To-Buffer)
+  (global-set-key (kbd "s-b") 'switch-to-buffer)
   (global-set-key [remap switch-to-buffer] 'consult-buffer)
   (global-set-key
    [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
@@ -48,6 +48,7 @@
    ("C-v" . consult-yank-from-kill-ring)
    ("M-s" . consult-ripgrep)
    ("s-o" . consult-outline)
+   ("s-m" . consult-imenu)
    ("s-k" . consult-recent-file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
