@@ -20,6 +20,7 @@
 ;; Faster to disable these here (before they've been initialized)
 (push '(width . 165) default-frame-alist)
 (push '(height . 75) default-frame-alist)
+(push '(alpha . (90 . 90)) default-frame-alist)
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
@@ -38,6 +39,7 @@
 (setq inhibit-startup-buffer-menu t)
 (setq inhibit-x-resources t)
 (setq inhibit-default-init t)
+(setq initial-scratch-message "")
 (setq native-comp-async-report-warnings-errors 'silent)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

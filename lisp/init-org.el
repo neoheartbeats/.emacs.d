@@ -11,7 +11,7 @@
 (setq org-fast-tag-selection-single-key 'expert)
 (setq org-export-kill-product-buffer-when-displayed t)
 (setq org-fontify-whole-heading-line t)
-(setq org-directory "~/.org-files/")
+(setq org-directory "/Users/ilyaw39/nexus/nexus-notes/")
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
@@ -60,7 +60,6 @@
   (setq left-margin-width 10)
   (setq right-margin-width 0)
   (set-window-buffer nil (current-buffer)))
-
 (add-hook 'org-mode-hook #'my-toggle-internal-fringes)
 
 ;; Fold drawers by default
@@ -120,7 +119,7 @@
   (setq org-roam-capture-templates
         '(("d" "default" plain "%?"
            :target (file+head
-                    "notes/%<%Y%m%d%H%M%S>-${slug}.org"
+                    "notes/${slug}.org"
                     "#+TITLE: ${title}\n")
            :empty-lines 1
            :unnarrowed t
@@ -128,7 +127,7 @@
 
   (org-roam-db-autosync-mode 1)
   :bind
-  (("s-n" . org-roam-dailies-goto-today)
+  (("s-p" . org-roam-dailies-goto-today)
    :map org-mode-map
    (("s-i" . org-roam-node-insert)
     ("s-<up>" . org-roam-dailies-goto-previous-note)
@@ -138,6 +137,17 @@
                                   (save-buffer)
                                   (goto-char (point-max))))
   (after-init . org-roam-dailies-goto-today))
+
+;; Org-roam meets Consult
+(use-package consult-org-roam
+  :ensure t
+  :after (org-roam)
+  :config
+  (setq consult-org-roam-buffer-after-buffers t)
+  :bind
+  (:map org-mode-map
+        (("s-f" . consult-org-roam-file-find)
+         ("s-b" . consult-org-roam-backlinks))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -150,6 +160,9 @@
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
+
+        ;; The `mlmodern' package provides a larger font weight that is better
+        ;; for display on the screen
         ("" "mlmodern" t)))
 
 (setq org-latex-preview-preamble
@@ -161,7 +174,7 @@
 ")
 
 (plist-put org-latex-preview-options :scale 2.20)
-(plist-put org-latex-preview-options :zoom 1.10)
+(plist-put org-latex-preview-options :zoom 1.15)
 
 ;; Use `CDLaTeX' to improve editing experiences
 (use-package cdlatex

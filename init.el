@@ -29,12 +29,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Personal information for GPG authorization
-(setq user-full-name "Navras")
-(setq user-mail-address "contact@navras.org")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Initialize packages
 (require 'package)
 (require 'cl-lib)
@@ -63,22 +57,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Garbage Collector Magic Hack
-(use-package gcmh
-  :ensure t
-  :diminish (gcmh-mode)
-  :config
-  (setq gcmh-idle-delay 'auto)
-  (setq gcmh-auto-idle-delay-factor 10)
-  (setq gcmh-high-cons-threshold most-positive-fixnum)
-  (gcmh-mode 1))
+;; Defer garbage collection
+(setq gc-cons-threshold most-positive-fixnum)
+(setq gc-cons-percentage 0.6)
 
-;; TMP
-;; (use-package exec-path-from-shell
-;;   :ensure t
-;;   :config
-;;   (exec-path-from-shell-initialize))
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Bootstrap process
