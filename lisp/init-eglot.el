@@ -21,12 +21,9 @@
   :defer t
   :config
   (add-hook 'python-ts-mode-hook #'eglot-ensure)
-  (add-hook 'js-ts-mode-hook #'eglot-ensure)
   (add-hook 'typescript-ts-mode #'eglot-ensure)
   :bind
   ((:map python-mode-map
-         ("s-i" . eglot-format-buffer))
-   (:map js-ts-mode-map
          ("s-i" . eglot-format-buffer))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -47,14 +44,14 @@
   :init
   (setq conda-anaconda-home "/opt/homebrew/Caskroom/miniconda/")
   (setq conda-env-home-directory
-        (expand-file-name "/opt/homebrew/Caskroom/miniconda/"))
+        (expand-file-name "/opt/homebrew/Caskroom/miniconda/base/envs/"))
   (setq conda-env-autoactivate-mode t)
   :config
   (conda-env-initialize-interactive-shells)
   (conda-env-initialize-eshell))
 
-(setq python-shell-interpreter
-      (expand-file-name "/base/bin/python" conda-anaconda-home)
+;; TODO
+(setq python-shell-interpreter "/opt/homebrew/Caskroom/miniconda/base/envs/gussie_telegram_bot/bin/python"
       python-shell-interpreter-args "-i"
       python-shell--interpreter python-shell-interpreter
       python-shell--interpreter-args python-shell-interpreter-args
@@ -63,6 +60,9 @@
 
 (setq python-indent-guess-indent-offset t)
 (setq python-indent-guess-indent-offset-verbose nil)
+
+(bind-keys :map python-ts-mode-map
+           ("s-i" . eglot-format-buffer))
 
 ;; Code navigation, documentation lookup and completion for Python
 (use-package anaconda-mode
