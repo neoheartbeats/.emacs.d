@@ -312,6 +312,7 @@ Interactively, or when MESSAGE is non-nil, show in the echo area.
 (autoload 'org-roam-diagnostics "org-roam-utils" "\
 Collect and print info for `org-roam' issues." t)
 (register-definition-prefixes "org-roam-utils" '("org-roam-"))
+
 
 ;;; End of scraped data
 

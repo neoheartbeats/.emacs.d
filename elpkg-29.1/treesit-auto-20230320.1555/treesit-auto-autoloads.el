@@ -12,6 +12,7 @@
 ;;; Generated autoloads from treesit-auto.el
 
 (register-definition-prefixes "treesit-auto" '("global-treesit-auto-mode" "treesit-auto-"))
+
 
 ;;; End of scraped data
 

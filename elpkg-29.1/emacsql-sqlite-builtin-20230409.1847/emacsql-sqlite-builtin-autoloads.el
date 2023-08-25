@@ -12,6 +12,7 @@
 ;;; Generated autoloads from emacsql-sqlite-builtin.el
 
 (register-definition-prefixes "emacsql-sqlite-builtin" '("emacsql-sqlite-builtin-connection"))
+
 
 ;;; End of scraped data
 

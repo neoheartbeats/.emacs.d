@@ -43,6 +43,7 @@
 (defvar org-edit-src-content-indentation)
 (defvar org-link-file-path-type)
 (defvar org-src-lang-modes)
+(defvar org-src-preserve-indentation)
 (defvar org-babel-tangle-uncomment-comments)
 
 (declare-function org-attach-dir "org-attach" (&optional create-if-not-exists-p no-fs-check))
@@ -59,7 +60,6 @@
 (declare-function org-cycle "org-cycle" (&optional arg))
 (declare-function org-edit-src-code "org-src" (&optional code edit-buffer-name))
 (declare-function org-edit-src-exit "org-src"  ())
-(declare-function org-src-preserve-indentation-p "org-src" (node))
 (declare-function org-element-at-point "org-element" (&optional pom cached-only))
 (declare-function org-element-at-point-no-context "org-element" (&optional pom))
 (declare-function org-element-context "org-element" (&optional element))
@@ -312,15 +312,11 @@ environment, to override this check."
 
 ;;;###autoload
 (defun org-babel-execute-safely-maybe ()
-  "Maybe `org-babel-execute-maybe'.
-This function does nothing unless `org-babel-no-eval-on-ctrl-c-ctrl-c'
-is non-nil."
   (unless org-babel-no-eval-on-ctrl-c-ctrl-c
     (org-babel-execute-maybe)))
 
 ;;;###autoload
 (defun org-babel-execute-maybe ()
-"Execute src block or babel call at point."
   (interactive)
   (or (org-babel-execute-src-block-maybe)
       (org-babel-lob-execute-maybe)))
@@ -665,7 +661,9 @@ Remove final newline character and spurious indentation."
 	   ;; src-block are not meaningful, since they could come from
 	   ;; some paragraph filling.  Treat them as a white space.
 	   (replace-regexp-in-string "\n[ \t]*" " " body))
-	  ((org-src-preserve-indentation-p datum) body)
+	  ((or org-src-preserve-indentation
+	       (org-element-property :preserve-indent datum))
+	   body)
 	  (t (org-remove-indentation body)))))
 
 ;;; functions
@@ -741,9 +739,7 @@ a list with the following pattern:
 	info))))
 
 (defun org-babel--expand-body (info)
-  "Expand noweb references in src block and remove any coderefs.
-The src block is defined by its INFO, as returned by
-`org-babel-get-src-block-info'."
+  "Expand noweb references in body and remove any coderefs."
   (let ((coderef (nth 6 info))
 	(expand
 	 (if (org-babel-noweb-p (nth 2 info) :eval)
@@ -754,14 +750,7 @@ The src block is defined by its INFO, as returned by
        (org-src-coderef-regexp coderef) "" expand nil nil 1))))
 
 (defun org-babel--file-desc (params result)
-  "Retrieve description for file link result of evaluation.
-PARAMS is header argument values.  RESULT is the file link as returned
-by the code block.
-
-When `:file-desc' header argument is provided use its value or
-duplicate RESULT in the description.
-
-When `:file-desc' is missing, return nil."
+  "Retrieve file description."
   (pcase (assq :file-desc params)
     (`nil nil)
     (`(:file-desc) result)
@@ -907,11 +896,7 @@ guess will be made."
 		      (setq result-params (remove "file" result-params))))))
 	      (unless (member "none" result-params)
 	        (org-babel-insert-result
-	         result result-params info
-                 ;; append/prepend cannot handle hash as we accumulate
-                 ;; multiple outputs together.
-                 (when (member "replace" result-params) new-hash)
-                 lang
+	         result result-params info new-hash lang
                  (time-subtract (current-time) exec-start-time))))
 	    (run-hooks 'org-babel-after-execute-hook)
 	    result)))))))
@@ -1182,7 +1167,6 @@ evaluation mechanisms."
 (defvar org-link-bracket-re)
 
 (defun org-babel-active-location-p ()
-  "Return non-nil, when at executable element."
   (org-element-type-p
    (save-match-data (org-element-context))
    '(babel-call inline-babel-call inline-src-block src-block)))
@@ -1880,7 +1864,7 @@ its current beginning instead.
 
 Return the point at the beginning of the current source block.
 Specifically at the beginning of the #+BEGIN_SRC line.  Also set
-`match-data' relatively to `org-babel-src-block-regexp', which see.
+match-data relatively to `org-babel-src-block-regexp', which see.
 If the point is not on a source block or within blank lines after an
 src block, then return nil."
   (let ((element (or src-block (org-element-at-point))))
@@ -2261,7 +2245,9 @@ Return nil if ELEMENT cannot be read."
      (`plain-list (org-babel-read-list))
      ((or `example-block `src-block)
       (let ((v (org-element-property :value element)))
-	(if (org-src-preserve-indentation-p element) v
+	(if (or org-src-preserve-indentation
+		(org-element-property :preserve-indent element))
+	    v
 	  (org-remove-indentation v))))
      (`export-block
       (org-remove-indentation (org-element-property :value element)))
@@ -2361,7 +2347,7 @@ silent -- no results are inserted into the Org buffer but
           process).
 
 none ---- no results are inserted into the Org buffer nor
-          echoed to the minibuffer.  They are not processed into
+          echoed to the minibuffer. they are not processed into
           Emacs-lisp objects at all.
 
 file ---- the results are interpreted as a file path, and are
@@ -2759,7 +2745,7 @@ specified as an an \"attachment:\" style link."
   (when (stringp result)
     (let* ((result-file-name (expand-file-name result))
            (base-file-name (buffer-file-name (buffer-base-buffer)))
-           (base-directory (and base-file-name
+           (base-directory (and buffer-file-name
                                 (file-name-directory base-file-name)))
            (same-directory?
 	    (and base-file-name
@@ -2834,7 +2820,9 @@ specified as an an \"attachment:\" style link."
     (let* ((ind (org-current-text-indentation))
 	   (body-start (line-beginning-position 2))
 	   (body (org-element-normalize-string
-		  (if (org-src-preserve-indentation-p element) new-body
+		  (if (or org-src-preserve-indentation
+			  (org-element-property :preserve-indent element))
+		      new-body
 		    (with-temp-buffer
 		      (insert (org-remove-indentation new-body))
 		      (indent-rigidly
@@ -3383,8 +3371,8 @@ Emacs shutdown.")
 (defun org-babel-temp-file (prefix &optional suffix)
   "Create a temporary file in the `org-babel-temporary-directory'.
 Passes PREFIX and SUFFIX directly to `make-temp-file' with the
-value of function `temporary-file-directory' temporarily set to the
-value of `org-babel-temporary-directory'."
+value of `temporary-file-directory' temporarily set to the value
+of `org-babel-temporary-directory'."
   (make-temp-file
    (concat (file-name-as-directory (org-babel-temp-directory)) prefix)
    nil

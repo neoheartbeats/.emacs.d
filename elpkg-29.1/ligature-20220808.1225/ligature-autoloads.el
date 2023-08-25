@@ -85,6 +85,7 @@ See `ligature-mode' for more information on Ligature mode.
 
 (fn &optional ARG)" t)
 (register-definition-prefixes "ligature" '("ligature-"))
+
 
 ;;; End of scraped data
 

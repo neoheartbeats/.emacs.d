@@ -210,11 +210,9 @@ for `tabulated-list-printer'."
 		    (progn
 		      (goto-char (car report))
 		      (forward-line 0)
-		      (prog1 (propertize
-                              (number-to-string
-			       (cl-incf last-line
-				        (count-lines last-pos (point))))
-                              'org-lint-marker (car report))
+		      (prog1 (number-to-string
+			      (cl-incf last-line
+				       (count-lines last-pos (point))))
 			(setf last-pos (point))))
 		    (cdr report)))))
 	 ;; Insert trust level in generated reports.  Also sort them
@@ -224,7 +222,7 @@ for `tabulated-list-printer'."
 		  (let ((trust (symbol-name (org-lint-checker-trust c))))
 		    (mapcar
 		     (lambda (report)
-		       (list (copy-marker (car report)) trust (nth 1 report) c))
+		       (list (car report) trust (nth 1 report) c))
 		     (save-excursion
 		       (funcall (org-lint-checker-function c)
 			        ast)))))
@@ -247,10 +245,6 @@ for `tabulated-list-printer'."
   "Return current report line, as a number."
   (string-to-number (aref (tabulated-list-get-entry) 0)))
 
-(defun org-lint--current-marker ()
-  "Return current report marker."
-  (get-text-property 0 'org-lint-marker (aref (tabulated-list-get-entry) 0)))
-
 (defun org-lint--current-checker (&optional entry)
   "Return current report checker.
 When optional argument ENTRY is non-nil, use this entry instead
@@ -272,9 +266,9 @@ CHECKERS is the list of checkers used."
 (defun org-lint--jump-to-source ()
   "Move to source line that generated the report at point."
   (interactive)
-  (let ((mk (org-lint--current-marker)))
+  (let ((l (org-lint--current-line)))
     (switch-to-buffer-other-window org-lint--source-buffer)
-    (goto-char mk)
+    (org-goto-line l)
     (org-fold-show-set-visibility 'local)
     (recenter)))
 
@@ -592,30 +586,6 @@ Use :header-args: instead"
 	     (list (org-element-begin link)
 		   (format "Unknown ID \"%s\"" id)))))))
 
-(defun org-lint-confusing-brackets (ast)
-  (org-element-map ast 'link
-    (lambda (link)
-      (org-with-wide-buffer
-       (when (eq (char-after (org-element-end link)) ?\])
-         (list (org-element-begin link)
-	       (format "Trailing ']' after link end")))))))
-
-(defun org-lint-brackets-inside-description (ast)
-  (org-element-map ast 'link
-    (lambda (link)
-      (when (org-element-contents-begin link)
-        (org-with-point-at link
-          (goto-char (org-element-contents-begin link))
-          (let ((count 0))
-            (while (re-search-forward (rx (or ?\] ?\[)) (org-element-contents-end link) t)
-              (if (equal (match-string 0) "[") (cl-incf count) (cl-decf count)))
-            (when (> count 0)
-              (list (org-element-begin link)
-	            (format "No closing ']' matches '[' in link description: %s"
-                            (buffer-substring-no-properties
-                             (org-element-contents-begin link)
-                             (org-element-contents-end link)))))))))))
-
 (defun org-lint-special-property-in-properties-drawer (ast)
   (org-element-map ast 'node-property
     (lambda (p)
@@ -662,7 +632,6 @@ Use :header-args: instead"
 			    path
                           (org-with-point-at (org-element-begin l)
 			    (org-attach-expand path)))))
-             (setq file (substitute-env-in-file-name file))
 	     (and (not (file-remote-p file))
 		  (not (file-exists-p file))
 		  (list (org-element-begin l)
@@ -775,39 +744,26 @@ Use \"export %s\" instead"
     reports))
 
 (defun org-lint-export-option-keywords (ast)
-  "Check for options keyword properties without EXPORT in AST."
+  "Check for options keyword properties without EXPORT_."
   (require 'ox)
-  (let (options reports common-options options-alist)
+  (let (options reports)
     (dolist (opt org-export-options-alist)
       (when (stringp (nth 1 opt))
-        (cl-pushnew (nth 1 opt) common-options :test #'equal)))
+        (cl-pushnew (nth 1 opt) options :test #'equal)))
     (dolist (backend org-export-registered-backends)
       (dolist (opt (org-export-backend-options backend))
         (when (stringp (nth 1 opt))
-          (cl-pushnew (or (org-export-backend-name backend) 'anonymous)
-                      (alist-get (nth 1 opt) options-alist nil nil #'equal))
 	  (cl-pushnew (nth 1 opt) options :test #'equal))))
-    (setq options-alist (nreverse options-alist))
     (org-element-map ast 'node-property
       (lambda (node)
-        (let ((prop (org-element-property :key node)))
-          (when (and (or (member prop options) (member prop common-options))
-                     (not (member prop org-default-properties)))
-            (push (list (org-element-post-affiliated node)
-                        (format "Potentially misspelled %sexport option \"%s\"%s.  Consider \"EXPORT_%s\"."
-                                (when (member prop common-options)
-                                  "global ")
-                                prop
-                                (if-let ((backends
-                                          (and (not (member prop common-options))
-                                               (cdr (assoc-string prop options-alist)))))
-                                    (format
-                                     " in %S export %s"
-                                     (if (= 1 (length backends)) (car backends) backends)
-                                     (if (> (length backends) 1) "backends" "backend"))
-                                  "")
-                                prop))
-                  reports)))))
+        (when (member
+               (org-element-property :key node)
+               options)
+          (push (list (org-element-post-affiliated node)
+                      (format "Potentially misspelled option \"%s\".  Consider \"EXPORT_%s\"."
+                              (org-element-property :key node)
+                              (org-element-property :key node)))
+                reports))))
     reports))
 
 (defun org-lint-invalid-macro-argument-and-template (ast)
@@ -1424,7 +1380,7 @@ AST is the buffer parse tree."
                      (org-element-property :end timestamp))))
         (unless (equal expected actual)
           (list (org-element-property :begin timestamp)
-                (format "Potentially malformed timestamp %s.  Parsed as: %s" actual expected)))))))
+                (format "Potentially malformed timestamp.  Recognized: %s" expected)))))))
 
 ;;; Checkers declaration
 
@@ -1532,16 +1488,6 @@ AST is the buffer parse tree."
   "Report \"id\" links with unknown destination"
   #'org-lint-invalid-id-link
   :categories '(link))
-
-(org-lint-add-checker 'trailing-bracket-after-link
-  "Report potentially confused trailing ']' after link."
-  #'org-lint-confusing-brackets
-  :categories '(link) :trust 'low)
-
-(org-lint-add-checker 'unclosed-brackets-in-link-description
-  "Report potentially confused trailing ']' after link."
-  #'org-lint-brackets-inside-description
-  :categories '(link) :trust 'low)
 
 (org-lint-add-checker 'link-to-local-file
   "Report links to non-existent local files"

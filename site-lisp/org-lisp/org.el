@@ -4851,12 +4851,6 @@ stacked delimiters is N.  Escaping delimiters is not possible."
 
 (defvar org-emph-face nil)
 
-(defconst org-nonsticky-props
-  '(mouse-face highlight keymap invisible intangible help-echo org-linked-text htmlize-link))
-
-(defsubst org-rear-nonsticky-at (pos)
-  (add-text-properties (1- pos) pos (list 'rear-nonsticky org-nonsticky-props)))
-
 (defun org-do-emphasis-faces (limit)
   "Run through the buffer and emphasize strings."
   (let ((quick-re (format "\\([%s]\\|^\\)\\([~=*/_+]\\)"
@@ -4907,18 +4901,8 @@ stacked delimiters is N.  Escaping delimiters is not possible."
 			 (not (org-at-comment-p)))
 		(add-text-properties (match-end 4) (match-beginning 5)
 				     '(invisible t))
-                ;; https://orgmode.org/list/8b691a7f-6b62-d573-e5a8-80fac3dc9bc6@vodafonemail.de
-                (org-rear-nonsticky-at (match-beginning 5))
 		(add-text-properties (match-beginning 3) (match-end 3)
-				     '(invisible t))
-                ;; FIXME: This would break current behavior with point
-                ;; being adjusted before hidden emphasis marker when
-                ;; using M-b.  A proper fix would require custom
-                ;; syntax function that will mark emphasis markers as
-                ;; word constituents where appropriate.
-                ;; https://orgmode.org/list/87edl41jf0.fsf@localhost
-                ;; (org-rear-nonsticky-at (match-end 3))
-                )
+				     '(invisible t)))
 	      (throw :exit t))))))))
 
 (defun org-emphasize (&optional char)
@@ -4965,6 +4949,12 @@ prompted for."
       (insert " ") (backward-char 1))
     (insert string)
     (and move (backward-char 1))))
+
+(defconst org-nonsticky-props
+  '(mouse-face highlight keymap invisible intangible help-echo org-linked-text htmlize-link))
+
+(defsubst org-rear-nonsticky-at (pos)
+  (add-text-properties (1- pos) pos (list 'rear-nonsticky org-nonsticky-props)))
 
 (defun org-activate-links--overlays (limit)
   "Add link properties to links.
@@ -5720,8 +5710,6 @@ needs to be inserted at a specific position in the font-lock sequence.")
 
 (defvar-local org-custom-properties-overlays nil
   "List of overlays used for custom properties.")
-;; Preserve when switching modes or when restarting Org.
-(put 'org-custom-properties-overlays 'permanent-local t)
 
 (defun org-toggle-custom-properties-visibility ()
   "Display or hide properties in `org-custom-properties'."
@@ -6693,11 +6681,14 @@ Assume point is at a heading or an inlinetask beginning."
 		 (forward-line 0)
 		 (or (and (looking-at-p "[ \t]*#\\+BEGIN_\\(EXAMPLE\\|SRC\\)")
 			  (let ((e (org-element-at-point)))
-			    (and (org-src-preserve-indentation-p e)
-			         (goto-char (org-element-end e))
-			         (progn (skip-chars-backward " \r\t\n")
-				        (forward-line 0)
-				        t))))
+			    (and (org-element-type-p
+                                  e '(example-block src-block))
+				 (or org-src-preserve-indentation
+				     (org-element-property :preserve-indent e))
+				 (goto-char (org-element-end e))
+				 (progn (skip-chars-backward " \r\t\n")
+					(forward-line 0)
+					t))))
 		     (forward-line))))))))
        ;; Shift lines but footnote definitions, inlinetasks boundaries
        ;; by DIFF.  Also skip contents of source or example blocks
@@ -6715,7 +6706,10 @@ Assume point is at a heading or an inlinetask beginning."
 	   (forward-line 0)
 	   (or (and (looking-at-p "[ \t]*#\\+BEGIN_\\(EXAMPLE\\|SRC\\)")
 		    (let ((e (org-element-at-point)))
-		      (and (org-src-preserve-indentation-p e)
+		      (and (org-element-type-p
+                            e '(example-block src-block))
+			   (or org-src-preserve-indentation
+			       (org-element-property :preserve-indent e))
 			   (goto-char (org-element-end e))
 			   (progn (skip-chars-backward " \r\t\n")
 				  (forward-line 0)
@@ -9556,7 +9550,7 @@ when there is a statistics cookie in the headline!
 
  (defun org-summary-todo (n-done n-not-done)
    \"Switch entry to DONE when all subentries are done, to TODO otherwise.\"
-   (let (org-log-done org-todo-log-states)   ; turn off logging
+   (let (org-log-done org-log-states)   ; turn off logging
      (org-todo (if (= n-not-done 0) \"DONE\" \"TODO\"))))")
 
 (defvar org-todo-statistics-hook nil
@@ -10553,7 +10547,6 @@ D      Show deadlines and scheduled items between a date range."
 
 (defvar-local org-occur-highlights nil
   "List of overlays used for occur matches.")
-(put 'org-occur-highlights 'permanent-local t)
 (defvar-local org-occur-parameters nil
   "Parameters of the active org-occur calls.
 This is a list, each call to org-occur pushes as cons cell,
@@ -12904,17 +12897,7 @@ Point is left between drawer's boundaries."
 		   (or drawer (read-from-minibuffer "Drawer: ")))))
     (cond
      ;; With C-u, fall back on `org-insert-property-drawer'
-     (arg
-      (org-insert-property-drawer)
-      (org-back-to-heading-or-point-min t)
-      ;; Move inside.
-      (re-search-forward org-property-end-re)
-      (forward-line 0)
-      (unless (org-element-contents-begin (org-element-at-point))
-        ;; Empty drawer.
-        (insert "\n")
-        (forward-char -1))
-      (org-reveal))
+     (arg (org-insert-property-drawer))
      ;; Check validity of suggested drawer's name.
      ((not (string-match-p org-drawer-regexp (format ":%s:" drawer)))
       (user-error "Invalid drawer name"))
@@ -12951,10 +12934,7 @@ Point is left between drawer's boundaries."
 	      (insert "\n:END:")
 	      (deactivate-mark t)
 	      (indent-for-tab-command)
-	      (unless (eolp) (insert "\n"))
-              ;; Leave point inside drawer boundaries.
-              (search-backward ":END:")
-              (forward-char -1))
+	      (unless (eolp) (insert "\n")))
 	  ;; Clear marker, whatever the outcome of insertion is.
 	  (set-marker rend nil)))))))
 
@@ -15480,10 +15460,6 @@ SNIPPETS-P indicates if this is run to create snippet images for HTML."
 ;; Image display
 
 (defvar-local org-inline-image-overlays nil)
-;; Preserve when switching modes or when restarting Org.
-;; If we clear the overlay list and later enable Or mode, the existing
-;; image overlays will never be cleared by `org-toggle-inline-images'.
-(put 'org-inline-image-overlays 'permanent-local t)
 
 (defun org--inline-image-overlays (&optional beg end)
   "Return image overlays between BEG and END."
@@ -17154,19 +17130,7 @@ ignoring region."
 	    string)
         (goto-char beg)
         ;; Join all but headline.
-        (save-excursion
-          (save-match-data
-            (if (version<= "27" emacs-version)
-                (delete-indentation nil (line-beginning-position 2) end)
-              ;; FIXME: Emacs 26.  `delete-indentation' does not yet
-              ;; accept BEG/END arguments.
-              (save-restriction
-                (narrow-to-region beg end)
-                (goto-char beg)
-                (forward-line 2)
-                (while (< (point) (point-max))
-                  (delete-indentation)
-                  (forward-line 1))))))
+        (save-excursion (save-match-data (delete-indentation nil (line-beginning-position 2) end)))
         (setq string (org-trim (delete-and-extract-region (line-end-position) (line-end-position 2))))
 	(goto-char (or (match-end 4)
 		       (match-beginning 5)
@@ -17178,17 +17142,7 @@ ignoring region."
 	 ((not tags-column))		;no tags
 	 (org-auto-align-tags (org-align-tags))
 	 (t (org--align-tags-here tags-column)))) ;preserve tags column
-    (if (version<= "27" emacs-version)
-        (funcall-interactively #'delete-indentation arg beg end)
-      ;; FIXME: Emacs 26.  `delete-indentation' does not yet
-      ;; accept BEG/END arguments.
-      (save-restriction
-        (narrow-to-region beg end)
-        (goto-char beg)
-        (forward-line 1)
-        (while (< (point) (point-max))
-          (delete-indentation)
-          (forward-line 1))))))
+    (funcall-interactively #'delete-indentation arg beg end)))
 
 (defun org-open-line (n)
   "Insert a new row in tables, call `open-line' elsewhere.
@@ -18515,7 +18469,7 @@ Also align node properties according to `org-property-format'."
 		       (skip-chars-backward " \t\n")
 		       (line-beginning-position))))
              (let ((block-content-ind
-                    (when (not (org-src-preserve-indentation-p element))
+                    (when (not org-src-preserve-indentation)
                       (org-with-point-at (org-element-property :begin element)
                         (+ (org-current-text-indentation)
                            org-edit-src-content-indentation)))))
@@ -18569,7 +18523,9 @@ assumed to be significant there."
 	     ;; boundaries can.
 	     ((or (memq type '(export-block latex-environment))
 		  (and (eq type 'example-block)
-		       (not (org-src-preserve-indentation-p element))))
+		       (not
+			(or org-src-preserve-indentation
+			    (org-element-property :preserve-indent element)))))
 	      (let ((offset (- ind (current-indentation))))
 		(unless (zerop offset)
 		  (indent-rigidly (org-element-begin element)
@@ -19413,7 +19369,6 @@ Return a new timestamp object."
 	;; Set new type.
 	(org-element-put-property
 	 split-ts :type (if (eq type 'active-range) 'active 'inactive))
-        (org-element-put-property split-ts :range-type nil)
 	;; Copy start properties over end properties if END is
 	;; non-nil.  Otherwise, copy end properties over `start' ones.
 	(let ((p-alist '((:minute-start . :minute-end)
@@ -19938,25 +19893,15 @@ heading.
 This version will not throw an error.  It will return the level of the
 headline found, or nil if no higher level is found.
 
-When no higher level is found, the still move point to the containing
-heading, if there is any in the accessible portion of the buffer.
-
 When narrowing is in effect, ignore headings starting before the
 available portion of the buffer."
-  (let* ((current-heading (org-element-lineage
-                           (org-element-at-point)
-                           '(headline inlinetask)
-                           'with-self))
-         (parent (org-element-lineage current-heading 'headline)))
-    (if (and parent
-             (<= (point-min) (org-element-begin parent)))
-        (progn
-          (goto-char (org-element-begin parent))
-          (org-element-property :level parent))
-      (when (and current-heading
-                 (<= (point-min) (org-element-begin current-heading)))
-        (goto-char (org-element-begin current-heading))
-        nil))))
+  (let ((heading (org-element-parent
+                  (org-element-lineage
+                   (org-element-at-point)
+                   '(headline inlinetask) 'with-self))))
+    (when (and heading (<= (point-min) (org-element-begin heading)))
+      (goto-char (org-element-begin heading))
+      (org-element-property :level heading))))
 
 (defun org-up-heading-or-point-min ()
   "Move to the heading line of which the present is a subheading, or point-min.
@@ -19985,7 +19930,7 @@ point before the first headline or at point-min."
 	(< l level)))))
 
 (defun org-goto-sibling (&optional previous)
-  "Goto the next sibling heading, even if it is invisible.
+  "Goto the next sibling, even if it is invisible.
 When PREVIOUS is set, go to the previous sibling instead.  Returns t
 when a sibling was found.  When none is found, return nil and don't
 move point."
@@ -19994,8 +19939,6 @@ move point."
 	(re org-outline-regexp-bol)
 	level l)
     (when (ignore-errors (org-back-to-heading t))
-      (when (org-element-type-p (org-element-at-point) 'inlinetask)
-        (org-up-heading-safe))
       (setq level (funcall outline-level))
       (catch 'exit
 	(or previous (forward-char 1))
@@ -20065,16 +20008,12 @@ When TO-HEADING is non-nil, go to the next heading or `point-max'."
   (when element
     (setq element (org-element-lineage
                    element
-                   '(headline)
+                   '(headline inlinetask)
                    'include-self))
     (goto-char (org-element-begin element)))
   (unless (and invisible-ok element)
     (org-back-to-heading-or-point-min invisible-ok)
-    (setq element
-          (org-element-lineage
-           (org-element-at-point)
-           '(headline)
-           'include-self)))
+    (setq element (org-element-at-point)))
   (if (org-element-type-p element 'headline)
       (goto-char (org-element-end element))
     (goto-char (point-max)))

@@ -108,7 +108,7 @@ color of the frame."
   "Face used for drawers."
   :group 'org-faces)
 
-(defface org-property-value '((t :inherit default))
+(defface org-property-value nil
   "Face used for the value of a property."
   :group 'org-faces)
 

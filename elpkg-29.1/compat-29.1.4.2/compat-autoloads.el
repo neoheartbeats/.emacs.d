@@ -17,6 +17,7 @@
 ;;; Generated autoloads from compat-macs.el
 
 (register-definition-prefixes "compat-macs" '("compat-"))
+
 
 ;;; End of scraped data
 

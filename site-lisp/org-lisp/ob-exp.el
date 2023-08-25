@@ -43,7 +43,8 @@
                              drop-locals))
 (declare-function org-in-commented-heading-p "org" (&optional no-inheritance element))
 (declare-function org-in-archived-heading-p "org" (&optional no-inheritance element))
-(declare-function org-src-preserve-indentation-p "org-src" (node))
+
+(defvar org-src-preserve-indentation)
 
 (defcustom org-export-use-babel t
   "Switch controlling code evaluation and header processing during export.
@@ -281,23 +282,25 @@ this template."
 				  (forward-line 0)
 				  (delete-region begin (point)))
 				 (t
-				  (if (org-src-preserve-indentation-p element)
+				  (if (or org-src-preserve-indentation
+					  (org-element-property
+					   :preserve-indent element))
 				      ;; Indent only code block
 				      ;; markers.
 				      (with-temp-buffer
-				        ;; Do not use tabs for block
-				        ;; indentation.
-				        (when (fboundp 'indent-tabs-mode)
+					;; Do not use tabs for block
+					;; indentation.
+					(when (fboundp 'indent-tabs-mode)
 					  (indent-tabs-mode -1)
 					  ;; FIXME: Emacs 26
 					  ;; compatibility.
 					  (setq-local indent-tabs-mode nil))
-				        (insert replacement)
-				        (skip-chars-backward " \r\t\n")
-				        (indent-line-to ind)
-				        (goto-char 1)
-				        (indent-line-to ind)
-				        (setq replacement (buffer-string)))
+					(insert replacement)
+					(skip-chars-backward " \r\t\n")
+					(indent-line-to ind)
+					(goto-char 1)
+					(indent-line-to ind)
+					(setq replacement (buffer-string)))
 				    ;; Indent everything.
 				    (with-temp-buffer
 				      ;; Do not use tabs for block

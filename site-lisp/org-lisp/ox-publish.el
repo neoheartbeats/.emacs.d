@@ -1183,8 +1183,7 @@ references with `org-export-get-reference'."
 		     (org-link-search search nil t)
 		   (error
 		    (signal 'org-link-broken (cdr err)))))
-	       (and (derived-mode-p 'org-mode)
-                    (org-at-heading-p)
+	       (and (org-at-heading-p)
 		    (org-string-nw-p (org-entry-get (point) "CUSTOM_ID"))))))))
    ((not org-publish-cache)
     (progn

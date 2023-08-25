@@ -584,9 +584,7 @@ this template to be accessible only from `message-mode' buffers,
 use this:
 
   (setq org-capture-templates-contexts
-        \\='((\"c\" ((in-mode . \"message-mode\")))
-            (\"d\" (my-context-function
-                    (in-mode . \"org-mode\")))))
+        \\='((\"c\" ((in-mode . \"message-mode\")))))
 
 Here are the available contexts definitions:
 
