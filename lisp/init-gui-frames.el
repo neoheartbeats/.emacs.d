@@ -72,6 +72,7 @@
 ;; Add font ligatures support
 (use-package ligature
   :ensure t
+  :demand t
   :config
   (ligature-set-ligatures 'prog-mode
                           '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->"
@@ -105,18 +106,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Display keybindings instructions
-(use-package which-key
-  :ensure t
-  :diminish (which-key-mode)
-  :config
-  (which-key-mode 1))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Mode Line settings
-(setq-default line-number-mode nil)
 (setq-default mode-line-compact t)
+(setq-default column-number-mode t)
 
 (provide 'init-gui-frames)
 

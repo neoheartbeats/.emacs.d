@@ -11,6 +11,7 @@
 ;; Setup `treesit'
 (use-package treesit-auto
   :ensure t
+  :defer t
   :config (global-treesit-auto-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -35,6 +36,7 @@
 ;; Initialize `eglot'
 (use-package eglot
   :ensure t
+  :defer t
   :config
   (add-hook 'python-ts-mode-hook #'eglot-ensure)
   :bind
@@ -51,6 +53,7 @@
 ;; Configure `conda' environment
 (use-package conda
   :ensure t
+  :defer t
   :init
   (setq conda-anaconda-home "~/anaconda3/")
   (setq conda-env-home-directory (expand-file-name "~/anaconda3/"))
@@ -70,6 +73,7 @@
 ;; Code navigation, documentation lookup and completion for Python
 (use-package anaconda-mode
   :ensure t
+  :defer t
   :diminish (anaconda-mode anaconda-eldoc-mode)
   :hook (python-ts-mode . anaconda-mode)
   :bind
@@ -79,16 +83,6 @@
         ("M-," . anaconda-mode-find-assignments)
         ("M-r" . anaconda-mode-find-references)
         ("M-*" . anaconda-mode-go-back)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Preview colors from code
-(use-package rainbow-mode
-  :ensure t
-  :diminish (rainbow-mode)
-  :config
-  (add-hook 'prog-mode-hook #'(lambda ()
-                                (rainbow-mode 1))))
 
 
 (provide 'init-eglot)

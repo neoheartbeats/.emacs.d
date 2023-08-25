@@ -11,7 +11,7 @@
 (setq org-fast-tag-selection-single-key 'expert)
 (setq org-export-kill-product-buffer-when-displayed t)
 (setq org-fontify-whole-heading-line t)
-(setq org-directory "~/Shelter/")
+(setq org-directory "~/navras/")
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
@@ -21,7 +21,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modern Org Mode
-(use-package org-modern :ensure t
+(use-package org-modern
+  :ensure t
+  :after (org)
   :init
   (setq org-modern-star '("􀄩"))
   (setq org-modern-hide-stars "􀄩")
@@ -29,6 +31,7 @@
   (setq org-modern-checkbox '((?X . "􀃰") (?- . "􀃞") (?\s . "􀂒")))
   (setq org-modern-progress '("􀛪" "􀛩" "􀺶" "􀺸" "􀛨"))
   (setq org-modern-table-vertical 2)
+  (setq org-modern-block-name nil)
   (setq org-modern-keyword nil)
   :config (global-org-modern-mode 1))
 
@@ -73,7 +76,7 @@
   (org-latex-preview))
 
 (bind-keys :map org-mode-map
-           ("s-p" . my-preview-org-fragments))
+           ("m-p" . my-preview-org-fragments))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -111,7 +114,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org mode text edition
-(use-package org-roam :ensure t
+(use-package org-roam
+  :ensure t
+  :defer t
   :config
   (setq org-roam-directory org-directory)
   (setq org-roam-dailies-directory "dates/")
@@ -123,7 +128,7 @@
         '(("d" "default" entry "\n* %?"
            :target (file+head
                     "%<%Y-%m-%d>.org"
-                    "#+TITLE: %<%Y-%m-%d 􀉉>\n")
+                    "#+TITLE: %<%Y-%m-%d %A>\n")
            :empty-lines 1)))
 
   ;; Default capture template for notes
@@ -143,7 +148,7 @@
    :map org-mode-map
    (("s-i" . org-roam-node-insert)
     ("s-f" . org-roam-node-find)
-    ("s-o" . org-roam-alias-add)
+    ("s-a" . org-roam-alias-add)
     ("s-<up>" . org-roam-dailies-goto-previous-note)
     ("s-<down>" . org-roam-dailies-goto-next-note)))
   :hook
@@ -156,13 +161,48 @@
 ;;
 ;; Org LaTeX customizations
 (setq org-latex-preview-default-process 'dvisvgm)
+(setq org-latex-preview-process-alist
+      '((dvipng
+         :programs ("latex" "dvipng")
+         :description "dvi > png"
+         :message "you need to install the programs: latex and dvipng."
+         :image-input-type "dvi"
+         :image-output-type "png"
+         :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
+         :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
+         :image-converter ("dvipng --follow -D %D -T tight --depth --height -o %B-%%09d.png %f")
+         :transparent-image-converter
+         ("dvipng --follow -D %D -T tight -bg Transparent --depth --height -o %B-%%09d.png %f"))
+        (dvisvgm
+         :programs ("latex" "dvisvgm")
+         :description "dvi > svg"
+         :message "you need to install the programs: latex and dvisvgm."
+         :image-input-type "dvi"
+         :image-output-type "svg"
+         :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
+         :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
+         ;; With dvisvgm the --bbox=preview flag is needed to emit the preview.sty-provided
+         ;; height+width+depth information. The --optimise, --clipjoin, and --relative flags
+         ;; cause dvisvgm do do some extra work to tidy up the SVG output, but barely add to
+         ;; the overall dvisvgm runtime (<1% increace, from testing).
+         :image-converter ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts --exact-bbox -o %B-%%9p.svg %f"))
+        (imagemagick
+         :programs ("pdflatex" "convert")
+         :description "pdf > png"
+         :message "you need to install the programs: latex and imagemagick."
+         :image-input-type "pdf"
+         :image-output-type "png"
+         :latex-compiler ("pdflatex -interaction nonstopmode -output-directory %o %f")
+         :latex-precompiler ("pdftex -output-directory %o -ini -jobname=%b \"&pdflatex\" mylatexformat.ltx %f")
+         :image-converter
+         ("convert -density %D -trim -antialias %f -quality 100 %B-%%09d.png"))))
 (setq org-latex-packages-alist
       '(("T1" "fontenc" t)
         ("" "amsmath" t)
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-        ("noDcommand" "kpfonts")))
+        ("" "mlmodern")))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
@@ -172,12 +212,13 @@
 \\usephysicsmodule{ab,ab.braket}%
 ")
 
-(plist-put org-latex-preview-options :scale 2.0)
-(plist-put org-latex-preview-options :zoom 1.25)
+(plist-put org-latex-preview-options :scale 2.30)
+(plist-put org-latex-preview-options :zoom 1.15)
 
 ;; Use `CDLaTeX' to improve editing experiences
 (use-package cdlatex
   :ensure t
+  :defer t
   :diminish (org-cdlatex-mode)
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 

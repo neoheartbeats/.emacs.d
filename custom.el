@@ -3,7 +3,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files '("~/Shelter/dates/2023-06-16.org")))
+ '(package-selected-packages
+   '(benchmark-init which-key vertico treesit-auto tempel smart-hungry-delete rainbow-mode rainbow-delimiters projectile org-roam org-modern orderless modus-themes marginalia magit ligature gcmh esup emacsql-sqlite-builtin editorconfig diminish corfu consult conda cdlatex cape anaconda-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
