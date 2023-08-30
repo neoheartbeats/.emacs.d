@@ -21,3 +21,5 @@ custom.el
 recentf
 /tramp
 /elpkg-29.1/
+/site-lisp/
+/tree-sitter/

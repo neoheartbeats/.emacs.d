@@ -163,7 +163,7 @@
 
         ;; The `mlmodern' package provides a larger font weight that is better
         ;; for display on the screen
-        ("" "mlmodern" t)))
+        ("" "txfonts" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}

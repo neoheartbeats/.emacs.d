@@ -49,7 +49,7 @@
 (set-face-background 'fringe (face-attribute 'default :background))
 
 ;; Cursor faces
-(set-cursor-color "#ff66ff")
+;; (set-cursor-color "#ff66ff")
 (setq-default cursor-type '(bar . 1))
 (setq-default blink-cursor-mode nil)
 
@@ -62,11 +62,11 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "GussieMono Nerd Font" :height 160)
+(set-face-attribute 'default nil :family "Cobalt" :height 160)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 
 ;; Note this make all italic font style disabled

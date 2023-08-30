@@ -50,8 +50,7 @@
 
 (use-package diminish
   :ensure t
-  :config
-  (diminish 'eldoc-mode))
+  :config (diminish 'eldoc-mode))
 
 (use-package bind-key :ensure t)
 
@@ -80,12 +79,25 @@
 ;; Call the function to setup Org Mode
 (use-package org :load-path "site-lisp/org-lisp/")
 
-;; Live preview for LaTeX editing
-;; (use-package org-xlatex
-;;   :load-path "site-lisp/org-xlatex/"
-;;   :after (org)
-;;   :hook (org-mode . org-xlatex-mode))
-;;
+;; Add GitHub Copilot support
+(use-package copilot
+  :load-path "site-lisp/copilot.el/"
+  :init
+
+  ;; Install the dependencies
+  (use-package dash :ensure t :demand t)
+  (use-package s :ensure t :demand t)
+  (use-package editorconfig :ensure t :demand t)
+
+  ;; Specify the path to `node' executable
+  (setq copilot-node-executable "/opt/homebrew/opt/node@18/bin/node")
+  :config
+  (add-hook 'prog-mode-hook #'(lambda ()
+                                (copilot-mode 1)))
+  :bind
+  (:map copilot-completion-map
+        ("s-." . copilot-accept-completion)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Load components

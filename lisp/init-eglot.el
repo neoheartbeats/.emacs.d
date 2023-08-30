@@ -11,7 +11,8 @@
 ;; Setup `treesit'
 (use-package treesit-auto
   :ensure t
-  :config (global-treesit-auto-mode 1))
+  :config
+  (global-treesit-auto-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -20,15 +21,7 @@
   :ensure t
   :defer t
   :config
-  (add-hook 'python-ts-mode-hook #'eglot-ensure)
-  (add-hook 'typescript-ts-mode #'eglot-ensure)
-  :bind
-  ((:map python-mode-map
-         ("s-i" . eglot-format-buffer))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Debugging (TODO)
+  (add-hook 'python-ts-mode-hook #'eglot-ensure))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -36,33 +29,27 @@
 ;;
 ;; Python environment management
 ;;
-;;
 ;; Configure `conda' environment
 (use-package conda
   :ensure t
   :defer t
   :init
-  (setq conda-anaconda-home "/opt/homebrew/anaconda3/")
-  (setq conda-env-home-directory
-        (expand-file-name "/opt/homebrew/anaconda3/envs/"))
+  (setq conda-anaconda-home "~/anaconda3/")
+  (setq conda-env-home-directory "~/anaconda3/envs/")
   (setq conda-env-autoactivate-mode t)
   :config
   (conda-env-initialize-interactive-shells)
   (conda-env-initialize-eshell))
 
 ;; TODO
-(setq python-shell-interpreter "/opt/homebrew/anaconda3/bin/python"
+(setq python-shell-interpreter "~/anaconda3/envs/navras/bin/python"
       python-shell-interpreter-args "-i"
       python-shell--interpreter python-shell-interpreter
       python-shell--interpreter-args python-shell-interpreter-args
       python-shell-prompt-detect-failure-warning nil
       python-shell-completion-native-enable nil)
-
 (setq python-indent-guess-indent-offset t)
 (setq python-indent-guess-indent-offset-verbose nil)
-
-(bind-keys :map python-ts-mode-map
-           ("s-i" . eglot-format-buffer))
 
 ;; Code navigation, documentation lookup and completion for Python
 (use-package anaconda-mode
@@ -78,31 +65,18 @@
         ("M-r" . anaconda-mode-find-references)
         ("M-*" . anaconda-mode-go-back)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; JavaScript and TypeScript (TODO)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Configure the ChatGPT client
-(use-package gptel
+;; Reformat python buffers using the `black' formatter
+(use-package blacken
   :ensure t
   :defer t
-  :init
-  (defun get-env-var-from-zshrc (var-name)
-    "Return the value of the environment variable VAR-NAME in the .zshrc file."
-    (let* ((command (concat "source ~/.zshrc; echo $" var-name))
-           (output (shell-command-to-string command))
-           (matched (string-match "\\(.*\\)\n" output)))
-      (if matched
-          (match-string 1 output)
-        (error "Variable %s not found in .zshrc" var-name))))
   :config
-  (setq gptel-api-key (lambda ()
-                        (get-env-var-from-zshrc "OPENAI_API_KEY")))
-  (setq gptel-default-mode #'org-mode)
+
+  ;; Auto reformat the buffer after saving
+  (add-hook 'python-ts-mode-hook #'(lambda ()
+                                     (blacken-mode 1)))
   :bind
-  ("C-x c" . gptel))
+  (:map python-ts-mode-map
+        ("s-i" . blacken-buffer)))
 
 (provide 'init-eglot)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
