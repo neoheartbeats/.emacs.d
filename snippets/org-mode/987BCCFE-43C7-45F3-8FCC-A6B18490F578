@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: scp
+# key: scp
+# --
+#+BEGIN_SRC python :results output :session s
+$0
+#+END_SRC
