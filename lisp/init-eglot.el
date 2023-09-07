@@ -9,10 +9,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Setup `treesit'
+;;
+;; Command `treesit-auto-install-all' is required if the tree-sitter grammar
+;; libs have not been configured already
 (use-package treesit-auto
   :ensure t
+  :demand t
   :config
   (global-treesit-auto-mode 1))
+
+;; To enable the maximum fontifications
+(setq treesit-font-lock-level 4)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -77,6 +84,10 @@
   :bind
   (:map python-ts-mode-map
         ("s-i" . blacken-buffer)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; 
 
 (provide 'init-eglot)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

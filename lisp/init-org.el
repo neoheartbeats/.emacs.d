@@ -160,10 +160,13 @@
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-
+        ("" "txfonts" t)
+        ;; ("" "kpfonts" t)
+        ;;
         ;; The `mlmodern' package provides a larger font weight that is better
         ;; for display on the screen
-        ("" "txfonts" t)))
+        ;; ("" "mlmodern" t))
+        ))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}

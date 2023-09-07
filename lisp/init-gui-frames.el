@@ -29,7 +29,7 @@
           (underline-link-symbolic border)
           (string green-cooler)))
   :config
-  (load-theme 'modus-vivendi-tritanopia :no-confirm))
+  (load-theme 'modus-vivendi :no-confirm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -66,6 +66,7 @@
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
+(set-fontset-font "fontset-default" 'emoji "Noto Emoji")
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 
@@ -83,7 +84,7 @@
                             "<====>" "<!---" "<~~" "<~" "~>" "~~>" "::" ":::"
                             "==" "!=" "===" "!==" ":=" ":-" ":+" "<*" "<*>"
                             "*>" "<|" "<|>" "|>" "+:" "-:" "=:" "<******>" "++"
-                            "+++" "__"))
+                            "+++" "__" "..."))
   (global-ligature-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
