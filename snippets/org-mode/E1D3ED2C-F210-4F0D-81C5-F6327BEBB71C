@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: qt
+# key: qt
+# --
+#+BEGIN_QUOTE $1
+$0
+#+END_QUOTE

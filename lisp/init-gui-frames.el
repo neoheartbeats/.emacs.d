@@ -62,13 +62,11 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Cobalt" :height 160)
+(set-face-attribute 'default nil :family "Cobalt" :height 140)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'emoji "Noto Emoji")
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
-
 
 ;; Note this make all italic font style disabled
 (set-face-attribute 'italic nil :slant 'normal)

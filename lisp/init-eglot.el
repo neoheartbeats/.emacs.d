@@ -87,7 +87,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; 
+;; Remote development using `crdt'
+(use-package crdt
+  :ensure t
+  :config
+  (setq crdt-tuntox-executable "/opt/homebrew/bin/tuntox")
+  (setq crdt-use-tuntox t))
 
 (provide 'init-eglot)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

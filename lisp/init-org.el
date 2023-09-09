@@ -159,14 +159,7 @@
         ("" "bm" t) ; Bold math required
         ("" "mathtools" t)
         ("" "siunitx" t)
-        ("" "physics2" t)
-        ("" "txfonts" t)
-        ;; ("" "kpfonts" t)
-        ;;
-        ;; The `mlmodern' package provides a larger font weight that is better
-        ;; for display on the screen
-        ;; ("" "mlmodern" t))
-        ))
+        ("" "physics2" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
@@ -189,9 +182,9 @@
                              (org-latex-preview-auto-mode 1)))
 
 ;; To display LaTeX symbols as unicode
-(setq org-pretty-entities t)
-(setq org-pretty-entities-include-sub-superscripts nil)
-
+;; (setq org-pretty-entities t)
+;; (setq org-pretty-entities-include-sub-superscripts nil)
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Load languages
