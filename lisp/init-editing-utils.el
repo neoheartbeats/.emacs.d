@@ -52,6 +52,10 @@
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (rainbow-delimiters-mode 1))))
 
+;; Inhibit paring these delimiters
+(add-hook 'after-init-hook #'(lambda ()
+                                    (modify-syntax-entry ?< ".")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Fill columns

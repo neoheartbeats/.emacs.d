@@ -182,9 +182,9 @@
                              (org-latex-preview-auto-mode 1)))
 
 ;; To display LaTeX symbols as unicode
-;; (setq org-pretty-entities t)
-;; (setq org-pretty-entities-include-sub-superscripts nil)
-;;
+(setq org-pretty-entities t)
+(setq org-pretty-entities-include-sub-superscripts nil)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Load languages
@@ -197,10 +197,8 @@
 (setq-default org-edit-src-content-indentation 0)
 
 (org-babel-do-load-languages 'org-babel-load-languages
-                             '((shell . t)
-                               (emacs-lisp . t)
-                               (python . t)
-                               (latex . t)))
+                             '((emacs-lisp . t)
+                               (python . t)))
 
 (provide 'init-org)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

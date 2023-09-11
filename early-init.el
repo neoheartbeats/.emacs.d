@@ -20,7 +20,6 @@
 ;; Faster to disable these here (before they've been initialized)
 (push '(width . 165) default-frame-alist)
 (push '(height . 75) default-frame-alist)
-(push '(alpha . (90 . 90)) default-frame-alist)
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
