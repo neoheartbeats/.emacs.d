@@ -110,7 +110,7 @@
 (setq-default truncate-partial-width-windows nil)
 (setq-default help-window-select t)
 (setq-default xref-search-program 'ripgrep)
-(setq-default fill-column 80)
+(setq-default fill-column 88)
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
 (setq-default require-final-newline t)

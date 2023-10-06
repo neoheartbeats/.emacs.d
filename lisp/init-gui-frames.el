@@ -62,7 +62,7 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "Pes Mono" :height 140)
+(set-face-attribute 'default nil :family "M PLUS 1 Code" :height 140)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
@@ -70,20 +70,6 @@
 
 ;; Note this make all italic font style disabled
 (set-face-attribute 'italic nil :slant 'normal)
-
-;; Add font ligatures support
-(use-package ligature
-  :ensure t
-  :config
-  (ligature-set-ligatures '(prog-mode text-mode)
-                          '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->"
-                            "<-->" "<--->" "<---->" "<!--" "<==" "<===" "<="
-                            "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
-                            "<====>" "<!---" "<~~" "<~" "~>" "~~>" "::" ":::"
-                            "==" "!=" "===" "!==" ":=" ":-" ":+" "<*" "<*>"
-                            "*>" "<|" "<|>" "|>" "+:" "-:" "=:" "<******>" "++"
-                            "+++" "__" "..."))
-  (global-ligature-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

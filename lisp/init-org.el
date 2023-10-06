@@ -159,7 +159,8 @@
         ("" "bm" t) ; Bold math required
         ("" "mathtools" t)
         ("" "siunitx" t)
-        ("" "physics2" t)))
+        ("" "physics2" t)
+        ("" "kpfonts" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
