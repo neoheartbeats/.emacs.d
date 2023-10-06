@@ -49,7 +49,6 @@
 (set-face-background 'fringe (face-attribute 'default :background))
 
 ;; Cursor faces
-;; (set-cursor-color "#ff66ff")
 (setq-default cursor-type '(bar . 1))
 (setq-default blink-cursor-mode nil)
 

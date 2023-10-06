@@ -60,8 +60,8 @@
 ;;
 ;; Fill columns
 (setq display-fill-column-indicator-character ?\u254e)
-(add-hook 'after-init-hook #'(lambda ()
-                               (global-display-fill-column-indicator-mode 1)))
+(add-hook 'prog-mode-hook #'(lambda ()
+                               (display-fill-column-indicator-mode 1)))
 
 ;; Display line numbers
 (setq display-line-numbers-width-start t)
