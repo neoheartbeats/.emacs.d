@@ -65,7 +65,7 @@
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+;; (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 ;; Note this make all italic font style disabled
 (set-face-attribute 'italic nil :slant 'normal)
