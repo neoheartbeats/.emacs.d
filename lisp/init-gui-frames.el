@@ -10,15 +10,17 @@
 ;;
 ;; Optimization
 (setq-default cursor-in-non-selected-windows nil)
-(setq highlight-nonselected-windows nil)
-(setq idle-update-delay 1.0)
-(setq frame-resize-pixelwise t)
+(setq-default highlight-nonselected-windows nil)
+(setq-default idle-update-delay 1.0)
+(setq-default frame-resize-pixelwise t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modus Themes
+;;
+;; The latest version is preferred
 (use-package modus-themes
-  :ensure t ; The latest version is preferred
+  :ensure t
   :init
   (setq modus-themes-italic-constructs nil)
   (setq modus-themes-common-palette-overrides
@@ -29,7 +31,7 @@
           (underline-link-symbolic border)
           (string green-cooler)))
   :config
-  (load-theme 'modus-vivendi :no-confirm))
+  (load-theme 'modus-vivendi-tritanopia :no-confirm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -61,11 +63,11 @@
 ;; Custom font
 ;;
 ;; Main typeface
-(set-face-attribute 'default nil :family "M PLUS 1 Code" :height 140)
+(set-face-attribute 'default nil :family "Romantica" :height 150)
 
 ;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-;; (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 ;; Note this make all italic font style disabled
 (set-face-attribute 'italic nil :slant 'normal)
