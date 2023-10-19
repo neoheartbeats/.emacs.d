@@ -13,7 +13,10 @@
 (setq org-fontify-whole-heading-line t)
 (setq org-directory "/Users/ilyaw39/nexus/nexus-notes/")
 (setq org-startup-with-inline-images t)
-(setq org-startup-with-latex-preview t)
+
+;; (setq org-startup-with-latex-preview t)
+(add-hook 'org-mode-hook #'(lambda ()
+                             (org-latex-preview--preview-region (point-min) (point-max))))
 
 (bind-keys :map org-mode-map
            ("C-c l" . org-store-link))

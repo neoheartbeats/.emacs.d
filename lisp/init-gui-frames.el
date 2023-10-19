@@ -31,7 +31,7 @@
           (underline-link-symbolic border)
           (string green-cooler)))
   :config
-  (load-theme 'modus-vivendi-tritanopia :no-confirm))
+  (load-theme 'modus-vivendi :no-confirm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
