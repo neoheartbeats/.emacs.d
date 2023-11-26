@@ -10,7 +10,7 @@
 ;;
 ;; Completion for minibuffers
 (use-package vertico
-  :ensure t
+  :straight t
   :after (minibuffer)
   :init (vertico-mode 1)
   :config
@@ -32,7 +32,7 @@
          ("<backspace>" . vertico-directory-delete-char))))
 
 (use-package consult
-  :ensure t
+  :straight t
   :init
   (global-set-key (kbd "s-b") 'switch-to-buffer)
   (global-set-key [remap switch-to-buffer] 'consult-buffer)
@@ -55,7 +55,7 @@
 ;;
 ;; Enable rich annotations
 (use-package marginalia
-  :ensure t
+  :straight t
   :init (marginalia-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -83,7 +83,7 @@
 ;;
 ;; Add extensions
 (use-package cape
-  :ensure t
+  :straight t
   :config (setq cape-dabbrev-min-length 5)
   :hook
   ((prog-mode . (lambda ()
@@ -100,7 +100,7 @@
 ;;
 ;; Build the completion framework
 (use-package orderless
-  :ensure t
+  :straight t
   :init
   (setq completion-styles '(orderless basic))
   (setq completion-category-overrides
@@ -113,7 +113,7 @@
   (setq read-buffer-completion-ignore-case t))
 
 (use-package corfu
-  :ensure t
+  :straight (:files (:defaults "extensions/*"))
   :init (add-hook 'after-init-hook #'global-corfu-mode)
   :config
   (setq corfu-auto t)

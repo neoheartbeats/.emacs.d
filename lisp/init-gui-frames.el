@@ -8,19 +8,11 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Optimization
-(setq-default cursor-in-non-selected-windows nil)
-(setq-default highlight-nonselected-windows nil)
-(setq-default idle-update-delay 1.0)
-(setq-default frame-resize-pixelwise t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Modus Themes
 ;;
 ;; The latest version is preferred
 (use-package modus-themes
-  :ensure t
+  :straight t
   :init
   (setq modus-themes-italic-constructs nil)
   (setq modus-themes-common-palette-overrides
@@ -28,10 +20,17 @@
           (border-mode-line-inactive unspecified) ; No borders for mode lines
           (underline-link border) ; Subtle underlines
           (underline-link-visited border)
-          (underline-link-symbolic border)
-          (string green-cooler)))
+          (underline-link-symbolic border)))
   :config
-  (load-theme 'modus-vivendi :no-confirm))
+  (load-theme 'modus-vivendi-tinted :no-confirm))
+
+
+;;; Ef Themes
+;; (use-package ef-themes
+;;   :straight t
+;;   :config
+;;   (mapc #'disable-theme custom-enabled-themes)
+;;   (load-theme 'ef-dark :no-confirm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

@@ -21,11 +21,14 @@
 (bind-keys :map org-mode-map
            ("C-c l" . org-store-link))
 
+(use-package latex
+  :straight auctex)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modern Org Mode
 (use-package org-modern
-  :ensure t
+  :straight t
   :after (org)
   :init
   (setq org-modern-star '("􀄩"))
@@ -102,7 +105,7 @@
 ;;
 ;; Org mode text edition
 (use-package org-roam
-  :ensure t
+  :straight t
   :after (org)
   :config
   (setq org-roam-directory org-directory)
@@ -143,7 +146,7 @@
 
 ;; Org-roam meets Consult
 (use-package consult-org-roam
-  :ensure t
+  :straight t
   :after (org-roam)
   :config
   (setq consult-org-roam-buffer-after-buffers t)
@@ -162,8 +165,7 @@
         ("" "bm" t) ; Bold math required
         ("" "mathtools" t)
         ("" "siunitx" t)
-        ("" "physics2" t)
-        ("" "kpfonts" t)))
+        ("" "physics2" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
@@ -178,7 +180,7 @@
 
 ;; Use `CDLaTeX' to improve editing experiences
 (use-package cdlatex
-  :ensure t
+  :straight t
   :diminish (org-cdlatex-mode)
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
@@ -202,7 +204,8 @@
 
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
-                               (python . t)))
+                               (python . t)
+                               (java . t)))
 
 (provide 'init-org)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

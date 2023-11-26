@@ -13,7 +13,7 @@
 ;; Command `treesit-auto-install-all' is required if the tree-sitter grammar
 ;; libs have not been configured already
 (use-package treesit-auto
-  :ensure t
+  :straight t
   :demand t
   :config
   (global-treesit-auto-mode 1))
@@ -25,10 +25,11 @@
 ;;
 ;; Initialize `eglot'
 (use-package eglot
-  :ensure t
+  :straight t
   :defer t
   :config
-  (add-to-list 'eglot-server-programs '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio")))
+  (add-to-list 'eglot-server-programs
+               '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio")))
   (add-hook 'python-mode-hook #'eglot-ensure)
   (add-hook 'python-ts-mode-hook #'eglot-ensure))
 
@@ -40,7 +41,7 @@
 ;;
 ;; Configure `conda' environment
 (use-package conda
-  :ensure t
+  :straight t
   :defer t
   :init
   (setq conda-anaconda-home "~/anaconda3/")
@@ -51,7 +52,7 @@
   (conda-env-initialize-eshell))
 
 ;; TODO
-(setq python-shell-interpreter "~/anaconda3/envs/navras/bin/python"
+(setq python-shell-interpreter "~/anaconda3/bin/python"
       python-shell-interpreter-args "-i"
       python-shell--interpreter python-shell-interpreter
       python-shell--interpreter-args python-shell-interpreter-args
@@ -62,7 +63,7 @@
 
 ;; Code navigation, documentation lookup and completion for Python
 (use-package anaconda-mode
-  :ensure t
+  :straight t
   :defer t
   :diminish (anaconda-mode anaconda-eldoc-mode)
   :hook (python-ts-mode . anaconda-mode)
@@ -76,7 +77,7 @@
 
 ;; Reformat python buffers using the `black' formatter
 (use-package blacken
-  :ensure t
+  :straight t
   :defer t
   :config
 

@@ -1,86 +1,176 @@
-;; init.el --- Load the full configuration -*- lexical-binding: t -*-
-;;
+;;; init.el --- Load the full configuration -*- lexical-binding: t -*-
+
+;; Copyright (C) 2021-2023 KAMUSUSANOWO
+
 ;; This file is not part of GNU Emacs.
-;;
-;; Commentary:
+
+;;; Commentary:
 ;;
 ;; This file bootstraps the configuration.
 ;;
-;; Code:
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Code:
+
 ;;
 ;; Speed up startup
 ;;
-;; Defer garbage collection further back in the startup process
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; To enhance the core performance
-;;
-;; Misc settings
 (setq-default bidi-display-reordering 'left-to-right)
+
+;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions
+;; in non-focused windows
 (setq-default cursor-in-non-selected-windows nil)
 (setq highlight-nonselected-windows nil)
+
+;;
+;; Core constants
+;;
+
+(defconst IS-MAC (eq system-type 'darwin))
+(defconst IS-LINUX (eq system-type 'gnu/linux))
+
+;; Remove command line options that aren't relevant to our current OS; that
+;; means less to process at startup.
+(unless IS-MAC (setq command-line-ns-option-alist nil))
+(unless IS-LINUX (setq command-line-x-option-alist nil))
+
+;; More performant rapid scrolling over unfontified regions. May cause brief
+;; spells of inaccurate fontification immediately after scrolling.
 (setq fast-but-imprecise-scrolling t)
 (setq redisplay-skip-fontification-on-input t)
+
+;; Resizing the Emacs frame can be a terribly expensive part of changing the
+;; font. By inhibiting this, we halve startup times, particularly when we use
+;; fonts that are larger than the system default (which would resize the frame).
 (setq frame-inhibit-implied-resize t)
+
+;; Don't ping things that look like domain names.
 (setq ffap-machine-p-known 'reject)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Don't pass case-insensitive to `auto-mode-alist'
+(setq auto-mode-case-fold nil)
+
+;;;
+(when IS-MAC
+  (push '(ns-transparent-titlebar . t) default-frame-alist)
+  (push '(ns-appearance . dark) default-frame-alist))
+
+;; Suppress GUI features
+(setq use-dialog-box nil)
+(setq use-file-dialog nil)
+
+(setq inhibit-splash-screen t)
+(setq inhibit-startup-echo-area-message t)
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-buffer-menu t)
+(setq initial-scratch-message "")
+
 ;;
-;; Initialize packages
-(require 'package)
-(require 'cl-lib)
-
-(setq package-archives
-      '(("melpa" . "https://melpa.org/packages/")
-        ("gnu" . "https://elpa.gnu.org/packages/")
-        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-
-;; Install into separate package dirs for each Emacs version
-(setq package-user-dir (expand-file-name (format "elpkg-%s.%s"
-                                                 emacs-major-version
-                                                 emacs-minor-version)
-                                         user-emacs-directory))
-
-(unless (bound-and-true-p package--initialized)
-  (setq package-enable-at-startup nil)
-  (package-initialize))
-
-(use-package diminish
-  :ensure t
-  :config (diminish 'eldoc-mode))
-
-(use-package bind-key :ensure t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Package management via `straight.el'
 ;;
-;; Defer garbage collection
-(setq gc-cons-threshold most-positive-fixnum)
-(setq gc-cons-percentage 0.6)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Bootstrap process
-;;
+;; The `use-package' macro
+(straight-use-package 'use-package)
+(straight-use-package 'bind-key)
+
+(eval-when-compile
+  (eval-after-load 'advice
+    `(setq ad-redefinition-action 'accept))
+  (setq use-package-verbose nil
+        use-package-compute-statistics nil
+        use-package-minimum-reported-time 0.01
+        use-package-enable-imenu-support t)
+  (require 'cl-lib)
+  (require 'use-package))
+
+
 ;; Load path
-(push (expand-file-name "lisp/" user-emacs-directory) load-path)
+(use-package emacs
+  :config
+  (defun dir-concat (dir file)
+    "Join path DIR with filename FILE correctly."
+    (concat (file-name-as-directory dir) file))
 
-;; Setup `custom.el'
-(setq custom-file (locate-user-emacs-file "custom.el"))
-(when (file-exists-p custom-file)
-  (load custom-file))
+  ;; Set directory
+  ;; (setq default-directory
+  ;;       (cond ((equal (system-name) "surface")
+  ;;              "/cygdrive/c/Users/karth/OneDrive/Documents/")
+  ;;             ((equal system-type 'nt)
+  ;;              "/cygdrive/c/Users/karth/OneDrive/Documents/")
+  ;;             (t "~/")))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Site packages
-;;
-;; Call the function to setup Org Mode
-(use-package org :load-path "site-lisp/org-lisp/")
+  ;; Adds ~/.emacs.d to the load-path
+  (push (dir-concat user-emacs-directory "site-lisp/") load-path)
+  (push (dir-concat user-emacs-directory "lisp/") load-path)
+  
+  (defvar user-cache-directory "~/.cache/emacs/"
+    "Location where files created by emacs are placed."))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; GCMH
+;;
+
+(use-package gcmh
+  :defer 2
+  :straight t
+  :config
+  (defun gcmh-register-idle-gc ()
+    "Register a timer to run `gcmh-idle-garbage-collect'.
+Cancel the previous one if present."
+    (unless (eq this-command 'self-insert-command)
+      (let ((idle-t (if (eq gcmh-idle-delay 'auto)
+		                (* gcmh-auto-idle-delay-factor gcmh-last-gc-time)
+		              gcmh-idle-delay)))
+        (if (timerp gcmh-idle-timer)
+            (timer-set-time gcmh-idle-timer idle-t)
+          (setf gcmh-idle-timer
+	            (run-with-timer idle-t nil #'gcmh-idle-garbage-collect))))))
+  (setq gcmh-idle-delay 'auto  ; default is 15s
+        gcmh-high-cons-threshold (* 32 1024 1024)
+        gcmh-verbose nil)
+  (gcmh-mode 1))
+
+(use-package org
+  :defer
+  :straight `(org
+             :fork (:host nil
+                    :repo "https://git.tecosaur.net/tec/org-mode.git"
+                    :branch "dev"
+                    :remote "tecosaur")
+             :files (:defaults "etc")
+             :build t
+             :pre-build
+             (with-temp-file "org-version.el"
+               (require 'lisp-mnt)
+               (let ((version
+                     (with-temp-buffer
+                       (insert-file-contents "lisp/org.el")
+                       (lm-header "version")))
+                     (git-version
+                     (string-trim
+                      (with-temp-buffer
+                        (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
+                        (buffer-string)))))
+                 (insert
+                  (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
+                  (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
+                  "(provide 'org-version)\n")))
+             :pin nil))
+
 ;; Load components
 (require 'init-system)
 (require 'init-gui-frames)
@@ -88,9 +178,11 @@
 (require 'init-projects)
 (require 'init-comp)
 (require 'init-temp)
-(require 'init-org)
+;; (require 'init-org)
 (require 'init-eglot)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;; coding: utf-8
+;; no-byte-compile: t
+;; End:
 ;;
-;; init.el ends here

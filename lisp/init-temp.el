@@ -13,7 +13,7 @@
 ;;
 ;; Configure Tempel
 ;; (use-package tempel
-;;   :ensure t
+;;   :straight t
 ;;   :bind
 ;;   (("s-." . tempel-expand)
 ;;    ("s-/" . tempel-insert))
@@ -32,7 +32,7 @@
 ;;
 ;; Configure `Yasnippet'
 (use-package yasnippet
-  :ensure t
+  :straight t
   :config
   (setq yas-visit-from-menu t)
   (setq yas-triggers-in-field t)
@@ -56,8 +56,8 @@
     (setq snippet (concat snippet "\\end{pmatrix}"))
     (yas-expand-snippet snippet)))
 
-(bind-keys :map org-mode-map
-           ("C-c i m" . insert-latex-matrix))
+;; (bind-keys :map org-mode-map
+;;            ("C-c i m" . insert-latex-matrix))
 
 (provide 'init-temp)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

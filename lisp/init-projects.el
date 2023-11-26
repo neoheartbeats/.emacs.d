@@ -13,7 +13,7 @@
 ;;
 ;; Git client Magit
 (use-package magit
-  :ensure t
+  :straight t
   :defer t
   :config
   (setq magit-diff-refine-hunk t)
@@ -22,19 +22,12 @@
   (setq magit-section-visibility-indicator nil)
   :bind ("C-x g" . magit-status))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+
 ;; Project management
 (use-package project
   :diminish t
-  :defer t
-  :bind
-  (("C-c p p" . project-find-file)
-   ("C-c p s" . project-switch-project)))
+  :defer t)
 
 
 (provide 'init-projects)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; init-projects.el ends here
+;;; init-projects.el ends here

@@ -11,21 +11,22 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; macOS specified key mapping
+
 (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'super)
 
-(bind-keys
- ([(super a)] . mark-whole-buffer)
- ([(super c)] . kill-ring-save)
- ([(super i)] . indent-current-buffer)
- ([(super l)] . goto-line)
- ([(super q)] . save-buffers-kill-emacs)
- ([(super s)] . save-buffer)
- ([(super v)] . yank)
- ([(super w)] . kill-current-buffer)
- ([(super e)] . delete-window)
- ([(super z)] . undo)
- ([(super d)] . find-file))
+(bind-keys :map global-map
+ ("s-a" . mark-whole-buffer)
+ ("s-c" . kill-ring-save)
+ ("s-i" . indent-current-buffer)
+ ("s-l" . goto-line)
+ ("s-q" . save-buffers-kill-emacs)
+ ("s-s". save-buffer)
+ ("s-v" . yank)
+ ("s-w" . kill-current-buffer)
+ ("s-e" . delete-window)
+ ("s-z" . undo)
+ ("s-d" . find-file))
 
 (bind-keys :map global-map
            ("s-1" . delete-other-windows)
@@ -44,31 +45,14 @@
 ;;
 ;; Disable these keys
 (global-unset-key (kbd "<pinch>"))
+(global-unset-key (kbd "s-="))
+(global-unset-key (kbd "s--"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Increase how much is read from processes (default is 4kb)
 (setq read-process-output-max #x10000)
 
-;; Don't ping things that look like domain names
-(setq ffap-machine-p-known 'reject)
-(setq command-line-ns-option-alist nil)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Set UTF-8 as the default coding system
-(set-charset-priority 'unicode)
-(set-default-coding-systems 'utf-8)
-(set-selection-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-clipboard-coding-system 'utf-8)
-(set-file-name-coding-system 'utf-8)
-(set-buffer-file-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
-(setq locale-coding-system 'utf-8)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Locate position history
 (use-package saveplace
   :defer 2
@@ -82,24 +66,35 @@
   (setq savehist-save-minibuffer-history t)
   (savehist-mode 1))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+(use-package select
+  :config
+  (setq select-enable-clipboard t))
+
 ;;
-;; The rules of minimalism
-(setq line-move-visual nil)
+;; Auto saving mechanism
+;;
+(setq auto-save-interval 2400)
+(setq auto-save-timeout 300)
+(setq auto-save-list-file-prefix
+      (dir-concat user-cache-directory "auto-save-list/.saves-"))
+(setq backup-directory-alist
+      `(("." . ,(dir-concat user-cache-directory "backup")))
+      backup-by-copying t ; Use copies
+      version-control t ; Use version numbers on backups
+      delete-old-versions t ; Automatically delete excess backups
+      kept-new-versions 10 ; Newest versions to keep
+      kept-old-versions 5
+      )
 
-;; Keep cursor at end of lines. This requires `line-move-visual' is nil
-(setq track-eol t)
-
+;;
 ;; Misc options
-(setq use-short-answers t)
-(setq delete-by-moving-to-trash t)
-(setq dired-use-ls-dired nil)
-
+;;
+(setq-default use-short-answers t)
+(setq-default dired-use-ls-dired nil)
 (setq-default auto-hscroll-mode 'current-line)
-(setq-default auto-save-default nil)
 (setq-default case-fold-search t)
 (setq-default create-lockfiles nil)
-(setq-default cursor-in-non-selected-windows nil)
 (setq-default make-backup-files nil)
 (setq-default mark-even-if-inactive nil)
 (setq-default make-pointer-invisible nil)
@@ -173,16 +168,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Clipboard
-(setq kill-ring-max 512)
-(setq kill-do-not-save-duplicates t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Built-in Sqlite support
-(use-package emacsql-sqlite-builtin :ensure t :demand t)
+(use-package emacsql-sqlite-builtin
+  :straight t
+  :demand t)
 
 (provide 'init-system)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;
+;; coding: utf-8
+;; no-byte-compile: t
+;; End:
 ;;
-;; init-system.el ends here

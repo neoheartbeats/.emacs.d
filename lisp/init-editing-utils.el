@@ -46,7 +46,7 @@
 ;;
 ;; Using rainbow delimiters
 (use-package rainbow-delimiters
-  :ensure t
+  :straight t
   :diminish (rainbow-delimiters-mode)
   :config
   (add-hook 'prog-mode-hook #'(lambda ()
@@ -69,6 +69,9 @@
                               (display-line-numbers-mode 1)))
 
 (provide 'init-editing-utils)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;
+;; coding: utf-8
+;; no-byte-compile: t
+;; End:
 ;;
-;; init-editing-utils.el ends here
