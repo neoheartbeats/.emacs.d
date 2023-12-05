@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: sout
+# key: sout
+# --
+System.out.println($0);

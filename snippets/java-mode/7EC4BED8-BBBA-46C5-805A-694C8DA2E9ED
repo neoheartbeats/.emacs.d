@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: javah
+# key: javah
+# --
+class $1 {
+    // Test client
+    public static void main(String[] args) {$0}
+}

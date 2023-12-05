@@ -1,17 +1,19 @@
-;; init-system.el --- Configs specific to macOS -*- lexical-binding: t -*-
-;;
+;;; init-system.e.el --- Configs specific to macOS -*- lexical-binding: t -*-
+
+;; Copyright (C) 2021-2023 KAMUSUSANOWO
+
 ;; This file is not part of GNU Emacs.
-;;
-;; Commentary:
+
+;;; Commentary:
 ;;
 ;; This file provides `macOS' system specific settings.
 ;;
-;; Code:
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Code:
+
 ;;
 ;; macOS specified key mapping
-
+;;
 (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'super)
 
@@ -41,15 +43,11 @@
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Disable these keys
 (global-unset-key (kbd "<pinch>"))
 (global-unset-key (kbd "s-="))
 (global-unset-key (kbd "s--"))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Increase how much is read from processes (default is 4kb)
 (setq read-process-output-max #x10000)
 
@@ -66,11 +64,6 @@
   (setq savehist-save-minibuffer-history t)
   (savehist-mode 1))
 
-;;;
-(use-package select
-  :config
-  (setq select-enable-clipboard t))
-
 ;;
 ;; Auto saving mechanism
 ;;
@@ -84,8 +77,7 @@
       version-control t ; Use version numbers on backups
       delete-old-versions t ; Automatically delete excess backups
       kept-new-versions 10 ; Newest versions to keep
-      kept-old-versions 5
-      )
+      kept-old-versions 5)
 
 ;;
 ;; Misc options
@@ -111,9 +103,9 @@
 (setq-default require-final-newline t)
 (setq-default inhibit-compacting-font-caches t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Global functions
+;;
 (defun delete-current-file ()
   "Delete the current file, and kill the buffer."
   (interactive)
@@ -141,24 +133,10 @@
            ("C-x k" . delete-current-file)
            ("<f12>" . open-emacs-config-dir))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Mouse and scroll settings
 ;;
-;; Smoother and nicer scrolling
-(setq scroll-step 1)
-(setq scroll-conservatively 105)
-(setq scroll-margin 15)
-(setq scroll-preserve-screen-position t)
-(setq mouse-wheel-follow-mouse t)
-(setq mouse-wheel-progressive-speed nil)
-(setq auto-window-vscroll nil)
-(setq pixel-scroll-precision-interpolate-page t)
-(defalias 'scroll-up-command #'pixel-scroll-interpolate-down)
-(defalias 'scroll-down-command #'pixel-scroll-interpolate-up)
-
-(add-hook 'after-init-hook #'(lambda ()
-                               (pixel-scroll-precision-mode 1)))
+(pixel-scroll-precision-mode 1)
 
 ;; Disable auto copyings
 (setq mouse-drag-copy-region nil)
@@ -166,15 +144,11 @@
 (setq select-enable-clipboard t)
 (setq search-default-mode 'char-fold-to-regexp)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Built-in Sqlite support
 (use-package emacsql-sqlite-builtin
-  :straight t
-  :demand t)
+  :straight t)
 
 (provide 'init-system)
-
 ;;;
 ;; coding: utf-8
 ;; no-byte-compile: t

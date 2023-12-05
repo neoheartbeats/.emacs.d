@@ -14,7 +14,6 @@
 ;; libs have not been configured already
 (use-package treesit-auto
   :straight t
-  :demand t
   :config
   (global-treesit-auto-mode 1))
 
@@ -24,35 +23,20 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Initialize `eglot'
-(use-package eglot
-  :straight t
-  :defer t
-  :config
-  (add-to-list 'eglot-server-programs
-               '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio")))
-  (add-hook 'python-mode-hook #'eglot-ensure)
-  (add-hook 'python-ts-mode-hook #'eglot-ensure))
+;; (use-package eglot
+;;   :straight t
+;;   :config
+;;   (add-to-list 'eglot-server-programs
+;;                '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio")))
+;;   (add-hook 'python-mode-hook #'eglot-ensure)
+;;   (add-hook 'python-ts-mode-hook #'eglot-ensure))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Python
 ;;
-;; Python environment management
-;;
-;; Configure `conda' environment
-(use-package conda
-  :straight t
-  :defer t
-  :init
-  (setq conda-anaconda-home "~/anaconda3/")
-  (setq conda-env-home-directory "~/anaconda3/envs/")
-  (setq conda-env-autoactivate-mode t)
-  :config
-  (conda-env-initialize-interactive-shells)
-  (conda-env-initialize-eshell))
-
 ;; TODO
-(setq python-shell-interpreter "~/anaconda3/bin/python"
+(setq python-shell-interpreter "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3"
       python-shell-interpreter-args "-i"
       python-shell--interpreter python-shell-interpreter
       python-shell--interpreter-args python-shell-interpreter-args
@@ -61,32 +45,27 @@
 (setq python-indent-guess-indent-offset t)
 (setq python-indent-guess-indent-offset-verbose nil)
 
-;; Code navigation, documentation lookup and completion for Python
-(use-package anaconda-mode
-  :straight t
-  :defer t
-  :diminish (anaconda-mode anaconda-eldoc-mode)
-  :hook (python-ts-mode . anaconda-mode)
-  :bind
-  (:map anaconda-mode-map
-        ("M-?" . anaconda-mode-show-doc)
-        ("M-." . anaconda-mode-find-definitions)
-        ("M-," . anaconda-mode-find-assignments)
-        ("M-r" . anaconda-mode-find-references)
-        ("M-*" . anaconda-mode-go-back)))
+;; TODO
+;; (use-package copilot
+;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+;;   :config
+;;   (add-hook 'prog-mode-hook #'(lambda ()
+;;                                 (copilot-mode 1)))
+;;   (define-key copilot-completion-map (kbd "M-.") #'copilot-accept-completion))
 
 ;; Reformat python buffers using the `black' formatter
-(use-package blacken
-  :straight t
-  :defer t
-  :config
+;; (use-package blacken
+;;   :straight t
+;;   :config
 
-  ;; Auto reformat the buffer after saving
-  (add-hook 'python-ts-mode-hook #'(lambda ()
-                                     (blacken-mode 1)))
-  :bind
-  (:map python-ts-mode-map
-        ("s-i" . blacken-buffer)))
+;;   ;; Auto reformat the buffer after saving
+;;   (add-hook 'python-ts-mode-hook #'(lambda ()
+;;                                      (blacken-mode 1)))
+;;   :hook
+;;   (after-save . blacken-buffer)
+;;   :bind
+;;   (:map python-ts-mode-map
+;;         ("s-i" . blacken-buffer)))
 
 (provide 'init-eglot)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

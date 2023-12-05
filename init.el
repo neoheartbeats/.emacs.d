@@ -59,10 +59,14 @@
 (setq use-file-dialog nil)
 
 (setq inhibit-splash-screen t)
-(setq inhibit-startup-echo-area-message t)
-(setq inhibit-startup-screen t)
 (setq inhibit-startup-buffer-menu t)
 (setq initial-scratch-message "")
+
+;; Default startup message
+(defun display-startup-echo-area-message ()
+  (let
+      ((text "Funding for this program was made possible by viewers like you."))
+    (message "􀪾 %s" text)))
 
 ;;
 ;; Package management via `straight.el'
@@ -178,7 +182,7 @@ Cancel the previous one if present."
 (require 'init-projects)
 (require 'init-comp)
 (require 'init-temp)
-;; (require 'init-org)
+(require 'init-org)
 (require 'init-eglot)
 
 ;;;

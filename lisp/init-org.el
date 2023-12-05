@@ -1,32 +1,29 @@
-;; init-org.el --- Org mode configuration  -*- lexical-binding: t -*-
-;;
+;;; init-org.el --- Org Mode -*- lexical-binding: t -*-
+
+;; Copyright (C) 2021-2023 KAMUSUSANOWO
+
 ;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+;;; Code:
+
 ;;
-;; Commentary:
+;; Setup default directory
 ;;
-;; Code:
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq org-export-coding-system 'utf-8)
-(setq org-fast-tag-selection-single-key 'expert)
-(setq org-export-kill-product-buffer-when-displayed t)
-(setq org-fontify-whole-heading-line t)
 (setq org-directory "/Users/ilyaw39/nexus/nexus-notes/")
+
+;;
+;; Org Mode buffer init behaviors
+;;
 (setq org-startup-with-inline-images t)
-
-;; (setq org-startup-with-latex-preview t)
-(add-hook 'org-mode-hook #'(lambda ()
-                             (org-latex-preview--preview-region (point-min) (point-max))))
-
-(bind-keys :map org-mode-map
-           ("C-c l" . org-store-link))
+(setq org-startup-with-latex-preview t)
 
 (use-package latex
   :straight auctex)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Modern Org Mode
+;;
 (use-package org-modern
   :straight t
   :after (org)
@@ -59,51 +56,26 @@
 (setq org-ellipsis " 􀍠")
 (setq org-hide-emphasis-markers t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Draw fringes in Org mode
-(defun my-toggle-internal-fringes ()
-  (setq left-margin-width 10)
-  (setq right-margin-width 0)
-  (set-window-buffer nil (current-buffer)))
-(add-hook 'org-mode-hook #'my-toggle-internal-fringes)
-
 ;; Fold drawers by default
-(setq org-hide-drawer-startup t)
-(add-hook 'org-mode-hook #'org-hide-drawer-all)
+(setq org-cycle-hide-drawer-startup t)
+(add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Org fragments
+;; Org fragments and overlays
+;;
 (setq org-image-actual-width '(420))
 
-(defun my-preview-org-fragments ()
-  (interactive)
-  (org-display-inline-images)
-  (org-latex-preview))
-
-(bind-keys :map org-mode-map
-           ("C-x p" . my-preview-org-fragments))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org links
+;;
 (setq org-return-follows-link t)
-(setq org-link-elisp-confirm-function nil)
-
-(setq-default org-link-frame-setup ; Open files in current frame
-              (cl-acons 'file #'find-file org-link-frame-setup))
-
-;; Quick jump to link
-(bind-keys :map org-mode-map
-           ("s-<return>" . org-open-at-point))
 
 ;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Org mode text edition
+;; Org Roam
+;;
 (use-package org-roam
   :straight t
   :after (org)
@@ -144,20 +116,9 @@
                                   (goto-char (point-max))))
   (after-init . org-roam-dailies-goto-today))
 
-;; Org-roam meets Consult
-(use-package consult-org-roam
-  :straight t
-  :after (org-roam)
-  :config
-  (setq consult-org-roam-buffer-after-buffers t)
-  :bind
-  (:map org-mode-map
-        (("s-f" . consult-org-roam-file-find)
-         ("s-b" . consult-org-roam-backlinks))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Org LaTeX customizations
+;;
 (setq org-latex-preview-default-process 'dvisvgm)
 (setq org-latex-packages-alist
       '(("T1" "fontenc" t)
@@ -165,7 +126,8 @@
         ("" "bm" t) ; Bold math required
         ("" "mathtools" t)
         ("" "siunitx" t)
-        ("" "physics2" t)))
+        ("" "physics2" t)
+        ("" "mlmodern" t))) ; Draw LaTeX with larger weight for better readability
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
@@ -187,20 +149,13 @@
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
 
-;; To display LaTeX symbols as unicode
-(setq org-pretty-entities t)
-(setq org-pretty-entities-include-sub-superscripts nil)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Load languages
 ;;
-;; Org source code blocks
 (setq-default org-confirm-babel-evaluate nil)
 (setq-default org-src-preserve-indentation t)
 (setq-default org-src-fontify-natively t)
 (setq-default org-src-tab-acts-natively t)
-(setq-default org-edit-src-content-indentation 0)
 
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
@@ -208,6 +163,8 @@
                                (java . t)))
 
 (provide 'init-org)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;; coding: utf-8
+;; no-byte-compile: t
+;; End:
 ;;
-;; init-org.el ends here

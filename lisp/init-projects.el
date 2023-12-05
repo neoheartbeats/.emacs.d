@@ -14,7 +14,6 @@
 ;; Git client Magit
 (use-package magit
   :straight t
-  :defer t
   :config
   (setq magit-diff-refine-hunk t)
 
@@ -22,11 +21,9 @@
   (setq magit-section-visibility-indicator nil)
   :bind ("C-x g" . magit-status))
 
-
 ;; Project management
 (use-package project
-  :diminish t
-  :defer t)
+  :diminish t)
 
 
 (provide 'init-projects)

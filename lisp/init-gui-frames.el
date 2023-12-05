@@ -1,16 +1,15 @@
-;; init-gui-frames.el --- Behaviours of GUI frames -*- lexical-binding: t -*-
-;;
+;;; init-gui-frames.el --- Behaviours of GUI frames -*- lexical-binding: t -*-
+
+;; Copyright (C) 2021-2023 KAMUSUSANOWO
+
 ;; This file is not part of GNU Emacs.
-;;
-;; Commentary:
-;;
-;; Code:
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Commentary:
+;;; Code:
+
 ;;
 ;; Modus Themes
 ;;
-;; The latest version is preferred
 (use-package modus-themes
   :straight t
   :init
@@ -20,26 +19,16 @@
           (border-mode-line-inactive unspecified) ; No borders for mode lines
           (underline-link border) ; Subtle underlines
           (underline-link-visited border)
-          (underline-link-symbolic border)))
-  :config
-  (load-theme 'modus-vivendi-tinted :no-confirm))
+          (underline-link-symbolic border)
+          (fg-line-number-inactive "gray50") ; Subtle line numbers
+          (fg-line-number-active fg-main)
+          (bg-line-number-inactive unspecified)))
+  :config (load-theme 'modus-vivendi :no-confirm))
 
-
-;;; Ef Themes
-;; (use-package ef-themes
-;;   :straight t
-;;   :config
-;;   (mapc #'disable-theme custom-enabled-themes)
-;;   (load-theme 'ef-dark :no-confirm))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Clean up the title bar content
 (setq-default frame-title-format nil)
 (setq-default ns-use-proxy-icon nil)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Customize faces
 (set-face-attribute 'button nil
                     :underline "#959595"
@@ -57,40 +46,29 @@
 (add-hook 'after-init-hook #'(lambda ()
                                (global-hl-line-mode 1)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Custom font
 ;;
-;; Main typeface
-(set-face-attribute 'default nil :family "Romantica" :height 150)
+(set-face-attribute 'default nil :family "M PLUS 1 Code" :height 140)
 
-;; Font settings
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 ;; Note this make all italic font style disabled
 (set-face-attribute 'italic nil :slant 'normal)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Default startup message
-(defun display-startup-echo-area-message ()
-  (let
-      ((text "Funding for this program was made possible by viewers like you."))
-    (message "􀪾 %s" text)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Stop showing fringe bitmaps
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Mode Line settings
+;;
 (setq-default mode-line-compact t)
 (setq-default line-number-mode nil)
 
 (provide 'init-gui-frames)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;; coding: utf-8
+;; no-byte-compile: t
+;; End:
 ;;
-;; init-gui-frames.el ends here
