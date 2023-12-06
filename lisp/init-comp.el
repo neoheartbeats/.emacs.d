@@ -1,17 +1,17 @@
-;; init-comp.el ---  Modern completion system -*- lexical-binding: t -*-
-;;
+;;; init-comp.el --- Modern completion system -*- lexical-binding: t -*-
+
+;; Copyright (C) 2021-2023 KAMUSUSANOWO
+
 ;; This file is not part of GNU Emacs.
-;;
-;; Commentary:
-;;
-;; Code:
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Commentary:
+;;; Code:
+
 ;;
 ;; Completion for minibuffers
+;;
 (use-package vertico
   :straight t
-  :after (minibuffer)
   :init (vertico-mode 1)
   :config
   (setq vertico-count 10)
@@ -31,6 +31,14 @@
          ("<return>" . vertico-directory-enter)
          ("<backspace>" . vertico-directory-delete-char))))
 
+;; Rich annotations for minibuffer
+(use-package marginalia
+  :straight t
+  :init (marginalia-mode 1))
+
+;;
+;; Consult is useful previewing current content in buffer
+;;
 (use-package consult
   :straight t
   :init
@@ -51,20 +59,12 @@
    ("s-m" . consult-imenu)
    ("s-k" . consult-recent-file)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Enable rich annotations
-(use-package marginalia
-  :straight t
-  :init (marginalia-mode 1))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Completion in buffers
+;;
+
 (setq tab-always-indent 'complete)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Dabbrev settings
 (use-package dabbrev
   :commands (dabbrev-expand dabbrev-completion)
@@ -79,12 +79,10 @@
   (setq dabbrev-eliminate-newlines nil)
   (setq dabbrev-upcase-means-case-search t))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Add extensions
+;; Add extensions for the completion backend
 (use-package cape
   :straight t
-  :config (setq cape-dabbrev-min-length 5)
+  :config (setq cape-dabbrev-min-length 3)
   :hook
   ((prog-mode . (lambda ()
                   (push 'cape-dabbrev completion-at-point-functions)
@@ -96,8 +94,6 @@
                   (push 'cape-file completion-at-point-functions)
                   (push 'cape-dict completion-at-point-functions)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;; Build the completion framework
 (use-package orderless
   :straight t
@@ -112,6 +108,9 @@
   (setq read-file-name-completion-ignore-case t)
   (setq read-buffer-completion-ignore-case t))
 
+;;
+;; The main completion frontend by Corfu
+;;
 (use-package corfu
   :straight (:files (:defaults "extensions/*"))
   :init (add-hook 'after-init-hook #'global-corfu-mode)
@@ -137,6 +136,8 @@
         ("<escape>" . corfu-quit)))
 
 (provide 'init-comp)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;; coding: utf-8
+;; no-byte-compile: t
+;; End:
 ;;
-;; init-comp.el ends here

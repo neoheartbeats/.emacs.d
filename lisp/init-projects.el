@@ -1,21 +1,18 @@
-;; init-projects.el --- Project management in Emacs -*- lexical-binding: t -*-
-;;
+;;; init-projects.el --- Project management -*- lexical-binding: t -*-
+
+;; Copyright (C) 2021-2023 KAMUSUSANOWO
+
 ;; This file is not part of GNU Emacs.
-;;
-;; Commentary:
-;;
-;; Note this file should be loaded before loading `init-org-roam.el',
-;; since package `magit.el' provides functions `org-roam.el' also needs.
-;;
-;; Code:
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Commentary:
+;;; Code:
+
 ;;
 ;; Git client Magit
+;;
 (use-package magit
   :straight t
-  :config
-  (setq magit-diff-refine-hunk t)
+  :config (setq magit-diff-refine-hunk t)
 
   ;; Disable showing the bitmap indicators
   (setq magit-section-visibility-indicator nil)
@@ -27,4 +24,8 @@
 
 
 (provide 'init-projects)
-;;; init-projects.el ends here
+;;;
+;; coding: utf-8
+;; no-byte-compile: t
+;; End:
+;;

@@ -18,11 +18,12 @@
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
+;; Install AUCTeX. This is required by TEC's Org
 (use-package latex
   :straight auctex)
 
 ;;
-;; Modern Org Mode
+;; Modern Org Mode theme
 ;;
 (use-package org-modern
   :straight t
@@ -65,16 +66,14 @@
 ;;
 (setq org-image-actual-width '(420))
 
-;;
 ;; Org links
-;;
 (setq org-return-follows-link t)
 
 ;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
 
 ;;
-;; Org Roam
+;; The Zettlekasten note-taking system by Org Roam
 ;;
 (use-package org-roam
   :straight t
@@ -137,10 +136,10 @@
 \\usephysicsmodule{ab,ab.braket,diagmat,xmat}%
 ")
 
-(plist-put org-latex-preview-options :scale 2.20)
-(plist-put org-latex-preview-options :zoom 1.15)
+(plist-put org-latex-preview-options :scale 2.00)
+(plist-put org-latex-preview-options :zoom 1.05)
 
-;; Use `CDLaTeX' to improve editing experiences
+;; Use CDLaTeX to improve editing experiences
 (use-package cdlatex
   :straight t
   :diminish (org-cdlatex-mode)
@@ -150,7 +149,7 @@
                              (org-latex-preview-auto-mode 1)))
 
 ;;
-;; Load languages
+;; Load languages for Org Babel
 ;;
 (setq-default org-confirm-babel-evaluate nil)
 (setq-default org-src-preserve-indentation t)

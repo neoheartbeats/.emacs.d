@@ -49,7 +49,7 @@
 ;;
 ;; Custom font
 ;;
-(set-face-attribute 'default nil :family "M PLUS 1 Code" :height 140)
+(set-face-attribute 'default nil :family "Romantica" :height 140)
 
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")

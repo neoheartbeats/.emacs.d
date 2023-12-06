@@ -1,41 +1,41 @@
-;; init-eglot.el --- LSP support by Eglot -*- lexical-binding: t -*-
-;;
+;;; init-eglot.el --- LSP support by Eglot -*- lexical-binding: t -*-
+
+;; Copyright (C) 2021-2023 KAMUSUSANOWO
+
 ;; This file is not part of GNU Emacs.
+
+;;; Commentary:
 ;;
-;; Commentary:
+;; This file complement the develop environment for specific languages.
 ;;
-;; Code:
+
+;;; Code:
+
 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Setup `treesit' for better performance for processing coding syntax
 ;;
-;; Setup `treesit'
-;;
+
+;;;
 ;; Command `treesit-auto-install-all' is required if the tree-sitter grammar
 ;; libs have not been configured already
 (use-package treesit-auto
   :straight t
-  :config
-  (global-treesit-auto-mode 1))
+  :config (global-treesit-auto-mode 1))
 
-;; To enable the maximum fontifications
-(setq treesit-font-lock-level 4)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Initialize `eglot'
-;; (use-package eglot
-;;   :straight t
-;;   :config
-;;   (add-to-list 'eglot-server-programs
-;;                '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio")))
-;;   (add-hook 'python-mode-hook #'eglot-ensure)
-;;   (add-hook 'python-ts-mode-hook #'eglot-ensure))
+;;
+(use-package eglot
+  :straight t
+  :config
+  (add-to-list 'eglot-server-programs
+               '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio")))
+  (add-hook 'python-mode-hook #'eglot-ensure)
+  (add-hook 'python-ts-mode-hook #'eglot-ensure))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Python
 ;;
-;; TODO
 (setq python-shell-interpreter "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3"
       python-shell-interpreter-args "-i"
       python-shell--interpreter python-shell-interpreter
@@ -45,7 +45,7 @@
 (setq python-indent-guess-indent-offset t)
 (setq python-indent-guess-indent-offset-verbose nil)
 
-;; TODO
+;;; TODO
 ;; (use-package copilot
 ;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
 ;;   :config
@@ -68,6 +68,8 @@
 ;;         ("s-i" . blacken-buffer)))
 
 (provide 'init-eglot)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;; coding: utf-8
+;; no-byte-compile: t
+;; End:
 ;;
-;; init-eglot.el ends here
