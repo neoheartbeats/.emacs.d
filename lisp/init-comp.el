@@ -25,11 +25,10 @@
 
   ;; Do not render italic fonts
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
-  :bind
-  ((:map vertico-map
-         ("<tab>" . vertico-insert)
-         ("<return>" . vertico-directory-enter)
-         ("<backspace>" . vertico-directory-delete-char))))
+  :bind ((:map vertico-map
+               ("<tab>" . vertico-insert)
+               ("<return>" . vertico-directory-enter)
+               ("<backspace>" . vertico-directory-delete-char))))
 
 ;; Rich annotations for minibuffer
 (use-package marginalia
@@ -51,13 +50,12 @@
   (global-set-key [remap project-switch-to-buffer] 'consult-project-buffer)
   (global-set-key [remap goto-line] 'consult-goto-line)
   (global-set-key [remap imenu] 'consult-imenu)
-  :bind
-  (("C-s" . consult-line)
-   ("C-v" . consult-yank-from-kill-ring)
-   ("M-s" . consult-ripgrep)
-   ("s-o" . consult-outline)
-   ("s-m" . consult-imenu)
-   ("s-k" . consult-recent-file)))
+  :bind (("C-s" . consult-line)
+         ("C-v" . consult-yank-from-kill-ring)
+         ("M-s" . consult-ripgrep)
+         ("s-o" . consult-outline)
+         ("s-m" . consult-imenu)
+         ("s-k" . consult-recent-file)))
 
 ;;
 ;; Completion in buffers
@@ -83,16 +81,15 @@
 (use-package cape
   :straight t
   :config (setq cape-dabbrev-min-length 3)
-  :hook
-  ((prog-mode . (lambda ()
-                  (push 'cape-dabbrev completion-at-point-functions)
-                  (push 'cape-file completion-at-point-functions)
-                  (push 'cape-symbol completion-at-point-functions)
-                  (push 'cape-keyword completion-at-point-functions)))
-   (text-mode . (lambda ()
-                  (push 'cape-dabbrev completion-at-point-functions)
-                  (push 'cape-file completion-at-point-functions)
-                  (push 'cape-dict completion-at-point-functions)))))
+  :hook ((prog-mode . (lambda ()
+                        (push 'cape-dabbrev completion-at-point-functions)
+                        (push 'cape-file completion-at-point-functions)
+                        (push 'cape-symbol completion-at-point-functions)
+                        (push 'cape-keyword completion-at-point-functions)))
+         (text-mode . (lambda ()
+                        (push 'cape-dabbrev completion-at-point-functions)
+                        (push 'cape-file completion-at-point-functions)
+                        (push 'cape-dict completion-at-point-functions)))))
 
 ;; Build the completion framework
 (use-package orderless
@@ -125,15 +122,13 @@
   (setq corfu-scroll-margin 5)
   (setq corfu-history-mode 1)
   (setq corfu-popupinfo-mode 1)
-  :hook
-  (eshell-mode . (lambda ()
-                   (setq-local corfu-auto nil)))
-  :bind
-  (:map corfu-map
-        ("<down>" . corfu-next)
-        ("<up>" . corfu-previous)
-        ("<space>" . corfu-quit)
-        ("<escape>" . corfu-quit)))
+  :hook (eshell-mode . (lambda ()
+                         (setq-local corfu-auto nil)))
+  :bind (:map corfu-map
+              ("<down>" . corfu-next)
+              ("<up>" . corfu-previous)
+              ("<space>" . corfu-quit)
+              ("<escape>" . corfu-quit)))
 
 (provide 'init-comp)
 ;;;

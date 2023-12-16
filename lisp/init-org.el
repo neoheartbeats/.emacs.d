@@ -109,11 +109,7 @@
    (("s-i" . org-roam-node-insert)
     ("s-<up>" . org-roam-dailies-goto-previous-note)
     ("s-<down>" . org-roam-dailies-goto-next-note)))
-  :hook
-  (org-roam-dailies-find-file . (lambda ()                                  
-                                  (save-buffer)
-                                  (goto-char (point-max))))
-  (after-init . org-roam-dailies-goto-today))
+  :hook (after-init . org-roam-dailies-goto-today))
 
 ;;
 ;; Org LaTeX customizations

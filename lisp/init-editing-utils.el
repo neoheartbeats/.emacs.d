@@ -46,9 +46,7 @@
 (use-package imenu
   :bind ("s-m" . imenu))
 
-;;
 ;; Using rainbow delimiters
-;;
 (use-package rainbow-delimiters
   :straight t
   :diminish (rainbow-delimiters-mode)
@@ -60,12 +58,20 @@
 (add-hook 'after-init-hook #'(lambda ()
                                     (modify-syntax-entry ?< ".")))
 
-;;
 ;; Fill columns
-;;
 (setq display-fill-column-indicator-character ?\u254e)
 (add-hook 'prog-mode-hook #'(lambda ()
-                               (display-fill-column-indicator-mode 1)))
+                              (display-fill-column-indicator-mode 1)))
+
+;;
+;; Improve deletion
+;;
+(use-package smart-hungry-delete
+  :straight t
+  :bind (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
+	       ([remap delete-backward-char] . smart-hungry-delete-backward-char)
+	       ([remap delete-char] . smart-hungry-delete-forward-char))
+  :init (smart-hungry-delete-add-default-hooks))
 
 ;; Display line numbers
 (setq display-line-numbers-width-start t)

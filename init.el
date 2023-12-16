@@ -21,18 +21,6 @@
 (setq-default cursor-in-non-selected-windows nil)
 (setq highlight-nonselected-windows nil)
 
-;;
-;; Core constants
-;;
-
-(defconst IS-MAC (eq system-type 'darwin))
-(defconst IS-LINUX (eq system-type 'gnu/linux))
-
-;; Remove command line options that aren't relevant to our current OS; that
-;; means less to process at startup.
-(unless IS-MAC (setq command-line-ns-option-alist nil))
-(unless IS-LINUX (setq command-line-x-option-alist nil))
-
 ;; More performant rapid scrolling over unfontified regions. May cause brief
 ;; spells of inaccurate fontification immediately after scrolling.
 (setq fast-but-imprecise-scrolling t)
@@ -50,9 +38,8 @@
 (setq auto-mode-case-fold nil)
 
 ;;;
-(when IS-MAC
-  (push '(ns-transparent-titlebar . t) default-frame-alist)
-  (push '(ns-appearance . dark) default-frame-alist))
+(push '(ns-transparent-titlebar . t) default-frame-alist)
+(push '(ns-appearance . dark) default-frame-alist)
 
 ;; Suppress GUI features
 (setq use-dialog-box nil)
@@ -148,32 +135,35 @@ Cancel the previous one if present."
         gcmh-verbose nil)
   (gcmh-mode 1))
 
+;;
+;; Org Mode
+;;
 (use-package org
   :defer
   :straight `(org
-             :fork (:host nil
-                    :repo "https://git.tecosaur.net/tec/org-mode.git"
-                    :branch "dev"
-                    :remote "tecosaur")
-             :files (:defaults "etc")
-             :build t
-             :pre-build
-             (with-temp-file "org-version.el"
-               (require 'lisp-mnt)
-               (let ((version
-                     (with-temp-buffer
-                       (insert-file-contents "lisp/org.el")
-                       (lm-header "version")))
-                     (git-version
-                     (string-trim
-                      (with-temp-buffer
-                        (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
-                        (buffer-string)))))
-                 (insert
-                  (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
-                  (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
-                  "(provide 'org-version)\n")))
-             :pin nil))
+              :fork (:host nil
+                           :repo "https://git.tecosaur.net/tec/org-mode.git"
+                           :branch "dev"
+                           :remote "tecosaur")
+              :files (:defaults "etc")
+              :build t
+              :pre-build
+              (with-temp-file "org-version.el"
+                (require 'lisp-mnt)
+                (let ((version
+                       (with-temp-buffer
+                         (insert-file-contents "lisp/org.el")
+                         (lm-header "version")))
+                      (git-version
+                       (string-trim
+                        (with-temp-buffer
+                          (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
+                          (buffer-string)))))
+                  (insert
+                   (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
+                   (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
+                   "(provide 'org-version)\n")))
+              :pin nil))
 
 ;; Load components
 (require 'init-system)
