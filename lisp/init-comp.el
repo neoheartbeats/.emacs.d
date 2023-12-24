@@ -86,7 +86,7 @@
                         (push 'cape-file completion-at-point-functions)
                         (push 'cape-keyword completion-at-point-functions)
                         (push 'cape-abbrev completion-at-point-functions)))
-         (tex-mode . (lambda ()
+         (org-mode . (lambda ()
                        (push 'cape-dabbrev completion-at-point-functions)
                        (push 'cape-file completion-at-point-functions)
                        (push 'cape-dict completion-at-point-functions)
