@@ -1,6 +1,6 @@
 ;;; init-system.e.el --- Configs specific to macOS -*- lexical-binding: t -*-
 
-;; Copyright (C) 2021-2023 KAMUSUSANOWO
+;; Copyright (C) 2021-2023 Sthenno
 
 ;; This file is not part of GNU Emacs.
 
@@ -53,7 +53,6 @@
 
 ;; Locate position history
 (use-package saveplace
-  :defer 2
   :config (save-place-mode 1))
 
 (use-package savehist 

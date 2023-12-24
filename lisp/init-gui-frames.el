@@ -1,6 +1,6 @@
 ;;; init-gui-frames.el --- Behaviours of GUI frames -*- lexical-binding: t -*-
 
-;; Copyright (C) 2021-2023 KAMUSUSANOWO
+;; Copyright (C) 2021-2023 Sthenno
 
 ;; This file is not part of GNU Emacs.
 
