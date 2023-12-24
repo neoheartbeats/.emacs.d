@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: xn
-# key: xn
-# --
-x = np.linspace(0, 10, 100)

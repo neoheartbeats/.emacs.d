@@ -59,7 +59,8 @@
 
 ;; Display line numbers
 (setq display-line-numbers-width-start t)
-(global-display-line-numbers-mode 1)
+(add-hook 'prog-mode-hook #'(lambda ()
+                              (display-line-numbers-mode 1)))
 
 (provide 'init-editing-utils)
 ;;;

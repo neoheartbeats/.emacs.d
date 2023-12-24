@@ -49,11 +49,19 @@
     (push '("#+filetags:  " . ?􀋡) prettify-symbols-alist)
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
     (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist)
-  (prettify-symbols-mode 1)))
+    (prettify-symbols-mode 1)))
 (add-hook 'org-mode-hook #'my-iconify-org-buffer)
 
 (setq org-ellipsis " 􀍠")
 (setq org-hide-emphasis-markers t)
+
+;; Draw fringes in Org mode
+(defun my-toggle-internal-fringes ()
+  (setq left-margin-width 5)
+  (setq right-margin-width 5)
+  (set-window-buffer nil (current-buffer)))
+
+(add-hook 'org-mode-hook #'my-toggle-internal-fringes)
 
 ;; Fold drawers by default
 (setq org-cycle-hide-drawer-startup t)
@@ -73,6 +81,11 @@
 ;;
 ;; The Zettlekasten note-taking system by Denote
 ;;
+
+;; Dependences
+(use-package tmr
+  :straight t)
+
 (use-package denote
   :straight t
   :config
@@ -89,9 +102,6 @@
   ;; Use `org-read-date' in date prompts
   (setq denote-date-prompt-use-org-read-date t)
   
-  ;; Dependences
-  (use-package tmr
-    :straight t)
   :hook
   (denote-journal-extras . (lambda () ; Journaling with a timer with 15 minutes
                              (tmr "15" "Entrance")))
@@ -99,7 +109,9 @@
   (:map global-map
 
         ;; Open today's note
-        ("C-c d" . denote-journal-extras-new-or-existing-entry)))
+        ("C-c d" . denote-journal-extras-new-or-existing-entry))
+  (:map org-mode-map
+        ("s-i" . denote-link-or-create)))
 
 ;;
 ;; Org LaTeX customizations
@@ -125,14 +137,14 @@
 (plist-put org-latex-preview-options :scale 2.00)
 (plist-put org-latex-preview-options :zoom 1.05)
 
+(add-hook 'org-mode-hook #'(lambda ()
+                             (org-latex-preview-auto-mode 1)))
+
 ;; Use CDLaTeX to improve editing experiences
 (use-package cdlatex
   :straight t
   :diminish (org-cdlatex-mode)
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
-
-(add-hook 'org-mode-hook #'(lambda ()
-                             (org-latex-preview-auto-mode 1)))
 
 ;;
 ;; Load languages for Org Babel
@@ -145,7 +157,7 @@
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
                                (python . t)
-                               (java . t)))
+                               (shell . t)))
 
 (provide 'init-org)
 ;;;

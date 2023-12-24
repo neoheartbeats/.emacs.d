@@ -43,22 +43,26 @@
 ;;
 ;; Python
 ;;
+(setq python-interpreter "python3")
+(setq org-babel-python-command python-interpreter)
+(setq python-shell-interpreter python-interpreter)
 (setq python-shell-prompt-detect-failure-warning nil)
 (setq python-shell-completion-native-enable nil)
+
 (setq python-indent-guess-indent-offset t)
 (setq python-indent-guess-indent-offset-verbose nil)
 
 ;; Reformat python buffers using the `black' formatter
-;; (use-package blacken
-;;   :straight t
-;;   :config
+(use-package blacken
+  :straight t
+  :config
 
-;;   ;; Auto reformat the buffer after saving
-;;   (add-hook 'python-mode-hook #'(lambda ()
-;;                                      (blacken-mode 1)))
-;;   :bind
-;;   (:map python-mode-map
-;;         ("s-i" . blacken-buffer)))
+  ;; Auto reformat the buffer after saving
+  (add-hook 'python-mode-hook #'(lambda ()
+                                     (blacken-mode 1)))
+  :bind
+  (:map python-mode-map
+        ("s-i" . blacken-buffer)))
 
 ;;
 ;; AI
@@ -76,21 +80,6 @@
 ;;   (add-hook 'prog-mode-hook #'(lambda ()
 ;;                                 (copilot-mode 1)))
 ;;   (define-key copilot-completion-map (kbd "M-.") #'copilot-accept-completion))
-
-;;;
-;;
-;; GPTel: A simple LLM client for Emacs
-;;
-;; (use-package gptel
-;;   :straight t
-;;   :config
-;;   (setq-default gptel-model "neural-chat:latest"
-;;                 gptel-backend (gptel-make-ollama
-;;                                "Sthenno"
-;;                                :host "127.0.0.1:11434"
-;;                                :models '("neural-chat:latest")
-;;                                :stream t))
-;;   (setq gptel-default-mode #'org-mode))
 
 (provide 'init-eglot)
 ;;;

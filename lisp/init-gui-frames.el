@@ -51,6 +51,27 @@
 ;;
 (set-face-attribute 'default nil :family "Romantica" :height 140)
 
+;; Ligatures support
+(use-package ligature
+  :straight t
+  :config
+  ;; Enable all Iosevka ligatures in programming modes
+  (ligature-set-ligatures 'prog-mode '("<---" "<--"  "<<-" "<-" "->" "-->" "--->"
+                                       "<->" "<-->" "<--->" "<---->" "<!--"
+                                       "<==" "<===" "<=" "=>" "=>>" "==>" "===>"
+                                       ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
+                                       "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "==="
+                                       "!==" ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>"
+                                       "|>" "+:" "-:" "=:" "<******>" "++" "+++"))
+   (ligature-set-ligatures 'text-mode '("<---" "<--"  "<<-" "<-" "->" "-->" "--->"
+                                       "<->" "<-->" "<--->" "<---->" "<!--"
+                                       "<==" "<===" "<=" "=>" "=>>" "==>" "===>"
+                                       ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
+                                       "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "==="
+                                       "!==" ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>"
+                                       "|>" "+:" "-:" "=:" "<******>" "++" "+++"))
+  (global-ligature-mode 1))
+
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
