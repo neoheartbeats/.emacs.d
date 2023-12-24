@@ -37,10 +37,6 @@
 ;; Don't pass case-insensitive to `auto-mode-alist'
 (setq auto-mode-case-fold nil)
 
-;;;
-(push '(ns-transparent-titlebar . t) default-frame-alist)
-(push '(ns-appearance . dark) default-frame-alist)
-
 ;; Suppress GUI features
 (setq use-dialog-box nil)
 (setq use-file-dialog nil)
@@ -88,6 +84,13 @@
   (require 'cl-lib)
   (require 'use-package))
 
+
+;;
+;; If `PATH' is not configured while compiling
+;;
+(use-package exec-path-from-shell
+  :straight t
+  :config (exec-path-from-shell-initialize))
 
 ;; Load path
 (use-package emacs
@@ -165,13 +168,15 @@ Cancel the previous one if present."
                    "(provide 'org-version)\n")))
               :pin nil))
 
+;;
 ;; Load components
+;;
 (require 'init-system)
 (require 'init-gui-frames)
 (require 'init-editing-utils)
 (require 'init-projects)
-(require 'init-comp)
 (require 'init-temp)
+(require 'init-comp)
 (require 'init-org)
 (require 'init-eglot)
 

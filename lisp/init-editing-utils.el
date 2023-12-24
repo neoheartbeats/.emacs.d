@@ -27,12 +27,6 @@
   :hook (after-init . delete-selection-mode))
 
 ;;
-;; Text replacement
-;;
-(use-package replace
-  :bind ("<f10>" . query-replace))
-
-;;
 ;; Automatically reload files was modified by external program
 ;;
 (use-package autorevert
@@ -62,16 +56,6 @@
 (setq display-fill-column-indicator-character ?\u254e)
 (add-hook 'prog-mode-hook #'(lambda ()
                               (display-fill-column-indicator-mode 1)))
-
-;;
-;; Improve deletion
-;;
-(use-package smart-hungry-delete
-  :straight t
-  :bind (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
-	       ([remap delete-backward-char] . smart-hungry-delete-backward-char)
-	       ([remap delete-char] . smart-hungry-delete-forward-char))
-  :init (smart-hungry-delete-add-default-hooks))
 
 ;; Display line numbers
 (setq display-line-numbers-width-start t)

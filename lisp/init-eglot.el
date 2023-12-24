@@ -51,27 +51,27 @@
 ;;
 ;; Conda
 ;;
-(use-package conda
-  :straight t
-  :init
-  (setq conda-anaconda-home "~/anaconda3/")
-  (setq conda-env-home-directory "~/anaconda3/envs/")
-  (setq conda-env-autoactivate-mode t)
-  :config
-  (conda-env-initialize-interactive-shells)
-  (conda-env-initialize-eshell))
+;; (use-package conda
+;;   :straight t
+;;   :init
+;;   (setq conda-anaconda-home "~/anaconda3/")
+;;   (setq conda-env-home-directory "~/anaconda3/envs/")
+;;   (setq conda-env-autoactivate-mode t)
+;;   :config
+;;   (conda-env-initialize-interactive-shells)
+;;   (conda-env-initialize-eshell))
 
 ;; Reformat python buffers using the `black' formatter
-(use-package blacken
-  :straight t
-  :config
+;; (use-package blacken
+;;   :straight t
+;;   :config
 
-  ;; Auto reformat the buffer after saving
-  (add-hook 'python-mode-hook #'(lambda ()
-                                     (blacken-mode 1)))
-  :bind
-  (:map python-mode-map
-        ("s-i" . blacken-buffer)))
+;;   ;; Auto reformat the buffer after saving
+;;   (add-hook 'python-mode-hook #'(lambda ()
+;;                                      (blacken-mode 1)))
+;;   :bind
+;;   (:map python-mode-map
+;;         ("s-i" . blacken-buffer)))
 
 ;;
 ;; AI
@@ -80,30 +80,30 @@
 ;;
 ;; GitHub Copilot
 ;;
-(use-package copilot
-  :straight (
-             :host github
-             :repo "zerolfx/copilot.el"
-             :files ("dist" "*.el"))
-  :config
-  (add-hook 'prog-mode-hook #'(lambda ()
-                                (copilot-mode 1)))
-  (define-key copilot-completion-map (kbd "M-.") #'copilot-accept-completion))
+;; (use-package copilot
+;;   :straight (
+;;              :host github
+;;              :repo "zerolfx/copilot.el"
+;;              :files ("dist" "*.el"))
+;;   :config
+;;   (add-hook 'prog-mode-hook #'(lambda ()
+;;                                 (copilot-mode 1)))
+;;   (define-key copilot-completion-map (kbd "M-.") #'copilot-accept-completion))
 
 ;;;
 ;;
 ;; GPTel: A simple LLM client for Emacs
 ;;
-(use-package gptel
-  :straight t
-  :config
-  (setq-default gptel-model "neural-chat:latest"
-                gptel-backend (gptel-make-ollama
-                               "Sthenno"
-                               :host "127.0.0.1:11434"
-                               :models '("neural-chat:latest")
-                               :stream t))
-  (setq gptel-default-mode #'org-mode))
+;; (use-package gptel
+;;   :straight t
+;;   :config
+;;   (setq-default gptel-model "neural-chat:latest"
+;;                 gptel-backend (gptel-make-ollama
+;;                                "Sthenno"
+;;                                :host "127.0.0.1:11434"
+;;                                :models '("neural-chat:latest")
+;;                                :stream t))
+;;   (setq gptel-default-mode #'org-mode))
 
 (provide 'init-eglot)
 ;;;

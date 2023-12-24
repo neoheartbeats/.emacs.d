@@ -13,15 +13,14 @@
 (use-package magit
   :straight t
   :config (setq magit-diff-refine-hunk t)
-
-  ;; Disable showing the bitmap indicators
-  (setq magit-section-visibility-indicator nil)
   :bind ("C-x g" . magit-status))
 
+;;
 ;; Project management
-(use-package project
-  :diminish t)
-
+;;
+(use-package projectile
+  :straight t
+  :config (projectile-mode 1))
 
 (provide 'init-projects)
 ;;;

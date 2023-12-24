@@ -84,12 +84,13 @@
   :hook ((prog-mode . (lambda ()
                         (push 'cape-dabbrev completion-at-point-functions)
                         (push 'cape-file completion-at-point-functions)
-                        (push 'cape-symbol completion-at-point-functions)
-                        (push 'cape-keyword completion-at-point-functions)))
-         (text-mode . (lambda ()
-                        (push 'cape-dabbrev completion-at-point-functions)
-                        (push 'cape-file completion-at-point-functions)
-                        (push 'cape-dict completion-at-point-functions)))))
+                        (push 'cape-keyword completion-at-point-functions)
+                        (push 'cape-abbrev completion-at-point-functions)))
+         (tex-mode . (lambda ()
+                       (push 'cape-dabbrev completion-at-point-functions)
+                       (push 'cape-file completion-at-point-functions)
+                       (push 'cape-dict completion-at-point-functions)
+                       (push 'cape-abbrev completion-at-point-functions)))))
 
 ;; Build the completion framework
 (use-package orderless

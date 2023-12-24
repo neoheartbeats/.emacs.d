@@ -49,28 +49,7 @@
 ;;
 ;; Custom font
 ;;
-(set-face-attribute 'default nil :family "Romantica" :height 140)
-
-;; Ligatures support
-(use-package ligature
-  :straight t
-  :config
-  ;; Enable all Iosevka ligatures in programming modes
-  (ligature-set-ligatures 'prog-mode '("<---" "<--"  "<<-" "<-" "->" "-->" "--->"
-                                       "<->" "<-->" "<--->" "<---->" "<!--"
-                                       "<==" "<===" "<=" "=>" "=>>" "==>" "===>"
-                                       ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
-                                       "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "==="
-                                       "!==" ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>"
-                                       "|>" "+:" "-:" "=:" "<******>" "++" "+++"))
-   (ligature-set-ligatures 'text-mode '("<---" "<--"  "<<-" "<-" "->" "-->" "--->"
-                                       "<->" "<-->" "<--->" "<---->" "<!--"
-                                       "<==" "<===" "<=" "=>" "=>>" "==>" "===>"
-                                       ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
-                                       "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "==="
-                                       "!==" ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>"
-                                       "|>" "+:" "-:" "=:" "<******>" "++" "+++"))
-  (global-ligature-mode 1))
+(set-face-attribute 'default nil :family "Monaco" :height 140)
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")

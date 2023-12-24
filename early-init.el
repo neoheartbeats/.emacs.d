@@ -36,6 +36,11 @@
 (push '(vertical-scroll-bars) default-frame-alist)
 
 ;;;
+(push '(ns-transparent-titlebar . t) default-frame-alist)
+(push '(ns-appearance . dark) default-frame-alist)
+(push '(alpha . (85 . 85)) default-frame-alist)
+
+;;;
 ;; coding: utf-8
 ;; no-byte-compile: t
 ;; End:
