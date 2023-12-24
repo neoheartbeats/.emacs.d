@@ -4,7 +4,7 @@
 
 org-mode
 
-(src "#+BEGIN_SRC " q n r n "#+END_SRC")
+(src "#+begin_src " q n r n "#+end_src")
 
 (m "\\(" r> "\\)")
 (mm "\\[" r> "\\]")

@@ -10,7 +10,7 @@
 ;;
 ;; Setup default directory
 ;;
-(setq org-directory "~/Dropbox/org/")
+(setq org-directory "~/.org/")
 
 ;;
 ;; Org Mode buffer init behaviors
@@ -35,6 +35,7 @@
   (setq org-modern-checkbox '((?X . "􀃰") (?- . "􀃞") (?\s . "􀂒")))
   (setq org-modern-progress '("􀛪" "􀛩" "􀺶" "􀺸" "􀛨"))
   (setq org-modern-table-vertical 2)
+  (setq org-modern-tag nil)
   (setq org-modern-block-name nil)
   (setq org-modern-keyword nil)
   (setq org-modern-timestamp nil)
@@ -42,16 +43,13 @@
 
 (defun my-iconify-org-buffer ()
   (progn
-    (push '(":PROPERTIES:" . ?􀈭) prettify-symbols-alist)
-    (push '(":ID:      " . ?􀐚) prettify-symbols-alist)
-    (push '(":ROAM_ALIASES:" . ?􀅷) prettify-symbols-alist)
-    (push '(":END:" . ?􀅽) prettify-symbols-alist)
-    (push '("#+TITLE:" . ?􀧵) prettify-symbols-alist)
-    (push '("#+AUTHOR:" . ?􀉩) prettify-symbols-alist)
+    (push '("#+title:     " . ?􀈭) prettify-symbols-alist)
+    (push '("#+identifier:" . ?􀅷) prettify-symbols-alist)
+    (push '("#+date:      " . ?􀧵) prettify-symbols-alist)
+    (push '("#+filetags:  " . ?􀋡) prettify-symbols-alist)
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
-    (push '("#+ATTR_ORG:" . ?􀌞) prettify-symbols-alist)
-    (push '("#+STARTUP: " . ?􀖆) prettify-symbols-alist))
-  (prettify-symbols-mode 1))
+    (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist)
+  (prettify-symbols-mode 1)))
 (add-hook 'org-mode-hook #'my-iconify-org-buffer)
 
 (setq org-ellipsis " 􀍠")
@@ -79,19 +77,29 @@
   :straight t
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
+  (setq denote-known-keywords '("robot" "poem" "science" "dust"))
+  
+  ;; Denote for journaling
   (setq denote-journal-extras-directory nil) ; Use `denote-directory' as default
   (setq denote-journal-extras-keyword "entrance") ; The entrance for a day
 
   ;; Format journal titles as Monday 19 September 2023 08:49 PM
-  (setq denote-journal-extras-title-format "day-date-month-year-12h")
-  (setq denote-date-prompt-use-org-read-date t) ; Automatically read current date
+  (setq denote-journal-extras-title-format 'day-date-month-year-12h)
 
+  ;; Use `org-read-date' in date prompts
+  (setq denote-date-prompt-use-org-read-date t)
+  
   ;; Dependences
   (use-package tmr
     :straight t)
   :hook
   (denote-journal-extras . (lambda () ; Journaling with a timer with 15 minutes
-                             (tmr "15" "Entrance"))))
+                             (tmr "15" "Entrance")))
+  :bind
+  (:map global-map
+
+        ;; Open today's note
+        ("C-c d" . denote-journal-extras-new-or-existing-entry)))
 
 ;;
 ;; Org LaTeX customizations

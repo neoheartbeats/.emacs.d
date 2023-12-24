@@ -48,19 +48,6 @@
 (setq python-indent-guess-indent-offset t)
 (setq python-indent-guess-indent-offset-verbose nil)
 
-;;
-;; Conda
-;;
-;; (use-package conda
-;;   :straight t
-;;   :init
-;;   (setq conda-anaconda-home "~/anaconda3/")
-;;   (setq conda-env-home-directory "~/anaconda3/envs/")
-;;   (setq conda-env-autoactivate-mode t)
-;;   :config
-;;   (conda-env-initialize-interactive-shells)
-;;   (conda-env-initialize-eshell))
-
 ;; Reformat python buffers using the `black' formatter
 ;; (use-package blacken
 ;;   :straight t
