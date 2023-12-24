@@ -143,10 +143,6 @@
 (setq select-enable-clipboard t)
 (setq search-default-mode 'char-fold-to-regexp)
 
-;; Built-in Sqlite support
-(use-package emacsql-sqlite-builtin
-  :straight t)
-
 (provide 'init-system)
 ;;;
 ;; coding: utf-8

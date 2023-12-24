@@ -10,7 +10,7 @@
 ;;
 ;; Setup default directory
 ;;
-(setq org-directory "/Users/ilyaw39/nexus/nexus-notes/")
+(setq org-directory "~/Dropbox/org/")
 
 ;;
 ;; Org Mode buffer init behaviors
@@ -73,43 +73,25 @@
 (setq org-support-shift-select t)
 
 ;;
-;; The Zettlekasten note-taking system by Org Roam
+;; The Zettlekasten note-taking system by Denote
 ;;
-(use-package org-roam
+(use-package denote
   :straight t
-  :after (org)
   :config
-  (setq org-roam-directory org-directory)
-  (setq org-roam-dailies-directory "dates/")
-  (setq org-roam-completion-everywhere t)
-  (setq org-roam-db-gc-threshold most-positive-fixnum)
+  (setq denote-directory org-directory) ; Use `org-directory' as default
+  (setq denote-journal-extras-directory nil) ; Use `denote-directory' as default
+  (setq denote-journal-extras-keyword "entrance") ; The entrance for a day
 
-  ;; Capture template for `org-roam-dailies'
-  (setq org-roam-dailies-capture-templates
-        '(("d" "default" entry "\n* %?"
-           :target (file+head
-                    "%<%Y-%m-%d>.org"
-                    "#+TITLE: %<%Y-%m-%d %A>\n")
-           :empty-lines 1)))
+  ;; Format journal titles as Monday 19 September 2023 08:49 PM
+  (setq denote-journal-extras-title-format "day-date-month-year-12h")
+  (setq denote-date-prompt-use-org-read-date t) ; Automatically read current date
 
-  ;; Default capture template for notes
-  (setq org-roam-capture-templates
-        '(("d" "default" plain "%?"
-           :target (file+head
-                    "notes/${slug}.org"
-                    "#+TITLE: ${title}\n")
-           :empty-lines 1
-           :unnarrowed t
-           :immediate-finish t)))
-
-  (org-roam-db-autosync-mode 1)
-  :bind
-  (("s-p" . org-roam-dailies-goto-today)
-   :map org-mode-map
-   (("s-i" . org-roam-node-insert)
-    ("s-<up>" . org-roam-dailies-goto-previous-note)
-    ("s-<down>" . org-roam-dailies-goto-next-note)))
-  :hook (after-init . org-roam-dailies-goto-today))
+  ;; Dependences
+  (use-package tmr
+    :straight t)
+  :hook
+  (denote-journal-extras . (lambda () ; Journaling with a timer with 15 minutes
+                             (tmr "15" "Entrance"))))
 
 ;;
 ;; Org LaTeX customizations
