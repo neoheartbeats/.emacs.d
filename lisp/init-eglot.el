@@ -43,7 +43,8 @@
 ;;
 ;; Python
 ;;
-(setq python-interpreter "python3")
+
+(setq python-interpreter "/opt/homebrew/bin/python3.12")
 (setq org-babel-python-command python-interpreter)
 (setq python-shell-interpreter python-interpreter)
 (setq python-shell-prompt-detect-failure-warning nil)
@@ -59,10 +60,11 @@
 
   ;; Auto reformat the buffer after saving
   (add-hook 'python-mode-hook #'(lambda ()
-                                     (blacken-mode 1)))
+                                  (blacken-mode 1)))
   :bind
   (:map python-mode-map
         ("s-i" . blacken-buffer)))
+
 
 ;;
 ;; AI
@@ -71,15 +73,16 @@
 ;;
 ;; GitHub Copilot
 ;;
-;; (use-package copilot
-;;   :straight (
-;;              :host github
-;;              :repo "zerolfx/copilot.el"
-;;              :files ("dist" "*.el"))
-;;   :config
-;;   (add-hook 'prog-mode-hook #'(lambda ()
-;;                                 (copilot-mode 1)))
-;;   (define-key copilot-completion-map (kbd "M-.") #'copilot-accept-completion))
+
+(use-package copilot
+  :straight (
+             :host github
+             :repo "zerolfx/copilot.el"
+             :files ("dist" "*.el"))
+  :config
+  (add-hook 'prog-mode-hook #'(lambda ()
+                                (copilot-mode 1)))
+  (define-key python-mode-map (kbd "s-.") #'copilot-accept-completion))
 
 (provide 'init-eglot)
 ;;;

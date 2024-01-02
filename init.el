@@ -88,9 +88,9 @@
 ;;
 ;; If `PATH' is not configured while compiling
 ;;
-(use-package exec-path-from-shell
-  :straight t
-  :config (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell
+;;   :straight t
+;;   :config (exec-path-from-shell-initialize))
 
 ;; Load path
 (use-package emacs
