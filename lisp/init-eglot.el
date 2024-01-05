@@ -34,11 +34,11 @@
 ;; Initialize `eglot'
 ;;
 (use-package eglot
-  :straight t
+  ;; :straight t
   :config
   (add-to-list 'eglot-server-programs
-               '(python-mode . ("pyright-langserver" "--stdio")))
-  (add-hook 'python-mode #'eglot-ensure))
+               '(python-ts-mode . ("pyright-langserver" "--stdio")))
+  (add-hook 'python-ts-mode #'eglot-ensure))
 
 ;;
 ;; Python
@@ -59,10 +59,10 @@
   :config
 
   ;; Auto reformat the buffer after saving
-  (add-hook 'python-mode-hook #'(lambda ()
+  (add-hook 'python-ts-mode-hook #'(lambda ()
                                   (blacken-mode 1)))
   :bind
-  (:map python-mode-map
+  (:map python-ts-mode-map
         ("s-i" . blacken-buffer)))
 
 
@@ -74,15 +74,15 @@
 ;; GitHub Copilot
 ;;
 
-(use-package copilot
-  :straight (
-             :host github
-             :repo "zerolfx/copilot.el"
-             :files ("dist" "*.el"))
-  :config
-  (add-hook 'prog-mode-hook #'(lambda ()
-                                (copilot-mode 1)))
-  (define-key python-mode-map (kbd "s-.") #'copilot-accept-completion))
+;; (use-package copilot
+;;   :straight (
+;;              :host github
+;;              :repo "zerolfx/copilot.el"
+;;              :files ("dist" "*.el"))
+;;   :config
+;;   (add-hook 'prog-mode-hook #'(lambda ()
+;;                                 (copilot-mode 1)))
+;;   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
 (provide 'init-eglot)
 ;;;

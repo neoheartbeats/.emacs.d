@@ -27,7 +27,6 @@
 ;;
 (use-package org-modern
   :straight t
-  :after (org)
   :init
   (setq org-modern-star '("􀄩"))
   (setq org-modern-hide-stars "􀄩")
@@ -82,10 +81,6 @@
 ;; The Zettlekasten note-taking system by Denote
 ;;
 
-;; Dependences
-(use-package tmr
-  :straight t)
-
 (use-package denote
   :straight t
   :config
@@ -101,10 +96,6 @@
 
   ;; Use `org-read-date' in date prompts
   (setq denote-date-prompt-use-org-read-date t)
-  
-  :hook
-  (denote-journal-extras . (lambda () ; Journaling with a timer with 15 minutes
-                             (tmr "15" "Entrance")))
   :bind
   (:map global-map
 
