@@ -28,8 +28,8 @@
 (setq treesit-font-lock-level 4)
 
 ;; Remap `python-mode' to `python-ts-mode'
-(add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
-
+;; (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+;;
 ;;
 ;; Initialize `eglot'
 ;;
