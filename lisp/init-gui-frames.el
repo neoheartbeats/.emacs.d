@@ -10,20 +10,10 @@
 ;;
 ;; Modus Themes
 ;;
-(use-package modus-themes
-  :straight t
-  :init
-  (setq modus-themes-italic-constructs nil)
-  (setq modus-themes-common-palette-overrides
-        '((border-mode-line-active unspecified)
-          (border-mode-line-inactive unspecified) ; No borders for mode lines
-          (underline-link border) ; Subtle underlines
-          (underline-link-visited border)
-          (underline-link-symbolic border)
-          (fg-line-number-inactive "gray50") ; Subtle line numbers
-          (fg-line-number-active fg-main)
-          (bg-line-number-inactive unspecified)))
-  :config (load-theme 'modus-vivendi :no-confirm))
+(require-theme 'modus-themes)
+(setq modus-themes-italic-constructs nil)
+(setq modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
+(load-theme 'modus-vivendi :no-confirm)
 
 ;; Clean up the title bar content
 (setq-default frame-title-format nil)
@@ -63,13 +53,13 @@
                                        "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "==="
                                        "!==" ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>"
                                        "|>" "+:" "-:" "=:" "<******>" "++" "+++" "__"))
-   (ligature-set-ligatures 'org-mode '("<---" "<--"  "<<-" "<-" "->" "-->" "--->"
-                                       "<->" "<-->" "<--->" "<---->" "<!--"
-                                       "<==" "<===" "<=" "=>" "=>>" "==>" "===>"
-                                       ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
-                                       "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "==="
-                                       "!==" ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>"
-                                       "|>" "+:" "-:" "=:" "<******>" "++" "+++" "__"))
+  (ligature-set-ligatures 'org-mode '("<---" "<--"  "<<-" "<-" "->" "-->" "--->"
+                                      "<->" "<-->" "<--->" "<---->" "<!--"
+                                      "<==" "<===" "<=" "=>" "=>>" "==>" "===>"
+                                      ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
+                                      "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "==="
+                                      "!==" ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>"
+                                      "|>" "+:" "-:" "=:" "<******>" "++" "+++" "__"))
   (global-ligature-mode 1))
 
 ;;
