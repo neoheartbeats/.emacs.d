@@ -43,10 +43,12 @@
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-;; Disable these keys
+;;; Disable these keys
 (global-unset-key (kbd "<pinch>"))
-(global-unset-key (kbd "s-="))
-(global-unset-key (kbd "s--"))
+
+;; Do not scaling frame using mouse
+(global-unset-key (kbd "C-<wheel-up>"))
+(global-unset-key (kbd "C-<wheel-down>"))
 
 ;; Increase how much is read from processes (default is 4kb)
 (setq read-process-output-max #x10000)
@@ -135,7 +137,8 @@
 ;;
 ;; Mouse and scroll settings
 ;;
-(pixel-scroll-precision-mode 1)
+(add-hook 'after-init-hook #'(lambda ()
+                               (pixel-scroll-precision-mode 1)))
 
 ;; Disable auto copyings
 (setq mouse-drag-copy-region nil)

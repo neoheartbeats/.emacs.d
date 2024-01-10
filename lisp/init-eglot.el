@@ -22,28 +22,31 @@
   :straight t
   :config (global-treesit-auto-mode 1))
 
+;; Remap `python-mode' to `python-ts-mode'
+(add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+
 ;;;
 ;; To enable the maximum fontifications. If this is set to default, there could be
 ;; syntax highlighting error found in Org Babel
 (setq treesit-font-lock-level 4)
 
-;; Remap `python-mode' to `python-ts-mode'
-;; (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
-;;
 ;;
 ;; Initialize `eglot'
 ;;
 (use-package eglot
-  ;; :straight t
   :config
+
+  ;; Use Pyright as the default language server
   (add-to-list 'eglot-server-programs
                '(python-ts-mode . ("pyright-langserver" "--stdio")))
   (add-hook 'python-ts-mode #'eglot-ensure))
 
+;; Auto confirm `.dir-locals.el' files
+(setq-default enable-local-variables :safe)
+
 ;;
 ;; Python
 ;;
-
 (setq python-interpreter "/opt/homebrew/bin/python3.12")
 (setq org-babel-python-command python-interpreter)
 (setq python-shell-interpreter python-interpreter)
@@ -74,15 +77,15 @@
 ;; GitHub Copilot
 ;;
 
-;; (use-package copilot
-;;   :straight (
-;;              :host github
-;;              :repo "zerolfx/copilot.el"
-;;              :files ("dist" "*.el"))
-;;   :config
-;;   (add-hook 'prog-mode-hook #'(lambda ()
-;;                                 (copilot-mode 1)))
-;;   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
+(use-package copilot
+  :straight (
+             :host github
+             :repo "zerolfx/copilot.el"
+             :files ("dist" "*.el"))
+  :config
+  ;; (add-hook 'prog-mode-hook #'(lambda ()
+  ;;                               (copilot-mode 1)))
+  (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
 (provide 'init-eglot)
 ;;;

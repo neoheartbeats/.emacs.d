@@ -10,7 +10,7 @@
 ;;
 ;; Setup default directory
 ;;
-(setq org-directory "~/.org/")
+(setq org-directory "~/Upstage/")
 
 ;;
 ;; Org Mode buffer init behaviors
@@ -66,6 +66,9 @@
 (setq org-cycle-hide-drawer-startup t)
 (add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
 
+;; Fold titles by default
+(setq-default org-startup-folded 'content)
+
 ;;
 ;; Org fragments and overlays
 ;;
@@ -85,17 +88,12 @@
   :straight t
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
-  (setq denote-known-keywords '("robot" "poem" "science" "dust"))
+  (setq denote-known-keywords '("robot" "poem" "science" "dust")) ; dust can be drafts
   
   ;; Denote for journaling
-  (setq denote-journal-extras-directory nil) ; Use `denote-directory' as default
-  (setq denote-journal-extras-keyword "entrance") ; The entrance for a day
-
-  ;; Format journal titles as Monday 19 September 2023 08:49 PM
-  (setq denote-journal-extras-title-format 'day-date-month-year-12h)
-
-  ;; Use `org-read-date' in date prompts
-  (setq denote-date-prompt-use-org-read-date t)
+  (setq denote-journal-extras-directory
+        (expand-file-name "stages/" denote-directory)) ; Subdirectory for journal files
+  (setq denote-journal-extras-keyword "stages") ; Stages are journals
   :bind
   (:map global-map
 
@@ -125,9 +123,6 @@
 \\usephysicsmodule{ab,ab.braket,diagmat,xmat}%
 ")
 
-(plist-put org-latex-preview-options :scale 2.00)
-(plist-put org-latex-preview-options :zoom 1.05)
-
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
 
@@ -140,6 +135,10 @@
 ;;
 ;; Load languages for Org Babel
 ;;
+
+;; Do not ask confirmation before executing Emacs Lisp links
+(setq-default org-link-elisp-confirm-function nil)
+
 (setq-default org-confirm-babel-evaluate nil)
 (setq-default org-src-preserve-indentation t)
 (setq-default org-src-fontify-natively t)
@@ -149,6 +148,18 @@
                              '((emacs-lisp . t)
                                (python . t)
                                (shell . t)))
+
+;;;
+;;
+;; Useful functions
+;;
+
+(defun my/org-mode-insert-get-button ()
+  "Inserts a button that copies a user-defined string to clipboard."
+  (interactive)
+  (let ((content (read-string "Content: ")))
+    (insert (format "[[elisp:(kill-new \"%s\")][GET]]" content))))
+
 
 (provide 'init-org)
 ;;;

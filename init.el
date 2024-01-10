@@ -99,14 +99,6 @@
     "Join path DIR with filename FILE correctly."
     (concat (file-name-as-directory dir) file))
 
-  ;; Set directory
-  ;; (setq default-directory
-  ;;       (cond ((equal (system-name) "surface")
-  ;;              "/cygdrive/c/Users/karth/OneDrive/Documents/")
-  ;;             ((equal system-type 'nt)
-  ;;              "/cygdrive/c/Users/karth/OneDrive/Documents/")
-  ;;             (t "~/")))
-
   ;; Adds ~/.emacs.d to the load-path
   (push (dir-concat user-emacs-directory "site-lisp/") load-path)
   (push (dir-concat user-emacs-directory "lisp/") load-path)
@@ -117,7 +109,6 @@
 ;;
 ;; GCMH
 ;;
-
 (use-package gcmh
   :defer 2
   :straight t
