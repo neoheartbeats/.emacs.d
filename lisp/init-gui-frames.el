@@ -39,7 +39,7 @@
 ;;
 ;; Custom font
 ;;
-(set-face-attribute 'default nil :family "Neoheartbeats" :height 140)
+(set-face-attribute 'default nil :family "Romantica" :height 140)
 
 ;; Ligatures support
 (use-package ligature
