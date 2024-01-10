@@ -113,7 +113,7 @@
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-        ("" "mlmodern" t))) ; Draw LaTeX with larger weight for better readability
+        ("" "mlmodern" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
@@ -125,6 +125,16 @@
 
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
+
+(setq org-latex-preview-appearance-options
+      '(
+        :foreground auto
+        :background "Transparent"
+        :scale 1.04
+        :zoom 1.04
+        :page-width 0.6
+        :matchers ("begin" "\\(" "\\["))) ; Removed dollars as delimiters
+
 
 ;; Use CDLaTeX to improve editing experiences
 (use-package cdlatex
@@ -160,6 +170,15 @@
   (let ((content (read-string "Content: ")))
     (insert (format "[[elisp:(kill-new \"%s\")][GET]]" content))))
 
+(defun my/org-mode-preview-buffer ()
+  "Preview current buffer including images and LaTeX fragments."
+  (interactive)
+  (call-interactively 'org-latex-preview-clear-cache)
+  (org-latex-preview 'buffer)
+  (org-display-inline-images))
+
+(bind-keys :map org-mode-map
+           ("s-p" . my/org-mode-preview-buffer))
 
 (provide 'init-org)
 ;;;
