@@ -29,7 +29,7 @@
 (set-face-background 'fringe (face-attribute 'default :background))
 
 ;; Cursor faces
-;; (setq-default cursor-type '(bar . 1))
+(setq-default cursor-type '(bar . 1))
 (setq-default blink-cursor-mode nil)
 
 ;; highlight current line
@@ -40,6 +40,20 @@
 ;; Custom font
 ;;
 (set-face-attribute 'default nil :family "Neoheartbeats" :height 140)
+
+;; Ligatures support
+(use-package ligature
+  :straight t
+  :config
+  (ligature-set-ligatures '(prog-mode org-mode)
+                          '("<---" "<--"  "<<-" "<-" "->" "-->" "--->"
+                            "<->" "<-->" "<--->" "<---->" "<!--"
+                            "<==" "<===" "<=" "=>" "=>>" "==>" "===>"
+                            ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
+                            "::" ":::" "==" "!=" "==="
+                            "!==" ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>"
+                            "|>" "+:" "-:" "=:" "<******>" "++" "+++" "__"))
+  (global-ligature-mode 1))
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
@@ -55,9 +69,7 @@
 ;; Mode Line settings
 ;;
 (setq-default mode-line-compact t)
-(add-hook 'after-init-hook #'(lambda ()
-                               (column-number-mode 1)))
-
+(setq-default line-number-mode nil)
 
 ;;
 ;; Beautify `dired.el'

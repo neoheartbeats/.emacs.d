@@ -125,9 +125,6 @@
     (indent-region (point-min) (point-max) nil)
     (save-buffer)))
 
-;; Auto indent buffer after saving
-(add-hook 'after-save-hook #'indent-current-buffer)
-
 ;; To access the `.emacs.d' root
 (defun open-emacs-config-dir ()
   "Open the Emacs configuration directory."
