@@ -34,6 +34,7 @@
   (setq org-modern-checkbox '((?X . "􀃰") (?- . "􀃞") (?\s . "􀂒")))
   (setq org-modern-progress '("􀛪" "􀛩" "􀺶" "􀺸" "􀛨"))
   (setq org-modern-table-vertical 2)
+  (setq org-modern-todo nil)
   (setq org-modern-tag nil)
   (setq org-modern-block-name nil)
   (setq org-modern-keyword nil)
@@ -48,6 +49,13 @@
     (push '("#+filetags:  " . ?􀋡) prettify-symbols-alist)
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
     (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist)
+    (push '("Sunday" . ?􀀸) prettify-symbols-alist)
+    (push '("Monday" . ?􀀺) prettify-symbols-alist)
+    (push '("Tuesday" . ?􀀼) prettify-symbols-alist)
+    (push '("Wednesday" . ?􀀾) prettify-symbols-alist)
+    (push '("Thursday" . ?􀁀) prettify-symbols-alist)
+    (push '("Friday" . ?􀁂) prettify-symbols-alist)
+    (push '("Saturday" . ?􀁄) prettify-symbols-alist)
     (prettify-symbols-mode 1)))
 (add-hook 'org-mode-hook #'my-iconify-org-buffer)
 
@@ -74,8 +82,12 @@
 ;;
 (setq org-image-actual-width '(420))
 
-;; Org links
+;;; Org links
 (setq org-return-follows-link t)
+
+;; Open file links in current window
+(setq org-link-frame-setup '((file . find-file)))
+
 
 ;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
@@ -94,6 +106,14 @@
   (setq denote-journal-extras-directory
         (expand-file-name "stages/" denote-directory)) ; Subdirectory for journal files
   (setq denote-journal-extras-keyword "stages") ; Stages are journals
+
+  ;; Do not include date in notes
+  (setq denote-org-front-matter
+        "#+title:      %s
+#+filetags:   %s
+#+identifier: %s
+
+")
   :bind
   (:map global-map
 

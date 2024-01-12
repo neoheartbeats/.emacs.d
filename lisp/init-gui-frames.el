@@ -39,11 +39,9 @@
 ;;
 ;; Custom font
 ;;
-(set-face-attribute 'default nil :family "Source Code Pro" :height 140)
+(set-face-attribute 'default nil :family "Neoheartbeats" :height 140)
 
-;;
 ;; Set up font for unicode fontset
-;;
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
@@ -58,6 +56,14 @@
 ;;
 (setq-default mode-line-compact t)
 (setq-default line-number-mode nil)
+
+;;
+;; Beautify `dired.el'
+;;
+(use-package diredfl
+  :straight t
+  :config
+  (diredfl-global-mode 1))
 
 (provide 'init-gui-frames)
 ;;;
