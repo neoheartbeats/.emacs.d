@@ -122,6 +122,10 @@
   (:map org-mode-map
         ("s-i" . denote-link-or-create)))
 
+(defun my/denote-insert-links-current-month ()
+  (interactive)
+  (denote-add-links (format-time-string "%B")))
+
 ;;
 ;; Org LaTeX customizations
 ;;
@@ -133,7 +137,7 @@
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-        ("" "mlmodern" t)))
+        ("" "kpfonts" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}

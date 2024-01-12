@@ -29,7 +29,7 @@
 (set-face-background 'fringe (face-attribute 'default :background))
 
 ;; Cursor faces
-(setq-default cursor-type '(bar . 1))
+;; (setq-default cursor-type '(bar . 1))
 (setq-default blink-cursor-mode nil)
 
 ;; highlight current line
@@ -55,7 +55,9 @@
 ;; Mode Line settings
 ;;
 (setq-default mode-line-compact t)
-(setq-default line-number-mode nil)
+(add-hook 'after-init-hook #'(lambda ()
+                               (column-number-mode 1)))
+
 
 ;;
 ;; Beautify `dired.el'

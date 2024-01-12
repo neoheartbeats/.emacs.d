@@ -18,17 +18,17 @@
 (setq mac-command-modifier 'super)
 
 (bind-keys :map global-map
- ("s-a" . mark-whole-buffer)
- ("s-c" . kill-ring-save)
- ("s-i" . indent-current-buffer)
- ("s-l" . goto-line)
- ("s-q" . save-buffers-kill-emacs)
- ("s-s". save-buffer)
- ("s-v" . yank)
- ("s-w" . kill-current-buffer)
- ("s-e" . delete-window)
- ("s-z" . undo)
- ("s-d" . find-file))
+           ("s-a" . mark-whole-buffer)
+           ("s-c" . kill-ring-save)
+           ("s-i" . indent-current-buffer)
+           ("s-l" . goto-line)
+           ("s-q" . save-buffers-kill-emacs)
+           ("s-s". save-buffer)
+           ("s-v" . yank)
+           ("s-w" . kill-current-buffer)
+           ("s-e" . delete-window)
+           ("s-z" . undo)
+           ("s-d" . find-file))
 
 (bind-keys :map global-map
            ("s-1" . delete-other-windows)
@@ -104,6 +104,7 @@
 (setq-default require-final-newline t)
 (setq-default inhibit-compacting-font-caches t)
 
+;;;
 ;;
 ;; Global functions
 ;;
@@ -124,6 +125,9 @@
     (indent-region (point-min) (point-max) nil)
     (save-buffer)))
 
+;; Auto indent buffer after saving
+(add-hook 'after-save-hook #'indent-current-buffer)
+
 ;; To access the `.emacs.d' root
 (defun open-emacs-config-dir ()
   "Open the Emacs configuration directory."
@@ -133,6 +137,34 @@
 (bind-keys :map global-map
            ("C-x k" . delete-current-file)
            ("<f12>" . open-emacs-config-dir))
+
+;; Helpful functions to access config files
+(defun my/make-quick-config-link (label link)
+  (insert "• ")
+  (insert label "  􀄫  ")
+  (insert-button link
+                 'action (lambda (_)
+                           (find-file link))
+                 'follow-link t)
+  (insert "\n"))
+
+(defun my/open-quick-config-links ()
+  (interactive)
+  (let ((buffer (get-buffer-create "*Config Links*"))
+        (configs '(("Zsh  " . "~/.zshrc")
+                   ("Emacs" . "~/.emacs.d/"))))
+    (with-current-buffer buffer
+      (erase-buffer)
+      (insert "\n Configs\n\n")
+      (let ((config-overlay (make-overlay 2 10)))
+        (overlay-put config-overlay 'face 'org-level-4))
+      (mapcar (lambda (item)
+                (my/make-quick-config-link (car item) (cdr item)))
+              configs))
+    (pop-to-buffer buffer t)))
+
+(bind-keys :map global-map
+           ("<f2>" . my/open-quick-config-links))
 
 ;;
 ;; Mouse and scroll settings

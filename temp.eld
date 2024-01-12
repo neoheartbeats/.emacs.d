@@ -6,7 +6,7 @@ org-mode
 
 (src "#+begin_src " q n r n "#+end_src")
 (img "#+attr_org: :width " q)
-(qq "\coloneqq")
+(cqq "\\coloneqq")
 
 ;;;
 ;; Local Variables:
