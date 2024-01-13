@@ -109,11 +109,10 @@
 
   ;; Do not include date in notes
   (setq denote-org-front-matter
-        "#+title:      %s
-#+filetags:   %s
-#+identifier: %s
-
-")
+        "#+title:      %1$s
+#+filetags:   %3$s
+#+identifier: %4$s
+\n")
   :bind
   (:map global-map
 
@@ -137,7 +136,7 @@
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-        ("" "kpfonts" t)))
+        ("" "mlmodern" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
