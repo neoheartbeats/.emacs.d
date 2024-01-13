@@ -39,7 +39,21 @@
 ;;
 ;; Custom font
 ;;
-(set-face-attribute 'default nil :family "Source Code Pro" :height 140)
+(set-face-attribute 'default nil :family "Neoheartbeats" :height 140)
+
+;; Ligatures support
+(use-package ligature
+  :straight t
+  :config
+  (ligature-set-ligatures '(prog-mode org-mode)
+                          '("<---" "<--"  "<<-" "<-" "->" "-->" "--->"
+                            "<->" "<-->" "<--->" "<---->" "<!--"
+                            "<==" "<===" "<=" "=>" "=>>" "==>" "===>"
+                            ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
+                            "::" ":::" "==" "!=" "==="
+                            "!==" ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>"
+                            "|>" "+:" "-:" "=:" "<******>" "++" "+++" "__"))
+  (global-ligature-mode 1))
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
