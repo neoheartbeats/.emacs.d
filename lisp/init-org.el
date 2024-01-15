@@ -136,7 +136,7 @@
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-        ("" "kpfonts" t)))
+        ("" "mlmodern" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}

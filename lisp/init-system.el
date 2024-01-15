@@ -149,6 +149,7 @@
   (interactive)
   (let ((buffer (get-buffer-create "*Config Links*"))
         (configs '(("Zsh  " . "~/.zshrc")
+                   ("SSH  " . "~/.ssh/config")
                    ("Emacs" . "~/.emacs.d/"))))
     (with-current-buffer buffer
       (erase-buffer)
