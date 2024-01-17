@@ -11,8 +11,13 @@
 ;; Modus Themes
 ;;
 (require-theme 'modus-themes)
-(setq modus-themes-italic-constructs nil)
+
+(setq modus-themes-custom-auto-reload t)
+(setq modus-themes-disable-other-themes t)
 (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
+
+;; Diable other themes before loading Modus Themes
+(mapc #'disable-theme custom-enabled-themes)
 (load-theme 'modus-vivendi :no-confirm)
 
 ;; Clean up the title bar content
@@ -39,7 +44,7 @@
 ;;
 ;; Custom font
 ;;
-(set-face-attribute 'default nil :family "Source Code Pro" :height 140)
+(set-face-attribute 'default nil :family "Monaco" :height 140)
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")

@@ -166,7 +166,7 @@ Cancel the previous one if present."
 (require 'init-gui-frames)
 (require 'init-editing-utils)
 (require 'init-projects)
-(require 'init-temp)
+;; (require 'init-temp)
 (require 'init-comp)
 (require 'init-org)
 (require 'init-eglot)
