@@ -1,6 +1,6 @@
 ;;; init-gui-frames.el --- Behaviours of GUI frames -*- lexical-binding: t -*-
 
-;; Copyright (C) 2021-2023 Sthenno
+;; Copyright (C) 2021-2024 Sthenno
 
 ;; This file is not part of GNU Emacs.
 
@@ -44,7 +44,7 @@
 ;;
 ;; Custom font
 ;;
-(set-face-attribute 'default nil :family "Monaco" :height 140)
+(set-face-attribute 'default nil :family "Source Code Pro" :height 140)
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")

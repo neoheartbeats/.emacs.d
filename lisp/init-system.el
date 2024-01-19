@@ -1,6 +1,6 @@
 ;;; init-system.e.el --- Configs specific to macOS -*- lexical-binding: t -*-
 
-;; Copyright (C) 2021-2023 Sthenno
+;; Copyright (C) 2021-2024 Sthenno
 
 ;; This file is not part of GNU Emacs.
 
