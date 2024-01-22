@@ -14,7 +14,6 @@
 
 (setq modus-themes-custom-auto-reload t)
 (setq modus-themes-disable-other-themes t)
-(setq modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
 
 ;; Diable other themes before loading Modus Themes
 (mapc #'disable-theme custom-enabled-themes)

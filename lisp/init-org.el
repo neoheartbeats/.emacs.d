@@ -49,13 +49,6 @@
     (push '("#+filetags:  " . ?􀋡) prettify-symbols-alist)
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
     (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist)
-    (push '("Sunday" . ?􀀸) prettify-symbols-alist)
-    (push '("Monday" . ?􀀺) prettify-symbols-alist)
-    (push '("Tuesday" . ?􀀼) prettify-symbols-alist)
-    (push '("Wednesday" . ?􀀾) prettify-symbols-alist)
-    (push '("Thursday" . ?􀁀) prettify-symbols-alist)
-    (push '("Friday" . ?􀁂) prettify-symbols-alist)
-    (push '("Saturday" . ?􀁄) prettify-symbols-alist)
     (prettify-symbols-mode 1)))
 (add-hook 'org-mode-hook #'my-iconify-org-buffer)
 
@@ -119,7 +112,9 @@
         ;; Open today's note
         ("C-c d" . denote-journal-extras-new-or-existing-entry))
   (:map org-mode-map
-        ("s-i" . denote-link-or-create)))
+        ("s-i" . denote-link-or-create))
+  :hook
+  (after-init . denote-journal-extras-new-or-existing-entry))
 
 (defun my/denote-insert-links-current-month ()
   (interactive)

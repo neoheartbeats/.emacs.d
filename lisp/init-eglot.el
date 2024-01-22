@@ -47,7 +47,7 @@
 ;;
 ;; Python
 ;;
-(setq python-interpreter "/opt/homebrew/bin/python3.12")
+(setq python-interpreter "/opt/homebrew/bin/python3")
 (setq org-babel-python-command python-interpreter)
 (setq python-shell-interpreter python-interpreter)
 (setq python-shell-prompt-detect-failure-warning nil)
@@ -77,15 +77,22 @@
 ;; GitHub Copilot
 ;;
 
-(use-package copilot
-  :straight (
-             :host github
-             :repo "zerolfx/copilot.el"
-             :files ("dist" "*.el"))
-  :config
-  ;; (add-hook 'prog-mode-hook #'(lambda ()
-  ;;                               (copilot-mode 1)))
-  (define-key global-map (kbd "s-.") #'copilot-accept-completion))
+;; (use-package copilot
+;;   :straight (
+;;              :host github
+;;              :repo "zerolfx/copilot.el"
+;;              :files ("dist" "*.el"))
+;;   :config
+;;   ;; (add-hook 'prog-mode-hook #'(lambda ()
+;;   ;;                               (copilot-mode 1)))
+;;   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
+
+;;;
+;;
+;; HTTP
+;;
+(use-package restclient
+  :straight t)
 
 (provide 'init-eglot)
 ;;;

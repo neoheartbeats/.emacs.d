@@ -27,6 +27,7 @@
            ("s-v" . yank)
            ("s-w" . kill-current-buffer)
            ("s-e" . delete-window)
+           ("s-r" . restart-emacs)
            ("s-z" . undo)
            ("s-d" . find-file))
 
