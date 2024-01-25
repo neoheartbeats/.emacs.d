@@ -166,9 +166,11 @@
 ;; Load languages for Org Babel
 ;;
 
-;; Do not ask confirmation before executing Emacs Lisp links
+;; Do not ask for confirmation before executing
 (setq-default org-link-elisp-confirm-function nil)
+(setq-default org-link-shell-confirm-function nil)
 
+;; Org code blocks
 (setq-default org-confirm-babel-evaluate nil)
 (setq-default org-src-preserve-indentation t)
 (setq-default org-src-fontify-natively t)
@@ -179,7 +181,6 @@
                                (python . t)
                                (shell . t)))
 
-;;;
 ;;
 ;; Useful functions
 ;;

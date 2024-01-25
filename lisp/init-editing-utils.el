@@ -7,7 +7,6 @@
 ;;; Commentary:
 ;;; Code:
 
-
 ;;
 ;; Electric parentheses
 ;;

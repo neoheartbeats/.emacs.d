@@ -14,6 +14,15 @@
 
 (setq modus-themes-custom-auto-reload t)
 (setq modus-themes-disable-other-themes t)
+(setq modus-themes-common-palette-overrides
+        '((border-mode-line-active unspecified)
+          (border-mode-line-inactive unspecified) ; No borders for mode lines
+          (underline-link border) ; Subtle underlines
+          (underline-link-visited border)
+          (underline-link-symbolic border)
+          (fg-line-number-inactive "gray50") ; Subtle line numbers
+          (fg-line-number-active fg-main)
+          (bg-line-number-inactive unspecified)))
 
 ;; Diable other themes before loading Modus Themes
 (mapc #'disable-theme custom-enabled-themes)
@@ -43,7 +52,7 @@
 ;;
 ;; Custom font
 ;;
-(set-face-attribute 'default nil :family "Monaco" :height 140)
+(set-face-attribute 'default nil :family "PragmataPro" :height 140)
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
