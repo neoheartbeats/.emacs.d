@@ -144,6 +144,8 @@
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
 
+(setq org-latex-preview-live nil) ; Do not generate live previews while editing
+
 (setq org-latex-preview-appearance-options
       '(
         :foreground auto

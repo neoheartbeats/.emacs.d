@@ -10,27 +10,27 @@
 ;;
 ;; TempEl: Simple templating system
 ;;
-(use-package tempel
-  :straight t
-  :bind (:map tempel-map
-              ("<tab>" . tempel-next)
-              ("<return>" . tempel-next)
-              ("s-<tab>" . tempel-previous)
-              ("<escape>" . tempel-done))
-  :hook
-  (prog-mode . tempel-abbrev-mode)
-  (org-mode . tempel-abbrev-mode)
-  :init (setq tempel-path "~/.emacs.d/temp.eld"))
+;; (use-package tempel
+;;   :straight t
+;;   :bind (:map tempel-map
+;;               ("<tab>" . tempel-next)
+;;               ("<return>" . tempel-next)
+;;               ("s-<tab>" . tempel-previous)
+;;               ("<escape>" . tempel-done))
+;;   :hook
+;;   (prog-mode . tempel-abbrev-mode)
+;;   (org-mode . tempel-abbrev-mode)
+;;   :init (setq tempel-path "~/.emacs.d/temp.eld"))
 
 ;;;
 ;; To access the `.emacs.d/temp.eld' file
-(defun open-emacs-temp-file ()
-  "Open `temp.eld' file for TempEl."
-  (interactive)
-  (find-file "~/.emacs.d/temp.eld"))
+;; (defun open-emacs-temp-file ()
+;;   "Open `temp.eld' file for TempEl."
+;;   (interactive)
+;;   (find-file "~/.emacs.d/temp.eld"))
 
-(bind-keys :map global-map
-           ("<f5>" . open-emacs-temp-file))
+;; (bind-keys :map global-map
+;;            ("<f5>" . open-emacs-temp-file))
 
 (provide 'init-temp)
 ;;;

@@ -87,13 +87,6 @@
 ;;   ;;                               (copilot-mode 1)))
 ;;   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
-;;;
-;;
-;; HTTP
-;;
-(use-package restclient
-  :straight t)
-
 (provide 'init-eglot)
 ;;;
 ;; coding: utf-8

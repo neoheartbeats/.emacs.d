@@ -48,7 +48,7 @@
 ;; Default startup message
 (defun display-startup-echo-area-message ()
   (let
-      ((text "贵安! 游荡不定的黑之魂."))
+      ((text "Funding for this program was made possible by viewers like you."))
     (message "􀪾 %s" text)))
 
 ;;
