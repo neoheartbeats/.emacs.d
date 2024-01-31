@@ -77,6 +77,7 @@
 ;; The `use-package' macro
 (straight-use-package 'use-package)
 (straight-use-package 'bind-key)
+(straight-use-package 'diminish)
 
 (eval-when-compile
   (eval-after-load 'advice
