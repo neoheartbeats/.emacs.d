@@ -49,7 +49,7 @@
 
 ;; Inhibit paring these delimiters
 (add-hook 'after-init-hook #'(lambda ()
-                                    (modify-syntax-entry ?< ".")))
+                               (modify-syntax-entry ?< ".")))
 
 ;; Fill columns
 (setq display-fill-column-indicator-character ?\u254e)
@@ -57,7 +57,10 @@
                               (display-fill-column-indicator-mode 1)))
 
 ;; Display line numbers
-(setq display-line-numbers-width-start t)
+;; (setq display-line-numbers-width-start t)
+
+(add-hook 'text-mode-hook #'(lambda ()
+                              (display-line-numbers-mode 1)))
 (add-hook 'prog-mode-hook #'(lambda ()
                               (display-line-numbers-mode 1)))
 
