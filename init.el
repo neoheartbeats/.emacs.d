@@ -16,34 +16,38 @@
 ;;
 (setq-default bidi-display-reordering 'left-to-right)
 
+(setq gc-cons-threshold most-positive-fixnum)
+(setq read-process-output-max (* 4 1024 1024))
+(setq process-adaptive-read-buffering nil)
+
 ;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions
 ;; in non-focused windows
-(setq-default cursor-in-non-selected-windows nil)
-(setq highlight-nonselected-windows nil)
+(setopt cursor-in-non-selected-windows nil)
+(setopt highlight-nonselected-windows nil)
 
 ;; More performant rapid scrolling over unfontified regions. May cause brief
 ;; spells of inaccurate fontification immediately after scrolling.
-(setq fast-but-imprecise-scrolling t)
-(setq redisplay-skip-fontification-on-input t)
+(setopt fast-but-imprecise-scrolling t)
+(setopt redisplay-skip-fontification-on-input t)
 
 ;; Resizing the Emacs frame can be a terribly expensive part of changing the
 ;; font. By inhibiting this, we halve startup times, particularly when we use
 ;; fonts that are larger than the system default (which would resize the frame).
-(setq frame-inhibit-implied-resize t)
+(setopt frame-inhibit-implied-resize t)
 
 ;; Don't ping things that look like domain names.
-(setq ffap-machine-p-known 'reject)
+(setopt ffap-machine-p-known 'reject)
 
 ;; Don't pass case-insensitive to `auto-mode-alist'
-(setq auto-mode-case-fold nil)
+(setopt auto-mode-case-fold nil)
 
 ;; Suppress GUI features
-(setq use-dialog-box nil)
-(setq use-file-dialog nil)
+(setopt use-dialog-box nil)
+(setopt use-file-dialog nil)
 
-(setq inhibit-splash-screen t)
-(setq inhibit-startup-buffer-menu t)
-(setq initial-scratch-message "")
+(setopt inhibit-splash-screen t)
+(setopt inhibit-startup-buffer-menu t)
+(setopt initial-scratch-message "")
 
 ;; Default startup message
 (defun display-startup-echo-area-message ()
@@ -98,6 +102,9 @@
   (defvar user-cache-directory "~/.cache/emacs/"
     "Location where files created by emacs are placed."))
 
+;; Set path for custom-file
+(setopt custom-file (locate-user-emacs-file "custom.el"))
+
 ;;
 ;; GCMH
 ;;
@@ -116,7 +123,7 @@ Cancel the previous one if present."
             (timer-set-time gcmh-idle-timer idle-t)
           (setf gcmh-idle-timer
 	            (run-with-timer idle-t nil #'gcmh-idle-garbage-collect))))))
-  (setq gcmh-idle-delay 'auto  ; default is 15s
+  (setq gcmh-idle-delay 'auto
         gcmh-high-cons-threshold (* 32 1024 1024)
         gcmh-verbose nil)
   (gcmh-mode 1))

@@ -10,13 +10,13 @@
 ;;
 ;; Setup default directory
 ;;
-(setq org-directory "~/Upstage/")
+(setopt org-directory "~/Upstage/")
 
 ;;
 ;; Org Mode buffer init behaviors
 ;;
-(setq org-startup-with-inline-images t)
-(setq org-startup-with-latex-preview t)
+(setopt org-startup-with-inline-images t)
+(setopt org-startup-with-latex-preview t)
 
 ;; Install AUCTeX. This is required by TEC's Org
 (use-package latex
@@ -28,17 +28,17 @@
 (use-package org-modern
   :straight t
   :init
-  (setq org-modern-star '("􀄩"))
-  (setq org-modern-hide-stars "􀄩")
-  (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X . "􀃰") (?- . "􀃞") (?\s . "􀂒")))
-  (setq org-modern-progress '("􀛪" "􀛩" "􀺶" "􀺸" "􀛨"))
-  (setq org-modern-table-vertical 2)
-  (setq org-modern-todo nil)
-  (setq org-modern-tag nil)
-  (setq org-modern-block-name nil)
-  (setq org-modern-keyword nil)
-  (setq org-modern-timestamp nil)
+  (setopt org-modern-star '("􀄩"))
+  (setopt org-modern-hide-stars "􀄩")
+  (setopt org-modern-list '((?- . "•")))
+  (setopt org-modern-checkbox '((?X . "􀃰") (?- . "􀃞") (?\s . "􀂒")))
+  (setopt org-modern-progress '("􀛪" "􀛩" "􀺶" "􀺸" "􀛨"))
+  (setopt org-modern-table-vertical 2)
+  (setopt org-modern-todo nil)
+  (setopt org-modern-tag nil)
+  (setopt org-modern-block-name nil)
+  (setopt org-modern-keyword nil)
+  (setopt org-modern-timestamp nil)
   :config (global-org-modern-mode 1))
 
 (defun my-iconify-org-buffer ()
@@ -48,45 +48,41 @@
     (push '("#+date:      " . ?􀧵) prettify-symbols-alist)
     (push '("#+filetags:  " . ?􀋡) prettify-symbols-alist)
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
-    (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist)
-    ;; (prettify-symbols-mode 1)
-    ))
+    (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist)))
 (add-hook 'org-mode-hook #'my-iconify-org-buffer)
 
-;; (setq-default )
-
-(setq org-ellipsis " 􀍠")
-(setq org-hide-emphasis-markers t)
+(setopt org-ellipsis " 􀍠")
+(setopt org-hide-emphasis-markers t)
 
 ;; Draw fringes in Org mode
 (defun my-toggle-internal-fringes ()
-  (setq left-margin-width 5)
-  (setq right-margin-width 5)
+  (setopt left-margin-width 5)
+  (setopt right-margin-width 5)
   (set-window-buffer nil (current-buffer)))
 
 (add-hook 'org-mode-hook #'my-toggle-internal-fringes)
 
 ;; Fold drawers by default
-(setq org-cycle-hide-drawer-startup t)
+(setopt org-cycle-hide-drawer-startup t)
 (add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
 
 ;; Fold titles by default
-(setq-default org-startup-folded 'content)
+(setopt org-startup-folded 'content)
 
 ;;
 ;; Org fragments and overlays
 ;;
-(setq org-image-actual-width '(420))
+(setopt org-image-actual-width '(420))
 
 ;;; Org links
-(setq org-return-follows-link t)
+(setopt org-return-follows-link t)
 
 ;; Open file links in current window
-(setq org-link-frame-setup '((file . find-file)))
+(setopt org-link-frame-setup '((file . find-file)))
 
 
 ;; Using shift-<arrow-keys> to select text
-(setq org-support-shift-select t)
+(setopt org-support-shift-select t)
 
 ;;
 ;; The Zettlekasten note-taking system by Denote
@@ -95,16 +91,16 @@
 (use-package denote
   :straight t
   :config
-  (setq denote-directory org-directory) ; Use `org-directory' as default
-  (setq denote-known-keywords '("robot" "poem" "science" "dust")) ; dust can be drafts
+  (setopt denote-directory org-directory) ; Use `org-directory' as default
+  (setopt denote-known-keywords '("robot" "poem" "science" "dust")) ; dust can be drafts
   
   ;; Denote for journaling
-  (setq denote-journal-extras-directory
+  (setopt denote-journal-extras-directory
         (expand-file-name "stages/" denote-directory)) ; Subdirectory for journal files
-  (setq denote-journal-extras-keyword "stages") ; Stages are journals
+  (setopt denote-journal-extras-keyword "stages") ; Stages are journals
 
   ;; Do not include date in notes
-  (setq denote-org-front-matter
+  (setopt denote-org-front-matter
         "#+title:      %1$s
 #+filetags:   %3$s
 #+identifier: %4$s
@@ -126,8 +122,8 @@
 ;;
 ;; Org LaTeX customizations
 ;;
-(setq org-latex-preview-default-process 'dvisvgm)
-(setq org-latex-packages-alist
+(setopt org-latex-preview-default-process 'dvisvgm)
+(setopt org-latex-packages-alist
       '(("T1" "fontenc" t)
         ("" "amsmath" t)
         ("" "bm" t) ; Bold math required
@@ -136,7 +132,7 @@
         ("" "physics2" t)
         ("" "mlmodern" t)))
 
-(setq org-latex-preview-preamble
+(setopt org-latex-preview-preamble
       "\\documentclass{article}
 [DEFAULT-PACKAGES]
 [PACKAGES]
@@ -147,9 +143,9 @@
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
 
-(setq org-latex-preview-live nil) ; Do not generate live previews while editing
+(setopt org-latex-preview-live nil) ; Do not generate live previews while editing
 
-(setq org-latex-preview-appearance-options
+(setopt org-latex-preview-appearance-options
       '(
         :foreground auto
         :background "Transparent"
@@ -170,14 +166,14 @@
 ;;
 
 ;; Do not ask for confirmation before executing
-(setq-default org-link-elisp-confirm-function nil)
-(setq-default org-link-shell-confirm-function nil)
+(setopt org-link-elisp-confirm-function nil)
+(setopt org-link-shell-confirm-function nil)
 
 ;; Org code blocks
-(setq-default org-confirm-babel-evaluate nil)
-(setq-default org-src-preserve-indentation t)
-(setq-default org-src-fontify-natively t)
-(setq-default org-src-tab-acts-natively t)
+(setopt org-confirm-babel-evaluate nil)
+(setopt org-src-preserve-indentation t)
+(setopt org-src-fontify-natively t)
+(setopt org-src-tab-acts-natively t)
 
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)

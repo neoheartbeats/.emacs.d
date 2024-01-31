@@ -28,7 +28,7 @@
 ;;;
 ;; To enable the maximum fontifications. If this is set to default, there could be
 ;; syntax highlighting error found in Org Babel
-(setq treesit-font-lock-level 4)
+(setopt treesit-font-lock-level 4)
 
 ;;
 ;; Initialize `eglot'
@@ -47,14 +47,14 @@
 ;;
 ;; Python
 ;;
-(setq python-interpreter "/opt/homebrew/bin/python3")
-(setq org-babel-python-command python-interpreter)
-(setq python-shell-interpreter python-interpreter)
-(setq python-shell-prompt-detect-failure-warning nil)
-(setq python-shell-completion-native-enable nil)
+(setopt python-interpreter "/opt/homebrew/bin/python3")
+(setopt org-babel-python-command python-interpreter)
+(setopt python-shell-interpreter python-interpreter)
+(setopt python-shell-prompt-detect-failure-warning nil)
+(setopt python-shell-completion-native-enable nil)
 
-(setq python-indent-guess-indent-offset t)
-(setq python-indent-guess-indent-offset-verbose nil)
+(setopt python-indent-guess-indent-offset t)
+(setopt python-indent-guess-indent-offset-verbose nil)
 
 ;; Reformat python buffers using the `black' formatter
 (use-package blacken

@@ -14,13 +14,13 @@
                                (electric-pair-mode 1)))
 
 ;; Highlight parenthesis matched off-screen
-(setq blink-matching-paren-highlight-offscreen t)
+(setopt blink-matching-paren-highlight-offscreen t)
 
 ;;
 ;; Misc settings
 ;;
-(setq undo-limit (* 160000 500)) ; Raise undo-limit to 80 Mb
-(setq truncate-string-ellipsis "􀍠")
+(setopt undo-limit (* 160000 500)) ; Raise undo-limit to 80 Mb
+(setopt truncate-string-ellipsis "􀍠")
 
 ;;
 ;; Delete selection if you insert
@@ -54,7 +54,7 @@
                                (modify-syntax-entry ?< ".")))
 
 ;; Fill columns
-(setq display-fill-column-indicator-character ?\u254e)
+(setopt display-fill-column-indicator-character ?\u254e)
 (add-hook 'prog-mode-hook #'(lambda ()
                               (display-fill-column-indicator-mode 1)))
 

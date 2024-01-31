@@ -20,7 +20,7 @@
 ;;   :hook
 ;;   (prog-mode . tempel-abbrev-mode)
 ;;   (org-mode . tempel-abbrev-mode)
-;;   :init (setq tempel-path "~/.emacs.d/temp.eld"))
+;;   :init (setopt tempel-path "~/.emacs.d/temp.eld"))
 
 ;;;
 ;; To access the `.emacs.d/temp.eld' file

@@ -14,9 +14,9 @@
 ;; Load the built-in theme before customization
 (require-theme 'modus-themes)
 
-(setq modus-themes-bold-constructs t)
-(setq modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
-(setq modus-themes-common-palette-overrides
+(setopt modus-themes-bold-constructs t)
+(setopt modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
+(setopt modus-themes-common-palette-overrides
       `((cursor red)
         
         ;; Set color faces for `display-line-numbers-mode'
@@ -50,8 +50,8 @@
         ;; Add the code to `modus-themes-preset-overrides-intense'
         ,@modus-themes-preset-overrides-intense))
 
-(setq modus-themes-prompts '(extrabold))
-(setq modus-themes-completions
+(setopt modus-themes-prompts '(extrabold))
+(setopt modus-themes-completions
       '((matches . (extrabold underline))
         (selection . (extrabold underline))))
 
@@ -67,8 +67,8 @@
 (setq-default ns-use-proxy-icon nil)
 
 ;; Cursor faces
-(setq-default cursor-type '(bar . 1))
-(setq-default blink-cursor-mode nil)
+(setopt cursor-type '(bar . 1))
+(setopt blink-cursor-mode nil)
 
 ;; highlight current line
 (add-hook 'after-init-hook #'(lambda ()
@@ -116,8 +116,8 @@
 ;;
 ;; Mode Line settings
 ;;
-(setq-default mode-line-compact t)
-(setq-default line-number-mode nil)
+(setopt mode-line-compact t)
+(setopt line-number-mode nil)
 
 (provide 'init-gui-frames)
 ;;;
