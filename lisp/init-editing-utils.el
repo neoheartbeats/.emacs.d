@@ -8,10 +8,13 @@
 ;;; Code:
 
 ;;
-;; Electric parentheses
+;; Electric parenthesis
 ;;
 (add-hook 'after-init-hook #'(lambda ()
                                (electric-pair-mode 1)))
+
+;; Highlight parenthesis matched off-screen
+(setq blink-matching-paren-highlight-offscreen t)
 
 ;;
 ;; Misc settings
@@ -43,9 +46,8 @@
 (use-package rainbow-delimiters
   :straight t
   :diminish (rainbow-delimiters-mode)
-  :config
-  (add-hook 'prog-mode-hook #'(lambda ()
-                                (rainbow-delimiters-mode 1))))
+  :config (add-hook 'prog-mode-hook #'(lambda ()
+                                        (rainbow-delimiters-mode 1))))
 
 ;; Inhibit paring these delimiters
 (add-hook 'after-init-hook #'(lambda ()
@@ -57,12 +59,12 @@
                               (display-fill-column-indicator-mode 1)))
 
 ;; Display line numbers
-;; (setq display-line-numbers-width-start t)
-
 (add-hook 'text-mode-hook #'(lambda ()
                               (display-line-numbers-mode 1)))
 (add-hook 'prog-mode-hook #'(lambda ()
                               (display-line-numbers-mode 1)))
+
+(setq-default display-line-numbers-width 5)
 
 (provide 'init-editing-utils)
 ;;;

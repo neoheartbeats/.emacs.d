@@ -48,7 +48,7 @@
 ;; Default startup message
 (defun display-startup-echo-area-message ()
   (let
-      ((text "Funding for this program was made possible by viewers like you."))
+      ((text "There's nothing more to show."))
     (message "􀪾 %s" text)))
 
 ;;
@@ -83,14 +83,6 @@
         use-package-enable-imenu-support t)
   (require 'cl-lib)
   (require 'use-package))
-
-
-;;
-;; If `PATH' is not configured while compiling
-;;
-;; (use-package exec-path-from-shell
-;;   :straight t
-;;   :config (exec-path-from-shell-initialize))
 
 ;; Load path
 (use-package emacs

@@ -7,39 +7,64 @@
 ;;; Commentary:
 ;;; Code:
 
+;;;
 ;;
 ;; Modus Themes
 ;;
+;; Load the built-in theme before customization
 (require-theme 'modus-themes)
 
-(setq modus-themes-custom-auto-reload t)
-(setq modus-themes-disable-other-themes t)
+(setq modus-themes-bold-constructs t)
+(setq modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
 (setq modus-themes-common-palette-overrides
-      '((border-mode-line-active unspecified)
-        (border-mode-line-inactive unspecified) ; No borders for mode lines
-        (underline-link border) ; Subtle underlines
+      `((cursor red)
+        
+        ;; Set color faces for `display-line-numbers-mode'
+        (fg-line-number-inactive "gray50")
+        (fg-line-number-active fg-main)
+        (bg-line-number-inactive unspecified)
+        (bg-line-number-active unspecified)
+
+        ;; Make the fringe invisible
+        (fringe unspecified)
+
+        ;; Subtle underlines
+        (underline-link border)
         (underline-link-visited border)
         (underline-link-symbolic border)
-        (fg-line-number-inactive "gray50") ; Subtle line numbers
-        (fg-line-number-active fg-main)
-        (bg-line-number-inactive unspecified)))
 
-;; Diable other themes before loading Modus Themes
+        ;; Completions
+        (fg-completion-match-0 fg-main)
+        (bg-completion-match-0 bg-red-intense)
+
+        (bg-paren-match bg-red-intense)
+        (underline-paren-match fg-main)
+
+        ;; Make DONE less intense
+        (prose-done fg-dim)
+
+        ;; Custom region colors 
+        (bg-region bg-red-intense)
+        (fg-region unspecified)
+
+        ;; Add the code to `modus-themes-preset-overrides-intense'
+        ,@modus-themes-preset-overrides-intense))
+
+(setq modus-themes-prompts '(extrabold))
+(setq modus-themes-completions
+      '((matches . (extrabold underline))
+        (selection . (extrabold underline))))
+
+;; diable other themes before loading Modus Themes
 (mapc #'disable-theme custom-enabled-themes)
 (load-theme 'modus-vivendi :no-confirm)
+
+;; Make `fill-column-indicator' thinner
+(set-face-attribute 'fill-column-indicator nil :height 0.15)
 
 ;; Clean up the title bar content
 (setq-default frame-title-format nil)
 (setq-default ns-use-proxy-icon nil)
-
-;; Customize faces
-(set-face-attribute 'button nil
-                    :underline "#959595"
-                    :foreground 'unspecified)
-
-(set-face-attribute 'link nil :foreground 'unspecified)
-(set-face-attribute 'fill-column-indicator nil :height 0.15)
-(set-face-background 'fringe (face-attribute 'default :background))
 
 ;; Cursor faces
 (setq-default cursor-type '(bar . 1))
@@ -80,6 +105,10 @@
 
 ;; Note this make all italic font style disabled
 (set-face-attribute 'italic nil :slant 'normal)
+
+;; Turn on `prettify-symbols-mode' in all supported buffers
+(add-hook 'after-init-hook #'(lambda ()
+                               (global-prettify-symbols-mode 1)))
 
 ;; Stop showing fringe bitmaps
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))

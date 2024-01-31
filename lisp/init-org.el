@@ -49,8 +49,11 @@
     (push '("#+filetags:  " . ?􀋡) prettify-symbols-alist)
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
     (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist)
-    (prettify-symbols-mode 1)))
+    ;; (prettify-symbols-mode 1)
+    ))
 (add-hook 'org-mode-hook #'my-iconify-org-buffer)
+
+;; (setq-default )
 
 (setq org-ellipsis " 􀍠")
 (setq org-hide-emphasis-markers t)
