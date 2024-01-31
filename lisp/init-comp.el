@@ -123,15 +123,15 @@
   :init (add-hook 'after-init-hook #'global-corfu-mode)
   :config
   (setopt corfu-auto t)
-  (setopt corfu-auto-delay 0)
+  (setopt corfu-auto-delay 0.0)
   (setopt corfu-auto-prefix 2)
   (setopt corfu-cycle t)
   (setopt corfu-quit-at-boundary t)
   (setopt corfu-quit-no-match 'separator)
   (setopt corfu-preselect 'first)
   (setopt corfu-scroll-margin 5)
-  (setopt corfu-history-mode 1)
-  (setopt corfu-popupinfo-mode 1)
+  (setopt corfu-history-mode t)
+  (setopt corfu-popupinfo-mode t)
   :hook (eshell-mode . (lambda ()
                          (setq-local corfu-auto nil)))
   :bind (:map corfu-map

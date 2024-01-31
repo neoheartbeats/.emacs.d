@@ -78,8 +78,7 @@
 (setopt org-return-follows-link t)
 
 ;; Open file links in current window
-(setopt org-link-frame-setup '((file . find-file)))
-
+(setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 
 ;; Using shift-<arrow-keys> to select text
 (setopt org-support-shift-select t)
