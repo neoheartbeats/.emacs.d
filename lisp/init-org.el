@@ -88,12 +88,12 @@
   
   ;; Denote for journaling
   (setopt denote-journal-extras-directory
-        (expand-file-name "stages/" denote-directory)) ; Subdirectory for journal files
+          (expand-file-name "stages/" denote-directory)) ; Subdirectory for journal files
   (setopt denote-journal-extras-keyword "stages") ; Stages are journals
 
   ;; Do not include date in notes
   (setopt denote-org-front-matter
-        "#+title:      %1$s
+          "#+title:      %1$s
 #+filetags:   %3$s
 #+identifier: %4$s
 \n")
@@ -116,16 +116,16 @@
 ;;
 (setopt org-latex-preview-default-process 'dvisvgm)
 (setopt org-latex-packages-alist
-      '(("T1" "fontenc" t)
-        ("" "amsmath" t)
-        ("" "bm" t) ; Bold math required
-        ("" "mathtools" t)
-        ("" "siunitx" t)
-        ("" "physics2" t)
-        ("" "mlmodern" t)))
+        '(("T1" "fontenc" t)
+          ("" "amsmath" t)
+          ("" "bm" t) ; Bold math required
+          ("" "mathtools" t)
+          ("" "siunitx" t)
+          ("" "physics2" t)
+          ("" "mlmodern" t)))
 
 (setopt org-latex-preview-preamble
-      "\\documentclass{article}
+        "\\documentclass{article}
 [DEFAULT-PACKAGES]
 [PACKAGES]
 \\usepackage{xcolor}
@@ -138,13 +138,13 @@
 (setopt org-latex-preview-live nil) ; Do not generate live previews while editing
 
 (setopt org-latex-preview-appearance-options
-      '(
-        :foreground auto
-        :background "Transparent"
-        :scale 1.04
-        :zoom 1.04
-        :page-width 0.6
-        :matchers ("begin" "\\(" "\\["))) ; Removed dollars as delimiters
+        '(
+          :foreground auto
+          :background "Transparent"
+          :scale 1.04
+          :zoom 1.04
+          :page-width 0.6
+          :matchers ("begin" "\\(" "\\["))) ; Removed dollars as delimiters
 
 
 ;; Use CDLaTeX to improve editing experiences
@@ -191,6 +191,32 @@
 
 (bind-keys :map org-mode-map
            ("s-p" . my/org-mode-preview-buffer))
+
+(defun my/denote-open-previous-file ()
+  (interactive)
+  (let* ((current-file (buffer-file-name))
+         (directory (file-name-directory current-file))
+         (files (directory-files directory t "\\`[^.]"))
+         (sorted-files (sort files 'string<))
+         (current-file-index (cl-position current-file sorted-files :test 'string=)))
+
+    (when (and current-file-index (> current-file-index 0))
+      (find-file (nth (1- current-file-index) sorted-files)))))
+
+(defun my/denote-open-next-file ()
+  (interactive)
+  (let* ((current-file (buffer-file-name))
+         (directory (file-name-directory current-file))
+         (files (directory-files directory t "\\`[^.]"))
+         (sorted-files (sort files 'string<))
+         (current-file-index (cl-position current-file sorted-files :test 'string=)))
+
+    (when (and current-file-index (< current-file-index (1- (length sorted-files))))
+      (find-file (nth (1+ current-file-index) sorted-files)))))
+
+(bind-keys :map org-mode-map
+           ("s-<up>" . my/denote-open-previous-file)
+           ("s-<down>" . my/denote-open-next-file))
 
 (provide 'init-org)
 ;;;
