@@ -39,6 +39,7 @@
   (setopt org-modern-block-name nil)
   (setopt org-modern-keyword nil)
   (setopt org-modern-timestamp nil)
+  (setopt org-modern-block-fringe nil)
   :config (global-org-modern-mode 1))
 
 (defun my-iconify-org-buffer ()
@@ -53,14 +54,6 @@
 
 (setopt org-ellipsis " 􀍠")
 (setopt org-hide-emphasis-markers t)
-
-;; Draw fringes in Org mode
-(defun my-toggle-internal-fringes ()
-  (setopt left-margin-width 5)
-  (setopt right-margin-width 5)
-  (set-window-buffer nil (current-buffer)))
-
-(add-hook 'org-mode-hook #'my-toggle-internal-fringes)
 
 ;; Fold drawers by default
 (setopt org-cycle-hide-drawer-startup t)
