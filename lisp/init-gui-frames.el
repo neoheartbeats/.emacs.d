@@ -17,43 +17,41 @@
 (setopt modus-themes-bold-constructs t)
 (setopt modus-themes-common-palette-overrides modus-themes-preset-overrides-intense)
 (setopt modus-themes-common-palette-overrides
-      `((cursor red)
-        
-        ;; Set color faces for `display-line-numbers-mode'
-        (fg-line-number-inactive "gray50")
-        (fg-line-number-active fg-main)
-        (bg-line-number-inactive unspecified)
-        (bg-line-number-active unspecified)
+        `((cursor red)
+          
+          ;; Set color faces for `display-line-numbers-mode'
+          (fg-line-number-inactive "gray50")
+          (fg-line-number-active fg-main)
+          (bg-line-number-inactive unspecified)
+          (bg-line-number-active unspecified)
 
-        ;; Make the fringe invisible
-        (fringe unspecified)
+          ;; Make the fringe invisible
+          (fringe unspecified)
 
-        ;; Subtle underlines
-        (underline-link border)
-        (underline-link-visited border)
-        (underline-link-symbolic border)
+          ;; Subtle underlines
+          (underline-link border)
+          (underline-link-visited border)
+          (underline-link-symbolic border)
 
-        ;; Completions
-        (fg-completion-match-0 fg-main)
-        (bg-completion-match-0 bg-red-intense)
+          ;; Completions
+          (fg-completion-match-0 fg-main)
+          (bg-completion-match-0 bg-red-intense)
 
-        (bg-paren-match bg-red-intense)
-        (underline-paren-match fg-main)
+          (bg-paren-match bg-red-intense)
+          (underline-paren-match fg-main)
 
-        ;; Make DONE less intense
-        (prose-done fg-dim)
+          ;; Make DONE less intense
+          (prose-done fg-dim)
 
-        ;; Custom region colors 
-        (bg-region bg-red-intense)
-        (fg-region unspecified)
+          ;; Custom region colors 
+          (bg-region bg-red-intense)
+          (fg-region unspecified)
 
-        ;; Add the code to `modus-themes-preset-overrides-intense'
-        ,@modus-themes-preset-overrides-intense))
+          ;; Add the code to `modus-themes-preset-overrides-intense'
+          ,@modus-themes-preset-overrides-intense))
 
 (setopt modus-themes-prompts '(extrabold))
-(setopt modus-themes-completions
-      '((matches . (extrabold underline))
-        (selection . (extrabold underline))))
+(setopt modus-themes-completions '((t . (extrabold))))
 
 ;; diable other themes before loading Modus Themes
 (mapc #'disable-theme custom-enabled-themes)

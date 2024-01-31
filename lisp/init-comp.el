@@ -107,7 +107,7 @@
   :init
   (setopt completion-styles '(orderless basic))
   (setopt completion-category-overrides
-        '((file (styles . (partial-completion)))))
+          '((file (styles . (partial-completion)))))
   (setopt completion-category-defaults nil)
   (setopt completion-category-override nil)
   (setopt completion-cycle-threshold 5)
