@@ -10,7 +10,7 @@
 ;;
 ;; Setup default directory
 ;;
-(setopt org-directory "~/Upstage/")
+(setopt org-directory "~/Sthenno/")
 
 ;;
 ;; Org Mode buffer init behaviors
