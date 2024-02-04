@@ -28,11 +28,10 @@
 (use-package org-modern
   :straight t
   :init
-  (setopt org-modern-star '("􀄩"))
-  (setopt org-modern-hide-stars "􀄩")
-  (setopt org-modern-list '((?- . "•")))
-  (setopt org-modern-checkbox '((?X . "􀃰") (?- . "􀃞") (?\s . "􀂒")))
-  (setopt org-modern-progress '("􀛪" "􀛩" "􀺶" "􀺸" "􀛨"))
+  (setopt org-modern-star '(""))
+  (setopt org-modern-hide-stars "")
+  (setopt org-modern-list '((?- . "")))
+  (setopt org-modern-checkbox '((?X . "") (?- . "") (?\s . "")))
   (setopt org-modern-table-vertical 2)
   (setopt org-modern-todo nil)
   (setopt org-modern-tag nil)
@@ -44,15 +43,15 @@
 
 (defun my-iconify-org-buffer ()
   (progn
-    (push '("#+title:     " . ?􀈭) prettify-symbols-alist)
-    (push '("#+identifier:" . ?􀅷) prettify-symbols-alist)
-    (push '("#+date:      " . ?􀧵) prettify-symbols-alist)
-    (push '("#+filetags:  " . ?􀋡) prettify-symbols-alist)
-    (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
-    (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist)))
+    (push '("#+title:     " . ?) prettify-symbols-alist)
+    (push '("#+identifier:" . ?) prettify-symbols-alist)
+    (push '("#+date:      " . ?) prettify-symbols-alist)
+    (push '("#+filetags:  " . ?) prettify-symbols-alist)
+    (push '("#+RESULTS:" . ?) prettify-symbols-alist)
+    (push '("#+attr_org:" . ?) prettify-symbols-alist)))
 (add-hook 'org-mode-hook #'my-iconify-org-buffer)
 
-(setopt org-ellipsis " 􀍠")
+(setopt org-ellipsis " ")
 (setopt org-hide-emphasis-markers t)
 
 ;; Fold drawers by default
