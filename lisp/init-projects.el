@@ -22,10 +22,10 @@
 ;;
 ;; Project management
 ;;
-(use-package projectile
-  :straight t
-  :config (projectile-mode 1)
-  :bind ("C-x p r" . projectile-replace-regexp))
+;; (use-package projectile
+;;   :straight t
+;;   :config (projectile-mode 1)
+;;   :bind ("C-x p r" . projectile-replace-regexp))
 
 (provide 'init-projects)
 ;;;
