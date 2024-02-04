@@ -13,8 +13,8 @@
 (add-hook 'after-init-hook #'(lambda ()
                                (electric-pair-mode 1)))
 
-;; Highlight parenthesis matched off-screen
-(setopt blink-matching-paren-highlight-offscreen t)
+;; Highlight parenthesis matched off-screen (Emacs 30+)
+;; (setopt blink-matching-paren-highlight-offscreen t)
 
 ;;
 ;; Misc settings
