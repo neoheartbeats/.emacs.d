@@ -369,7 +369,7 @@
 (add-hook 'prog-mode-hook #'pragmatapro-prettify-setup)
 
 ;; Set up font for unicode fontset
-(set-fontset-font "fontset-default" 'han "Noto Sans CJK SC")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 ;; Note this make all italic font style disabled
 (set-face-attribute 'italic nil :slant 'normal)
