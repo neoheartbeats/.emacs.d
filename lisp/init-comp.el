@@ -104,13 +104,11 @@
 ;; Build the completion framework
 (use-package orderless
   :straight t
-  :init
+  :config
   (setopt completion-styles '(orderless basic))
-  (setopt completion-category-overrides
-          '((file (styles . (partial-completion)))))
-  (setopt completion-category-defaults nil)
-  (setopt completion-category-override nil)
-  (setopt completion-cycle-threshold 5)
+  (setopt completion-category-overrides '((file (styles basic partial-completion))))
+
+  ;; Ignore cases
   (setopt completion-ignore-case t)
   (setopt read-file-name-completion-ignore-case t)
   (setopt read-buffer-completion-ignore-case t))
@@ -139,6 +137,10 @@
               ("<up>" . corfu-previous)
               ("<space>" . corfu-quit)
               ("<escape>" . corfu-quit)))
+
+(use-package corfu-prescient
+  :straight t
+  :config (corfu-prescient-mode 1))
 
 (provide 'init-comp)
 ;;;

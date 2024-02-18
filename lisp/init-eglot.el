@@ -59,12 +59,11 @@
 ;; Reformat python buffers using the `black' formatter
 (use-package blacken
   :straight t
-  :config (add-hook 'python-mode-hook #'(lambda ()
+  :config (add-hook 'python-ts-mode-hook #'(lambda ()
                                           (blacken-mode 1)))
   :bind
-  (:map python-mode-map
+  (:map python-ts-mode-map
         ("s-i" . blacken-buffer)))
-
 
 ;;
 ;; AI
