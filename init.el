@@ -52,8 +52,8 @@
 ;; Default startup message
 (defun display-startup-echo-area-message ()
   (let
-      ((text "Funding for this program was made possible by viewers like you."))
-    (message " %s" text)))
+      ((text "There's nothing more to show."))
+    (message "􀪾 %s" text)))
 
 ;;
 ;; Package management via `straight.el'
