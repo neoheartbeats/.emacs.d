@@ -20,7 +20,7 @@
 ;; Misc settings
 ;;
 (setopt undo-limit (* 160000 500)) ; Raise undo-limit to 80 Mb
-(setopt truncate-string-ellipsis "􀍠")
+(setopt truncate-string-ellipsis "")
 
 ;;
 ;; Delete selection if you insert
