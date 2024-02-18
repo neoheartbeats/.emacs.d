@@ -14,7 +14,7 @@
 ;; Load the built-in theme before customization
 (require-theme 'modus-themes)
 
-(setopt modus-themes-common-palette-overrides
+(setq modus-themes-common-palette-overrides
         '(
           ;; Make the mode line borderless
           (border-mode-line-active bg-mode-line-active)
@@ -48,8 +48,8 @@
           (bg-region bg-red-intense)
           (fg-region unspecified)))
 
-(setopt modus-themes-prompts '(extrabold))
-(setopt modus-themes-completions '((t . (extrabold))))
+(setq modus-themes-prompts '(extrabold))
+(setq modus-themes-completions '((t . (extrabold))))
 
 ;; diable other themes before loading Modus Themes
 (mapc #'disable-theme custom-enabled-themes)
@@ -63,8 +63,8 @@
 (setq-default ns-use-proxy-icon nil)
 
 ;; Cursor faces
-(setopt cursor-type '(bar . 1))
-(setopt blink-cursor-mode nil)
+(setq-default cursor-type '(bar . 1))
+(setq blink-cursor-mode nil)
 
 ;; highlight current line
 (add-hook 'after-init-hook #'(lambda ()
@@ -74,7 +74,7 @@
 (add-hook 'after-init-hook #'(lambda ()
                                (global-prettify-symbols-mode 1)))
 
-(setopt prettify-symbols-unprettify-at-point 'right-edge)
+(setq prettify-symbols-unprettify-at-point 'right-edge)
 
 ;;
 ;; Custom font
@@ -94,8 +94,8 @@
 ;;
 ;; Mode Line settings
 ;;
-(setopt mode-line-compact t)
-(setopt line-number-mode nil)
+(setq mode-line-compact t)
+(setq line-number-mode nil)
 
 (provide 'init-gui-frames)
 ;;;

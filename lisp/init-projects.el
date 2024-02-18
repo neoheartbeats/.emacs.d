@@ -16,16 +16,8 @@
 ;;
 (use-package magit
   :straight t
-  :config (setopt magit-diff-refine-hunk t)
+  :config (setq magit-diff-refine-hunk t)
   :bind ("C-x g" . magit-status))
-
-;;
-;; Project management
-;;
-;; (use-package projectile
-;;   :straight t
-;;   :config (projectile-mode 1)
-;;   :bind ("C-x p r" . projectile-replace-regexp))
 
 (provide 'init-projects)
 ;;;

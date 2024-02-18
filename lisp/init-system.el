@@ -14,8 +14,8 @@
 ;;
 ;; macOS specified key mapping
 ;;
-(setopt mac-option-modifier 'meta)
-(setopt mac-command-modifier 'super)
+(setq mac-option-modifier 'meta)
+(setq mac-command-modifier 'super)
 
 (bind-keys :map global-map
            ("s-a" . mark-whole-buffer)
@@ -52,7 +52,7 @@
 (global-unset-key (kbd "C-<wheel-down>"))
 
 ;; Increase how much is read from processes (default is 4kb)
-(setopt read-process-output-max #x10000)
+(setq read-process-output-max #x10000)
 
 ;; Locate position history
 (use-package saveplace
@@ -60,20 +60,20 @@
 
 (use-package savehist 
   :config
-  (setopt savehist-file (expand-file-name "savehist" user-emacs-directory))
-  (setopt history-length 1000)
-  (setopt history-delete-duplicates t)
-  (setopt savehist-save-minibuffer-history t)
+  (setq savehist-file (expand-file-name "savehist" user-emacs-directory))
+  (setq history-length 1000)
+  (setq history-delete-duplicates t)
+  (setq savehist-save-minibuffer-history t)
   (savehist-mode 1))
 
 ;;
 ;; Auto saving mechanism
 ;;
-(setopt auto-save-interval 2400)
-(setopt auto-save-timeout 300)
-(setopt auto-save-list-file-prefix
+(setq auto-save-interval 2400)
+(setq auto-save-timeout 300)
+(setq auto-save-list-file-prefix
       (dir-concat user-cache-directory "auto-save-list/.saves-"))
-(setopt backup-directory-alist
+(setq backup-directory-alist
       `(("." . ,(dir-concat user-cache-directory "backup")))
       backup-by-copying t ; Use copies
       version-control t ; Use version numbers on backups
@@ -84,26 +84,26 @@
 ;;
 ;; Misc options
 ;;
-(setopt use-short-answers t)
-(setopt dired-use-ls-dired nil)
-(setopt auto-hscroll-mode 'current-line)
-(setopt case-fold-search t)
-(setopt create-lockfiles nil)
-(setopt make-backup-files nil)
-(setopt mark-even-if-inactive nil)
-(setopt make-pointer-invisible nil)
-(setopt ring-bell-function 'ignore)
-(setopt save-silently t)
-(setopt set-mark-command-repeat-pop t)
-(setopt truncate-lines nil)
-(setopt truncate-partial-width-windows nil)
-(setopt help-window-select t)
-(setopt xref-search-program 'ripgrep)
-(setopt fill-column 88)
-(setopt tab-width 4)
-(setopt indent-tabs-mode nil)
-(setopt require-final-newline t)
-(setopt inhibit-compacting-font-caches t)
+(setq use-short-answers t)
+(setq dired-use-ls-dired nil)
+(setq auto-hscroll-mode 'current-line)
+(setq case-fold-search t)
+(setq create-lockfiles nil)
+(setq make-backup-files nil)
+(setq mark-even-if-inactive nil)
+(setq make-pointer-invisible nil)
+(setq ring-bell-function 'ignore)
+(setq save-silently t)
+(setq set-mark-command-repeat-pop t)
+(setq truncate-lines nil)
+(setq truncate-partial-width-windows nil)
+(setq help-window-select t)
+(setq xref-search-program 'ripgrep)
+(setq fill-column 88)
+(setq tab-width 4)
+(setq indent-tabs-mode nil)
+(setq require-final-newline t)
+(setq inhibit-compacting-font-caches t)
 
 ;;;
 ;;
@@ -172,10 +172,10 @@
                                (pixel-scroll-precision-mode 1)))
 
 ;; Disable auto copyings
-(setopt mouse-drag-copy-region nil)
-(setopt select-enable-primary nil)
-(setopt select-enable-clipboard t)
-(setopt search-default-mode 'char-fold-to-regexp)
+(setq mouse-drag-copy-region nil)
+(setq select-enable-primary nil)
+(setq select-enable-clipboard t)
+(setq search-default-mode 'char-fold-to-regexp)
 
 (provide 'init-system)
 ;;;

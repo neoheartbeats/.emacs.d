@@ -14,8 +14,8 @@
   :straight t
   :init (vertico-mode 1)
   :config
-  (setopt vertico-count 10)
-  (setopt vertico-cycle t)
+  (setq vertico-count 10)
+  (setq vertico-cycle t)
   
   ;; Load extensions
   (require 'vertico-directory)
@@ -61,26 +61,26 @@
 ;; Completion in buffers
 ;;
 
-(setopt tab-always-indent 'complete)
+(setq tab-always-indent 'complete)
 
 ;; Dabbrev settings
 (use-package dabbrev
   :commands (dabbrev-expand dabbrev-completion)
   :config
-  (setopt dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
-  (setopt dabbrev-abbrev-skip-leading-regexp "\\$\\|\\*\\|/\\|=")
-  (setopt dabbrev-backward-only nil)
-  (setopt dabbrev-case-distinction nil)
-  (setopt dabbrev-case-fold-search t)
-  (setopt dabbrev-case-replace nil)
-  (setopt dabbrev-check-other-buffers t)
-  (setopt dabbrev-eliminate-newlines nil)
-  (setopt dabbrev-upcase-means-case-search t))
+  (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
+  (setq dabbrev-abbrev-skip-leading-regexp "\\$\\|\\*\\|/\\|=")
+  (setq dabbrev-backward-only nil)
+  (setq dabbrev-case-distinction nil)
+  (setq dabbrev-case-fold-search t)
+  (setq dabbrev-case-replace nil)
+  (setq dabbrev-check-other-buffers t)
+  (setq dabbrev-eliminate-newlines nil)
+  (setq dabbrev-upcase-means-case-search t))
 
 ;; Add extensions for the completion backend
 (use-package cape
   :straight t
-  :config (setopt cape-dabbrev-min-length 3)
+  :config (setq cape-dabbrev-min-length 3)
   :hook ((prog-mode . (lambda ()
                         (push 'cape-dabbrev completion-at-point-functions)
                         (push 'cape-dict completion-at-point-functions)
@@ -105,13 +105,13 @@
 (use-package orderless
   :straight t
   :config
-  (setopt completion-styles '(orderless basic))
-  (setopt completion-category-overrides '((file (styles basic partial-completion))))
+  (setq completion-styles '(orderless basic))
+  (setq completion-category-overrides '((file (styles basic partial-completion))))
 
   ;; Ignore cases
-  (setopt completion-ignore-case t)
-  (setopt read-file-name-completion-ignore-case t)
-  (setopt read-buffer-completion-ignore-case t))
+  (setq completion-ignore-case t)
+  (setq read-file-name-completion-ignore-case t)
+  (setq read-buffer-completion-ignore-case t))
 
 ;;
 ;; The main completion frontend by Corfu
@@ -120,16 +120,16 @@
   :straight (:files (:defaults "extensions/*"))
   :init (add-hook 'after-init-hook #'global-corfu-mode)
   :config
-  (setopt corfu-auto t)
-  (setopt corfu-auto-delay 0.0)
-  (setopt corfu-auto-prefix 2)
-  (setopt corfu-cycle t)
-  (setopt corfu-quit-at-boundary t)
-  (setopt corfu-quit-no-match 'separator)
-  (setopt corfu-preselect 'first)
-  (setopt corfu-scroll-margin 5)
-  (setopt corfu-history-mode t)
-  (setopt corfu-popupinfo-mode t)
+  (setq corfu-auto t)
+  (setq corfu-auto-delay 0.0)
+  (setq corfu-auto-prefix 2)
+  (setq corfu-cycle t)
+  (setq corfu-quit-at-boundary t)
+  (setq corfu-quit-no-match 'separator)
+  (setq corfu-preselect 'first)
+  (setq corfu-scroll-margin 5)
+  (setq corfu-history-mode t)
+  (setq corfu-popupinfo-mode t)
   :hook (eshell-mode . (lambda ()
                          (setq-local corfu-auto nil)))
   :bind (:map corfu-map

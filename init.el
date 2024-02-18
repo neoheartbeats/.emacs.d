@@ -22,32 +22,32 @@
 
 ;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions
 ;; in non-focused windows
-(setopt cursor-in-non-selected-windows nil)
-(setopt highlight-nonselected-windows nil)
+(setq cursor-in-non-selected-windows nil)
+(setq highlight-nonselected-windows nil)
 
 ;; More performant rapid scrolling over unfontified regions. May cause brief
 ;; spells of inaccurate fontification immediately after scrolling.
-(setopt fast-but-imprecise-scrolling t)
-(setopt redisplay-skip-fontification-on-input t)
+(setq fast-but-imprecise-scrolling t)
+(setq redisplay-skip-fontification-on-input t)
 
 ;; Resizing the Emacs frame can be a terribly expensive part of changing the
 ;; font. By inhibiting this, we halve startup times, particularly when we use
 ;; fonts that are larger than the system default (which would resize the frame).
-(setopt frame-inhibit-implied-resize t)
+(setq frame-inhibit-implied-resize t)
 
 ;; Don't ping things that look like domain names.
-(setopt ffap-machine-p-known 'reject)
+(setq ffap-machine-p-known 'reject)
 
 ;; Don't pass case-insensitive to `auto-mode-alist'
-(setopt auto-mode-case-fold nil)
+(setq auto-mode-case-fold nil)
 
 ;; Suppress GUI features
-(setopt use-dialog-box nil)
-(setopt use-file-dialog nil)
+(setq use-dialog-box nil)
+(setq use-file-dialog nil)
 
-(setopt inhibit-splash-screen t)
-(setopt inhibit-startup-buffer-menu t)
-(setopt initial-scratch-message "")
+(setq inhibit-splash-screen t)
+(setq inhibit-startup-buffer-menu t)
+(setq initial-scratch-message "")
 
 ;; Default startup message
 (defun display-startup-echo-area-message ()
@@ -104,17 +104,17 @@
     "Location where files created by emacs are placed."))
 
 ;; Set path for custom-file
-(setopt custom-file (locate-user-emacs-file "custom.el"))
+(setq custom-file (locate-user-emacs-file "custom.el"))
 
 ;; GCMH
 (use-package gcmh
   :straight t
   :diminish (gcmh-mode)
   :config
-  (setopt gcmh-high-cons-threshold (* 512 1024 1024))
+  (setq gcmh-high-cons-threshold (* 512 1024 1024))
   (gcmh-mode 1))
 
-(setopt jit-lock-defer-time 0)
+(setq jit-lock-defer-time 0)
 
 ;;
 ;; Org Mode

@@ -14,31 +14,24 @@
                                (electric-pair-mode 1)))
 
 ;; Highlight parenthesis matched off-screen (Emacs 30+)
-;; (setopt blink-matching-paren-highlight-offscreen t)
+;; (setq blink-matching-paren-highlight-offscreen t)
 
 ;;
 ;; Misc settings
 ;;
-(setopt undo-limit (* 160000 500)) ; Raise undo-limit to 80 Mb
-(setopt truncate-string-ellipsis "")
+(setq undo-limit (* 160000 500)) ; Raise undo-limit to 80 Mb
 
-;;
 ;; Delete selection if you insert
-;;
 (use-package delsel
   :hook (after-init . delete-selection-mode))
 
-;;
 ;; Automatically reload files was modified by external program
-;;
 (use-package autorevert
   :diminish (auto-revert-mode)
   :hook (after-init . (lambda ()
                         (global-auto-revert-mode 1))))
 
-;;
 ;; Framework for mode-specific buffer indexes
-;;
 (use-package imenu
   :bind ("s-m" . imenu))
 
@@ -54,7 +47,7 @@
                                (modify-syntax-entry ?< ".")))
 
 ;; Fill columns
-(setopt display-fill-column-indicator-character ?\u254e)
+(setq display-fill-column-indicator-character ?\u254e)
 (add-hook 'prog-mode-hook #'(lambda ()
                               (display-fill-column-indicator-mode 1)))
 
