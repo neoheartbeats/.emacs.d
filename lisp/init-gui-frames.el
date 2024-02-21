@@ -91,11 +91,14 @@
 ;; Stop showing fringe bitmaps
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
 
-;;
 ;; Mode Line settings
-;;
 (setq mode-line-compact t)
 (setq line-number-mode nil)
+
+;; Make Dired more colorful
+(use-package diredfl
+  :straight t
+  :config (diredfl-global-mode 1))
 
 (provide 'init-gui-frames)
 ;;;
