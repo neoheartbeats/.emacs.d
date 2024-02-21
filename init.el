@@ -79,6 +79,9 @@
 (straight-use-package 'bind-key)
 (straight-use-package 'diminish)
 
+;;
+(diminish 'eldoc-mode)
+
 (eval-when-compile
   (eval-after-load 'advice
     `(setq ad-redefinition-action 'accept))
