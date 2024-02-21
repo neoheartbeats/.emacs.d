@@ -138,10 +138,6 @@
               ("<space>" . corfu-quit)
               ("<escape>" . corfu-quit)))
 
-(use-package corfu-prescient
-  :straight t
-  :config (corfu-prescient-mode 1))
-
 (provide 'init-comp)
 ;;;
 ;; coding: utf-8

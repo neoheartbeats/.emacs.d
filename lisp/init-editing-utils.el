@@ -52,10 +52,7 @@
                               (display-fill-column-indicator-mode 1)))
 
 ;; Display line numbers
-(add-hook 'text-mode-hook #'(lambda ()
-                              (display-line-numbers-mode 1)))
-(add-hook 'prog-mode-hook #'(lambda ()
-                              (display-line-numbers-mode 1)))
+(global-display-line-numbers-mode 1)
 
 (setq-default display-line-numbers-width 5)
 

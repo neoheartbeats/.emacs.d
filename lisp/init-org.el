@@ -52,6 +52,8 @@
     (push '("#+identifier:" . ?􀅷) prettify-symbols-alist)
     (push '("#+date:      " . ?􀧵) prettify-symbols-alist)
     (push '("#+filetags:  " . ?􀋡) prettify-symbols-alist)
+    (push '("#+begin_src" . ?􀃤) prettify-symbols-alist)
+    (push '("#+end_src" . ?􀅽) prettify-symbols-alist)
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
     (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist)))
 (add-hook 'org-mode-hook #'my/iconify-org-buffer)
@@ -88,7 +90,7 @@
   :straight t
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
-  (setq denote-known-keywords '("robot" "poem" "science" "dust")) ; dust can be drafts
+  (setq denote-known-keywords '("robots" "poem" "sciences" "dust"))
   
   ;; Denote for journaling
   (setq denote-journal-extras-directory
@@ -101,6 +103,9 @@
 #+filetags:   %3$s
 #+identifier: %4$s
 \n")
+
+  ;; No need for confirmation using `denote-rename-file'
+  (setq denote-rename-no-confirm t)
   :bind
   (:map global-map
 
@@ -111,9 +116,36 @@
   :hook
   (after-init . denote-journal-extras-new-or-existing-entry))
 
+;; Custom functions for Denote
 (defun my/denote-insert-links-current-month ()
   (interactive)
   (denote-add-links (format-time-string "%B")))
+
+(defun my/denote-open-previous-file ()
+  (interactive)
+  (let* ((current-file (buffer-file-name))
+         (directory (file-name-directory current-file))
+         (files (directory-files directory t "\\`[^.]"))
+         (sorted-files (sort files 'string<))
+         (current-file-index (cl-position current-file sorted-files :test 'string=)))
+
+    (when (and current-file-index (> current-file-index 0))
+      (find-file (nth (1- current-file-index) sorted-files)))))
+
+(defun my/denote-open-next-file ()
+  (interactive)
+  (let* ((current-file (buffer-file-name))
+         (directory (file-name-directory current-file))
+         (files (directory-files directory t "\\`[^.]"))
+         (sorted-files (sort files 'string<))
+         (current-file-index (cl-position current-file sorted-files :test 'string=)))
+
+    (when (and current-file-index (< current-file-index (1- (length sorted-files))))
+      (find-file (nth (1+ current-file-index) sorted-files)))))
+
+(bind-keys :map org-mode-map
+           ("s-<up>" . my/denote-open-previous-file)
+           ("s-<down>" . my/denote-open-next-file))
 
 ;;
 ;; Org LaTeX customizations
@@ -150,7 +182,6 @@
           :page-width 0.6
           :matchers ("begin" "\\(" "\\["))) ; Removed dollars as delimiters
 
-
 ;; Use CDLaTeX to improve editing experiences
 (use-package cdlatex
   :straight t
@@ -176,10 +207,7 @@
                                (python . t)
                                (shell . t)))
 
-;;
 ;; Useful functions
-;;
-
 (defun my/org-mode-insert-get-button ()
   "Inserts a button that copies a user-defined string to clipboard."
   (interactive)
@@ -195,32 +223,6 @@
 
 (bind-keys :map org-mode-map
            ("s-p" . my/org-mode-preview-buffer))
-
-(defun my/denote-open-previous-file ()
-  (interactive)
-  (let* ((current-file (buffer-file-name))
-         (directory (file-name-directory current-file))
-         (files (directory-files directory t "\\`[^.]"))
-         (sorted-files (sort files 'string<))
-         (current-file-index (cl-position current-file sorted-files :test 'string=)))
-
-    (when (and current-file-index (> current-file-index 0))
-      (find-file (nth (1- current-file-index) sorted-files)))))
-
-(defun my/denote-open-next-file ()
-  (interactive)
-  (let* ((current-file (buffer-file-name))
-         (directory (file-name-directory current-file))
-         (files (directory-files directory t "\\`[^.]"))
-         (sorted-files (sort files 'string<))
-         (current-file-index (cl-position current-file sorted-files :test 'string=)))
-
-    (when (and current-file-index (< current-file-index (1- (length sorted-files))))
-      (find-file (nth (1+ current-file-index) sorted-files)))))
-
-(bind-keys :map org-mode-map
-           ("s-<up>" . my/denote-open-previous-file)
-           ("s-<down>" . my/denote-open-next-file))
 
 (provide 'init-org)
 ;;;
