@@ -47,7 +47,8 @@
 ;;
 ;; Python
 ;;
-(setq python-interpreter "/opt/homebrew/bin/python3")
+(setq python-interpreter
+      "/opt/homebrew/Caskroom/miniconda/base/envs/develop/bin/python")
 (setq org-babel-python-command python-interpreter)
 (setq python-shell-interpreter python-interpreter)
 (setq python-shell-prompt-detect-failure-warning nil)

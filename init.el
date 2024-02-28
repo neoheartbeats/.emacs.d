@@ -160,6 +160,42 @@
 (require 'init-org)
 (require 'init-eglot)
 
+;;; Sthenno Functions (TODO)
+(require 'json)
+(defun sthenno-capture-recollection-entry ()
+  "Capture ENTRY interactively then append it to RECOLLECTION-FILE.
+ENTRY is formatted in Alpaca used in LLMs for further fine-tuning."
+  (interactive)
+  (let ((instruction (read-string "Enter instruction: "))
+	(output (read-string "Enter output: ")))
+
+    ;; Create a dictionary in the Alpaca format to store the
+    ;; information collected
+    (let ((entry (json-encode-alist `(("instruction" . ,instruction)
+				      ("input" . "")
+				      ("output" . ,output)
+				      ("system" . "")
+				      ("history" . [])))))
+
+      ;; Try to read existing RECOLLECTION-FILE
+      (let* ((filename "~/Sthenno/recollection.json")
+	     (existing-contents (when (file-exists-p filename)
+				  (with-temp-buffer
+				    (insert-file-contents filename)
+				    (buffer-string))))
+	     (existing-json (if existing-contents
+				(json-read-from-string existing-contents)
+			      '())))
+
+	;; Add new ENTRY to existing JSON list
+	(let ((updated-json (append existing-json
+				    (list (json-read-from-string entry)))))
+
+	  ;; Add updated JSON list to RECOLLECTION-FILE
+	  (with-temp-file filename
+	    (insert (json-encode updated-json))
+	    (json-pretty-print-buffer)))))))
+
 ;;;
 ;; coding: utf-8
 ;; no-byte-compile: t
