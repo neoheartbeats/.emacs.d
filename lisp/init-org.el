@@ -54,6 +54,8 @@
     (push '("#+filetags:  " . ?􀋡) prettify-symbols-alist)
     (push '("#+begin_src" . ?􀃤) prettify-symbols-alist)
     (push '("#+end_src" . ?􀅽) prettify-symbols-alist)
+    (push '("#+begin_quote" . ?􀙤) prettify-symbols-alist)
+    (push '("#+end_quote" . ?􀅽) prettify-symbols-alist)
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
     (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist)))
 (add-hook 'org-mode-hook #'my/iconify-org-buffer)
@@ -94,12 +96,12 @@
   
   ;; Denote for journaling
   (setq denote-journal-extras-directory
-          (expand-file-name "stages/" denote-directory)) ; Subdirectory for journal files
+        (expand-file-name "stages/" denote-directory)) ; Subdirectory for journal files
   (setq denote-journal-extras-keyword "stages") ; Stages are journals
 
   ;; Do not include date in notes
   (setq denote-org-front-matter
-          "#+title:      %1$s
+        "#+title:      %1$s
 #+filetags:   %3$s
 #+identifier: %4$s
 \n")
@@ -152,16 +154,16 @@
 ;;
 (setq org-latex-preview-default-process 'dvisvgm)
 (setq org-latex-packages-alist
-        '(("T1" "fontenc" t)
-          ("" "amsmath" t)
-          ("" "bm" t) ; Bold math required
-          ("" "mathtools" t)
-          ("" "siunitx" t)
-          ("" "physics2" t)
-          ("" "mlmodern" t)))
+      '(("T1" "fontenc" t)
+        ("" "amsmath" t)
+        ("" "bm" t) ; Bold math required
+        ("" "mathtools" t)
+        ("" "siunitx" t)
+        ("" "physics2" t)
+        ("" "mlmodern" t)))
 
 (setq org-latex-preview-preamble
-        "\\documentclass{article}
+      "\\documentclass{article}
 [DEFAULT-PACKAGES]
 [PACKAGES]
 \\usepackage{xcolor}
@@ -174,13 +176,13 @@
 (setq org-latex-preview-live nil) ; Do not generate live previews while editing
 
 (setq org-latex-preview-appearance-options
-        '(
-          :foreground auto
-          :background "Transparent"
-          :scale 1.04
-          :zoom 1.04
-          :page-width 0.6
-          :matchers ("begin" "\\(" "\\["))) ; Removed dollars as delimiters
+      '(
+        :foreground auto
+        :background "Transparent"
+        :scale 1.04
+        :zoom 1.04
+        :page-width 0.6
+        :matchers ("begin" "\\(" "\\["))) ; Removed dollars as delimiters
 
 ;; Use CDLaTeX to improve editing experiences
 (use-package cdlatex
