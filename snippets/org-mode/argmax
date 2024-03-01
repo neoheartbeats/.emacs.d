@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: argmax
+# key: argmax
+# --
+\arg\max_{$0}

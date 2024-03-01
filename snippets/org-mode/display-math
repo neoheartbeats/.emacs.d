@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: display-math
+# key: ..
+# --
+\[$0\]
