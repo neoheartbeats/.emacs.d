@@ -93,11 +93,13 @@
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
   (setq denote-known-keywords '("robots" "poem" "sciences" "dust"))
+  (setq denote-save-buffer-after-creation t)
   
   ;; Denote for journaling
   (setq denote-journal-extras-directory
         (expand-file-name "stages/" denote-directory)) ; Subdirectory for journal files
   (setq denote-journal-extras-keyword "stages") ; Stages are journals
+  (setq denote-journal-extras-title-format 'day-date-month-year)
 
   ;; Do not include date in notes
   (setq denote-org-front-matter
@@ -106,7 +108,7 @@
 #+identifier: %4$s
 \n")
 
-  ;; No need for confirmation using `denote-rename-file'
+  ;; No need confirmation using `denote-rename-file'
   (setq denote-rename-no-confirm t)
   :bind
   (:map global-map
@@ -114,9 +116,12 @@
         ;; Open today's note
         ("C-c d" . denote-journal-extras-new-or-existing-entry))
   (:map org-mode-map
-        ("s-i" . denote-link-or-create))
-  :hook
-  (after-init . denote-journal-extras-new-or-existing-entry))
+        ("C-c i" . denote-link-or-create)
+	("C-c b" . denote-backlinks)
+	("C-c e" . denote-org-extras-extract-org-subtree)
+	("C-c k a" . denote-keywords-add)
+	("C-c k r" . denote-keywords-remove))
+  :hook (after-init . denote-journal-extras-new-or-existing-entry))
 
 ;; Custom functions for Denote
 (defun my/denote-insert-links-current-month ()
