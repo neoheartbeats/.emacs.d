@@ -13,12 +13,10 @@
 (add-hook 'after-init-hook #'(lambda ()
                                (electric-pair-mode 1)))
 
-;; Highlight parenthesis matched off-screen (Emacs 30+)
-;; (setq blink-matching-paren-highlight-offscreen t)
+;; Highlight parenthesis matched off-screen
+(setq blink-matching-paren-highlight-offscreen t)
 
-;;
 ;; Misc settings
-;;
 (setq undo-limit (* 160000 500)) ; Raise undo-limit to 80 Mb
 
 ;; Delete selection if you insert
