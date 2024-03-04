@@ -165,6 +165,8 @@
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
+	("" "algpseudocode" t)
+	("" "algorithm" t)
         ("" "mlmodern" t)))
 
 (setq org-latex-preview-preamble

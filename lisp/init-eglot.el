@@ -61,7 +61,7 @@
 (use-package blacken
   :straight t
   :config (add-hook 'python-ts-mode-hook #'(lambda ()
-                                          (blacken-mode 1)))
+                                             (blacken-mode 1)))
   :bind
   (:map python-ts-mode-map
         ("s-i" . blacken-buffer)))
@@ -70,19 +70,27 @@
 ;; AI
 ;;
 
-;;
 ;; GitHub Copilot
-;;
+(use-package copilot
+  :straight (
+             :host github
+             :repo "zerolfx/copilot.el"
+             :files ("dist" "*.el"))
+  :config
+  (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
-;; (use-package copilot
-;;   :straight (
-;;              :host github
-;;              :repo "zerolfx/copilot.el"
-;;              :files ("dist" "*.el"))
-;;   :config
-;;   ;; (add-hook 'prog-mode-hook #'(lambda ()
-;;   ;;                               (copilot-mode 1)))
-;;   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
+;; GPTel: A simple LLM client for Emacs
+(use-package gptel
+  :straight t
+  :config
+  (setq-default gptel-model "gemma:7b"
+		gptel-backend (gptel-make-ollama "Gemma"
+				:host "localhost:11434"
+				:stream t
+				:models '("gemma:7b")))
+  (setq gptel-default-mode 'org-mode) 
+  (add-to-list 'gptel-directives '(explaining .
+					      "请使用中文翻译和简要解释输入的内容: ")))
 
 (provide 'init-eglot)
 ;;;
