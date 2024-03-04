@@ -214,6 +214,7 @@
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
                                (python . t)
+			       (java . t)
                                (shell . t)))
 
 ;; Useful functions
