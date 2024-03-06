@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: javaclass
+# key: javaclass
+# --
+public class $1 {
+    $0
+}
