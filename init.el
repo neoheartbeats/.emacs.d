@@ -52,7 +52,7 @@
 ;; Default startup message
 (defun display-startup-echo-area-message ()
   (let
-      ((text "There's nothing more to show."))
+      ((text "There's nothing more to Show"))
     (message "􀪾 %s" text)))
 
 ;;
