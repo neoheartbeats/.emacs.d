@@ -84,10 +84,7 @@
 ;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
 
-;;
 ;; The Zettlekasten note-taking system by Denote
-;;
-
 (use-package denote
   :straight t
   :config
@@ -122,6 +119,19 @@
 	("C-c k a" . denote-keywords-add)
 	("C-c k r" . denote-keywords-remove))
   :hook (after-init . denote-journal-extras-new-or-existing-entry))
+
+;; Extensions for Denote
+(use-package denote-menu
+  :straight t
+  :config
+  (setq denote-menu-title-column-width 45)
+
+  ;; Remove denote journal entries from the menu
+  (setq denote-menu-initial-regex
+	(mapconcat (lambda (keyword) (concat "_" keyword))
+		   denote-known-keywords "\\|"))
+  :bind (:map org-mode-map
+	      ("<f8>" . list-denotes)))
 
 ;; Custom functions for Denote
 (defun my/denote-insert-links-current-month ()
