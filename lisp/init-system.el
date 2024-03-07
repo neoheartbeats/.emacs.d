@@ -44,7 +44,16 @@
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-;;; Disable these keys
+;; "C-i" is treated as the same of "TAB" by default.
+;; It is better distinguish it. Note this just makes "C-i" bacome undefined
+;; and it still cannot be used as any effective keys
+(define-key input-decode-map "\C-i" [C-i])
+
+;; "s-[" is used as the prefix key standing for "insert" (see also `init-temp')
+(bind-keys :map global-map
+           ("s-[ f" . insert-file))
+
+;; Disable these keys
 (global-unset-key (kbd "<pinch>"))
 
 ;; Do not scaling frame using mouse
@@ -66,9 +75,7 @@
   (setq savehist-save-minibuffer-history t)
   (savehist-mode 1))
 
-;;
 ;; Auto saving mechanism
-;;
 (setq auto-save-interval 2400)
 (setq auto-save-timeout 300)
 (setq auto-save-list-file-prefix
@@ -81,9 +88,7 @@
       kept-new-versions 10 ; Newest versions to keep
       kept-old-versions 5)
 
-;;
 ;; Misc options
-;;
 (setq use-short-answers t)
 (setq dired-use-ls-dired nil)
 (setq auto-hscroll-mode 'current-line)
@@ -105,10 +110,7 @@
 (setq require-final-newline t)
 (setq inhibit-compacting-font-caches t)
 
-;;;
-;;
 ;; Global functions
-;;
 (defun delete-current-file ()
   "Delete the current file, and kill the buffer."
   (interactive)
@@ -165,9 +167,7 @@
 (bind-keys :map global-map
            ("<f2>" . my/open-quick-config-links))
 
-;;
 ;; Mouse and scroll settings
-;;
 (add-hook 'after-init-hook #'(lambda ()
                                (pixel-scroll-precision-mode 1)))
 

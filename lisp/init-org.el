@@ -12,9 +12,7 @@
 ;;
 (setq org-directory "~/Sthenno/")
 
-;;
 ;; Org Mode buffer init behaviors
-;;
 (setq org-startup-with-inline-images t)
 (setq org-startup-with-latex-preview t)
 
@@ -22,12 +20,7 @@
 (use-package latex
   :straight auctex)
 
-;;
 ;; Modern Org Mode theme
-;;
-;;
-;; Modern Org Mode theme
-;;
 (use-package org-modern
   :straight t
   :init
@@ -45,7 +38,7 @@
   (setopt org-modern-block-fringe nil)
   :config (global-org-modern-mode 1))
 
-
+;; Using the SF Pro font for symbols
 (defun my/iconify-org-buffer ()
   (progn
     (push '("#+title:     " . ?􀈭) prettify-symbols-alist)
@@ -70,9 +63,7 @@
 ;; Fold titles by default
 (setq org-startup-folded 'content)
 
-;;
 ;; Org fragments and overlays
-;;
 (setq org-image-actual-width '(420))
 
 ;;; Org links
@@ -164,9 +155,8 @@
            ("s-<up>" . my/denote-open-previous-file)
            ("s-<down>" . my/denote-open-next-file))
 
-;;
+
 ;; Org LaTeX customizations
-;;
 (setq org-latex-preview-default-process 'dvisvgm)
 (setq org-latex-packages-alist
       '(("T1" "fontenc" t)
@@ -187,19 +177,14 @@
 \\usephysicsmodule{ab,ab.braket,diagmat,xmat}%
 ")
 
-(add-hook 'org-mode-hook #'(lambda ()
-                             (org-latex-preview-auto-mode 1)))
+(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
 
-(setq org-latex-preview-live nil) ; Do not generate live previews while editing
+;; (setq org-latex-preview-live nil) ; Do not generate live previews
 
-(setq org-latex-preview-appearance-options
-      '(
-        :foreground auto
-        :background "Transparent"
-        :scale 1.04
-        :zoom 1.04
-        :page-width 0.6
-        :matchers ("begin" "\\(" "\\["))) ; Removed dollars as delimiters
+;; Remove dollars and "begin" as delimiters. This may keep LaTeX source
+;; code uniform
+(plist-put org-latex-preview-appearance-options :machers '("\\(" "\\["))
+(plist-put org-latex-preview-appearance-options :zoom 1.04)
 
 ;; Use CDLaTeX to improve editing experiences
 (use-package cdlatex
@@ -207,9 +192,8 @@
   :diminish (org-cdlatex-mode)
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
-;;
+
 ;; Load languages for Org Babel
-;;
 
 ;; Do not ask for confirmation before executing
 (setq org-link-elisp-confirm-function nil)

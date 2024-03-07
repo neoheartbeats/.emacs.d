@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: align
+# key: align
+# --
+\\begin{align}$0\\end{align}
