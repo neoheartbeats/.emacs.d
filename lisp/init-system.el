@@ -88,6 +88,7 @@
       kept-new-versions 10 ; Newest versions to keep
       kept-old-versions 5)
 
+
 ;; Misc options
 (setq use-short-answers t)
 (setq dired-use-ls-dired nil)
@@ -110,6 +111,7 @@
 (setq require-final-newline t)
 (setq inhibit-compacting-font-caches t)
 
+
 ;; Global functions
 (defun delete-current-file ()
   "Delete the current file, and kill the buffer."
@@ -167,9 +169,13 @@
 (bind-keys :map global-map
            ("<f2>" . my/open-quick-config-links))
 
+
 ;; Mouse and scroll settings
-(add-hook 'after-init-hook #'(lambda ()
-                               (pixel-scroll-precision-mode 1)))
+(setq scroll-preserve-screen-position t
+      scroll-margin 0
+      scroll-conservatively 95
+      make-cursor-line-fully-visible nil)
+(add-hook 'after-init-hook #'pixel-scroll-precision-mode)
 
 ;; Disable auto copyings
 (setq mouse-drag-copy-region nil)

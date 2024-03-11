@@ -27,3 +27,4 @@ multisession/files/emoji/emoji--recent.value
 /straight/
 /#init.el#
 /.cache/
+/ielm-history.eld
