@@ -75,6 +75,7 @@
 ;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
 
+
 ;; The Zettlekasten note-taking system by Denote
 (use-package denote
   :straight t
@@ -122,7 +123,7 @@
 	(mapconcat (lambda (keyword) (concat "_" keyword))
 		   denote-known-keywords "\\|"))
   :bind (:map org-mode-map
-	      ("<f8>" . list-denotes)))
+	      ("C-c m" . list-denotes)))
 
 ;; Custom functions for Denote
 (defun my/denote-insert-links-current-month ()
@@ -165,8 +166,6 @@
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-	("" "algpseudocode" t)
-	("" "algorithm" t)
         ("" "mlmodern" t)))
 
 (setq org-latex-preview-preamble
@@ -211,6 +210,7 @@
 			       (java . t)
                                (shell . t)))
 
+
 ;; Useful functions
 (defun my/org-mode-insert-get-button ()
   "Inserts a button that copies a user-defined string to clipboard."
