@@ -162,7 +162,7 @@
 
 
 ;; Org LaTeX customizations
-(setq org-latex-preview-default-process 'dvisvgm)
+(setq org-latex-preview-process-default 'dvisvgm)
 (setq org-latex-packages-alist
       '(("T1" "fontenc" t)
         ("" "amsmath" t)
@@ -187,6 +187,7 @@
 ;; Remove dollars and "begin" as delimiters. This may keep LaTeX source
 ;; code uniform
 (plist-put org-latex-preview-appearance-options :matchers '("\\(" "\\["))
+(plist-put org-latex-preview-appearance-options :scale 1.04)
 (plist-put org-latex-preview-appearance-options :zoom 1.04)
 
 ;; Use CDLaTeX to improve editing experiences
