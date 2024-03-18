@@ -1,6 +1,6 @@
 ;;; init-eglot.el --- LSP support by Eglot -*- lexical-binding: t -*-
 
-;; Copyright (C) 2021-2024 Sthenno
+;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
 ;; This file is not part of GNU Emacs.
 
@@ -30,9 +30,8 @@
 ;; syntax highlighting error found in Org Babel
 (setq treesit-font-lock-level 4)
 
-;;
+
 ;; Initialize `eglot'
-;;
 (use-package eglot
   :config
 
@@ -44,9 +43,8 @@
 ;; Auto confirm `.dir-locals.el' files
 (setq-default enable-local-variables :safe)
 
-;;
+
 ;; Python
-;;
 (setq python-interpreter
       "/opt/homebrew/Caskroom/miniconda/base/envs/develop/bin/python")
 (setq org-babel-python-command python-interpreter)
@@ -60,15 +58,13 @@
 ;; Reformat python buffers using the `black' formatter
 (use-package blacken
   :straight t
-  :config (add-hook 'python-ts-mode-hook #'(lambda ()
-                                             (blacken-mode 1)))
+  :config (add-hook 'python-ts-mode-hook #'blacken-mode)
   :bind
   (:map python-ts-mode-map
         ("s-i" . blacken-buffer)))
 
-;;
-;; AI
-;;
+
+;;; AI
 
 ;; GitHub Copilot
 (use-package copilot

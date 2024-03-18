@@ -1,6 +1,6 @@
 ;;; init-comp.el --- Modern template system -*- lexical-binding: t -*-
 
-;; Copyright (C) 2021-2024 Sthenno
+;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
 ;; This file is not part of GNU Emacs.
 

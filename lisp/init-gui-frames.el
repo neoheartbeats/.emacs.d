@@ -1,6 +1,6 @@
 ;;; init-gui-frames.el --- Behaviours of GUI frames -*- lexical-binding: t -*-
 
-;; Copyright (C) 2021-2024 Sthenno
+;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
 ;; This file is not part of GNU Emacs.
 
@@ -67,12 +67,10 @@
 (setq blink-cursor-mode nil)
 
 ;; highlight current line
-(add-hook 'after-init-hook #'(lambda ()
-                               (global-hl-line-mode 1)))
+(add-hook 'after-init-hook #'global-hl-line-mode)
 
 ;; Turn on `prettify-symbols-mode' in all supported buffers
-(add-hook 'after-init-hook #'(lambda ()
-                               (global-prettify-symbols-mode 1)))
+(add-hook 'after-init-hook #'global-prettify-symbols-mode)
 
 ;; Custom font
 (set-face-attribute 'default nil

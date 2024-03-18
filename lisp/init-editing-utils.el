@@ -1,17 +1,14 @@
 ;;; init-editing-utils.el --- Editing helpers -*- lexical-binding: t -*-
 
-;; Copyright (C) 2021-2024 Sthenno
+;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
 ;;; Code:
 
-;;
 ;; Electric parenthesis
-;;
-(add-hook 'after-init-hook #'(lambda ()
-                               (electric-pair-mode 1)))
+(add-hook 'after-init-hook #'electric-pair-mode)
 
 ;; Highlight parenthesis matched off-screen
 (setq blink-matching-paren-highlight-offscreen t)
@@ -26,8 +23,7 @@
 ;; Automatically reload files was modified by external program
 (use-package autorevert
   :diminish (auto-revert-mode)
-  :hook (after-init . (lambda ()
-                        (global-auto-revert-mode 1))))
+  :hook (after-init . global-auto-revert-mode))
 
 ;; Framework for mode-specific buffer indexes
 (use-package imenu
@@ -46,8 +42,12 @@
 
 ;; Fill columns
 (setq display-fill-column-indicator-character ?\u254e)
-(add-hook 'prog-mode-hook #'(lambda ()
-                              (display-fill-column-indicator-mode 1)))
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode 1)
+
+;; Draw horizontal rules for line-breaks
+(use-package page-break-lines
+  :straight t
+  :config (global-page-break-lines-mode 1))
 
 ;; Display line numbers
 (global-display-line-numbers-mode 1)

@@ -1,6 +1,6 @@
 ;;; init-system.e.el --- Configs specific to macOS -*- lexical-binding: t -*-
 
-;; Copyright (C) 2021-2024 Sthenno
+;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
 ;; This file is not part of GNU Emacs.
 
@@ -11,9 +11,7 @@
 
 ;;; Code:
 
-;;
 ;; macOS specified key mapping
-;;
 (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'super)
 
@@ -60,6 +58,7 @@
 (global-unset-key (kbd "C-<wheel-up>"))
 (global-unset-key (kbd "C-<wheel-down>"))
 
+
 ;; Increase how much is read from processes (default is 4kb)
 (setq read-process-output-max #x10000)
 

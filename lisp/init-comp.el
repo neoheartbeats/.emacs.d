@@ -1,15 +1,13 @@
 ;;; init-comp.el --- Modern completion system -*- lexical-binding: t -*-
 
-;; Copyright (C) 2021-2024 Sthenno
+;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
 ;;; Code:
 
-;;
 ;; Completion for minibuffers
-;;
 (use-package vertico
   :straight t
   :init (vertico-mode 1)
@@ -30,14 +28,14 @@
                ("<return>" . vertico-directory-enter)
                ("<backspace>" . vertico-directory-delete-char))))
 
+
 ;; Rich annotations for minibuffer
 (use-package marginalia
   :straight t
   :init (marginalia-mode 1))
 
-;;
+
 ;; Consult is useful previewing current content in buffer
-;;
 (use-package consult
   :straight t
   :init
@@ -57,10 +55,8 @@
          ("s-m" . consult-imenu)
          ("s-k" . consult-recent-file)))
 
-;;
+
 ;; Completion in buffers
-;;
-
 (setq tab-always-indent 'complete)
 
 ;; Dabbrev settings
@@ -101,6 +97,7 @@
                        (push 'cape-elisp-block completion-at-point-functions)
                        (push 'cape-abbrev completion-at-point-functions)))))
 
+
 ;; Build the completion framework
 (use-package orderless
   :straight t
@@ -113,9 +110,8 @@
   (setq read-file-name-completion-ignore-case t)
   (setq read-buffer-completion-ignore-case t))
 
-;;
+
 ;; The main completion frontend by Corfu
-;;
 (use-package corfu
   :straight (:files (:defaults "extensions/*"))
   :init (add-hook 'after-init-hook #'global-corfu-mode)

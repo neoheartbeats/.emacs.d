@@ -1,15 +1,18 @@
 ;;; init-org.el --- Org Mode -*- lexical-binding: t -*-
 
-;; Copyright (C) 2021-2024 Sthenno
+;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
+;;
+;; This configuration only supports TEC's Org-mode develop branch due
+;; to the use of `org-latex-preview.el'. The "Org LaTeX customizations"
+;; part is unstable and underdevelopment.
+
 ;;; Code:
 
-;;
 ;; Setup default directory
-;;
 (setq org-directory "~/Sthenno/")
 
 ;; Org Mode buffer init behaviors
@@ -20,6 +23,7 @@
 (use-package latex
   :straight auctex)
 
+
 ;; Modern Org Mode theme
 (use-package org-modern
   :straight t
@@ -178,7 +182,7 @@
 
 (add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
 
-;; (setq org-latex-preview-live nil) ; Do not generate live previews
+(setq org-latex-preview-live nil) ; Do not generate live previews
 
 ;; Remove dollars and "begin" as delimiters. This may keep LaTeX source
 ;; code uniform
