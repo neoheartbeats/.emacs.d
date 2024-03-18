@@ -186,7 +186,7 @@
 
 ;; Remove dollars and "begin" as delimiters. This may keep LaTeX source
 ;; code uniform
-(plist-put org-latex-preview-appearance-options :machers '("\\(" "\\["))
+(plist-put org-latex-preview-appearance-options :matchers '("\\(" "\\["))
 (plist-put org-latex-preview-appearance-options :zoom 1.04)
 
 ;; Use CDLaTeX to improve editing experiences
