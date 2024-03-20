@@ -47,6 +47,7 @@
 ;; Draw horizontal rules for line-breaks
 (use-package page-break-lines
   :straight t
+  :diminish (page-break-lines-mode)
   :config (global-page-break-lines-mode 1))
 
 ;; Display line numbers
