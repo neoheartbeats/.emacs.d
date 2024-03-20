@@ -124,10 +124,11 @@
 ;;
 (use-package org
   :straight `(org
-              :fork (:host nil
-                           :repo "https://git.tecosaur.net/tec/org-mode.git"
-                           :branch "dev"
-                           :remote "tecosaur")
+              :fork (
+		     :host nil
+                     :repo "https://git.tecosaur.net/tec/org-mode.git"
+                     :branch "dev"
+                     :remote "tecosaur")
               :files (:defaults "etc")
               :build t
               :pre-build
