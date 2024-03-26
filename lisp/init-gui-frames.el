@@ -73,9 +73,7 @@
 (add-hook 'after-init-hook #'global-prettify-symbols-mode)
 
 ;; Custom font
-(set-face-attribute 'default nil
-		    :family "Monaco"
-		    :height 140)
+(set-face-attribute 'default nil :family "Monaco" :height 140)
 
 ;; Font ligatures support
 ;; (use-package ligature
