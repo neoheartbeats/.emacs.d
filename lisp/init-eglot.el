@@ -84,9 +84,11 @@
 				:host "localhost:11434"
 				:stream t
 				:models '("phi3:latest")))
-  (setq gptel-default-mode 'org-mode) 
+  (setq gptel-default-mode 'org-mode)
   (add-to-list 'gptel-directives '(explaining .
-					      "请使用中文翻译和简要解释输入的内容: ")))
+					      "请使用中文翻译和简要解释输入的内容: "))
+  :bind (("C-c c" . gptel))
+  :hook (gptel-mode . visual-line-mode))
 
 (provide 'init-eglot)
 ;;;
