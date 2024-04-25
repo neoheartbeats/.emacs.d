@@ -215,6 +215,9 @@
 (add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
 
 (setq org-latex-preview-live nil) ; Do not generate live previews
+(setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
+(setq org-pretty-entities t ; Generate UTF8 characters for LaTeX symbols
+      org-pretty-entities-include-sub-superscripts nil)
 
 ;; Remove dollars and "begin" as delimiters. This may keep LaTeX source
 ;; code uniform
