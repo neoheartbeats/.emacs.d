@@ -28,19 +28,33 @@
 (use-package org-modern
   :straight t
   :init
-  (setopt org-modern-star '("􀄩"))
-  (setopt org-modern-hide-stars "􀄩")
-  (setopt org-modern-list '((?- . "•")))
-  (setopt org-modern-checkbox '((?X . "􀃰") (?- . "􀃞") (?\s . "􀂒")))
-  (setopt org-modern-progress '("􀛪" "􀛩" "􀺶" "􀺸" "􀛨"))
-  (setopt org-modern-table-vertical 2)
-  (setopt org-modern-todo nil)
-  (setopt org-modern-tag nil)
-  (setopt org-modern-block-name nil)
-  (setopt org-modern-keyword nil)
-  (setopt org-modern-timestamp nil)
-  (setopt org-modern-block-fringe nil)
+  (setq org-modern-list '((?- . "•")))
+  (setq org-modern-checkbox '((?X . "􀃰") (?- . "􀃞") (?\s . "􀂒")))
+  (setq org-modern-progress '("􀛪" "􀛩" "􀺶" "􀺸" "􀛨"))
+  (setq org-modern-table-vertical 2)
+  (setq org-modern-tag nil)
+  (setq org-modern-block-name nil)
+  (setq org-modern-keyword nil)
+  (setq org-modern-block-fringe nil)
   :config (global-org-modern-mode 1))
+
+;; External settings for `org-modern'
+(setq org-ellipsis " 􀍠")
+(setq org-hide-emphasis-markers t)
+(setq org-auto-align-tags nil)
+(setq org-tags-column 0)
+
+;; Use this with `C-<return>'
+(setq org-insert-heading-respect-content t)
+
+;; Use this with `C-S-<return>'
+(setq org-treat-insert-todo-heading-as-state-change t)
+
+;; Prevent editing of text within folded subtree
+(setq org-catch-invisible-edits 'show-and-error)
+
+;; Better experiences jumping through headlines
+(setq org-special-ctrl-a/e t)
 
 ;; Using the SF Pro font for symbols
 (defun my/iconify-org-buffer ()
@@ -49,16 +63,14 @@
     (push '("#+identifier:" . ?􀅷) prettify-symbols-alist)
     (push '("#+date:      " . ?􀧵) prettify-symbols-alist)
     (push '("#+filetags:  " . ?􀋡) prettify-symbols-alist)
-    (push '("#+begin_src" . ?􀃤) prettify-symbols-alist)
+    (push '("#+begin_src"   . ?􀃤) prettify-symbols-alist)
     (push '("#+end_src" . ?􀅽) prettify-symbols-alist)
     (push '("#+begin_quote" . ?􀙤) prettify-symbols-alist)
     (push '("#+end_quote" . ?􀅽) prettify-symbols-alist)
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
-    (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist)))
+    (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist))
+  (prettify-symbols-mode 1))
 (add-hook 'org-mode-hook #'my/iconify-org-buffer)
-
-(setopt org-ellipsis " 􀍠")
-(setopt org-hide-emphasis-markers t)
 
 ;; Fold drawers by default
 (setq org-cycle-hide-drawer-startup t)
@@ -183,8 +195,11 @@
 	 :image-output-type "svg"
 	 :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
 	 :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
-	 :image-converter
-	 ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts --exact-bbox --bbox=preview --libgs=/opt/homebrew/Cellar/ghostscript/10.03.0/lib/libgs.10.03.dylib -v4 -o %B-%%9p.svg %f"))
+	 :image-converter ; [TODO] Add "libgs" to PATH
+	 ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts
+--exact-bbox --bbox=preview
+--libgs=/opt/homebrew/Cellar/ghostscript/10.03.0/lib/libgs.10.03.dylib
+-v4 -o %B-%%9p.svg %f"))
 	(imagemagick
 	 :programs ("pdflatex" "convert")
 	 :description "pdf > png"
@@ -216,8 +231,6 @@
 
 (setq org-latex-preview-live nil) ; Do not generate live previews
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
-(setq org-pretty-entities t ; Generate UTF8 characters for LaTeX symbols
-      org-pretty-entities-include-sub-superscripts nil)
 
 ;; Remove dollars and "begin" as delimiters. This may keep LaTeX source
 ;; code uniform
@@ -246,9 +259,23 @@
 
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
-                               (python . t)
-			       (java . t)
-                               (shell . t)))
+                               (python . t)))
+
+
+;; Org-agenda
+(setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
+(bind-keys :map global-map
+	   ("C-c a" . org-agenda))
+
+;; Org-agenda settings related to `org-modern'
+(setq org-agenda-tags-column 0)
+(setq org-agenda-block-separator ?─)
+(setq org-agenda-time-grid
+      '((daily today require-timed)
+	(800 1000 1200 1400 1600 1800 2000)
+	" ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
+(setq org-agenda-current-time-string
+      "◀── now ─────────────────────────────────────────────────")
 
 
 ;; Useful functions

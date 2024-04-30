@@ -24,7 +24,7 @@
           (fg-line-number-inactive "gray50")
           (fg-line-number-active fg-main)
           (bg-line-number-inactive unspecified)
-          (bg-line-number-active unspecified)
+          (bg-line-number-active bg-hl-line)
 
           ;; Make the fringe invisible
           (fringe unspecified)
@@ -34,6 +34,11 @@
           (underline-link-visited border)
           (underline-link-symbolic border)
 
+	  ;; Make links the same color as `fg-main'
+	  ;; This also affects `button' faces in Modus Themes
+	  (fg-link fg-main)
+	  (fg-link-visited fg-main)
+	  
           ;; Completions
           (fg-completion-match-0 fg-main)
           (bg-completion-match-0 bg-red-intense)
@@ -69,31 +74,8 @@
 ;; highlight current line
 (add-hook 'after-init-hook #'global-hl-line-mode)
 
-;; Turn on `prettify-symbols-mode' in all supported buffers
-(add-hook 'after-init-hook #'global-prettify-symbols-mode)
-
 ;; Custom font
-(set-face-attribute 'default nil :family "Signoir" :height 140)
-
-;; Font ligatures support
-(use-package ligature
-  :straight t
-  :config
-  (ligature-set-ligatures 't
-                          '("-<<" "-<" "-<-" "<--" "<---" "<<-" "<-"
-                            "->" "->>" "-->" "--->" "->-" ">-" ">>-"
-                            "=<<" "=<" "=<=" "<==" "<===" "<<=" "<="
-                            "=>" "=>>" "==>" "===>" "=>=" ">=" ">>="
-                            "<->" "<-->" "<--->" "<---->"
-                            "<=>" "<==>" "<===>" "<====>"
-                            "::" ":::" "__" "..." ".."
-                            "<~~" "</" "</>" "/>" "~~>"
-                            "==" "!=" "<>" "===" "!==" "!==="
-                            "<:" ":=" "*=" "*+" "<*" "<*>" "*>"
-                            "<|" "<|>" "|>" "<." "<.>" ".>" "+*" "=*" "=:" ":>"
-                            "(* *)" "/*" "*/" "[|" "|]" "{|" "|}"
-                            "++" "+++" "\\/" "/\\" "|-" "-|" "<!--" "<!---"))
-  (global-ligature-mode 1))
+(set-face-attribute 'default nil :family "Monaco" :height 140)
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")

@@ -11,9 +11,7 @@
 
 ;;; Code:
 
-;;
 ;; Git client Magit
-;;
 (use-package magit
   :straight t
   :config (setq magit-diff-refine-hunk t)

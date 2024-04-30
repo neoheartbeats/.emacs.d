@@ -12,7 +12,7 @@
   :straight t
   :init (vertico-mode 1)
   :config
-  (setq vertico-count 10)
+  (setq vertico-count 6)
   (setq vertico-cycle t)
   
   ;; Load extensions
@@ -27,6 +27,9 @@
                ("<tab>" . vertico-insert)
                ("<return>" . vertico-directory-enter)
                ("<backspace>" . vertico-directory-delete-char))))
+
+;; Hide commands in M-x which do not apply to the current mode
+(setq read-extended-command-predicate #'command-completion-default-include-p)
 
 
 ;; Rich annotations for minibuffer
@@ -58,6 +61,9 @@
 
 ;; Completion in buffers
 (setq tab-always-indent 'complete)
+
+;; Emacs 30: `cape-dict' is used instead
+(setq text-mode-ispell-word-completion nil)
 
 ;; Dabbrev settings
 (use-package dabbrev
@@ -93,9 +99,10 @@
          (org-mode . (lambda ()
                        (push 'cape-dabbrev completion-at-point-functions)
                        (push 'cape-dict completion-at-point-functions)
-                       (push 'cape-file completion-at-point-functions)
-                       (push 'cape-elisp-block completion-at-point-functions)
-                       (push 'cape-abbrev completion-at-point-functions)))))
+                       ;; (push 'cape-file completion-at-point-functions)
+                       ;; (push 'cape-elisp-block completion-at-point-functions)
+                       ;; (push 'cape-abbrev completion-at-point-functions)
+		       ))))
 
 
 ;; Build the completion framework
@@ -103,6 +110,7 @@
   :straight t
   :config
   (setq completion-styles '(orderless basic))
+  (setq completion-category-defaults nil)
   (setq completion-category-overrides '((file (styles basic partial-completion))))
 
   ;; Ignore cases
@@ -117,15 +125,22 @@
   :init (add-hook 'after-init-hook #'global-corfu-mode)
   :config
   (setq corfu-auto t)
-  (setq corfu-auto-delay 0.0)
-  (setq corfu-auto-prefix 2)
+  (setq corfu-auto-delay 0.2) ; Making this to 0 is too expensive
+  (setq corfu-auto-prefix 3) ; Better setting this the same as `cape-dabbrev-min-length'
   (setq corfu-cycle t)
   (setq corfu-quit-at-boundary t)
   (setq corfu-quit-no-match 'separator)
-  (setq corfu-preselect 'first)
-  (setq corfu-scroll-margin 5)
+  (setq corfu-preselect 'directory)
+  (setq corfu-count 6)
+  (setq corfu-scroll-margin 4)
   (setq corfu-history-mode t)
   (setq corfu-popupinfo-mode t)
+
+  ;; Maintain a list of recently selected candidates
+  ;; This requires `savehist-mode' is enabled
+  (require 'corfu-history)
+  (corfu-history-mode 1)
+  (add-to-list 'savehist-additional-variables 'corfu-history)
   :hook (eshell-mode . (lambda ()
                          (setq-local corfu-auto nil)))
   :bind (:map corfu-map

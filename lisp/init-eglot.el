@@ -67,19 +67,19 @@
 ;;; AI
 
 ;; GitHub Copilot
-;; (use-package copilot
-;;   :straight (
-;;              :host github
-;;              :repo "zerolfx/copilot.el"
-;;              :files ("dist" "*.el"))
-;;   :config
-;;   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
+(use-package copilot
+  :straight (
+	     :host github
+	     :repo "copilot-emacs/copilot.el"
+	     :files ("*.el"))
+  :config
+  (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
 ;; GPTel: A simple LLM client for Emacs
 (use-package gptel
   :straight t
   :config
-  (setq-default gptel-model "phi3"
+  (setq-default gptel-model "phi3:latest"
 		gptel-backend (gptel-make-ollama "Phi-3"
 				:host "localhost:11434"
 				:stream t
@@ -87,7 +87,7 @@
   (setq gptel-default-mode 'org-mode)
   (add-to-list 'gptel-directives '(explaining .
 					      "请使用中文翻译和简要解释输入的内容: "))
-  :bind (("C-c c" . gptel))
+  :bind (("C-c g" . gptel))
   :hook (gptel-mode . visual-line-mode))
 
 (provide 'init-eglot)
