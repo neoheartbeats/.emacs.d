@@ -174,6 +174,7 @@
 
 
 ;; Org LaTeX customizations
+;; (setq org-latex-compiler "lualatex")
 (setq org-latex-preview-process-default 'dvisvgm)
 (setq org-latex-preview-process-alist
       '((dvipng
@@ -213,11 +214,10 @@
 (setq org-latex-packages-alist
       '(("T1" "fontenc" t)
         ("" "amsmath" t)
-        ("" "bm" t)
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-        ("" "mlmodern" t)))
+	("libertine" "newtxmath" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
@@ -229,14 +229,14 @@
 
 (add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
 
-(setq org-latex-preview-live nil) ; Do not generate live previews
+;; (setq org-latex-preview-live nil) ; Do not generate live previews
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 
 ;; Remove dollars and "begin" as delimiters. This may keep LaTeX source
 ;; code uniform
 (plist-put org-latex-preview-appearance-options :matchers '("\\(" "\\["))
-(plist-put org-latex-preview-appearance-options :scale 1.20)
-(plist-put org-latex-preview-appearance-options :zoom 1.20)
+(plist-put org-latex-preview-appearance-options :scale 1.35)
+(plist-put org-latex-preview-appearance-options :zoom 1.35)
 
 ;; Use CDLaTeX to improve editing experiences
 (use-package cdlatex
