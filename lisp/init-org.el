@@ -20,8 +20,9 @@
 (setq org-startup-with-latex-preview t)
 
 ;; Install AUCTeX. This is required by TEC's Org
-(use-package latex
-  :straight auctex)
+;; (use-package tex
+;;   :straight auctex)
+(straight-use-package 'auctex)
 
 
 ;; Modern Org Mode theme
