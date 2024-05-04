@@ -133,8 +133,6 @@
   (setq corfu-preselect 'directory)
   (setq corfu-count 6)
   (setq corfu-scroll-margin 4)
-  (setq corfu-history-mode t)
-  (setq corfu-popupinfo-mode t)
 
   ;; Maintain a list of recently selected candidates
   ;; This requires `savehist-mode' is enabled

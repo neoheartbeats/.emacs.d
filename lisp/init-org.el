@@ -68,7 +68,10 @@
     (push '("#+end_src" . ?􀅽) prettify-symbols-alist)
     (push '("#+begin_quote" . ?􀙤) prettify-symbols-alist)
     (push '("#+end_quote" . ?􀅽) prettify-symbols-alist)
+    (push '("#+BEGIN: denote-links" .?􀋲) prettify-symbols-alist)
+    (push '("#+END:" . ?􀅽) prettify-symbols-alist)
     (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
+    (push '("SCHEDULED:" .?􀧞) prettify-symbols-alist)
     (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist))
   (prettify-symbols-mode 1))
 (add-hook 'org-mode-hook #'my/iconify-org-buffer)
@@ -98,7 +101,12 @@
   :straight t
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
-  (setq denote-known-keywords '("robots" "poem" "sciences" "dust"))
+  (setq denote-known-keywords '("robots"
+				"poem"
+				"sciences"
+				"dust"
+				"business"
+				"billings"))
   (setq denote-save-buffer-after-creation t)
   
   ;; Denote for journaling

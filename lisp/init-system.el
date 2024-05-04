@@ -6,7 +6,7 @@
 
 ;;; Commentary:
 ;;
-;; This file provides `macOS' system specific settings.
+;; This file provides macOS specific settings.
 ;;
 
 ;;; Code:

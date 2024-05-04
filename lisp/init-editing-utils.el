@@ -42,7 +42,7 @@
 
 ;; Fill columns
 (setq display-fill-column-indicator-character ?\u254e)
-(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode 1)
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; Draw horizontal rules for line-breaks
 ;; (use-package page-break-lines
