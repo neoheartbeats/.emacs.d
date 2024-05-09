@@ -241,6 +241,9 @@
 ;; (setq org-latex-preview-live nil) ; Do not generate live previews
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 
+;; More immediate live-previews
+(setq org-latex-preview-live-debounce 0.25)
+
 ;; Remove dollars and "begin" as delimiters. This may keep LaTeX source
 ;; code uniform
 (plist-put org-latex-preview-appearance-options :matchers '("\\(" "\\["))
