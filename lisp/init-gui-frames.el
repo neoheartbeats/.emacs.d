@@ -36,8 +36,8 @@
 
 	  ;; Make links the same color as `fg-main'
 	  ;; This also affects `button' faces in Modus Themes
-	  (fg-link fg-main)
-	  (fg-link-visited fg-main)
+	  (fg-link unspecified)
+	  (fg-link-visited unspecified)
 	  
           ;; Completions
           (fg-completion-match-0 fg-main)
@@ -75,7 +75,7 @@
 (add-hook 'after-init-hook #'global-hl-line-mode)
 
 ;; Custom font
-(set-face-attribute 'default nil :family "Monaco" :height 140)
+(set-face-attribute 'default nil :family "Signoir" :height 140)
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
