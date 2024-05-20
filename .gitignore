@@ -29,3 +29,4 @@ multisession/files/emoji/emoji--recent.value
 /.cache/
 /ielm-history.eld
 /lisp/#init-org.el#
+/emms/

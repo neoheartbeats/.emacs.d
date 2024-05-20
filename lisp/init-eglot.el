@@ -90,6 +90,16 @@
   :bind (("C-c g" . gptel))
   :hook (gptel-mode . visual-line-mode))
 
+
+;;; EMMS
+(use-package emms
+  :straight t
+  :config
+  (emms-all)
+  (emms-default-players)
+  (setq emms-source-file-default-directory "~/Music/A55/")
+  (setq emms-mode-line-icon-enabled-p 'nil))
+
 (provide 'init-eglot)
 ;;;
 ;; coding: utf-8
