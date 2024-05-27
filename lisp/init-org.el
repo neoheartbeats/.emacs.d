@@ -285,7 +285,7 @@
 (setq org-agenda-time-grid
       '((daily today require-timed)
 	(800 1000 1200 1400 1600 1800 2000)
-	" ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
+        " ────── " "───────────────"))
 (setq org-agenda-current-time-string
       "◀── now ─────────────────────────────────────────────────")
 

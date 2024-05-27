@@ -76,29 +76,30 @@
   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
 ;; GPTel: A simple LLM client for Emacs
-(use-package gptel
-  :straight t
-  :config
-  (setq-default gptel-model "phi3:latest"
-		gptel-backend (gptel-make-ollama "Phi-3"
-				:host "localhost:11434"
-				:stream t
-				:models '("phi3:latest")))
-  (setq gptel-default-mode 'org-mode)
-  (add-to-list 'gptel-directives '(explaining .
-					      "请使用中文翻译和简要解释输入的内容: "))
-  :bind (("C-c g" . gptel))
-  :hook (gptel-mode . visual-line-mode))
+;; (use-package gptel
+;;   :straight t
+;;   :config
+;;   (setq-default gptel-model "phi3:latest"
+;; 		gptel-backend (gptel-make-ollama "Phi-3"
+;; 				:host "localhost:11434"
+;; 				:stream t
+;; 				:models '("phi3:latest")))
+;;   (setq gptel-default-mode 'org-mode)
+;;   (add-to-list 'gptel-directives '(explaining .
+;; 					      "请使用中文翻译和简要解释输入的内容: "))
+;;   :bind (("C-c g" . gptel))
+;;   :hook (gptel-mode . visual-line-mode))
 
 
 ;;; EMMS
 (use-package emms
   :straight t
   :config
-  (emms-all)
+  (emms-minimalistic)
   (emms-default-players)
   (setq emms-source-file-default-directory "~/Music/A55/")
-  (setq emms-mode-line-icon-enabled-p 'nil))
+  (setq emms-mode-line-icon-enabled-p 'nil)
+  (add-hook 'emms-player-started-hook #'emms-shuffle))
 
 (provide 'init-eglot)
 ;;;

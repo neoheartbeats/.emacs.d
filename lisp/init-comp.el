@@ -125,7 +125,7 @@
   :init (add-hook 'after-init-hook #'global-corfu-mode)
   :config
   (setq corfu-auto t)
-  (setq corfu-auto-delay 0.2) ; Making this to 0 is too expensive
+  (setq corfu-auto-delay 0.1) ; Making this to 0 is too expensive
   (setq corfu-auto-prefix 3) ; Better setting this the same as `cape-dabbrev-min-length'
   (setq corfu-cycle t)
   (setq corfu-quit-at-boundary t)
