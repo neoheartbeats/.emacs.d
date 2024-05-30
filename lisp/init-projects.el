@@ -5,17 +5,23 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
-;;
-;; TODO
-;;
-
 ;;; Code:
 
-;; Git client Magit
+
+;; Git client using Magit
 (use-package magit
   :straight t
   :config (setq magit-diff-refine-hunk t)
   :bind ("C-x g" . magit-status))
+
+
+;; Project management using Projectile
+(use-package projectile
+  :straight t
+  :diminish (projectile-mode)
+  :config
+  (projectile-mode 1)
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map))
 
 (provide 'init-projects)
 ;;;

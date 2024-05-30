@@ -83,7 +83,7 @@
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+(set-fontset-font "fontset-default" 'han "TT ZhiHei CHS variable")
 
 ;; Note this make all italic font style disabled
 (set-face-attribute 'italic nil :slant 'normal)
