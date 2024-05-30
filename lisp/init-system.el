@@ -59,6 +59,12 @@
 (global-unset-key (kbd "C-<wheel-down>"))
 
 
+;; Fix environment for macOS
+(use-package exec-path-from-shell
+  :straight t
+  :config (exec-path-from-shell-initialize))
+
+
 ;; Increase how much is read from processes (default is 4kb)
 (setq read-process-output-max #x10000)
 

@@ -44,12 +44,6 @@
 (setq display-fill-column-indicator-character ?\u254e)
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
-;; Draw horizontal rules for line-breaks
-;; (use-package page-break-lines
-;;   :straight t
-;;   :diminish (page-break-lines-mode)
-;;   :config (global-page-break-lines-mode 1))
-
 ;; Display line numbers
 (global-display-line-numbers-mode 1)
 

@@ -15,10 +15,8 @@
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
 
+;;; Customize Native-Compilation
 ;;
-;; Customize Native-Compilation
-;;
-
 ;; To maximize the speed of native compilation
 (setq native-comp-speed 3)
 (setq native-comp-async-report-warnings-errors 'silent)
@@ -35,7 +33,7 @@
 (push '(horizontal-scroll-bars) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
 
-;;;
+;;; GUI frames
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
 (push '(alpha . (85 . 85)) default-frame-alist)

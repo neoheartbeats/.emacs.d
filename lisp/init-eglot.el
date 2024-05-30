@@ -11,61 +11,62 @@
 
 ;;; Code:
 
+;;; Setup `treesit' for better performance for processing coding syntax
 ;;
-;; Setup `treesit' for better performance for processing coding syntax
-;;
-
-;;;
 ;; Command `treesit-auto-install-all' is required if the tree-sitter grammar
 ;; libs have not been configured already
-;; (use-package treesit-auto
-;;   :straight t
-;;   :config (global-treesit-auto-mode 1))
+(use-package treesit-auto
+  :straight t
+  :config (global-treesit-auto-mode 1))
 
 ;; Remap `python-mode' to `python-ts-mode'
 (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
 
-;;;
 ;; To enable the maximum fontifications. If this is set to default, there could be
 ;; syntax highlighting error found in Org Babel
 (setq treesit-font-lock-level 4)
 
 
 ;; Initialize `eglot'
-;; (use-package eglot
-;;   :config
+(use-package eglot
+  :config
 
-;;   ;; Use Pyright as the default language server
-;;   (add-to-list 'eglot-server-programs
-;;                '(python-ts-mode . ("pyright-langserver" "--stdio")))
-;;   (add-hook 'python-ts-mode #'eglot-ensure))
+  ;; Use Pyright as the default language server
+  (add-to-list 'eglot-server-programs
+               '(python-ts-mode . ("pyright-langserver" "--stdio")))
+  (add-hook 'python-ts-mode #'eglot-ensure))
 
 ;; Auto confirm `.dir-locals.el' files
 (setq-default enable-local-variables :safe)
 
 
-;; Python
-;; (setq python-interpreter
-;;       "/opt/homebrew/Caskroom/miniconda/base/envs/develop/bin/python")
-(setq org-babel-python-command python-interpreter)
-(setq python-shell-interpreter python-interpreter)
-(setq python-shell-prompt-detect-failure-warning nil)
-(setq python-shell-completion-native-enable nil)
+;;; Python project management
+;;
+;; Environment management using conda
+(use-package conda
+  :straight t
+  :config
+  (setq conda-env-home-directory (expand-file-name "~/anaconda3/"))
+  (conda-env-initialize-interactive-shells)
+  (conda-env-autoactivate-mode 1)
+  (add-hook 'find-file-hook #'(lambda ()
+				(when (bound-and-true-p conda-project-env-path)
+                                  (conda-env-activate-for-buffer)))))
 
-(setq python-indent-guess-indent-offset t)
-(setq python-indent-guess-indent-offset-verbose nil)
+(setq python-indent-guess-indent-offset t
+      python-indent-guess-indent-offset-verbose nil)
 
 ;; Reformat python buffers using the `black' formatter
-;; (use-package blacken
-;;   :straight t
-;;   :config (add-hook 'python-ts-mode-hook #'blacken-mode)
-;;   :bind
-;;   (:map python-ts-mode-map
-;;         ("s-i" . blacken-buffer)))
+(use-package blacken
+  :straight t
+  :config (add-hook 'python-ts-mode-hook #'blacken-mode)
+  :bind
+  (:map python-ts-mode-map
+        ("s-i" . blacken-buffer)))
 
 
-;;; AI
-
+;;; AI Integration
+;;
 ;; GitHub Copilot
 (use-package copilot
   :straight (
@@ -76,19 +77,18 @@
   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
 ;; GPTel: A simple LLM client for Emacs
-;; (use-package gptel
-;;   :straight t
-;;   :config
-;;   (setq-default gptel-model "phi3:latest"
-;; 		gptel-backend (gptel-make-ollama "Phi-3"
-;; 				:host "localhost:11434"
-;; 				:stream t
-;; 				:models '("phi3:latest")))
-;;   (setq gptel-default-mode 'org-mode)
-;;   (add-to-list 'gptel-directives '(explaining .
-;; 					      "请使用中文翻译和简要解释输入的内容: "))
-;;   :bind (("C-c g" . gptel))
-;;   :hook (gptel-mode . visual-line-mode))
+(use-package gptel
+  :straight t
+  :config
+  (setq-default gptel-model "phi3:medium"
+		gptel-backend (gptel-make-ollama "Phi-3"
+				:host "localhost:11434"
+				:stream t
+				:models '("phi3:medium")))
+  (setq gptel-default-mode 'org-mode)
+  :bind (("C-c g" . gptel))
+  :hook (gptel-mode . (lambda ()
+			(visual-line-mode 1))))
 
 
 ;;; EMMS

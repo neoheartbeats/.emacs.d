@@ -132,9 +132,7 @@
   (:map org-mode-map
         ("C-c i" . denote-link-or-create)
 	("C-c b" . denote-backlinks)
-	("C-c e" . denote-org-extras-extract-org-subtree)
-	("C-c k a" . denote-keywords-add)
-	("C-c k r" . denote-keywords-remove))
+	("C-c e" . denote-org-extras-extract-org-subtree))
   :hook (after-init . denote-journal-extras-new-or-existing-entry))
 
 ;; Extensions for Denote
@@ -183,7 +181,6 @@
 
 
 ;; Org LaTeX customizations
-;; (setq org-latex-compiler "lualatex")
 (setq org-latex-preview-process-default 'dvisvgm)
 (setq org-latex-preview-process-alist
       '((dvipng
@@ -226,7 +223,7 @@
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-	("libertine" "newtxmath" t)))
+	("" "newtxmath" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
