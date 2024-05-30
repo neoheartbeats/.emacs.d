@@ -38,8 +38,8 @@
 (push '(ns-appearance . dark) default-frame-alist)
 (push '(alpha . (85 . 85)) default-frame-alist)
 
-(push '(width . 145) default-frame-alist)
-(push '(height . 40) default-frame-alist)
+(push '(width . 150) default-frame-alist)
+(push '(height . 45) default-frame-alist)
 
 ;;;
 ;; coding: utf-8
