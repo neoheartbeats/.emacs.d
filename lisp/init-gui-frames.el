@@ -71,6 +71,8 @@
 (setq-default cursor-type '(bar . 1))
 (setq blink-cursor-mode nil)
 
+(set-cursor-color "green")
+
 ;; highlight current line
 (add-hook 'after-init-hook #'global-hl-line-mode)
 
