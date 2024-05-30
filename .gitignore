@@ -30,3 +30,5 @@ multisession/files/emoji/emoji--recent.value
 /ielm-history.eld
 /lisp/#init-org.el#
 /emms/
+/.env
+/persist/

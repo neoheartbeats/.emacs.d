@@ -28,16 +28,15 @@
 ;; Modern Org Mode theme
 (use-package org-modern
   :straight t
-  :init
+  :config
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '((?X . "􀃰") (?- . "􀃞") (?\s . "􀂒")))
-  (setq org-modern-progress '("􀛪" "􀛩" "􀺶" "􀺸" "􀛨"))
   (setq org-modern-table-vertical 2)
   (setq org-modern-tag nil)
   (setq org-modern-block-name nil)
   (setq org-modern-keyword nil)
   (setq org-modern-block-fringe nil)
-  :config (global-org-modern-mode 1))
+  (global-org-modern-mode 1))
 
 ;; External settings for `org-modern'
 (setq org-ellipsis " 􀍠")
@@ -104,6 +103,7 @@
   (setq denote-known-keywords '("robots"
 				"poem"
 				"sciences"
+				"flashcards"
 				"dust"
 				"business"
 				"billings"))
@@ -287,6 +287,43 @@
       "◀── now ─────────────────────────────────────────────────")
 
 
+;; Org-Drill
+;;
+;; For `org-drill' specific files, see also `denote-known-keywords'
+(use-package org-drill
+  :straight t
+  :config
+
+  ;; Overwrite these functions
+  (defun org-drill-present-default-answer (session reschedule-fn)
+    "Present a default answer.
+
+SESSION is the current session.
+RESCHEDULE-FN is the function to reschedule."
+    (prog1 (cond
+            ((oref session drill-answer)
+             (org-drill-with-replaced-entry-text
+              (format "\nAnswer:\n\n  %s\n" (oref session drill-answer))
+              (funcall reschedule-fn session)
+              ))
+            (t
+             (org-drill-hide-subheadings-if 'org-drill-entry-p)
+             (org-drill-unhide-clozed-text)
+             (org-drill--show-latex-fragments)
+             (ignore-errors
+               (org-display-inline-images t))
+             (org-cycle-hide-drawers 'all)
+             (org-remove-latex-fragment-image-overlays)
+             (save-excursion
+               (org-mark-subtree)
+               (let ((beg (region-beginning))
+                     (end (region-end)))
+		 (org-latex-preview--preview-region beg end))
+               (deactivate-mark))
+             (org-drill-with-hidden-cloze-hints
+              (funcall reschedule-fn session)))))))
+
+
 ;; Useful functions
 (defun my/org-mode-insert-get-button ()
   "Inserts a button that copies a user-defined string to clipboard."
@@ -302,7 +339,75 @@
   (org-display-inline-images))
 
 (bind-keys :map org-mode-map
-           ("s-p" . my/org-mode-preview-buffer))
+           ("C-c p" . my/org-mode-preview-buffer))
+
+
+;; TTS implementation using OpenAI's API
+(defun my/get_string_by_key_from_file (filename key)
+  "Get content string of KEY from FILENAME."
+  (with-temp-buffer
+    (insert-file-contents filename)
+    (goto-char (point-min))
+    (if (re-search-forward (format "^%s=\"\\([^\"]+\\)\"" key) nil t)
+        (match-string 1)
+      (error "Key %s not found in file %s" key filename))))
+
+(defun my/get_environ_from_user_emacs_dir (key)
+  "Get environ content by KEY from .env file in `user-emacs-directory'."
+  (let ((filename (concat user-emacs-directory ".env")))
+    (my/get_string_by_key_from_file filename key)))
+
+(setq my/openai-api-key
+      (my/get_environ_from_user_emacs_dir "OPENAI_API_KEY"))
+
+(require 'json)
+
+(defun my/speech-from-str-to-file (input-string output-file)
+  "Send a text-to-speech request to the OpenAI API and save the
+result to OUTPUT-FILE."
+  (let* ((url "https://api.openai.com/v1/audio/speech")
+         (url-request-method "POST")
+         (url-request-extra-headers
+          `(("Authorization" . ,(concat "Bearer " my/openai-api-key))
+            ("Content-Type" . "application/json")))
+         (url-request-data
+          (json-encode `(("model" . "tts-1")
+                         ("input" . ,input-string)
+                         ("voice" . "echo"))))
+         (buffer (url-retrieve-synchronously url)))
+    (when buffer
+      (with-current-buffer buffer
+        (goto-char (point-min))
+        (re-search-forward "\n\n")
+        (write-region (point) (point-max) output-file))
+      (kill-buffer buffer))))
+
+(defun my/generate-timestamp ()
+  "Generate a timestamp in the format YYYYMMDDTHHMMSS."
+  (format-time-string "%Y%m%dT%H%M%S"))
+
+(setq my/speach-files-dir (concat org-directory "medi/"))
+
+(defun my/speech-from-str-to-file-insert ()
+  "Send the selected text to the OpenAI API and insert the result at
+the point."
+  (interactive)
+  (if (use-region-p)
+      (let* ((start (region-beginning))
+	     (end (region-end))
+	     (input-string (buffer-substring-no-properties start end))
+	     (filename (concat my/speach-files-dir
+			       "speach-" (my/generate-timestamp) ".mp3"))
+	     (button-string
+	      (format "[[elisp:(emms-play-file \"%s\")][[􀊨]]]" filename)))
+        (my/speech-from-str-to-file input-string filename)
+	(goto-char end)
+        (insert (concat " " button-string))
+	(message (format "TTS finished to file %s" filename)))
+    (message "No region selected")))
+
+(bind-keys* :map org-mode-map
+	    ("s-[ s" . my/speech-from-str-to-file-insert))
 
 (provide 'init-org)
 ;;;
