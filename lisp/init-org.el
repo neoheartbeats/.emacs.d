@@ -7,19 +7,22 @@
 ;;; Commentary:
 ;;
 ;; This configuration only supports TEC's Org-mode develop branch due
-;; to the use of `org-latex-preview.el'. The "Org LaTeX customizations"
+;; to the use of `org-latex-preview'. The "Org LaTeX customizations"
 ;; part is unstable and underdevelopment.
 
 ;;; Code:
+
+(require 'org)
 
 ;; Setup default directory
 (setq org-directory "~/Sthenno/")
 
 ;; Org Mode buffer init behaviors
-(setq org-startup-with-inline-images t)
-(setq org-startup-with-latex-preview t)
+(setq org-startup-with-inline-images t
+      org-startup-with-latex-preview t)
 
 ;; Install AUCTeX. This is required by TEC's Org
+;;
 ;; (use-package tex
 ;;   :straight auctex)
 (straight-use-package 'auctex)
@@ -181,90 +184,70 @@
 
 
 ;; Org LaTeX customizations
-(setq org-latex-preview-process-default 'dvisvgm)
-(setq org-latex-preview-process-alist
-      '((dvipng
-	 :programs ("latex" "dvipng")
-	 :description "dvi > png"
-	 :message "you need to install the programs: latex and dvipng."
-	 :image-input-type "dvi"
-	 :image-output-type "png"
-	 :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
-	 :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
-	 :image-converter ("dvipng --follow -D %D -T tight --depth --height -o %B-%%09d.png %f")
-	 :transparent-image-converter
-	 ("dvipng --follow -D %D -T tight -bg Transparent --depth --height -o %B-%%09d.png %f"))
-	(dvisvgm
-	 :programs ("latex" "dvisvgm")
-	 :description "dvi > svg"
-	 :message "you need to install the programs: latex and dvisvgm."
-	 :image-input-type "dvi"
-	 :image-output-type "svg"
-	 :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
-	 :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
-	 :image-converter ; [TODO] Add "libgs" to PATH
-	 ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts
---exact-bbox --bbox=preview
---libgs=/opt/homebrew/Cellar/ghostscript/10.03.0/lib/libgs.10.03.dylib
--v4 -o %B-%%9p.svg %f"))
-	(imagemagick
-	 :programs ("pdflatex" "convert")
-	 :description "pdf > png"
-	 :message "you need to install the programs: latex and imagemagick."
-	 :image-input-type "pdf"
-	 :image-output-type "png"
-	 :latex-compiler ("pdflatex -interaction nonstopmode -output-directory %o %f")
-	 :latex-precompiler ("pdftex -output-directory %o -ini -jobname=%b \"&pdflatex\" mylatexformat.ltx %f")
-	 :image-converter ("convert -density %D -trim -antialias %f -quality 100 %B-%%09d.png"))))
+;; (setq org-latex-preview-process-default 'dvisvgm)
+;; (setq org-latex-preview-process-alist
+;;       '((dvisvgm
+;; 	 :programs ("latex" "dvisvgm")
+;; 	 :description "dvi > svg"
+;; 	 :message "you need to install the programs: latex and dvisvgm."
+;; 	 :image-input-type "dvi"
+;; 	 :image-output-type "svg"
+;; 	 :latex-compiler
+;; 	 ("%l -interaction nonstopmode -output-directory %o %f")
+;; 	 :latex-precompiler
+;; 	 ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
+;; 	 :image-converter ; [TODO] Add "libgs" to PATH
+;; 	 ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts
+;; --exact-bbox --bbox=preview
+;; --libgs=/opt/homebrew/Cellar/ghostscript/10.03.0/lib/libgs.10.03.dylib
+;; -v4 -o %B-%%9p.svg %f"))))
 
-(setq org-latex-packages-alist
-      '(("T1" "fontenc" t)
-        ("" "amsmath" t)
-        ("" "mathtools" t)
-        ("" "siunitx" t)
-        ("" "physics2" t)
-	("" "newtxmath" t)))
+;; (setq org-latex-packages-alist
+;;       '(("T1" "fontenc" t)
+;;         ("" "amsmath" t)
+;;         ("" "mathtools" t)
+;;         ("" "siunitx" t)
+;;         ("" "physics2" t)
+;;         ("" "newtxmath" t)))
 
-(setq org-latex-preview-preamble
-      "\\documentclass{article}
-[DEFAULT-PACKAGES]
-[PACKAGES]
-\\usepackage{xcolor}
-\\usephysicsmodule{ab,ab.braket,diagmat,xmat}%
-")
+;; (setq org-latex-preview-preamble
+;;       "\\documentclass{article}
+;; [DEFAULT-PACKAGES]
+;; [PACKAGES]
+;; \\usepackage{xcolor}
+;; \\usephysicsmodule{ab,ab.braket,diagmat,xmat}%
+;; ")
 
-(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
+;; (add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
 
-;; (setq org-latex-preview-live nil) ; Do not generate live previews
-(setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
+;; ;; (setq org-latex-preview-live nil) ; Do not generate live previews
+;; (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 
-;; More immediate live-previews
-(setq org-latex-preview-live-debounce 0.25)
+;; ;; More immediate live-previews
+;; (setq org-latex-preview-live-debounce 0.25)
 
-;; Remove dollars and "begin" as delimiters. This may keep LaTeX source
-;; code uniform
-(plist-put org-latex-preview-appearance-options :matchers '("\\(" "\\["))
-(plist-put org-latex-preview-appearance-options :scale 1.35)
-(plist-put org-latex-preview-appearance-options :zoom 1.35)
+;; (plist-put org-latex-preview-appearance-options :scale 1.35)
+;; (plist-put org-latex-preview-appearance-options :zoom 1.35)
 
 ;; Use CDLaTeX to improve editing experiences
-(use-package cdlatex
-  :straight t
-  :diminish (org-cdlatex-mode)
-  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+;; (use-package cdlatex
+;;   :straight t
+;;   :diminish (org-cdlatex-mode)
+;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 
 ;; Load languages for Org Babel
 
 ;; Do not ask for confirmation before executing
-(setq org-link-elisp-confirm-function nil)
-(setq org-link-shell-confirm-function nil)
+(setq org-link-elisp-confirm-function nil
+      org-link-shell-confirm-function nil)
 
 ;; Org code blocks
 (setq org-confirm-babel-evaluate nil)
-(setq org-src-preserve-indentation t)
-(setq org-src-fontify-natively t)
-(setq org-src-tab-acts-natively t)
+
+(setq org-src-preserve-indentation t
+      org-src-fontify-natively t
+      org-src-tab-acts-natively t)
 
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
@@ -295,33 +278,33 @@
   :config
 
   ;; Overwrite these functions
-  (defun org-drill-present-default-answer (session reschedule-fn)
-    "Present a default answer.
+  ;;   (defun org-drill-present-default-answer (session reschedule-fn)
+  ;;     "Present a default answer.
 
-SESSION is the current session.
-RESCHEDULE-FN is the function to reschedule."
-    (prog1 (cond
-            ((oref session drill-answer)
-             (org-drill-with-replaced-entry-text
-              (format "\nAnswer:\n\n  %s\n" (oref session drill-answer))
-              (funcall reschedule-fn session)
-              ))
-            (t
-             (org-drill-hide-subheadings-if 'org-drill-entry-p)
-             (org-drill-unhide-clozed-text)
-             (org-drill--show-latex-fragments)
-             (ignore-errors
-               (org-display-inline-images t))
-             (org-cycle-hide-drawers 'all)
-             (org-remove-latex-fragment-image-overlays)
-             (save-excursion
-               (org-mark-subtree)
-               (let ((beg (region-beginning))
-                     (end (region-end)))
-		 (org-latex-preview--preview-region beg end))
-               (deactivate-mark))
-             (org-drill-with-hidden-cloze-hints
-              (funcall reschedule-fn session)))))))
+  ;; SESSION is the current session.
+  ;; RESCHEDULE-FN is the function to reschedule."
+  ;;     (prog1 (cond
+  ;;             ((oref session drill-answer)
+  ;;              (org-drill-with-replaced-entry-text
+  ;;               (format "\nAnswer:\n\n  %s\n" (oref session drill-answer))
+  ;;               (funcall reschedule-fn session)))
+  ;;             (t
+  ;;              (org-drill-hide-subheadings-if 'org-drill-entry-p)
+  ;;              (org-drill-unhide-clozed-text)
+  ;;              (org-drill--show-latex-fragments)
+  ;;              (ignore-errors
+  ;;                (org-display-inline-images t))
+  ;;              (org-cycle-hide-drawers 'all)
+  ;;              (org-remove-latex-fragment-image-overlays)
+  ;;              (save-excursion
+  ;;                (org-mark-subtree)
+  ;;                (let ((beg (region-beginning))
+  ;;                      (end (region-end)))
+  ;; 		 (org-latex-preview--preview-region beg end))
+  ;;                (deactivate-mark))
+  ;;              (org-drill-with-hidden-cloze-hints
+  ;;               (funcall reschedule-fn session))))))
+  )
 
 
 ;; Useful functions
