@@ -8,6 +8,7 @@
 ;;; Code:
 
 (straight-use-package 'org)
+(require 'org)
 
 ;; Setup default directory
 (setq org-directory "~/Sthenno/")
@@ -26,20 +27,25 @@
 (use-package org-modern
   :straight t
   :config
+  (setq org-modern-fold-stars '(
+                                 ("▶" . "▼")
+                                 ("▷" . "▽")
+                                 ("⯈" . "⯆")
+                                 ("▹" . "▿")
+                                 ("▸" . "▾")))
   (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X . "􀃰") (?- . "􀃞") (?\s . "􀂒")))
+  (setq org-modern-checkbox '(
+                               (?X . "􀃰")
+                               (?- . "􀃞")
+                               (?\s . "􀂒")))
   (setq org-modern-table-vertical 2)
   (setq org-modern-tag nil)
-  (setq org-modern-block-name nil)
-  (setq org-modern-keyword nil)
   (setq org-modern-block-fringe nil)
   (global-org-modern-mode 1))
 
 ;; External settings for `org-modern'
 (setq org-ellipsis " 􀍠")
 (setq org-hide-emphasis-markers t)
-(setq org-auto-align-tags nil)
-(setq org-tags-column 0)
 
 ;; Use this with `C-<return>'
 (setq org-insert-heading-respect-content t)
@@ -52,25 +58,6 @@
 
 ;; Better experiences jumping through headlines
 (setq org-special-ctrl-a/e t)
-
-;; Using the SF Pro font for symbols
-(defun my/iconify-org-buffer ()
-  (progn
-    (push '("#+title:     " . ?􀈭) prettify-symbols-alist)
-    (push '("#+identifier:" . ?􀅷) prettify-symbols-alist)
-    (push '("#+date:      " . ?􀧵) prettify-symbols-alist)
-    (push '("#+filetags:  " . ?􀋡) prettify-symbols-alist)
-    (push '("#+begin_src"   . ?􀃤) prettify-symbols-alist)
-    (push '("#+end_src" . ?􀅽) prettify-symbols-alist)
-    (push '("#+begin_quote" . ?􀙤) prettify-symbols-alist)
-    (push '("#+end_quote" . ?􀅽) prettify-symbols-alist)
-    (push '("#+BEGIN: denote-links" .?􀋲) prettify-symbols-alist)
-    (push '("#+END:" . ?􀅽) prettify-symbols-alist)
-    (push '("#+RESULTS:" . ?􀎚) prettify-symbols-alist)
-    (push '("SCHEDULED:" .?􀧞) prettify-symbols-alist)
-    (push '("#+attr_org:" . ?􀌞) prettify-symbols-alist))
-  (prettify-symbols-mode 1))
-(add-hook 'org-mode-hook #'my/iconify-org-buffer)
 
 ;; Fold drawers by default
 (setq org-cycle-hide-drawer-startup t)

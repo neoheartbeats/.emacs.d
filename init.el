@@ -55,9 +55,8 @@
       ((text "There's nothing more to Show"))
     (message "􀪾 %s" text)))
 
-;;
+
 ;; Package management via `straight.el'
-;;
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name
@@ -102,13 +101,14 @@
   ;; Adds ~/.emacs.d to the load-path
   (push (dir-concat user-emacs-directory "site-lisp/") load-path)
   (push (dir-concat user-emacs-directory "lisp/") load-path)
-  
+
   (defvar user-cache-directory "~/.cache/emacs/"
     "Location where files created by emacs are placed."))
 
 ;; Set path for custom-file
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
+
 ;; GCMH
 (use-package gcmh
   :straight t
@@ -119,39 +119,8 @@
 
 (setq jit-lock-defer-time 0)
 
-;;
-;; Org Mode
-;;
-;; (use-package org
-;;   :straight `(org
-;;               :fork (
-;; 		     :host nil
-;;                      :repo "https://git.tecosaur.net/tec/org-mode.git"
-;;                      :branch "dev"
-;;                      :remote "tecosaur")
-;;               :files (:defaults "etc")
-;;               :build t
-;;               :pre-build
-;;               (with-temp-file "org-version.el"
-;;                 (require 'lisp-mnt)
-;;                 (let ((version
-;;                        (with-temp-buffer
-;;                          (insert-file-contents "lisp/org.el")
-;;                          (lm-header "version")))
-;;                       (git-version
-;;                        (string-trim
-;;                         (with-temp-buffer
-;;                           (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
-;;                           (buffer-string)))))
-;;                   (insert
-;;                    (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
-;;                    (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
-;;                    "(provide 'org-version)\n")))
-;;               :pin nil))
-
-;;
+
 ;; Load components
-;;
 (require 'init-system)
 (require 'init-gui-frames)
 (require 'init-editing-utils)
@@ -161,42 +130,7 @@
 (require 'init-comp)
 (require 'init-eglot)
 
-;; Sthenno Functions [TODO]
-;; (require 'json)
-;; (defun sthenno-capture-recollection-entry ()
-;;   "Capture ENTRY interactively then append it to RECOLLECTION-FILE.
-;; ENTRY is formatted in Alpaca used in LLMs for further fine-tuning."
-;;   (interactive)
-;;   (let ((instruction (read-string "Enter instruction: "))
-;; 	(output (read-string "Enter output: ")))
-
-;;     ;; Create a dictionary in the Alpaca format to store the
-;;     ;; information collected
-;;     (let ((entry (json-encode-alist `(("instruction" . ,instruction)
-;; 				      ("input" . "")
-;; 				      ("output" . ,output)
-;; 				      ("system" . "")
-;; 				      ("history" . [])))))
-
-;;       ;; Try to read existing RECOLLECTION-FILE
-;;       (let* ((filename "~/Sthenno/recollection.json")
-;; 	     (existing-contents (when (file-exists-p filename)
-;; 				  (with-temp-buffer
-;; 				    (insert-file-contents filename)
-;; 				    (buffer-string))))
-;; 	     (existing-json (if existing-contents
-;; 				(json-read-from-string existing-contents)
-;; 			      '())))
-
-;; 	;; Add new ENTRY to existing JSON list
-;; 	(let ((updated-json (append existing-json
-;; 				    (list (json-read-from-string entry)))))
-
-;; 	  ;; Add updated JSON list to RECOLLECTION-FILE
-;; 	  (with-temp-file filename
-;; 	    (insert (json-encode updated-json))
-;; 	    (json-pretty-print-buffer)))))))
-
+
 ;;;
 ;; coding: utf-8
 ;; no-byte-compile: t

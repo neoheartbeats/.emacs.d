@@ -19,7 +19,7 @@
      ;; Make the mode line borderless
      (border-mode-line-active bg-mode-line-active)
      (border-mode-line-inactive bg-mode-line-inactive)
-     
+
      ;; Set color faces for `display-line-numbers-mode'
      (fg-line-number-inactive "gray50")
      (fg-line-number-active fg-main)
@@ -38,7 +38,7 @@
 	   ;; This also affects `button' faces in Modus Themes
 	   (fg-link unspecified)
 	   (fg-link-visited unspecified)
-	   
+
      ;; Completions
      (fg-completion-match-0 fg-main)
      (bg-completion-match-0 bg-red-intense)
@@ -49,7 +49,7 @@
      ;; Make DONE less intense
      (prose-done fg-dim)
 
-     ;; Custom region colors 
+     ;; Custom region colors
      (bg-region bg-red-intense)
      (fg-region unspecified)))
 
@@ -80,6 +80,12 @@
 (set-face-attribute 'default nil
 	:family "Forma DJR Mono"
 	:height 140)
+
+(set-face-attribute 'fixed-pitch nil
+  :family "Forma DJR Mono")
+
+(set-face-attribute 'variable-pitch nil
+  :family "Forma DJR Text")
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
