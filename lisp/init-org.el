@@ -18,21 +18,22 @@
   org-startup-with-inline-images t
   org-startup-with-latex-preview t)
 
-;; Install AUCTeX.
+;; Install AUCTeX
 (use-package tex
   :straight auctex)
+
+
+;; Images and files (Org 9.7+)
+(setq org-yank-dnd-method 'file-link)
+(setq org-yank-image-save-method
+  (expand-file-name "images/" org-directory))
 
 
 ;; Modern Org Mode theme
 (use-package org-modern
   :straight t
   :config
-  (setq org-modern-fold-stars '(
-                                 ("▶" . "▼")
-                                 ("▷" . "▽")
-                                 ("⯈" . "⯆")
-                                 ("▹" . "▿")
-                                 ("▸" . "▾")))
+  (setq org-modern-fold-stars '(("􀨁" . "􀀀")))
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '(
                                (?X . "􀃰")
@@ -67,9 +68,9 @@
 (setq org-startup-folded 'content)
 
 ;; Org fragments and overlays
-(setq org-image-actual-width '(420))
+(setq org-image-max-width 420)
 
-;;; Org links
+;; Org links
 (setq org-return-follows-link t)
 
 ;; Open file links in current window
@@ -88,8 +89,8 @@
                                  "robots"
 				                         "poem"
 				                         "sciences"
-				                         "flashcards"
 				                         "dust"
+                                 "flashcards"
 				                         "business"
 				                         "billings"))
   (setq denote-save-buffer-after-creation t)
@@ -214,13 +215,6 @@
   "◀── now ─────────────────────────────────────────────────")
 
 
-;; Org-Drill
-;;
-;; For `org-drill' specific files, see also `denote-known-keywords'
-(use-package org-drill
-  :straight t)
-
-
 ;; Useful functions
 (defun my/org-mode-insert-get-button ()
   "Inserts a button that copies a user-defined string to clipboard."
@@ -297,6 +291,41 @@ the point."
 
 (bind-keys* :map org-mode-map
 	("s-[ s" . my/speech-from-str-to-file-insert))
+
+(defun my/play-speach-current-heading ()
+  "Play the speach audio if there is exactly one in current heading."
+  (interactive)
+  (save-excursion
+    (org-back-to-heading t)
+    (let (
+	   (heading-end (save-excursion
+			  (outline-next-heading)
+			  (point)))
+           (button-count 0)
+           button-pos)
+
+      ;; Count the number of "[􀊨]" buttons and record the position
+      ;; of the button
+      (while (re-search-forward "\\[􀊨\\]" heading-end t)
+        (setq button-count (1+ button-count))
+        (setq button-pos (match-beginning 0)))
+
+      ;; Check if there is exactly one button
+      (if (= button-count 1)
+        (progn
+          (goto-char button-pos)
+          (org-open-at-point))
+        (message
+	  "There must be exactly one \"[􀊨]\" button in current heading")))))
+
+
+;; Modules for language learning
+(use-package org-drill
+  :straight t
+  :config
+  (setq org-drill-learn-fraction 0.5)
+  (setq org-drill-maximum-items-per-session 20)
+  (add-hook 'org-drill-display-answer-hook #'my/play-speach-current-heading))
 
 (provide 'init-org)
 ;;;

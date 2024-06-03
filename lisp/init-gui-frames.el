@@ -71,8 +71,6 @@
 (setq-default cursor-type '(bar . 1))
 (setq blink-cursor-mode nil)
 
-(set-cursor-color "green")
-
 ;; highlight current line
 (add-hook 'after-init-hook #'global-hl-line-mode)
 
@@ -80,12 +78,6 @@
 (set-face-attribute 'default nil
 	:family "Forma DJR Mono"
 	:height 140)
-
-(set-face-attribute 'fixed-pitch nil
-  :family "Forma DJR Mono")
-
-(set-face-attribute 'variable-pitch nil
-  :family "Forma DJR Text")
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
