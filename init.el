@@ -155,10 +155,10 @@
 (require 'init-system)
 (require 'init-gui-frames)
 (require 'init-editing-utils)
+(require 'init-org)
 (require 'init-projects)
 (require 'init-temp)
 (require 'init-comp)
-(require 'init-org)
 (require 'init-eglot)
 
 ;; Sthenno Functions [TODO]

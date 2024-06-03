@@ -12,7 +12,7 @@
 
 ;;; Code:
 
-(require 'org)
+(straight-use-package 'org)
 
 ;; Setup default directory
 (setq org-directory "~/Sthenno/")
