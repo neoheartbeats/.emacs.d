@@ -24,9 +24,9 @@
   ;; Do not render italic fonts
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
   :bind ((:map vertico-map
-               ("<tab>" . vertico-insert)
-               ("<return>" . vertico-directory-enter)
-               ("<backspace>" . vertico-directory-delete-char))))
+           ("<tab>" . vertico-insert)
+           ("<return>" . vertico-directory-enter)
+           ("<backspace>" . vertico-directory-delete-char))))
 
 ;; Hide commands in M-x which do not apply to the current mode
 (setq read-extended-command-predicate #'command-completion-default-include-p)
@@ -45,18 +45,18 @@
   (global-set-key (kbd "s-b") 'switch-to-buffer)
   (global-set-key [remap switch-to-buffer] 'consult-buffer)
   (global-set-key
-   [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
+    [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
   (global-set-key
-   [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
+    [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
   (global-set-key [remap project-switch-to-buffer] 'consult-project-buffer)
   (global-set-key [remap goto-line] 'consult-goto-line)
   (global-set-key [remap imenu] 'consult-imenu)
   :bind (("C-s" . consult-line)
-         ("C-v" . consult-yank-from-kill-ring)
-         ("M-s" . consult-ripgrep)
-         ("s-o" . consult-outline)
-         ("s-m" . consult-imenu)
-         ("s-k" . consult-recent-file)))
+          ("C-v" . consult-yank-from-kill-ring)
+          ("M-s" . consult-ripgrep)
+          ("s-o" . consult-outline)
+          ("s-m" . consult-imenu)
+          ("s-k" . consult-recent-file)))
 
 
 ;; Completion in buffers
@@ -89,20 +89,16 @@
                         (push 'cape-file completion-at-point-functions)
                         (push 'cape-keyword completion-at-point-functions)
                         (push 'cape-abbrev completion-at-point-functions)))
-         (emacs-lisp-mode . (lambda ()
-                              (push 'cape-dabbrev completion-at-point-functions)
-                              (push 'cape-dict completion-at-point-functions)
-                              (push 'cape-file completion-at-point-functions)
-                              (push 'cape-keyword completion-at-point-functions)
-                              (push 'cape-elisp-symbol completion-at-point-functions)
-                              (push 'cape-abbrev completion-at-point-functions)))
-         (org-mode . (lambda ()
-                       (push 'cape-dabbrev completion-at-point-functions)
-                       (push 'cape-dict completion-at-point-functions)
-                       ;; (push 'cape-file completion-at-point-functions)
-                       ;; (push 'cape-elisp-block completion-at-point-functions)
-                       ;; (push 'cape-abbrev completion-at-point-functions)
-		       ))))
+          (emacs-lisp-mode . (lambda ()
+                               (push 'cape-dabbrev completion-at-point-functions)
+                               (push 'cape-dict completion-at-point-functions)
+                               (push 'cape-file completion-at-point-functions)
+                               (push 'cape-keyword completion-at-point-functions)
+                               (push 'cape-elisp-symbol completion-at-point-functions)
+                               (push 'cape-abbrev completion-at-point-functions)))
+          (org-mode . (lambda ()
+                        (push 'cape-dabbrev completion-at-point-functions)
+                        (push 'cape-dict completion-at-point-functions)))))
 
 
 ;; Build the completion framework
@@ -142,10 +138,10 @@
   :hook (eshell-mode . (lambda ()
                          (setq-local corfu-auto nil)))
   :bind (:map corfu-map
-              ("<down>" . corfu-next)
-              ("<up>" . corfu-previous)
-              ("<space>" . corfu-quit)
-              ("<escape>" . corfu-quit)))
+          ("<down>" . corfu-next)
+          ("<up>" . corfu-previous)
+          ("<space>" . corfu-quit)
+          ("<escape>" . corfu-quit)))
 
 (provide 'init-comp)
 ;;;

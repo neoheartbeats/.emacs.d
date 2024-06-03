@@ -20,10 +20,11 @@
 (defun my/yas-insert-latex-matrix ()
   "Insert a LaTeX matrix at the current cursor position."
   (interactive)
-  (let* ((rows (read-number "# Rows: "))
-         (cols (read-number "# Columns: "))
-         (counter 1)
-         (snippet (concat "\\begin{pmatrix}\n")))
+  (let* (
+          (rows (read-number "# Rows: "))
+          (cols (read-number "# Columns: "))
+          (counter 1)
+          (snippet (concat "\\begin{pmatrix}\n")))
     (dotimes (_ rows)
       (dotimes (j cols)
         (when (> j 0)
@@ -35,7 +36,7 @@
     (yas-expand-snippet snippet)))
 
 (bind-keys :map org-mode-map
-	   ("s-[ m" . my/yas-insert-latex-matrix))
+	("s-[ m" . my/yas-insert-latex-matrix))
 
 (provide 'init-temp)
 ;;;
@@ -43,4 +44,3 @@
 ;; no-byte-compile: t
 ;; End:
 ;;
-

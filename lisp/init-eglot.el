@@ -33,7 +33,7 @@
 
   ;; Use Pyright as the default language server
   (add-to-list 'eglot-server-programs
-               '(python-ts-mode . ("pyright-langserver" "--stdio")))
+    '(python-ts-mode . ("pyright-langserver" "--stdio")))
   (add-hook 'python-ts-mode #'eglot-ensure))
 
 ;; Auto confirm `.dir-locals.el' files
@@ -50,11 +50,11 @@
   (conda-env-initialize-interactive-shells)
   (conda-env-autoactivate-mode 1)
   (add-hook 'find-file-hook #'(lambda ()
-				(when (bound-and-true-p conda-project-env-path)
+				                        (when (bound-and-true-p conda-project-env-path)
                                   (conda-env-activate-for-buffer)))))
 
 (setq python-indent-guess-indent-offset t
-      python-indent-guess-indent-offset-verbose nil)
+  python-indent-guess-indent-offset-verbose nil)
 
 ;; Reformat python buffers using the `black' formatter
 (use-package blacken
@@ -62,7 +62,7 @@
   :config (add-hook 'python-ts-mode-hook #'blacken-mode)
   :bind
   (:map python-ts-mode-map
-        ("s-i" . blacken-buffer)))
+    ("s-i" . blacken-buffer)))
 
 
 ;;; AI Integration
@@ -70,9 +70,9 @@
 ;; GitHub Copilot
 (use-package copilot
   :straight (
-	     :host github
-	     :repo "copilot-emacs/copilot.el"
-	     :files ("*.el"))
+	            :host github
+	            :repo "copilot-emacs/copilot.el"
+	            :files ("*.el"))
   :config
   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
@@ -82,13 +82,13 @@
   :config
   (setq-default gptel-model "phi3:medium"
 		gptel-backend (gptel-make-ollama "Phi-3"
-				:host "localhost:11434"
-				:stream t
-				:models '("phi3:medium")))
+				            :host "localhost:11434"
+				            :stream t
+				            :models '("phi3:medium")))
   (setq gptel-default-mode 'org-mode)
   :bind (("C-c g" . gptel))
   :hook (gptel-mode . (lambda ()
-			(visual-line-mode 1))))
+			                  (visual-line-mode 1))))
 
 
 ;;; EMMS

@@ -5,11 +5,6 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
-;;
-;; This configuration only supports TEC's Org-mode develop branch due
-;; to the use of `org-latex-preview'. The "Org LaTeX customizations"
-;; part is unstable and underdevelopment.
-
 ;;; Code:
 
 (straight-use-package 'org)
@@ -18,14 +13,13 @@
 (setq org-directory "~/Sthenno/")
 
 ;; Org Mode buffer init behaviors
-(setq org-startup-with-inline-images t
-      org-startup-with-latex-preview t)
+(setq
+  org-startup-with-inline-images t
+  org-startup-with-latex-preview t)
 
-;; Install AUCTeX. This is required by TEC's Org
-;;
-;; (use-package tex
-;;   :straight auctex)
-(straight-use-package 'auctex)
+;; Install AUCTeX.
+(use-package tex
+  :straight auctex)
 
 
 ;; Modern Org Mode theme
@@ -103,24 +97,25 @@
   :straight t
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
-  (setq denote-known-keywords '("robots"
-				"poem"
-				"sciences"
-				"flashcards"
-				"dust"
-				"business"
-				"billings"))
+  (setq denote-known-keywords '(
+                                 "robots"
+				                         "poem"
+				                         "sciences"
+				                         "flashcards"
+				                         "dust"
+				                         "business"
+				                         "billings"))
   (setq denote-save-buffer-after-creation t)
-  
+
   ;; Denote for journaling
   (setq denote-journal-extras-directory
-        (expand-file-name "stages/" denote-directory)) ; Subdirectory for journal files
+    (expand-file-name "stages/" denote-directory)) ; Subdirectory for journal files
   (setq denote-journal-extras-keyword "stages") ; Stages are journals
   (setq denote-journal-extras-title-format 'day-date-month-year)
 
   ;; Do not include date in notes
   (setq denote-org-front-matter
-        "#+title:      %1$s
+    "#+title:      %1$s
 #+filetags:   %3$s
 #+identifier: %4$s
 \n")
@@ -130,12 +125,12 @@
   :bind
   (:map global-map
 
-        ;; Open today's note
-        ("C-c d" . denote-journal-extras-new-or-existing-entry))
+    ;; Open today's note
+    ("C-c d" . denote-journal-extras-new-or-existing-entry))
   (:map org-mode-map
-        ("C-c i" . denote-link-or-create)
-	("C-c b" . denote-backlinks)
-	("C-c e" . denote-org-extras-extract-org-subtree))
+    ("C-c i" . denote-link-or-create)
+	  ("C-c b" . denote-backlinks)
+	  ("C-c e" . denote-org-extras-extract-org-subtree))
   :hook (after-init . denote-journal-extras-new-or-existing-entry))
 
 ;; Extensions for Denote
@@ -146,10 +141,11 @@
 
   ;; Remove denote journal entries from the menu
   (setq denote-menu-initial-regex
-	(mapconcat (lambda (keyword) (concat "_" keyword))
-		   denote-known-keywords "\\|"))
+	  (mapconcat (lambda (keyword)
+                 (concat "_" keyword))
+		  denote-known-keywords "\\|"))
   :bind (:map org-mode-map
-	      ("C-c m" . list-denotes)))
+	        ("C-c m" . list-denotes)))
 
 ;; Custom functions for Denote
 (defun my/denote-insert-links-current-month ()
@@ -158,153 +154,84 @@
 
 (defun my/denote-open-previous-file ()
   (interactive)
-  (let* ((current-file (buffer-file-name))
-         (directory (file-name-directory current-file))
-         (files (directory-files directory t "\\`[^.]"))
-         (sorted-files (sort files 'string<))
-         (current-file-index (cl-position current-file sorted-files :test 'string=)))
+  (let* (
+          (current-file (buffer-file-name))
+          (directory (file-name-directory current-file))
+          (files (directory-files directory t "\\`[^.]"))
+          (sorted-files (sort files 'string<))
+          (current-file-index (cl-position current-file sorted-files :test 'string=)))
 
     (when (and current-file-index (> current-file-index 0))
       (find-file (nth (1- current-file-index) sorted-files)))))
 
 (defun my/denote-open-next-file ()
   (interactive)
-  (let* ((current-file (buffer-file-name))
-         (directory (file-name-directory current-file))
-         (files (directory-files directory t "\\`[^.]"))
-         (sorted-files (sort files 'string<))
-         (current-file-index (cl-position current-file sorted-files :test 'string=)))
+  (let* (
+          (current-file (buffer-file-name))
+          (directory (file-name-directory current-file))
+          (files (directory-files directory t "\\`[^.]"))
+          (sorted-files (sort files 'string<))
+          (current-file-index (cl-position current-file sorted-files :test 'string=)))
 
     (when (and current-file-index (< current-file-index (1- (length sorted-files))))
       (find-file (nth (1+ current-file-index) sorted-files)))))
 
 (bind-keys :map org-mode-map
-           ("s-<up>" . my/denote-open-previous-file)
-           ("s-<down>" . my/denote-open-next-file))
+  ("s-<up>" . my/denote-open-previous-file)
+  ("s-<down>" . my/denote-open-next-file))
 
 
 ;; Org LaTeX customizations
-;; (setq org-latex-preview-process-default 'dvisvgm)
-;; (setq org-latex-preview-process-alist
-;;       '((dvisvgm
-;; 	 :programs ("latex" "dvisvgm")
-;; 	 :description "dvi > svg"
-;; 	 :message "you need to install the programs: latex and dvisvgm."
-;; 	 :image-input-type "dvi"
-;; 	 :image-output-type "svg"
-;; 	 :latex-compiler
-;; 	 ("%l -interaction nonstopmode -output-directory %o %f")
-;; 	 :latex-precompiler
-;; 	 ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
-;; 	 :image-converter ; [TODO] Add "libgs" to PATH
-;; 	 ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts
-;; --exact-bbox --bbox=preview
-;; --libgs=/opt/homebrew/Cellar/ghostscript/10.03.0/lib/libgs.10.03.dylib
-;; -v4 -o %B-%%9p.svg %f"))))
-
-;; (setq org-latex-packages-alist
-;;       '(("T1" "fontenc" t)
-;;         ("" "amsmath" t)
-;;         ("" "mathtools" t)
-;;         ("" "siunitx" t)
-;;         ("" "physics2" t)
-;;         ("" "newtxmath" t)))
-
-;; (setq org-latex-preview-preamble
-;;       "\\documentclass{article}
-;; [DEFAULT-PACKAGES]
-;; [PACKAGES]
-;; \\usepackage{xcolor}
-;; \\usephysicsmodule{ab,ab.braket,diagmat,xmat}%
-;; ")
-
-;; (add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
-
-;; ;; (setq org-latex-preview-live nil) ; Do not generate live previews
-;; (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
-
-;; ;; More immediate live-previews
-;; (setq org-latex-preview-live-debounce 0.25)
-
-;; (plist-put org-latex-preview-appearance-options :scale 1.35)
-;; (plist-put org-latex-preview-appearance-options :zoom 1.35)
-
 ;; Use CDLaTeX to improve editing experiences
-;; (use-package cdlatex
-;;   :straight t
-;;   :diminish (org-cdlatex-mode)
-;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+(use-package cdlatex
+  :straight t
+  :diminish (org-cdlatex-mode)
+  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 
 ;; Load languages for Org Babel
 
 ;; Do not ask for confirmation before executing
-(setq org-link-elisp-confirm-function nil
-      org-link-shell-confirm-function nil)
+(setq
+  org-link-elisp-confirm-function nil
+  org-link-shell-confirm-function nil)
 
 ;; Org code blocks
 (setq org-confirm-babel-evaluate nil)
 
-(setq org-src-preserve-indentation t
-      org-src-fontify-natively t
-      org-src-tab-acts-natively t)
+(setq
+  org-src-preserve-indentation t
+  org-src-fontify-natively t
+  org-src-tab-acts-natively t)
 
 (org-babel-do-load-languages 'org-babel-load-languages
-                             '((emacs-lisp . t)
-                               (python . t)))
+  '(
+     (emacs-lisp . t)
+     (python . t)))
 
 
 ;; Org-agenda
 (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
 (bind-keys :map global-map
-	   ("C-c a" . org-agenda))
+	("C-c a" . org-agenda))
 
 ;; Org-agenda settings related to `org-modern'
 (setq org-agenda-tags-column 0)
 (setq org-agenda-block-separator ?─)
 (setq org-agenda-time-grid
-      '((daily today require-timed)
-	(800 1000 1200 1400 1600 1800 2000)
-        " ────── " "───────────────"))
+  '(
+     (daily today require-timed)
+	   (800 1000 1200 1400 1600 1800 2000)
+     " ────── " "───────────────"))
 (setq org-agenda-current-time-string
-      "◀── now ─────────────────────────────────────────────────")
+  "◀── now ─────────────────────────────────────────────────")
 
 
 ;; Org-Drill
 ;;
 ;; For `org-drill' specific files, see also `denote-known-keywords'
 (use-package org-drill
-  :straight t
-  :config
-
-  ;; Overwrite these functions
-  ;;   (defun org-drill-present-default-answer (session reschedule-fn)
-  ;;     "Present a default answer.
-
-  ;; SESSION is the current session.
-  ;; RESCHEDULE-FN is the function to reschedule."
-  ;;     (prog1 (cond
-  ;;             ((oref session drill-answer)
-  ;;              (org-drill-with-replaced-entry-text
-  ;;               (format "\nAnswer:\n\n  %s\n" (oref session drill-answer))
-  ;;               (funcall reschedule-fn session)))
-  ;;             (t
-  ;;              (org-drill-hide-subheadings-if 'org-drill-entry-p)
-  ;;              (org-drill-unhide-clozed-text)
-  ;;              (org-drill--show-latex-fragments)
-  ;;              (ignore-errors
-  ;;                (org-display-inline-images t))
-  ;;              (org-cycle-hide-drawers 'all)
-  ;;              (org-remove-latex-fragment-image-overlays)
-  ;;              (save-excursion
-  ;;                (org-mark-subtree)
-  ;;                (let ((beg (region-beginning))
-  ;;                      (end (region-end)))
-  ;; 		 (org-latex-preview--preview-region beg end))
-  ;;                (deactivate-mark))
-  ;;              (org-drill-with-hidden-cloze-hints
-  ;;               (funcall reschedule-fn session))))))
-  )
+  :straight t)
 
 
 ;; Useful functions
@@ -314,16 +241,6 @@
   (let ((content (read-string "Content: ")))
     (insert (format "[[elisp:(kill-new \"%s\")][GET]]" content))))
 
-(defun my/org-mode-preview-buffer ()
-  "Preview current buffer including images and LaTeX fragments."
-  (interactive)
-  (call-interactively 'org-latex-preview-clear-cache)
-  (org-latex-preview 'buffer)
-  (org-display-inline-images))
-
-(bind-keys :map org-mode-map
-           ("C-c p" . my/org-mode-preview-buffer))
-
 
 ;; TTS implementation using OpenAI's API
 (defun my/get_string_by_key_from_file (filename key)
@@ -332,7 +249,7 @@
     (insert-file-contents filename)
     (goto-char (point-min))
     (if (re-search-forward (format "^%s=\"\\([^\"]+\\)\"" key) nil t)
-        (match-string 1)
+      (match-string 1)
       (error "Key %s not found in file %s" key filename))))
 
 (defun my/get_environ_from_user_emacs_dir (key)
@@ -341,23 +258,24 @@
     (my/get_string_by_key_from_file filename key)))
 
 (setq my/openai-api-key
-      (my/get_environ_from_user_emacs_dir "OPENAI_API_KEY"))
+  (my/get_environ_from_user_emacs_dir "OPENAI_API_KEY"))
 
 (require 'json)
 
 (defun my/speech-from-str-to-file (input-string output-file)
   "Send a text-to-speech request to the OpenAI API and save the
 result to OUTPUT-FILE."
-  (let* ((url "https://api.openai.com/v1/audio/speech")
-         (url-request-method "POST")
-         (url-request-extra-headers
-          `(("Authorization" . ,(concat "Bearer " my/openai-api-key))
-            ("Content-Type" . "application/json")))
-         (url-request-data
-          (json-encode `(("model" . "tts-1")
-                         ("input" . ,input-string)
-                         ("voice" . "echo"))))
-         (buffer (url-retrieve-synchronously url)))
+  (let* (
+          (url "https://api.openai.com/v1/audio/speech")
+          (url-request-method "POST")
+          (url-request-extra-headers
+            `(("Authorization" . ,(concat "Bearer " my/openai-api-key))
+               ("Content-Type" . "application/json")))
+          (url-request-data
+            (json-encode `(("model" . "tts-1")
+                            ("input" . ,input-string)
+                            ("voice" . "echo"))))
+          (buffer (url-retrieve-synchronously url)))
     (when buffer
       (with-current-buffer buffer
         (goto-char (point-min))
@@ -376,21 +294,22 @@ result to OUTPUT-FILE."
 the point."
   (interactive)
   (if (use-region-p)
-      (let* ((start (region-beginning))
-	     (end (region-end))
-	     (input-string (buffer-substring-no-properties start end))
-	     (filename (concat my/speach-files-dir
-			       "speach-" (my/generate-timestamp) ".mp3"))
-	     (button-string
-	      (format "[[elisp:(emms-play-file \"%s\")][[􀊨]]]" filename)))
-        (my/speech-from-str-to-file input-string filename)
-	(goto-char end)
-        (insert (concat " " button-string))
-	(message (format "TTS finished to file %s" filename)))
+    (let* (
+            (start (region-beginning))
+	          (end (region-end))
+	          (input-string (buffer-substring-no-properties start end))
+	          (filename (concat my/speach-files-dir
+			                  "speach-" (my/generate-timestamp) ".mp3"))
+	          (button-string
+	            (format "[[elisp:(emms-play-file \"%s\")][[􀊨]]]" filename)))
+      (my/speech-from-str-to-file input-string filename)
+	    (goto-char end)
+      (insert (concat " " button-string))
+	    (message (format "TTS finished to file %s" filename)))
     (message "No region selected")))
 
 (bind-keys* :map org-mode-map
-	    ("s-[ s" . my/speech-from-str-to-file-insert))
+	("s-[ s" . my/speech-from-str-to-file-insert))
 
 (provide 'init-org)
 ;;;

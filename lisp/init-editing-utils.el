@@ -45,9 +45,30 @@
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; Display line numbers
+(setq-default display-line-numbers-width 5)
 (global-display-line-numbers-mode 1)
 
-(setq-default display-line-numbers-width 5)
+
+;;; Basics for file formattings
+(defun pp-current-el-buffer ()
+  "Pretty-print the current buffer as Emacs Lisp code."
+  (interactive)
+  (let ((current-buffer-content (buffer-string)))
+    (with-temp-buffer
+      (insert current-buffer-content)
+      (goto-char (point-min))
+      (let ((pretty-printed (pp-to-string (read (current-buffer)))))
+        (with-current-buffer (current-buffer)
+          (erase-buffer)
+          (insert pretty-printed))))))
+
+(global-set-key (kbd "C-c C-p") 'pp-current-el-buffer)
+
+;; EditorConfig for Emacs
+(use-package editorconfig
+  :straight t
+  :diminish (editorconfig-mode)
+  :config (editorconfig-mode 1))
 
 (provide 'init-editing-utils)
 ;;;
