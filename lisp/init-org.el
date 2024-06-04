@@ -250,10 +250,12 @@ result to OUTPUT-FILE."
           (url "https://api.openai.com/v1/audio/speech")
           (url-request-method "POST")
           (url-request-extra-headers
-            `(("Authorization" . ,(concat "Bearer " my/openai-api-key))
+            `(
+               ("Authorization" . ,(concat "Bearer " my/openai-api-key))
                ("Content-Type" . "application/json")))
           (url-request-data
-            (json-encode `(("model" . "tts-1")
+            (json-encode `(
+                            ("model" . "tts-1")
                             ("input" . ,input-string)
                             ("voice" . "echo"))))
           (buffer (url-retrieve-synchronously url)))
@@ -298,9 +300,9 @@ the point."
   (save-excursion
     (org-back-to-heading t)
     (let (
-	   (heading-end (save-excursion
-			  (outline-next-heading)
-			  (point)))
+	         (heading-end (save-excursion
+			                    (outline-next-heading)
+			                    (point)))
            (button-count 0)
            button-pos)
 
@@ -316,7 +318,7 @@ the point."
           (goto-char button-pos)
           (org-open-at-point))
         (message
-	  "There must be exactly one \"[􀊨]\" button in current heading")))))
+	        "There must be exactly one \"[􀊨]\" button in current heading")))))
 
 
 ;; Modules for language learning
