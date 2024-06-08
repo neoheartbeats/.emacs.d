@@ -33,9 +33,7 @@
   ("s-1" . delete-other-windows)
   ("s-2" . split-window-below)
   ("s-3" . split-window-right)
-  ("s-<backspace>" . kill-whole-line)
-  ("<s-right>" . switch-to-next-buffer)
-  ("<s-left>" . switch-to-prev-buffer))
+  ("s-<backspace>" . kill-whole-line))
 
 (bind-keys :map emacs-lisp-mode-map
   ("C-c C-c". eval-buffer))
@@ -60,9 +58,9 @@
 
 
 ;; Fix environment for macOS
-(use-package exec-path-from-shell
-  :straight t
-  :config (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell
+;;   :straight t
+;;   :config (exec-path-from-shell-initialize))
 
 
 ;; Increase how much is read from processes (default is 4kb)
@@ -145,9 +143,30 @@
   ("C-x k" . delete-current-file)
   ("<f12>" . open-emacs-config-dir))
 
+;; Ignore temporary buffers
+(defun my/filtered-cycle-buffer (cycle-func)
+  (let ((original-buffer (current-buffer)))
+    (funcall cycle-func)
+    (while (and (string-match-p "\\*.*\\*" (buffer-name))
+             (not (eq original-buffer (current-buffer))))
+      (funcall cycle-func))))
+
+(defun my/cycle-to-next-buffer ()
+  (interactive)
+  (my/filtered-cycle-buffer 'next-buffer))
+
+(defun my/cycle-to-previous-buffer ()
+  (interactive)
+  (my/filtered-cycle-buffer 'previous-buffer))
+
+(bind-keys :map global-map
+  ("<s-right>" . my/cycle-to-next-buffer)
+  ("<s-left>" . my/cycle-to-previous-buffer))
+
 
 ;; Mouse and scroll settings
-(setq scroll-preserve-screen-position t
+(setq
+  scroll-preserve-screen-position t
   scroll-margin 0
   scroll-conservatively 95
   make-cursor-line-fully-visible nil)
