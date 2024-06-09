@@ -165,11 +165,10 @@
 
 
 ;; Mouse and scroll settings
-(setq
- scroll-preserve-screen-position t
- scroll-margin 0
- scroll-conservatively 95
- make-cursor-line-fully-visible nil)
+(setq scroll-preserve-screen-position t
+      scroll-margin 0
+      scroll-conservatively 95
+      make-cursor-line-fully-visible nil)
 (add-hook 'after-init-hook #'pixel-scroll-precision-mode)
 
 ;; Disable auto copyings

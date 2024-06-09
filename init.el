@@ -11,9 +11,7 @@
 
 ;;; Code:
 
-;;
 ;; Speed up startup
-;;
 (setq-default bidi-display-reordering 'left-to-right)
 
 (setq gc-cons-threshold most-positive-fixnum)
@@ -57,9 +55,9 @@
 
 
 ;; User information
-(setq
-  user-full-name "Sthenno"
-  user-mail-address "sthenno@sthenno.com")
+;; (setq
+;;   user-full-name "Sthenno"
+;;   user-mail-address "sthenno@sthenno.com")
 
 
 ;; Package management via `straight.el'
@@ -83,8 +81,6 @@
 (straight-use-package 'use-package)
 (straight-use-package 'bind-key)
 (straight-use-package 'diminish)
-
-;;
 (diminish 'eldoc-mode)
 
 (eval-when-compile
@@ -104,7 +100,7 @@
     "Join path DIR with filename FILE correctly."
     (concat (file-name-as-directory dir) file))
 
-  ;; Adds ~/.emacs.d to the load-path
+  ;; Add ~/.emacs.d to the load-path
   (push (dir-concat user-emacs-directory "site-lisp/") load-path)
   (push (dir-concat user-emacs-directory "lisp/") load-path)
 
@@ -135,8 +131,6 @@
 (require 'init-temp)
 (require 'init-comp)
 (require 'init-eglot)
-
-
 ;;;
 ;; coding: utf-8
 ;; no-byte-compile: t

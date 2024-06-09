@@ -15,8 +15,8 @@
 
 ;; Org Mode buffer init behaviors
 (setq
-  org-startup-with-inline-images t
-  org-startup-with-latex-preview t)
+ org-startup-with-inline-images t
+ org-startup-with-latex-preview t)
 
 ;; Install AUCTeX
 (use-package tex
@@ -26,7 +26,7 @@
 ;; Images and files
 (setq org-yank-dnd-method 'file-link)
 (setq org-yank-image-save-method
-  (expand-file-name "images/" org-directory))
+      (expand-file-name "images/" org-directory))
 
 
 ;; Modern Org Mode theme
@@ -34,22 +34,20 @@
   :straight t
   :config
   (setq
-    org-modern-star 'fold
-    org-modern-fold-stars '(("◉" . "○"))
-    org-modern-hide-stars 'leading)
+   org-modern-star 'fold
+   org-modern-fold-stars '(("◉" . "○"))
+   org-modern-hide-stars 'leading)
   (setq org-modern-keyword "◉ ")
   (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '(
-                               (?X . "􀃰")
-                               (?- . "􀃞")
-                               (?\s . "􀂒")))
+  (setq org-modern-checkbox '((?X . "􀃰")
+                              (?- . "􀃞")
+                              (?\s . "􀂒")))
   (setq org-modern-table-vertical 2)
 
   ;; Disable these features
-  (setq
-    org-modern-todo nil
-    org-modern-tag nil
-    org-modern-block-fringe nil)
+  (setq org-modern-todo nil
+	org-modern-tag nil
+	org-modern-block-fringe nil)
 
   (global-org-modern-mode 1))
 
@@ -102,7 +100,7 @@
 
   ;; Denote for journaling
   (setq denote-journal-extras-directory
-    (expand-file-name "dates/" denote-directory)) ; Subdirectory for journal files
+	(expand-file-name "dates/" denote-directory)) ; Subdirectory for journal files
   (setq denote-journal-extras-keyword "dates") ; Stages are journals
   (setq denote-journal-extras-title-format "%F") ; Use ISO 8601 for titles
 
@@ -114,12 +112,12 @@
   :bind
   (:map global-map
 
-    ;; Open today's note
-    ("C-c d" . denote-journal-extras-new-or-existing-entry))
+	;; Open today's note
+	("C-c d" . denote-journal-extras-new-or-existing-entry))
   (:map org-mode-map
-    ("C-c i" . denote-link-or-create)
-	  ("C-c b" . denote-backlinks)
-	  ("C-c e" . denote-org-extras-extract-org-subtree))
+	("C-c i" . denote-link-or-create)
+	("C-c b" . denote-backlinks)
+	("C-c e" . denote-org-extras-extract-org-subtree))
   :hook (after-init . denote-journal-extras-new-or-existing-entry))
 
 ;; Extensions for Denote
@@ -143,31 +141,29 @@
 
 (defun my/denote-open-previous-file ()
   (interactive)
-  (let* (
-          (current-file (buffer-file-name))
-          (directory (file-name-directory current-file))
-          (files (directory-files directory t "\\`[^.]"))
-          (sorted-files (sort files 'string<))
-          (current-file-index (cl-position current-file sorted-files :test 'string=)))
+  (let* ((current-file (buffer-file-name))
+         (directory (file-name-directory current-file))
+         (files (directory-files directory t "\\`[^.]"))
+         (sorted-files (sort files 'string<))
+         (current-file-index (cl-position current-file sorted-files :test 'string=)))
 
     (when (and current-file-index (> current-file-index 0))
       (find-file (nth (1- current-file-index) sorted-files)))))
 
 (defun my/denote-open-next-file ()
   (interactive)
-  (let* (
-          (current-file (buffer-file-name))
-          (directory (file-name-directory current-file))
-          (files (directory-files directory t "\\`[^.]"))
-          (sorted-files (sort files 'string<))
-          (current-file-index (cl-position current-file sorted-files :test 'string=)))
+  (let* ((current-file (buffer-file-name))
+         (directory (file-name-directory current-file))
+         (files (directory-files directory t "\\`[^.]"))
+         (sorted-files (sort files 'string<))
+         (current-file-index (cl-position current-file sorted-files :test 'string=)))
 
     (when (and current-file-index (< current-file-index (1- (length sorted-files))))
       (find-file (nth (1+ current-file-index) sorted-files)))))
 
 (bind-keys :map org-mode-map
-  ("s-<up>" . my/denote-open-previous-file)
-  ("s-<down>" . my/denote-open-next-file))
+	   ("s-<up>" . my/denote-open-previous-file)
+	   ("s-<down>" . my/denote-open-next-file))
 
 
 ;; Org LaTeX customizations
@@ -181,39 +177,35 @@
 ;; Load languages for Org Babel
 
 ;; Do not ask for confirmation before executing
-(setq
-  org-link-elisp-confirm-function nil
-  org-link-shell-confirm-function nil)
+(setq org-link-elisp-confirm-function nil
+      org-link-shell-confirm-function nil)
 
 ;; Org code blocks
 (setq org-confirm-babel-evaluate nil)
 
-(setq
-  org-src-preserve-indentation t
-  org-src-fontify-natively t
-  org-src-tab-acts-natively t)
+(setq org-src-preserve-indentation t
+      org-src-fontify-natively t
+      org-src-tab-acts-natively t)
 
 (org-babel-do-load-languages 'org-babel-load-languages
-  '(
-     (emacs-lisp . t)
-     (python . t)))
+			     '((emacs-lisp . t)
+			       (python . t)))
 
 
 ;; Org-agenda
 (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
 (bind-keys :map global-map
-	("C-c a" . org-agenda))
+	   ("C-c a" . org-agenda))
 
 ;; Org-agenda settings related to `org-modern'
 (setq org-agenda-tags-column 0)
 (setq org-agenda-block-separator ?─)
 (setq org-agenda-time-grid
-  '(
-     (daily today require-timed)
-	   (800 1000 1200 1400 1600 1800 2000)
-     " ────── " "───────────────"))
+      '((daily today require-timed)
+	(800 1000 1200 1400 1600 1800 2000)
+	" ────── " "───────────────"))
 (setq org-agenda-current-time-string
-  "◀── now ─────────────────────────────────────────────────")
+      "◀── now ─────────────────────────────────────────────────")
 
 
 ;; Org indentation (see also `init-eglot')
@@ -235,41 +227,38 @@
 
 
 ;; TTS implementation using OpenAI's API
-(defun my/get_string_by_key_from_file (filename key)
+(defun my/content-by-key-from-file (filename key)
   "Get content string of KEY from FILENAME."
   (with-temp-buffer
     (insert-file-contents filename)
     (goto-char (point-min))
     (if (re-search-forward (format "^%s=\"\\([^\"]+\\)\"" key) nil t)
-      (match-string 1)
+	(match-string 1)
       (error "Key %s not found in file %s" key filename))))
 
-(defun my/get_environ_from_user_emacs_dir (key)
+(defun my/environ-from-user-emacs-dir (key)
   "Get environ content by KEY from .env file in `user-emacs-directory'."
   (let ((filename (concat user-emacs-directory ".env")))
-    (my/get_string_by_key_from_file filename key)))
+    (my/content-by-key-from-file filename key)))
 
 (setq my/openai-api-key
-  (my/get_environ_from_user_emacs_dir "OPENAI_API_KEY"))
+      (my/environ-from-user-emacs-dir "OPENAI_API_KEY"))
 
 (require 'json)
 
 (defun my/speech-from-str-to-file (input-string output-file)
   "Send a text-to-speech request to the OpenAI API and save the
 result to OUTPUT-FILE."
-  (let* (
-          (url "https://api.openai.com/v1/audio/speech")
-          (url-request-method "POST")
-          (url-request-extra-headers
-            `(
-               ("Authorization" . ,(concat "Bearer " my/openai-api-key))
-               ("Content-Type" . "application/json")))
-          (url-request-data
-            (json-encode `(
-                            ("model" . "tts-1")
-                            ("input" . ,input-string)
-                            ("voice" . "echo"))))
-          (buffer (url-retrieve-synchronously url)))
+  (let* ((url "https://api.openai.com/v1/audio/speech")
+         (url-request-method "POST")
+         (url-request-extra-headers
+          `(("Authorization" . ,(concat "Bearer " my/openai-api-key))
+            ("Content-Type" . "application/json")))
+         (url-request-data
+          (json-encode `(("model" . "tts-1")
+                         ("input" . ,input-string)
+                         ("voice" . "echo"))))
+         (buffer (url-retrieve-synchronously url)))
     (when buffer
       (with-current-buffer buffer
         (goto-char (point-min))
@@ -288,34 +277,32 @@ result to OUTPUT-FILE."
 the point."
   (interactive)
   (if (use-region-p)
-    (let* (
-            (start (region-beginning))
-	          (end (region-end))
-	          (input-string (buffer-substring-no-properties start end))
-	          (filename (concat my/speach-files-dir
-			                  "speach-" (my/generate-timestamp) ".mp3"))
-	          (button-string
-	            (format "[[elisp:(emms-play-file \"%s\")][[􀊨]]]" filename)))
-      (my/speech-from-str-to-file input-string filename)
-	    (goto-char end)
-      (insert (concat " " button-string))
-	    (message (format "TTS finished to file %s" filename)))
+      (let* ((start (region-beginning))
+	     (end (region-end))
+	     (input-string (buffer-substring-no-properties start end))
+	     (filename (concat my/speach-files-dir
+			       "speach-" (my/generate-timestamp) ".mp3"))
+	     (button-string
+	      (format "[[elisp:(emms-play-file \"%s\")][[􀊨]]]" filename)))
+	(my/speech-from-str-to-file input-string filename)
+	(goto-char end)
+	(insert (concat " " button-string))
+	(message (format "TTS finished to file %s" filename)))
     (message "No region selected")))
 
 (bind-keys* :map org-mode-map
-	("s-[ s" . my/speech-from-str-to-file-insert))
+	    ("s-[ s" . my/speech-from-str-to-file-insert))
 
 (defun my/play-speach-current-heading ()
   "Play the speach audio if there is exactly one in current heading."
   (interactive)
   (save-excursion
     (org-back-to-heading t)
-    (let (
-	         (heading-end (save-excursion
-			                    (outline-next-heading)
-			                    (point)))
-           (button-count 0)
-           button-pos)
+    (let ((heading-end (save-excursion
+			 (outline-next-heading)
+			 (point)))
+          (button-count 0)
+          button-pos)
 
       ;; Count the number of "[􀊨]" buttons and record the position
       ;; of the button
@@ -325,20 +312,20 @@ the point."
 
       ;; Check if there is exactly one button
       (if (= button-count 1)
-        (progn
-          (goto-char button-pos)
-          (org-open-at-point))
+          (progn
+            (goto-char button-pos)
+            (org-open-at-point))
         (message
-	        "There must be exactly one \"[􀊨]\" button in current heading")))))
+	 "There must be exactly one \"[􀊨]\" button in current heading")))))
 
 
 ;; Modules for language learning
-(use-package org-drill
-  :straight t
-  :config
-  (setq org-drill-learn-fraction 0.5)
-  (setq org-drill-maximum-items-per-session 20)
-  (add-hook 'org-drill-display-answer-hook #'my/play-speach-current-heading))
+;; (use-package org-drill
+;;   :straight t
+;;   :config
+;;   (setq org-drill-learn-fraction 0.5)
+;;   (setq org-drill-maximum-items-per-session 20)
+;;   (add-hook 'org-drill-display-answer-hook #'my/play-speach-current-heading))
 
 (provide 'init-org)
 ;;;
