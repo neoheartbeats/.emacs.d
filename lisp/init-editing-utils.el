@@ -65,10 +65,10 @@
 (global-set-key (kbd "C-c C-p") 'pp-current-el-buffer)
 
 ;; EditorConfig for Emacs
-(use-package editorconfig
-  :straight t
-  :diminish (editorconfig-mode)
-  :config (editorconfig-mode 1))
+;; (use-package editorconfig
+;;   :straight t
+;;   :diminish (editorconfig-mode)
+;;   :config (editorconfig-mode 1))
 
 (provide 'init-editing-utils)
 ;;;

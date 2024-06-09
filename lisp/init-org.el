@@ -37,6 +37,7 @@
     org-modern-star 'fold
     org-modern-fold-stars '(("◉" . "○"))
     org-modern-hide-stars 'leading)
+  (setq org-modern-keyword "◉ ")
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '(
                                (?X . "􀃰")
@@ -48,7 +49,6 @@
   (setq
     org-modern-todo nil
     org-modern-tag nil
-    org-modern-keyword nil
     org-modern-block-fringe nil)
 
   (global-org-modern-mode 1))

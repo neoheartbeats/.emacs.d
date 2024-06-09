@@ -79,8 +79,7 @@
 (set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
 
 ;; Font ligatures support
-(use-package ligature
-  :straight t
+(use-package ligature :straight t
   :config
   (ligature-set-ligatures
     't
