@@ -56,6 +56,12 @@
     (message "􀪾 %s" text)))
 
 
+;; User information
+(setq
+  user-full-name "Sthenno"
+  user-mail-address "sthenno@sthenno.com")
+
+
 ;; Package management via `straight.el'
 (defvar bootstrap-version)
 (let ((bootstrap-file

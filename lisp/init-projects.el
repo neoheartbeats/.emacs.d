@@ -14,6 +14,10 @@
   :config (setq magit-diff-refine-hunk t)
   :bind ("C-x g" . magit-status))
 
+;; (use-package diff-hl
+;;   :straight t
+;;   :config (global-diff-hl-mode 1))
+
 
 ;; Project management using Projectile
 (use-package projectile

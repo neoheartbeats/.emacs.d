@@ -53,8 +53,9 @@
      (bg-region bg-red-intense)
      (fg-region unspecified)))
 
-(setq modus-themes-prompts '(extrabold))
-(setq modus-themes-completions '((t . (extrabold))))
+(setq
+  modus-themes-prompts '(extrabold)
+  modus-themes-completions '((t . (extrabold))))
 
 ;; diable other themes before loading Modus Themes
 (mapc #'disable-theme custom-enabled-themes)
@@ -75,11 +76,32 @@
 (add-hook 'after-init-hook #'global-hl-line-mode)
 
 ;; Custom font
-(set-face-attribute 'default nil :family "Forma DJR Mono" :height 140)
+(set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
+
+;; Font ligatures support
+(use-package ligature
+  :straight t
+  :config
+  (ligature-set-ligatures
+    't
+    '("-<<" "-<" "-<-" "<--" "<---" "<<-" "<-"
+       "->" "->>" "-->" "--->" "->-" ">-" ">>-"
+       "=<<" "=<" "=<=" "<==" "<===" "<<=" "<="
+       "=>" "=>>" "==>" "===>" "=>=" ">=" ">>="
+       "<->" "<-->" "<--->" "<---->"
+       "<=>" "<==>" "<===>" "<====>"
+       "::" ":::" "__" "..." ".."
+       "<~~" "</" "</>" "/>" "~~>"
+       "==" "!=" "<>" "===" "!==" "!==="
+       "<:" ":=" "*=" "*+" "<*" "<*>" "*>"
+       "<|" "<|>" "|>" "<." "<.>" ".>" "+*" "=*" "=:" ":>"
+       "(* *)" "/*" "*/" "[|" "|]" "{|" "|}"
+       "++" "+++" "\\/" "/\\" "|-" "-|" "<!--" "<!---"))
+  (global-ligature-mode 1))
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
-(set-fontset-font "fontset-default" 'han "TT ZhiHei CHS variable")
+(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
 ;; Note this make all italic font style disabled
 (set-face-attribute 'italic nil :slant 'normal)

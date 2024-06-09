@@ -40,13 +40,20 @@
                                (?- . "􀃞")
                                (?\s . "􀂒")))
   (setq org-modern-table-vertical 2)
-  (setq org-modern-tag nil)
-  (setq org-modern-block-fringe nil)
+
+  ;; Disable these features
+  (setq
+    org-modern-tag nil
+    org-modern-keyword nil
+    org-modern-block-fringe nil)
+
   (global-org-modern-mode 1))
 
 ;; External settings for `org-modern'
 (setq org-ellipsis " 􀍠")
 (setq org-hide-emphasis-markers t)
+(setq org-auto-align-tags nil)
+(setq org-tags-column 0)
 
 ;; Use this with `C-<return>'
 (setq org-insert-heading-respect-content t)
@@ -85,28 +92,18 @@
   :straight t
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
-  (setq denote-known-keywords '(
-                                 "robots"
-				                         "poem"
-				                         "sciences"
-				                         "dust"
-                                 "flashcards"
-				                         "business"
-				                         "billings"))
+  (setq denote-known-keywords '("dates" "shortcuts"))
+  (setq denote-prompts '(title))
   (setq denote-save-buffer-after-creation t)
 
   ;; Denote for journaling
   (setq denote-journal-extras-directory
-    (expand-file-name "stages/" denote-directory)) ; Subdirectory for journal files
-  (setq denote-journal-extras-keyword "stages") ; Stages are journals
-  (setq denote-journal-extras-title-format 'day-date-month-year)
+    (expand-file-name "dates/" denote-directory)) ; Subdirectory for journal files
+  (setq denote-journal-extras-keyword "dates") ; Stages are journals
+  (setq denote-journal-extras-title-format "%F") ; Use ISO 8601 for titles
 
-  ;; Do not include date in notes
-  (setq denote-org-front-matter
-    "#+title:      %1$s
-#+filetags:   %3$s
-#+identifier: %4$s
-\n")
+  ;; Do not include date, tags and ids in note files
+  (setq denote-org-front-matter "#+title: %1$s\n\n")
 
   ;; No need confirmation using `denote-rename-file'
   (setq denote-rename-no-confirm t)
@@ -122,18 +119,18 @@
   :hook (after-init . denote-journal-extras-new-or-existing-entry))
 
 ;; Extensions for Denote
-(use-package denote-menu
-  :straight t
-  :config
-  (setq denote-menu-title-column-width 45)
+;; (use-package denote-menu
+;;   :straight t
+;;   :config
+;;   (setq denote-menu-title-column-width 45)
 
-  ;; Remove denote journal entries from the menu
-  (setq denote-menu-initial-regex
-	  (mapconcat (lambda (keyword)
-                 (concat "_" keyword))
-		  denote-known-keywords "\\|"))
-  :bind (:map org-mode-map
-	        ("C-c m" . list-denotes)))
+;;   ;; Remove denote journal entries from the menu
+;;   (setq denote-menu-initial-regex
+;; 	  (mapconcat (lambda (keyword)
+;;                  (concat "_" keyword))
+;; 		  denote-known-keywords "\\|"))
+;;   :bind (:map org-mode-map
+;; 	        ("C-c m" . list-denotes)))
 
 ;; Custom functions for Denote
 (defun my/denote-insert-links-current-month ()
@@ -171,10 +168,10 @@
 
 ;; Org LaTeX customizations
 ;; Use CDLaTeX to improve editing experiences
-(use-package cdlatex
-  :straight t
-  :diminish (org-cdlatex-mode)
-  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+;; (use-package cdlatex
+;;   :straight t
+;;   :diminish (org-cdlatex-mode)
+;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 
 ;; Load languages for Org Babel
@@ -213,6 +210,10 @@
      " ────── " "───────────────"))
 (setq org-agenda-current-time-string
   "◀── now ─────────────────────────────────────────────────")
+
+
+;; Org Lists (see also `init-eglot')
+(setq org-list-indent-offset 2)
 
 
 ;; Useful functions
