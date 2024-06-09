@@ -217,7 +217,7 @@
 
 
 ;; Org indentation (see also `init-eglot')
-(setq-default org-list-indent-offset 4)
+(setq-default org-list-indent-offset 2)
 
 ;; Using hard indentation
 ;; (setq

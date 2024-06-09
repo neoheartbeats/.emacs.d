@@ -15,47 +15,47 @@
 (require-theme 'modus-themes)
 
 (setq modus-themes-common-palette-overrides
-  '(
-     ;; Make the mode line borderless
-     (border-mode-line-active bg-mode-line-active)
-     (border-mode-line-inactive bg-mode-line-inactive)
+      '(
+	;; Make the mode line borderless
+	(border-mode-line-active bg-mode-line-active)
+	(border-mode-line-inactive bg-mode-line-inactive)
 
-     ;; Set color faces for `display-line-numbers-mode'
-     (fg-line-number-inactive "gray50")
-     (fg-line-number-active fg-main)
-     (bg-line-number-inactive unspecified)
-     (bg-line-number-active bg-hl-line)
+	;; Set color faces for `display-line-numbers-mode'
+	(fg-line-number-inactive "gray50")
+	(fg-line-number-active fg-main)
+	(bg-line-number-inactive unspecified)
+	(bg-line-number-active bg-hl-line)
 
-     ;; Make the fringe invisible
-     (fringe unspecified)
+	;; Make the fringe invisible
+	(fringe unspecified)
 
-     ;; Subtle underlines
-     (underline-link border)
-     (underline-link-visited border)
-     (underline-link-symbolic border)
+	;; Subtle underlines
+	(underline-link border)
+	(underline-link-visited border)
+	(underline-link-symbolic border)
 
-	   ;; Make links the same color as `fg-main'
-	   ;; This also affects `button' faces in Modus Themes
-	   (fg-link unspecified)
-	   (fg-link-visited unspecified)
+	;; Make links the same color as `fg-main'
+	;; This also affects `button' faces in Modus Themes
+	(fg-link unspecified)
+	(fg-link-visited unspecified)
 
-     ;; Completions
-     (fg-completion-match-0 fg-main)
-     (bg-completion-match-0 bg-red-intense)
+	;; Completions
+	(fg-completion-match-0 fg-main)
+	(bg-completion-match-0 bg-red-intense)
 
-     (bg-paren-match bg-green-intense)
-     (underline-paren-match fg-main)
+	(bg-paren-match bg-green-intense)
+	(underline-paren-match fg-main)
 
-     ;; Make DONE less intense
-     (prose-done fg-dim)
+	;; Make DONE less intense
+	(prose-done fg-dim)
 
-     ;; Custom region colors
-     (bg-region bg-red-intense)
-     (fg-region unspecified)))
+	;; Custom region colors
+	(bg-region bg-red-intense)
+	(fg-region unspecified)))
 
 (setq
-  modus-themes-prompts '(extrabold)
-  modus-themes-completions '((t . (extrabold))))
+ modus-themes-prompts '(extrabold)
+ modus-themes-completions '((t . (extrabold))))
 
 ;; diable other themes before loading Modus Themes
 (mapc #'disable-theme custom-enabled-themes)
@@ -82,20 +82,20 @@
 (use-package ligature :straight t
   :config
   (ligature-set-ligatures
-    't
-    '("-<<" "-<" "-<-" "<--" "<---" "<<-" "<-"
-       "->" "->>" "-->" "--->" "->-" ">-" ">>-"
-       "=<<" "=<" "=<=" "<==" "<===" "<<=" "<="
-       "=>" "=>>" "==>" "===>" "=>=" ">=" ">>="
-       "<->" "<-->" "<--->" "<---->"
-       "<=>" "<==>" "<===>" "<====>"
-       "::" ":::" "__" "..." ".."
-       "<~~" "</" "</>" "/>" "~~>"
-       "==" "!=" "<>" "===" "!==" "!==="
-       "<:" ":=" "*=" "*+" "<*" "<*>" "*>"
-       "<|" "<|>" "|>" "<." "<.>" ".>" "+*" "=*" "=:" ":>"
-       "(* *)" "/*" "*/" "[|" "|]" "{|" "|}"
-       "++" "+++" "\\/" "/\\" "|-" "-|" "<!--" "<!---"))
+   't
+   '("-<<" "-<" "-<-" "<--" "<---" "<<-" "<-"
+     "->" "->>" "-->" "--->" "->-" ">-" ">>-"
+     "=<<" "=<" "=<=" "<==" "<===" "<<=" "<="
+     "=>" "=>>" "==>" "===>" "=>=" ">=" ">>="
+     "<->" "<-->" "<--->" "<---->"
+     "<=>" "<==>" "<===>" "<====>"
+     "::" ":::" "__" "..." ".."
+     "<~~" "</" "</>" "/>" "~~>"
+     "==" "!=" "<>" "===" "!==" "!==="
+     "<:" ":=" "*=" "*+" "<*" "<*>" "*>"
+     "<|" "<|>" "|>" "<." "<.>" ".>" "+*" "=*" "=:" ":>"
+     "(* *)" "/*" "*/" "[|" "|]" "{|" "|}"
+     "++" "+++" "\\/" "/\\" "|-" "-|" "<!--" "<!---"))
   (global-ligature-mode 1))
 
 ;; Set up font for unicode fontset
