@@ -33,7 +33,8 @@
 (use-package org-modern
   :straight t
   :config
-  (setq org-modern-fold-stars '(("􀨁" . "􀀀")))
+  (setq org-modern-fold-stars '(("􀄩" . "􀄩")))
+  (setq org-modern-hide-stars ?\􀄩)
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '(
                                (?X . "􀃰")
@@ -212,8 +213,10 @@
   "◀── now ─────────────────────────────────────────────────")
 
 
-;; Org Lists (see also `init-eglot')
-(setq org-list-indent-offset 2)
+;; Org indentation (see also `init-eglot')
+(setq-default org-list-indent-offset 2)
+;; (setq-default org-adapt-indentation t)
+(setq org-indent-indentation-per-level 0)
 
 
 ;; Useful functions
