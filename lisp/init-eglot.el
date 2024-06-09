@@ -36,6 +36,18 @@
     '(python-ts-mode . ("pyright-langserver" "--stdio")))
   (add-hook 'python-ts-mode #'eglot-ensure))
 
+;; Speed up
+(use-package eglot-booster
+	:straight (eglot-booster
+              :type git
+              :host github
+              :repo "jdtsmith/eglot-booster")
+  :init
+  (add-to-list 'exec-path (expand-file-name "bin/" user-emacs-directory))
+	:config
+  (setq eglot-booster-no-remote-boost t)
+  (eglot-booster-mode 1))
+
 ;; Auto confirm `.dir-locals.el' files
 (setq-default enable-local-variables :safe)
 
@@ -85,9 +97,62 @@
     indent-bars-zigzag nil
     indent-bars-display-on-blank-lines t)
 
-  (add-hook 'org-mode-hook #'(lambda ()
-                               (setq-locals indent-bars-spacing-override 2)))
-  :hook ((python-ts-mode org-mode) . indent-bars-mode))
+  (defun indent-bars--guess-spacing ()
+    "Get indentation spacing of current buffer.
+Adapted from `highlight-indentation-mode'."
+    (cond
+      ((and (derived-mode-p 'python-mode) (boundp 'py-indent-offset))
+        py-indent-offset)
+      ((and (derived-mode-p 'python-mode) (boundp 'python-indent-offset))
+        python-indent-offset)
+      ((and (derived-mode-p 'ruby-mode) (boundp 'ruby-indent-level))
+        ruby-indent-level)
+      ((and (derived-mode-p 'scala-mode) (boundp 'scala-indent:step))
+        scala-indent:step)
+      ((and (derived-mode-p 'scala-mode) (boundp 'scala-mode-indent:step))
+        scala-mode-indent:step)
+      ((and (or (derived-mode-p 'scss-mode) (derived-mode-p 'css-mode))
+	       (boundp 'css-indent-offset))
+        css-indent-offset)
+      ((and (derived-mode-p 'nxml-mode) (boundp 'nxml-child-indent))
+        nxml-child-indent)
+      ((and (derived-mode-p 'coffee-mode) (boundp 'coffee-tab-width))
+        coffee-tab-width)
+      ((and (derived-mode-p 'js-mode) (boundp 'js-indent-level))
+        js-indent-level)
+      ((and (derived-mode-p 'js2-mode) (boundp 'js2-basic-offset))
+        js2-basic-offset)
+      ((and (derived-mode-p 'sws-mode) (boundp 'sws-tab-width))
+        sws-tab-width)
+      ((and (derived-mode-p 'web-mode) (boundp 'web-mode-markup-indent-offset))
+        web-mode-markup-indent-offset)
+      ((and (derived-mode-p 'web-mode) (boundp 'web-mode-html-offset)) ; old var
+        web-mode-html-offset)
+      ((and (local-variable-p 'c-basic-offset) (numberp c-basic-offset))
+        c-basic-offset)
+      ((and (derived-mode-p 'yaml-mode) (boundp 'yaml-indent-offset))
+        yaml-indent-offset)
+      ((and (derived-mode-p 'elixir-mode) (boundp 'elixir-smie-indent-basic))
+        elixir-smie-indent-basic)
+      ((and (derived-mode-p 'lisp-data-mode) (boundp 'lisp-body-indent))
+        lisp-body-indent)
+      ((and (derived-mode-p 'cobol-mode) (boundp 'cobol-tab-width))
+        cobol-tab-width)
+      ((or (derived-mode-p 'go-ts-mode) (derived-mode-p 'go-mode))
+        tab-width)
+      ((derived-mode-p 'nix-mode)
+        tab-width)
+      ((and (derived-mode-p 'nix-ts-mode) (boundp 'nix-ts-mode-indent-offset))
+        nix-ts-mode-indent-offset)
+      ((and (derived-mode-p 'json-ts-mode) (boundp 'json-ts-mode-indent-offset))
+        json-ts-mode-indent-offset)
+      ((and (derived-mode-p 'json-mode) (boundp 'js-indent-level))
+        js-indent-level)
+      ((and (boundp 'standard-indent) standard-indent))
+      ((and (derived-mode-p 'org-mode) (boundp 'org-list-indent-offset))
+        org-list-indent-offset)
+      (t 4)))
+  :hook ((python-ts-mode) . indent-bars-mode))
 
 
 ;;; AI Integration
