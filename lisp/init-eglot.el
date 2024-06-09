@@ -43,18 +43,19 @@
 ;;; Python project management
 ;;
 ;; Environment management using conda
-(use-package conda
-  :straight t
-  :config
-  (setq conda-env-home-directory (expand-file-name "~/anaconda3/"))
-  (conda-env-initialize-interactive-shells)
-  (conda-env-autoactivate-mode 1)
-  (add-hook 'find-file-hook #'(lambda ()
-				                        (when (bound-and-true-p conda-project-env-path)
-                                  (conda-env-activate-for-buffer)))))
+;; (use-package conda
+;;   :straight t
+;;   :config
+;;   (setq conda-env-home-directory (expand-file-name "~/anaconda3/"))
+;;   (conda-env-initialize-interactive-shells)
+;;   (conda-env-autoactivate-mode 1)
+;;   (add-hook 'find-file-hook #'(lambda ()
+;; 				                        (when (bound-and-true-p conda-project-env-path)
+;;                                   (conda-env-activate-for-buffer)))))
 
-(setq python-indent-guess-indent-offset t
-  python-indent-guess-indent-offset-verbose nil)
+;; (setq
+;;   python-indent-guess-indent-offset t
+;;   python-indent-guess-indent-offset-verbose nil)
 
 ;; Reformat python buffers using the `black' formatter
 (use-package blacken
@@ -63,6 +64,30 @@
   :bind
   (:map python-ts-mode-map
     ("s-i" . blacken-buffer)))
+
+
+(use-package indent-bars
+  :straight (indent-bars
+              :type git
+              :host github
+              :repo "jdtsmith/indent-bars")
+  :custom
+  (indent-bars-treesit-support t)
+  (indent-bars-treesit-ignore-blank-lines-types '("module"))
+  (indent-bars-prefer-character t)
+  :config
+  (setq
+    indent-bars-color '(highlight :face-bg t :blend 0.2)
+    indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+    indent-bars-highlight-current-depth '(:blend 0.8)
+    indent-bars-depth-update-delay 0.0
+    indent-bars-starting-column 0
+    indent-bars-zigzag nil
+    indent-bars-display-on-blank-lines t)
+
+  (add-hook 'org-mode-hook #'(lambda ()
+                               (setq-locals indent-bars-spacing-override 2)))
+  :hook ((python-ts-mode org-mode) . indent-bars-mode))
 
 
 ;;; AI Integration
@@ -75,20 +100,6 @@
 	            :files ("*.el"))
   :config
   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
-
-;; GPTel: A simple LLM client for Emacs
-(use-package gptel
-  :straight t
-  :config
-  (setq-default gptel-model "phi3:medium"
-		gptel-backend (gptel-make-ollama "Phi-3"
-				            :host "localhost:11434"
-				            :stream t
-				            :models '("phi3:medium")))
-  (setq gptel-default-mode 'org-mode)
-  :bind (("C-c g" . gptel))
-  :hook (gptel-mode . (lambda ()
-			                  (visual-line-mode 1))))
 
 
 ;;; EMMS
