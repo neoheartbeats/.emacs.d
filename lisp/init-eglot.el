@@ -89,10 +89,9 @@
   (indent-bars-prefer-character t)
   :config
   (setq
-    indent-bars-color '(highlight :face-bg t :blend 0.2)
-    indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-    indent-bars-highlight-current-depth '(:blend 0.8)
-    indent-bars-depth-update-delay 0.0
+    indent-bars-color '(highlight :face-bg t :blend 0.8)
+    indent-bars-color-by-depth nil
+    indent-bars-highlight-current-depth nil
     indent-bars-starting-column 0
     indent-bars-zigzag nil
     indent-bars-display-on-blank-lines t)
@@ -152,7 +151,7 @@ Adapted from `highlight-indentation-mode'."
       ((and (derived-mode-p 'org-mode) (boundp 'org-list-indent-offset))
         org-list-indent-offset)
       (t 4)))
-  :hook ((python-ts-mode) . indent-bars-mode))
+  :hook ((python-ts-mode org-mode) . indent-bars-mode))
 
 
 ;;; AI Integration

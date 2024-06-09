@@ -23,7 +23,7 @@
   :straight auctex)
 
 
-;; Images and files (Org 9.7+)
+;; Images and files
 (setq org-yank-dnd-method 'file-link)
 (setq org-yank-image-save-method
   (expand-file-name "images/" org-directory))
@@ -33,8 +33,10 @@
 (use-package org-modern
   :straight t
   :config
-  (setq org-modern-fold-stars '(("􀄩" . "􀄩")))
-  (setq org-modern-hide-stars ?\􀄩)
+  (setq
+    org-modern-star 'fold
+    org-modern-fold-stars '(("◉" . "○"))
+    org-modern-hide-stars 'leading)
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '(
                                (?X . "􀃰")
@@ -44,6 +46,7 @@
 
   ;; Disable these features
   (setq
+    org-modern-todo nil
     org-modern-tag nil
     org-modern-keyword nil
     org-modern-block-fringe nil)
@@ -214,9 +217,13 @@
 
 
 ;; Org indentation (see also `init-eglot')
-(setq-default org-list-indent-offset 2)
-;; (setq-default org-adapt-indentation t)
-(setq org-indent-indentation-per-level 0)
+(setq-default org-list-indent-offset 4)
+
+;; Using hard indentation
+;; (setq
+;;   org-adapt-indentation t
+;;   org-hide-leading-stars t
+;;   org-odd-levels-only t)
 
 
 ;; Useful functions
