@@ -116,6 +116,23 @@
   :straight t
   :config (diredfl-global-mode 1))
 
+
+;; Better margins
+(use-package perfect-margin
+  :straight t
+  :config
+  (perfect-margin-mode 1)
+  (setq perfect-margin-ignore-filters nil)
+  (setq perfect-margin-ignore-regexps nil)
+
+  ;; Add additinal bding on margin area
+  (dolist (margin '("<left-margin> " "<right-margin> "))
+    (global-set-key (kbd (concat margin "<mouse-1>")) 'ignore)
+    (global-set-key (kbd (concat margin "<mouse-3>")) 'ignore)
+    (dolist (multiple '("" "double-" "triple-"))
+      (global-set-key (kbd (concat margin "<" multiple "wheel-up>")) 'mwheel-scroll)
+      (global-set-key (kbd (concat margin "<" multiple "wheel-down>")) 'mwheel-scroll))))
+
 (provide 'init-gui-frames)
 ;;;
 ;; coding: utf-8
