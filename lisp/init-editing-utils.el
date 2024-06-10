@@ -46,7 +46,8 @@
 
 ;; Display line numbers
 (setq-default display-line-numbers-width 5)
-(global-display-line-numbers-mode 1)
+;; (global-display-line-numbers-mode 1)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
 
 ;;; Basics for file formattings
@@ -81,13 +82,12 @@
   (indent-bars-treesit-ignore-blank-lines-types '("module"))
   (indent-bars-prefer-character t)
   :config
-  (setq
-   indent-bars-color '(highlight :face-bg t :blend 0.4)
-   indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-   indent-bars-highlight-current-depth '(:blend 0.8)
-   indent-bars-starting-column 0
-   indent-bars-zigzag nil
-   indent-bars-display-on-blank-lines t)
+  (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
+	indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+	indent-bars-highlight-current-depth '(:blend 0.8)
+	indent-bars-starting-column 0
+	indent-bars-zigzag nil
+	indent-bars-display-on-blank-lines t)
 
   (defun indent-bars--guess-spacing ()
     "Get indentation spacing of current buffer.

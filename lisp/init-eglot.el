@@ -104,8 +104,9 @@
 the given content."
   (let* ((url-request-method "POST")
          (url-request-extra-headers '(("Content-Type" . "application/json")))
-         (url-request-data (json-encode `(("content" . ,content))))
-         (url (format "%s/%s" sthenno-endpoint-u endpoint))
+         (url-request-data (encode-coding-string
+			    (json-encode `(("content" . ,content))) 'utf-8))
+         (url (format "%s/%s/" sthenno-endpoint-u endpoint))
          response)
     (with-current-buffer (url-retrieve-synchronously url)
       (goto-char url-http-end-of-headers)
@@ -115,6 +116,11 @@ the given content."
 
 (defun sthenno-trans-to-zh (content)
   (let* ((obj (sthenno-post "trans_to_zh" content))
+	 (translation (cdr (assoc 'translation obj))))
+    translation))
+
+(defun sthenno-trans-to-en (content)
+  (let* ((obj (sthenno-post "trans_to_en" content))
 	 (translation (cdr (assoc 'translation obj))))
     translation))
 
@@ -135,8 +141,17 @@ the given content."
     (message (format "Translation: %s" translation))
     translation))
 
+(defun sthenno-trans-to-en-selected ()
+  (interactive)
+  (let* ((text (sthenno-selected-text))
+	 (translation (sthenno-trans-to-en text)))
+    (kill-new translation)
+    (message (format "Translation: %s" translation))
+    translation))
+
 (bind-keys* :map org-mode-map
-	    ("C-c t" . sthenno-trans-to-zh-selected))
+	    ("C-c t" . sthenno-trans-to-zh-selected)
+	    ("C-c e" . sthenno-trans-to-en-selected))
 
 (provide 'init-eglot)
 ;;;
