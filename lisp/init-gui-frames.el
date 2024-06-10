@@ -112,9 +112,13 @@
 (setq line-number-mode nil)
 
 ;; Make Dired more colorful
-(use-package diredfl
-  :straight t
-  :config (diredfl-global-mode 1))
+;; (use-package diredfl
+;;   :straight t
+;;   :config (diredfl-global-mode 1))
+
+(add-hook 'dired-mode-hook #'(lambda ()
+			       (dired-hide-details-mode 1)
+			       (dired-sort-toggle-or-edit)))
 
 
 ;; Better margins

@@ -45,7 +45,7 @@
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; Display line numbers
-(setq-default display-line-numbers-width 5)
+(setq-default display-line-numbers-width 4)
 ;; (global-display-line-numbers-mode 1)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 

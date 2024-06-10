@@ -20,8 +20,8 @@
 
 ;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions
 ;; in non-focused windows
-(setq cursor-in-non-selected-windows nil)
-(setq highlight-nonselected-windows nil)
+(setq-default cursor-in-non-selected-windows nil
+	      highlight-nonselected-windows nil)
 
 ;; More performant rapid scrolling over unfontified regions. May cause brief
 ;; spells of inaccurate fontification immediately after scrolling.
@@ -43,8 +43,9 @@
 (setq use-dialog-box nil)
 (setq use-file-dialog nil)
 
-(setq inhibit-splash-screen t)
-(setq inhibit-startup-buffer-menu t)
+(setq inhibit-splash-screen t
+      inhibit-startup-buffer-menu t)
+
 (setq initial-scratch-message "")
 
 ;; Default startup message
@@ -55,9 +56,8 @@
 
 
 ;; User information
-;; (setq
-;;   user-full-name "Sthenno"
-;;   user-mail-address "sthenno@sthenno.com")
+(setq user-full-name "Sthenno"
+      user-mail-address "sthenno@sthenno.com")
 
 
 ;; Package management via `straight.el'
