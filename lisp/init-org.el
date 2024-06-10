@@ -33,10 +33,9 @@
 (use-package org-modern
   :straight t
   :config
-  (setq
-   org-modern-star 'fold
-   org-modern-fold-stars '(("◉" . "○"))
-   org-modern-hide-stars 'leading)
+  (setq org-modern-star 'fold
+	org-modern-fold-stars '(("◉" . "○"))
+	org-modern-hide-stars 'leading)
   (setq org-modern-keyword "◉ ")
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '((?X . "􀃰")

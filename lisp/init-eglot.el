@@ -78,82 +78,6 @@
 	("s-i" . blacken-buffer)))
 
 
-(use-package indent-bars
-  :straight (indent-bars
-             :type git
-             :host github
-             :repo "jdtsmith/indent-bars")
-  :custom
-  (indent-bars-treesit-support t)
-  (indent-bars-treesit-ignore-blank-lines-types '("module"))
-  (indent-bars-prefer-character t)
-  :config
-  (setq
-   indent-bars-color '(highlight :face-bg t :blend 0.4)
-   indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-   indent-bars-highlight-current-depth '(:blend 0.8)
-   indent-bars-starting-column 0
-   indent-bars-zigzag nil
-   indent-bars-display-on-blank-lines t)
-
-  (defun indent-bars--guess-spacing ()
-    "Get indentation spacing of current buffer.
-Adapted from `highlight-indentation-mode'."
-    (cond
-     ((and (derived-mode-p 'python-mode) (boundp 'py-indent-offset))
-      py-indent-offset)
-     ((and (derived-mode-p 'python-mode) (boundp 'python-indent-offset))
-      python-indent-offset)
-     ((and (derived-mode-p 'ruby-mode) (boundp 'ruby-indent-level))
-      ruby-indent-level)
-     ((and (derived-mode-p 'scala-mode) (boundp 'scala-indent:step))
-      scala-indent:step)
-     ((and (derived-mode-p 'scala-mode) (boundp 'scala-mode-indent:step))
-      scala-mode-indent:step)
-     ((and (or (derived-mode-p 'scss-mode) (derived-mode-p 'css-mode))
-	   (boundp 'css-indent-offset))
-      css-indent-offset)
-     ((and (derived-mode-p 'nxml-mode) (boundp 'nxml-child-indent))
-      nxml-child-indent)
-     ((and (derived-mode-p 'coffee-mode) (boundp 'coffee-tab-width))
-      coffee-tab-width)
-     ((and (derived-mode-p 'js-mode) (boundp 'js-indent-level))
-      js-indent-level)
-     ((and (derived-mode-p 'js2-mode) (boundp 'js2-basic-offset))
-      js2-basic-offset)
-     ((and (derived-mode-p 'sws-mode) (boundp 'sws-tab-width))
-      sws-tab-width)
-     ((and (derived-mode-p 'web-mode) (boundp 'web-mode-markup-indent-offset))
-      web-mode-markup-indent-offset)
-     ((and (derived-mode-p 'web-mode) (boundp 'web-mode-html-offset)) ; old var
-      web-mode-html-offset)
-     ((and (local-variable-p 'c-basic-offset) (numberp c-basic-offset))
-      c-basic-offset)
-     ((and (derived-mode-p 'yaml-mode) (boundp 'yaml-indent-offset))
-      yaml-indent-offset)
-     ((and (derived-mode-p 'elixir-mode) (boundp 'elixir-smie-indent-basic))
-      elixir-smie-indent-basic)
-     ((and (derived-mode-p 'lisp-data-mode) (boundp 'lisp-body-indent))
-      lisp-body-indent)
-     ((and (derived-mode-p 'cobol-mode) (boundp 'cobol-tab-width))
-      cobol-tab-width)
-     ((or (derived-mode-p 'go-ts-mode) (derived-mode-p 'go-mode))
-      tab-width)
-     ((derived-mode-p 'nix-mode)
-      tab-width)
-     ((and (derived-mode-p 'nix-ts-mode) (boundp 'nix-ts-mode-indent-offset))
-      nix-ts-mode-indent-offset)
-     ((and (derived-mode-p 'json-ts-mode) (boundp 'json-ts-mode-indent-offset))
-      json-ts-mode-indent-offset)
-     ((and (derived-mode-p 'json-mode) (boundp 'js-indent-level))
-      js-indent-level)
-     ((and (boundp 'standard-indent) standard-indent))
-     ((and (derived-mode-p 'org-mode) (boundp 'org-list-indent-offset))
-      org-list-indent-offset)
-     (t 4)))
-  :hook ((python-ts-mode org-mode) . indent-bars-mode))
-
-
 ;;; AI Integration
 ;;
 ;; GitHub Copilot
@@ -166,15 +90,53 @@ Adapted from `highlight-indentation-mode'."
   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
 
-;;; EMMS
-(use-package emms
-  :straight t
-  :config
-  (emms-minimalistic)
-  (emms-default-players)
-  (setq emms-source-file-default-directory "~/Music/A55/")
-  (setq emms-mode-line-icon-enabled-p 'nil)
-  (add-hook 'emms-player-started-hook #'emms-shuffle))
+;;; sthenno-endpoints
+;;
+;; Translation
+(require 'url)
+(require 'url-http)
+(require 'json)
+
+(setq sthenno-endpoint-u "http://localhost:8000")
+
+(defun sthenno-post (endpoint content)
+  "Send a JSON formatted POST request to the specified endpoint using
+the given content."
+  (let* ((url-request-method "POST")
+         (url-request-extra-headers '(("Content-Type" . "application/json")))
+         (url-request-data (json-encode `(("content" . ,content))))
+         (url (format "%s/%s" sthenno-endpoint-u endpoint))
+         response)
+    (with-current-buffer (url-retrieve-synchronously url)
+      (goto-char url-http-end-of-headers)
+      (setq response (buffer-substring-no-properties (point) (point-max)))
+      (kill-buffer (current-buffer)))
+    (json-read-from-string (decode-coding-string response 'utf-8))))
+
+(defun sthenno-trans-to-zh (content)
+  (let* ((obj (sthenno-post "trans_to_zh" content))
+	 (translation (cdr (assoc 'translation obj))))
+    translation))
+
+(defun sthenno-selected-text ()
+  (interactive)
+  (if (use-region-p)
+      (let* ((start (region-beginning))
+	     (end (region-end))
+	     (text (buffer-substring-no-properties start end)))
+	text)
+    (message "No text selected.")))
+
+(defun sthenno-trans-to-zh-selected ()
+  (interactive)
+  (let* ((text (sthenno-selected-text))
+	 (translation (sthenno-trans-to-zh text)))
+    (kill-new translation)
+    (message (format "Translation: %s" translation))
+    translation))
+
+(bind-keys* :map org-mode-map
+	    ("C-c t" . sthenno-trans-to-zh-selected))
 
 (provide 'init-eglot)
 ;;;

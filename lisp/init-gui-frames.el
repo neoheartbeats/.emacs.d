@@ -53,9 +53,8 @@
 	(bg-region bg-red-intense)
 	(fg-region unspecified)))
 
-(setq
- modus-themes-prompts '(extrabold)
- modus-themes-completions '((t . (extrabold))))
+(setq modus-themes-prompts '(extrabold)
+      modus-themes-completions '((t . (extrabold))))
 
 ;; diable other themes before loading Modus Themes
 (mapc #'disable-theme custom-enabled-themes)

@@ -58,9 +58,9 @@
 
 
 ;; Fix environment for macOS
-;; (use-package exec-path-from-shell
-;;   :straight t
-;;   :config (exec-path-from-shell-initialize))
+(use-package exec-path-from-shell
+  :straight t
+  :config (exec-path-from-shell-initialize))
 
 
 ;; Increase how much is read from processes (default is 4kb)
@@ -176,6 +176,17 @@
 (setq select-enable-primary nil)
 (setq select-enable-clipboard t)
 (setq search-default-mode 'char-fold-to-regexp)
+
+
+;;; EMMS
+(use-package emms
+  :straight t
+  :config
+  (emms-minimalistic)
+  (emms-default-players)
+  (setq emms-source-file-default-directory "~/Music/A55/")
+  (setq emms-mode-line-icon-enabled-p 'nil)
+  (add-hook 'emms-player-started-hook #'emms-shuffle))
 
 (provide 'init-system)
 ;;;
