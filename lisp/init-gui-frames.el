@@ -40,17 +40,17 @@
 	(fg-link-visited unspecified)
 
 	;; Completions
-	(fg-completion-match-0 fg-main)
-	(bg-completion-match-0 bg-red-intense)
+	;; (fg-completion-match-0 fg-main)
+	;; (bg-completion-match-0 bg-red-intense)
 
 	(bg-paren-match bg-green-intense)
-	(underline-paren-match fg-main)
+	;; (underline-paren-match fg-main)
 
 	;; Make DONE less intense
 	(prose-done fg-dim)
 
 	;; Custom region colors
-	(bg-region bg-red-intense)
+	;; (bg-region bg-red-intense)
 	(fg-region unspecified)))
 
 (setq modus-themes-prompts '(extrabold)
