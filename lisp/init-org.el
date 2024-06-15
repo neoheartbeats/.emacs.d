@@ -14,8 +14,8 @@
 (setq org-directory "~/Sthenno/")
 
 ;; Org Mode buffer init behaviors
-(setq org-startup-with-inline-images t
-      org-startup-with-latex-preview t)
+;; (setq org-startup-with-inline-images t
+;;       org-startup-with-latex-preview t)
 
 ;; Install AUCTeX
 (use-package tex

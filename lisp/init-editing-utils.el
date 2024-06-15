@@ -144,7 +144,7 @@ Adapted from `highlight-indentation-mode'."
      ((and (derived-mode-p 'org-mode) (boundp 'org-list-indent-offset))
       org-list-indent-offset)
      (t 4)))
-  :hook ((python-ts-mode org-mode) . indent-bars-mode))
+  :hook ((python-ts-mode) . indent-bars-mode))
 
 (provide 'init-editing-utils)
 ;;;

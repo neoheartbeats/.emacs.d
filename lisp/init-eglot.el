@@ -34,7 +34,10 @@
   ;; Use Pyright as the default language server
   (add-to-list 'eglot-server-programs
 	       '(python-ts-mode . ("pyright-langserver" "--stdio")))
-  (add-hook 'python-ts-mode #'eglot-ensure))
+  (add-hook 'python-ts-mode #'eglot-ensure)
+  :bind
+  (:map eglot-mode-map
+	("<f6>" . eglot-rename)))
 
 ;; Speed up
 (use-package eglot-booster
@@ -53,26 +56,13 @@
 
 
 ;;; Python project management
-;;
-;; Environment management using conda
-;; (use-package conda
-;;   :straight t
-;;   :config
-;;   (setq conda-env-home-directory (expand-file-name "~/anaconda3/"))
-;;   (conda-env-initialize-interactive-shells)
-;;   (conda-env-autoactivate-mode 1)
-;;   (add-hook 'find-file-hook #'(lambda ()
-;; 				                        (when (bound-and-true-p conda-project-env-path)
-;;                                   (conda-env-activate-for-buffer)))))
-
-;; (setq
-;;   python-indent-guess-indent-offset t
-;;   python-indent-guess-indent-offset-verbose nil)
+(use-package python
+  :straight t)
 
 ;; Reformat python buffers using the `black' formatter
 (use-package blacken
   :straight t
-  :config (add-hook 'python-ts-mode-hook #'blacken-mode)
+  ;; :config (add-hook 'python-ts-mode-hook #'blacken-mode)
   :bind
   (:map python-ts-mode-map
 	("s-i" . blacken-buffer)))

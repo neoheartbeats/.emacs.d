@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: pydir
+# key: pydir
+# --
+((python-ts-mode . ((eval . (setq-local python-shell-virtualenv-root
+					(file-name-concat
+					 (project-root (project-current))
+					 "venv"))))))
