@@ -7,7 +7,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(straight-use-package 'org)
+;; (straight-use-package 'org)
 (require 'org)
 
 ;; Setup default directory
@@ -92,14 +92,20 @@
   :straight t
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
-  (setq denote-known-keywords '("dates" "shortcuts"))
+  (setq denote-known-keywords '("entry" ; Keyword for journal files
+
+				;; Try to perform the PARA method
+				"project"
+				"area"
+				"resource"
+				"archive"))
   (setq denote-prompts '(title))
   (setq denote-save-buffer-after-creation t)
 
   ;; Denote for journaling
   (setq denote-journal-extras-directory
-	(expand-file-name "dates/" denote-directory)) ; Subdirectory for journal files
-  (setq denote-journal-extras-keyword "dates") ; Stages are journals
+	(expand-file-name "entry/" denote-directory)) ; Subdirectory for journal files
+  (setq denote-journal-extras-keyword "entry") ; Stages are journals
   (setq denote-journal-extras-title-format "%F") ; Use ISO 8601 for titles
 
   ;; Do not include date, tags and ids in note files
@@ -210,10 +216,10 @@
 (setq-default org-list-indent-offset 2)
 
 ;; Using hard indentation
-;; (setq
-;;   org-adapt-indentation t
-;;   org-hide-leading-stars t
-;;   org-odd-levels-only t)
+(setq
+ org-adapt-indentation t
+ org-hide-leading-stars t
+ org-odd-levels-only t)
 
 
 ;; Useful functions
@@ -224,97 +230,101 @@
     (insert (format "[[elisp:(kill-new \"%s\")][GET]]" content))))
 
 
+;;;; TODO
+;;
+;; Integrate with built-in Python API -> `init-eglot'
+;; 
 ;; TTS implementation using OpenAI's API
-(defun my/content-by-key-from-file (filename key)
-  "Get content string of KEY from FILENAME."
-  (with-temp-buffer
-    (insert-file-contents filename)
-    (goto-char (point-min))
-    (if (re-search-forward (format "^%s=\"\\([^\"]+\\)\"" key) nil t)
-	(match-string 1)
-      (error "Key %s not found in file %s" key filename))))
+;; (defun my/content-by-key-from-file (filename key)
+;;   "Get content string of KEY from FILENAME."
+;;   (with-temp-buffer
+;;     (insert-file-contents filename)
+;;     (goto-char (point-min))
+;;     (if (re-search-forward (format "^%s=\"\\([^\"]+\\)\"" key) nil t)
+;; 	(match-string 1)
+;;       (error "Key %s not found in file %s" key filename))))
 
-(defun my/environ-from-user-emacs-dir (key)
-  "Get environ content by KEY from .env file in `user-emacs-directory'."
-  (let ((filename (concat user-emacs-directory ".env")))
-    (my/content-by-key-from-file filename key)))
+;; (defun my/environ-from-user-emacs-dir (key)
+;;   "Get environ content by KEY from .env file in `user-emacs-directory'."
+;;   (let ((filename (concat user-emacs-directory ".env")))
+;;     (my/content-by-key-from-file filename key)))
 
-(setq my/openai-api-key
-      (my/environ-from-user-emacs-dir "OPENAI_API_KEY"))
+;; (setq my/openai-api-key
+;;       (my/environ-from-user-emacs-dir "OPENAI_API_KEY"))
 
-(require 'json)
+;; (require 'json)
 
-(defun my/speech-from-str-to-file (input-string output-file)
-  "Send a text-to-speech request to the OpenAI API and save the
-result to OUTPUT-FILE."
-  (let* ((url "https://api.openai.com/v1/audio/speech")
-         (url-request-method "POST")
-         (url-request-extra-headers
-          `(("Authorization" . ,(concat "Bearer " my/openai-api-key))
-            ("Content-Type" . "application/json")))
-         (url-request-data
-          (json-encode `(("model" . "tts-1")
-                         ("input" . ,input-string)
-                         ("voice" . "echo"))))
-         (buffer (url-retrieve-synchronously url)))
-    (when buffer
-      (with-current-buffer buffer
-        (goto-char (point-min))
-        (re-search-forward "\n\n")
-        (write-region (point) (point-max) output-file))
-      (kill-buffer buffer))))
+;; (defun my/speech-from-str-to-file (input-string output-file)
+;;   "Send a text-to-speech request to the OpenAI API and save the
+;; result to OUTPUT-FILE."
+;;   (let* ((url "https://api.openai.com/v1/audio/speech")
+;;          (url-request-method "POST")
+;;          (url-request-extra-headers
+;;           `(("Authorization" . ,(concat "Bearer " my/openai-api-key))
+;;             ("Content-Type" . "application/json")))
+;;          (url-request-data
+;;           (json-encode `(("model" . "tts-1")
+;;                          ("input" . ,input-string)
+;;                          ("voice" . "echo"))))
+;;          (buffer (url-retrieve-synchronously url)))
+;;     (when buffer
+;;       (with-current-buffer buffer
+;;         (goto-char (point-min))
+;;         (re-search-forward "\n\n")
+;;         (write-region (point) (point-max) output-file))
+;;       (kill-buffer buffer))))
 
-(defun my/generate-timestamp ()
-  "Generate a timestamp in the format YYYYMMDDTHHMMSS."
-  (format-time-string "%Y%m%dT%H%M%S"))
+;; (defun my/generate-timestamp ()
+;;   "Generate a timestamp in the format YYYYMMDDTHHMMSS."
+;;   (format-time-string "%Y%m%dT%H%M%S"))
 
-(setq my/speach-files-dir (concat org-directory "medi/"))
+;; (setq my/speach-files-dir (concat org-directory "medi/"))
 
-(defun my/speech-from-str-to-file-insert ()
-  "Send the selected text to the OpenAI API and insert the result at
-the point."
-  (interactive)
-  (if (use-region-p)
-      (let* ((start (region-beginning))
-	     (end (region-end))
-	     (input-string (buffer-substring-no-properties start end))
-	     (filename (concat my/speach-files-dir
-			       "speach-" (my/generate-timestamp) ".mp3"))
-	     (button-string
-	      (format "[[elisp:(emms-play-file \"%s\")][[􀊨]]]" filename)))
-	(my/speech-from-str-to-file input-string filename)
-	(goto-char end)
-	(insert (concat " " button-string))
-	(message (format "TTS finished to file %s" filename)))
-    (message "No region selected")))
+;; (defun my/speech-from-str-to-file-insert ()
+;;   "Send the selected text to the OpenAI API and insert the result at
+;; the point."
+;;   (interactive)
+;;   (if (use-region-p)
+;;       (let* ((start (region-beginning))
+;; 	     (end (region-end))
+;; 	     (input-string (buffer-substring-no-properties start end))
+;; 	     (filename (concat my/speach-files-dir
+;; 			       "speach-" (my/generate-timestamp) ".mp3"))
+;; 	     (button-string
+;; 	      (format "[[elisp:(emms-play-file \"%s\")][[􀊨]]]" filename)))
+;; 	(my/speech-from-str-to-file input-string filename)
+;; 	(goto-char end)
+;; 	(insert (concat " " button-string))
+;; 	(message (format "TTS finished to file %s" filename)))
+;;     (message "No region selected")))
 
-(bind-keys* :map org-mode-map
-	    ("s-[ s" . my/speech-from-str-to-file-insert))
+;; (bind-keys* :map org-mode-map
+;; 	    ("s-[ s" . my/speech-from-str-to-file-insert))
 
-(defun my/play-speach-current-heading ()
-  "Play the speach audio if there is exactly one in current heading."
-  (interactive)
-  (save-excursion
-    (org-back-to-heading t)
-    (let ((heading-end (save-excursion
-			 (outline-next-heading)
-			 (point)))
-          (button-count 0)
-          button-pos)
+;; (defun my/play-speach-current-heading ()
+;;   "Play the speach audio if there is exactly one in current heading."
+;;   (interactive)
+;;   (save-excursion
+;;     (org-back-to-heading t)
+;;     (let ((heading-end (save-excursion
+;; 			 (outline-next-heading)
+;; 			 (point)))
+;;           (button-count 0)
+;;           button-pos)
 
-      ;; Count the number of "[􀊨]" buttons and record the position
-      ;; of the button
-      (while (re-search-forward "\\[􀊨\\]" heading-end t)
-        (setq button-count (1+ button-count))
-        (setq button-pos (match-beginning 0)))
+;;       ;; Count the number of "[􀊨]" buttons and record the position
+;;       ;; of the button
+;;       (while (re-search-forward "\\[􀊨\\]" heading-end t)
+;;         (setq button-count (1+ button-count))
+;;         (setq button-pos (match-beginning 0)))
 
-      ;; Check if there is exactly one button
-      (if (= button-count 1)
-          (progn
-            (goto-char button-pos)
-            (org-open-at-point))
-        (message
-	 "There must be exactly one \"[􀊨]\" button in current heading")))))
+;;       ;; Check if there is exactly one button
+;;       (if (= button-count 1)
+;;           (progn
+;;             (goto-char button-pos)
+;;             (org-open-at-point))
+;;         (message
+;; 	 "There must be exactly one \"[􀊨]\" button in current heading")))))
 
 
 ;; Modules for language learning
