@@ -81,7 +81,8 @@
 (straight-use-package 'use-package)
 (straight-use-package 'bind-key)
 (straight-use-package 'diminish)
-(diminish 'eldoc-mode)
+
+;; (diminish 'eldoc-mode)
 
 (eval-when-compile
   (eval-after-load 'advice
