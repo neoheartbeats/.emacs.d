@@ -15,9 +15,9 @@
 ;;
 ;; Command `treesit-auto-install-all' is required if the tree-sitter grammar
 ;; libs have not been configured already
-(use-package treesit-auto
-  :straight t
-  :config (global-treesit-auto-mode 1))
+;; (use-package treesit-auto
+;;   :straight t
+;;   :config (global-treesit-auto-mode 1))
 
 ;; Remap `python-mode' to `python-ts-mode'
 (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
@@ -39,6 +39,9 @@
   (:map eglot-mode-map
 	("<f6>" . eglot-rename)))
 
+;; Note `project' is a dependency for `eglot' but not declared by `projectile'.
+;; See https://github.com/radian-software/straight.el/issues/1146
+
 ;; Speed up
 (use-package eglot-booster
   :straight (eglot-booster
@@ -57,12 +60,14 @@
 
 ;;; Python project management
 (use-package python
-  :straight t)
+  :straight t
+  :config
+  (setq python-indent-offset 4))
 
 ;; Reformat python buffers using the `black' formatter
 (use-package blacken
   :straight t
-  ;; :config (add-hook 'python-ts-mode-hook #'blacken-mode)
+  :config (add-hook 'python-ts-mode-hook #'blacken-mode)
   :bind
   (:map python-ts-mode-map
 	("s-i" . blacken-buffer)))
@@ -84,7 +89,6 @@
 ;;
 ;; Translation
 (require 'url)
-(require 'url-http)
 (require 'json)
 
 (setq sthenno-endpoint-u "http://localhost:8000")
