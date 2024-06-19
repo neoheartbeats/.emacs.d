@@ -59,12 +59,6 @@
          ("s-k" . consult-recent-file)))
 
 
-;; Completion in buffers
-(setq tab-always-indent 'complete)
-
-;; Emacs 30: `cape-dict' is used instead
-(setq text-mode-ispell-word-completion nil)
-
 ;; Dabbrev settings
 (use-package dabbrev
   :commands (dabbrev-expand dabbrev-completion)
@@ -126,7 +120,7 @@
   (setq corfu-cycle t)
   (setq corfu-quit-at-boundary t)
   (setq corfu-quit-no-match 'separator)
-  (setq corfu-preselect 'directory)
+  (setq corfu-preselect 'prompt)
   (setq corfu-count 6)
   (setq corfu-scroll-margin 4)
 
@@ -139,9 +133,24 @@
                          (setq-local corfu-auto nil)))
   :bind (:map corfu-map
               ("<down>" . corfu-next)
+	      ("<tab>" . corfu-next)
               ("<up>" . corfu-previous)
               ("<space>" . corfu-quit)
               ("<escape>" . corfu-quit)))
+
+;; Additional settings for `corfu'
+;; See https://github.com/minad/corfu
+
+;; Completion in buffers
+(setq tab-always-indent 'complete)
+
+;; Emacs 30: `cape-dict' is used instead
+(setq text-mode-ispell-word-completion nil)
+
+;; Emacs 28 and newer: Hide commands in M-x which do not apply to the current
+;; mode.  Corfu commands are hidden, since they are not used via M-x. This
+;; setting is useful beyond Corfu.
+(setq read-extended-command-predicate #'command-completion-default-include-p)
 
 (provide 'init-comp)
 ;;;
