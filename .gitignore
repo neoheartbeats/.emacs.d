@@ -32,3 +32,4 @@ multisession/files/emoji/emoji--recent.value
 /.env
 /persist/
 /url/
+/var/

@@ -7,12 +7,49 @@
 ;;; Commentary:
 ;;; Code:
 
+;;; Build the completion framework
+;;
+;; Before we start
+(use-package emacs
+  :init
+  
+  ;; TAB cycle if there are only few candidates
+  (setq completion-cycle-threshold 3)
+
+  ;; Only list the commands of the current modes
+  (when (boundp 'read-extended-command-predicate)
+    (setq read-extended-command-predicate
+          #'command-completion-default-include-p))
+
+  ;; Emacs 30: `cape-dict' is used instead
+  (setq text-mode-ispell-word-completion nil)
+
+  ;; Enable indentation+completion using the TAB key.
+  ;; `completion-at-point' is often bound to M-TAB.
+  (setq tab-always-indent 'complete))
+
+;; Fuzzy searching: simple but effective sorting and filtering by `prescient'
+(use-package prescient
+  :straight t
+  :config
+  (setq prescient-filter-method '(fuzzy prefix initialism))
+  (prescient-persist-mode 1))
+
+(setq completion-styles '(prescient basic)
+      completion-category-defaults nil
+      completion-category-overrides '((file (styles partial-completion))))
+
+;; Ignore cases
+(setq completion-ignore-case t)
+(setq read-file-name-completion-ignore-case t
+      read-buffer-completion-ignore-case t)
+
+
 ;; Completion for minibuffers
 (use-package vertico
   :straight t
-  :init (vertico-mode 1)
   :config
-  (setq vertico-count 6)
+  (setq vertico-count 10)
   (setq vertico-cycle t)
 
   ;; Load extensions
@@ -23,13 +60,43 @@
 
   ;; Do not render italic fonts
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
+
+  (vertico-mode 1)
+
+  ;; See also `prescient'
+  (use-package vertico-prescient
+    :straight t
+    :config
+    (setq vertico-prescient-enable-sorting t)
+    (vertico-prescient-mode 1))
   :bind ((:map vertico-map
                ("<tab>" . vertico-insert)
                ("<return>" . vertico-directory-enter)
                ("<backspace>" . vertico-directory-delete-char))))
 
-;; Hide commands in M-x which do not apply to the current mode
-(setq read-extended-command-predicate #'command-completion-default-include-p)
+;; Do not allow the cursor in the minibuffer prompt
+(setq minibuffer-prompt-properties
+      '(read-only t cursor-intangible t face minibuffer-prompt))
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+;; Support opening new minibuffers from inside existing minibuffers.
+(setq enable-recursive-minibuffers t)
+
+;; Disable showing the *Completions* buffer that conflicts with vertico
+;; if using `ffap-menu'
+(advice-add #'ffap-menu-ask :around
+            (lambda (&rest args)
+              (cl-letf (((symbol-function #'minibuffer-completion-help)
+                         #'ignore))
+                (apply args))))
+
+;; Truncation for long candidates in `vertico' completion
+(use-package vertico-truncate
+  :straight (vertico-truncate
+	     :type git
+	     :host github
+	     :repo "jdtsmith/vertico-truncate")
+  :config (vertico-truncate-mode 1))
 
 
 ;; Rich annotations for minibuffer
@@ -49,64 +116,122 @@
   (global-set-key
    [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
   (global-set-key [remap project-switch-to-buffer] 'consult-project-buffer)
-  (global-set-key [remap goto-line] 'consult-goto-line)
+
+  ;; Framework for mode-specific buffer indexes
   (global-set-key [remap imenu] 'consult-imenu)
-  :bind (("C-s" . consult-line)
-         ("C-v" . consult-yank-from-kill-ring)
-         ("M-s" . consult-ripgrep)
-         ("s-o" . consult-outline)
-         ("s-m" . consult-imenu)
-         ("s-k" . consult-recent-file)))
+  :config
+
+  ;; Back to last visited by C-s C-s if using `consult-line'
+  (defvar my-consult-line-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map "\C-s" #'previous-history-element)
+      map))
+  (consult-customize consult-line :keymap my-consult-line-map)
+
+  ;; https://github.com/minad/consult/wiki#add-category-specific-minibuffer-keybindings
+  (defun define-minibuffer-key (key &rest defs)
+    "Define KEY conditionally in the minibuffer.
+DEFS is a plist associating completion categories to commands."
+    (define-key minibuffer-local-map key
+		(list 'menu-item nil defs :filter
+		      (lambda (d)
+			(plist-get d (completion-metadata-get
+				      (completion-metadata (minibuffer-contents)
+							   minibuffer-completion-table
+							   minibuffer-completion-predicate)
+				      'category))))))
+
+  (define-minibuffer-key "\C-s"
+			 'consult-location #'previous-history-element
+			 'file #'consult-find-for-minibuffer)
+
+  ;; Support for eshell prompts
+  (add-hook 'eshell-mode-hook (lambda ()
+				(setq outline-regexp eshell-prompt-regexp)))
+
+  ;; Only display normal buffers using `consult-buffer'
+  (dolist (src consult-buffer-sources)
+    (unless (eq src 'consult--source-buffer)
+      (set src (plist-put (symbol-value src) :hidden t))))
+
+  ;; Previewing files in `find-file'
+  (setq read-file-name-function #'consult-find-file-with-preview)
+
+  (defun consult-find-file-with-preview (prompt &optional dir default mustmatch initial pred)
+    (interactive)
+    (let ((default-directory (or dir default-directory))
+          (minibuffer-completing-file-name t))
+      (consult--read #'read-file-name-internal :state (consult--file-preview)
+                     :prompt prompt
+                     :initial initial
+                     :require-match mustmatch
+                     :predicate pred)))
+
+  ;; Skipping directories when using `consult-find'
+  (setq consult-find-args
+	"find . -not ( -wholename */.* -prune -o -name node_modules -prune )")
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+  
+  :bind (:map global-map
+	      ("C-s" . consult-line)
+	      ("M-s" . consult-ripgrep)
+              ("C-v" . consult-yank-from-kill-ring)
+              ("M-i" . consult-imenu)
+              ("C-o" . consult-recent-file)))
+
+(use-package consult-flyspell
+  :straight t
+  :bind ("M-g s" . consult-flyspell))
+
+(use-package consult-yasnippet
+  :straight t
+  :bind ("M-g y" . consult-yasnippet))
 
 
 ;; Dabbrev settings
 (use-package dabbrev
-  :commands (dabbrev-expand dabbrev-completion)
   :config
-  (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
-  (setq dabbrev-abbrev-skip-leading-regexp "\\$\\|\\*\\|/\\|=")
-  (setq dabbrev-backward-only nil)
-  (setq dabbrev-case-distinction nil)
-  (setq dabbrev-case-fold-search t)
-  (setq dabbrev-case-replace nil)
-  (setq dabbrev-check-other-buffers t)
-  (setq dabbrev-eliminate-newlines nil)
-  (setq dabbrev-upcase-means-case-search t))
+
+  ;; Better letter cases
+  (setq dabbrev-case-distinction nil
+	dabbrev-case-replace nil
+	dabbrev-case-fold-search t
+	dabbrev-upcase-means-case-search t)
+
+  ;; See https://github.com/minad/corfu
+  (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
+  
+  ;; Since 29.1, use `dabbrev-ignored-buffer-regexps' on older.
+  (add-to-list 'dabbrev-ignored-buffer-modes 'doc-view-mode)
+  (add-to-list 'dabbrev-ignored-buffer-modes 'pdf-view-mode)
+  (add-to-list 'dabbrev-ignored-buffer-modes 'tags-table-mode))
 
 ;; Add extensions for the completion backend
 (use-package cape
   :straight t
-  :config (setq cape-dabbrev-min-length 3)
-  :hook ((prog-mode . (lambda ()
-                        (push 'cape-dabbrev completion-at-point-functions)
-                        (push 'cape-dict completion-at-point-functions)
-                        (push 'cape-file completion-at-point-functions)
-                        (push 'cape-keyword completion-at-point-functions)
-                        (push 'cape-abbrev completion-at-point-functions)))
-         (emacs-lisp-mode . (lambda ()
-                              (push 'cape-dabbrev completion-at-point-functions)
-                              (push 'cape-dict completion-at-point-functions)
-                              (push 'cape-file completion-at-point-functions)
-                              (push 'cape-keyword completion-at-point-functions)
-                              (push 'cape-elisp-symbol completion-at-point-functions)
-                              (push 'cape-abbrev completion-at-point-functions)))
-         (org-mode . (lambda ()
-                       (push 'cape-dabbrev completion-at-point-functions)
-                       (push 'cape-dict completion-at-point-functions)))))
-
-
-;; Build the completion framework
-(use-package orderless
-  :straight t
   :config
-  (setq completion-styles '(orderless basic))
-  (setq completion-category-defaults nil)
-  (setq completion-category-overrides '((file (styles basic partial-completion))))
+  (setq cape-dabbrev-min-length 4)
 
-  ;; Ignore cases
-  (setq completion-ignore-case t)
-  (setq read-file-name-completion-ignore-case t)
-  (setq read-buffer-completion-ignore-case t))
+  (defun my-cape-setup (&rest capes)
+    "Add CAPES to `completion-at-point-functions'."
+    (dolist (cape capes)
+      (add-to-list 'completion-at-point-functions cape)))
+
+  (defun my-cape-prog-mode-setup ()
+    (my-cape-setup 'cape-dabbrev 'cape-file 'cape-keyword 'cape-abbrev))
+
+  (defun my-cape-emacs-lisp-mode-setup ()
+    (my-cape-setup 'cape-dabbrev 'cape-file 'cape-keyword 'cape-elisp-symbol 'cape-abbrev))
+
+  (defun my-cape-org-mode-setup ()
+    (my-cape-setup 'cape-dabbrev 'cape-file 'cape-elisp-block 'cape-dict 'cape-keyword))
+
+  :hook ((prog-mode . my-cape-prog-mode-setup)
+         (emacs-lisp-mode . my-cape-emacs-lisp-mode-setup)
+         (org-mode . my-cape-org-mode-setup)))
 
 
 ;; The main completion frontend by Corfu
@@ -115,42 +240,34 @@
   :init (add-hook 'after-init-hook #'global-corfu-mode)
   :config
   (setq corfu-auto t)
-  (setq corfu-auto-delay 0.01) ; Making this to 0 is too expensive
+  (setq corfu-auto-delay 0.02) ; Making this to 0 is too expensive
   (setq corfu-auto-prefix 2)
   (setq corfu-cycle t)
-  (setq corfu-quit-at-boundary t)
-  (setq corfu-quit-no-match 'separator)
-  (setq corfu-preselect 'prompt)
-  (setq corfu-count 6)
-  (setq corfu-scroll-margin 4)
+  (setq corfu-quit-at-boundary 'separator)
+  (setq corfu-quit-no-match t)
+  (setq corfu-preview-current nil)
+  (setq corfu-preselect 'directory) ; Auto select the first except directories
 
   ;; Maintain a list of recently selected candidates
   ;; This requires `savehist-mode' is enabled
   (require 'corfu-history)
   (corfu-history-mode 1)
   (add-to-list 'savehist-additional-variables 'corfu-history)
+
+  ;; See also `prescient'
+  (use-package corfu-prescient
+    :straight t
+    :config
+    (setq corfu-prescient-enable-sorting t)
+    (corfu-prescient-mode 1))
   :hook (eshell-mode . (lambda ()
                          (setq-local corfu-auto nil)))
   :bind (:map corfu-map
               ("<down>" . corfu-next)
 	      ("<tab>" . corfu-next)
               ("<up>" . corfu-previous)
-              ("<space>" . corfu-quit)
+	      ("s-<tab>" . corfu-previous)
               ("<escape>" . corfu-quit)))
-
-;; Additional settings for `corfu'
-;; See https://github.com/minad/corfu
-
-;; Completion in buffers
-(setq tab-always-indent 'complete)
-
-;; Emacs 30: `cape-dict' is used instead
-(setq text-mode-ispell-word-completion nil)
-
-;; Emacs 28 and newer: Hide commands in M-x which do not apply to the current
-;; mode.  Corfu commands are hidden, since they are not used via M-x. This
-;; setting is useful beyond Corfu.
-(setq read-extended-command-predicate #'command-completion-default-include-p)
 
 (provide 'init-comp)
 ;;;

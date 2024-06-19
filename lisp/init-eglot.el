@@ -35,12 +35,17 @@
   (add-to-list 'eglot-server-programs
 	       '(python-ts-mode . ("pyright-langserver" "--stdio")))
   (add-hook 'python-ts-mode #'eglot-ensure)
-  :bind
-  (:map eglot-mode-map
-	("<f6>" . eglot-rename)))
 
-;; Note `project' is a dependency for `eglot' but not declared by `projectile'.
-;; See https://github.com/radian-software/straight.el/issues/1146
+  ;; Config `corfu' for `eglot', see also `init-comp'
+  ;; Continuously update the candidates
+  ;; Enable cache busting, depending on if your server returns
+  ;; sufficiently many candidates in the first place
+  (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
+  :bind (:map eglot-mode-map
+	      ("<f6>" . eglot-rename)))
+
+;; Note `project' is a dependency for `eglot' but not declared by `projectile'
+;; See https://github.com/radian-software/straight.el/issues/1146 [TODO]
 
 ;; Speed up
 ;; (use-package eglot-booster
@@ -48,8 +53,7 @@
 ;;              :type git
 ;;              :host github
 ;;              :repo "jdtsmith/eglot-booster")
-;;   :init
-;;   (add-to-list 'exec-path (expand-file-name "bin/" user-emacs-directory))
+;;   :init (add-to-list 'exec-path (expand-file-name "bin/" user-emacs-directory))
 ;;   :config
 ;;   (setq eglot-booster-no-remote-boost t)
 ;;   (eglot-booster-mode 1))
@@ -85,7 +89,7 @@
   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
 
-;;; sthenno-endpoints
+;;; sthenno-endpoints Client
 ;;
 ;; Translation
 (require 'url)

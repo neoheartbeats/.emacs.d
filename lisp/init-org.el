@@ -7,7 +7,6 @@
 ;;; Commentary:
 ;;; Code:
 
-;; (straight-use-package 'org)
 (require 'org)
 
 ;; Setup default directory
@@ -18,8 +17,8 @@
 ;;       org-startup-with-latex-preview t)
 
 ;; Install AUCTeX
-(use-package tex
-  :straight auctex)
+;; (use-package tex
+;;   :straight auctex)
 
 
 ;; Images and files
@@ -77,6 +76,10 @@
 ;; Org fragments and overlays
 (setq org-image-max-width 420)
 
+;; Auto fill lines [TODO]
+(add-hook 'org-mode-hook #'(lambda ()
+			     (auto-fill-mode 1)))
+
 ;; Org links
 (setq org-return-follows-link t)
 
@@ -88,6 +91,28 @@
 
 ;; Speed keys
 (setq org-use-speed-commands t)
+
+;; Org Refile
+;;
+;; Check https://github.com/minad/vertico
+;; Check `init-comp'
+(setq org-refile-use-outline-path 'file
+      org-outline-path-complete-in-steps t)
+
+(advice-add #'org-olpath-completing-read :around #'my/enforce-basic-completion)
+(advice-add #'org-make-tags-matcher :around #'my/enforce-basic-completion)
+(advice-add #'org-agenda-filter :around #'my/enforce-basic-completion)
+
+(defun my/enforce-basic-completion (&rest args)
+  (minibuffer-with-setup-hook
+      (:append
+       (lambda ()
+         (let ((map (make-sparse-keymap)))
+           (define-key map [tab] #'minibuffer-complete)
+           (use-local-map (make-composed-keymap (list map) (current-local-map))))
+         (setq-local completion-styles (cons 'basic completion-styles)
+                     vertico-preselect 'prompt)))
+    (apply args)))
 
 
 ;; The Zettlekasten note-taking system by Denote
@@ -200,7 +225,7 @@
 
 
 ;; Org-agenda
-(setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
+;; (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
 (bind-keys :map global-map
 	   ("C-c a" . org-agenda))
 
@@ -215,14 +240,14 @@
       "◀── now ─────────────────────────────────────────────────")
 
 
-;; Org indentation (see also `init-eglot')
+;; Org indentation
 (setq-default org-list-indent-offset 2)
 
 ;; Using hard indentation
-(setq
- org-adapt-indentation t
- org-hide-leading-stars t
- org-odd-levels-only t)
+;; (setq
+;;  org-adapt-indentation t
+;;  org-hide-leading-stars t
+;;  org-odd-levels-only t)
 
 
 ;; Useful functions

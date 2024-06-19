@@ -21,7 +21,7 @@
 	   ("s-i" . indent-current-buffer)
 	   ("s-l" . goto-line)
 	   ("s-q" . save-buffers-kill-emacs)
-	   ("s-s". save-buffer)
+	   ("s-s" . save-buffer)
 	   ("s-v" . yank)
 	   ("s-w" . kill-current-buffer)
 	   ("s-e" . delete-window)
@@ -78,6 +78,12 @@
   (setq savehist-save-minibuffer-history t)
   (savehist-mode 1))
 
+;; Searching for recent files
+(use-package recentf
+  :config
+  (setq recentf-max-saved-items 150)
+  (recentf-mode 1))
+
 ;; Auto saving mechanism
 (setq auto-save-interval 2400
       auto-save-timeout 300)
@@ -113,6 +119,7 @@
 (setq indent-tabs-mode nil)
 (setq require-final-newline t)
 (setq inhibit-compacting-font-caches t)
+(setq vc-follow-symlinks t)
 
 
 ;; Global functions
@@ -151,11 +158,13 @@
 
 (defun my/cycle-to-next-buffer ()
   (interactive)
-  (my/filtered-cycle-buffer 'next-buffer))
+  (my/filtered-cycle-buffer 'next-buffer)
+  (run-hooks 'my/cycle-to-next-buffer-hook))
 
 (defun my/cycle-to-previous-buffer ()
   (interactive)
-  (my/filtered-cycle-buffer 'previous-buffer))
+  (my/filtered-cycle-buffer 'previous-buffer)
+  (run-hooks 'my/cycle-to-previous-buffer-hook))
 
 (bind-keys :map global-map
 	   ("<s-right>" . my/cycle-to-next-buffer)
@@ -165,8 +174,7 @@
 ;; Mouse and scroll settings
 (setq scroll-preserve-screen-position t
       scroll-margin 0
-      scroll-conservatively 95
-      make-cursor-line-fully-visible nil)
+      scroll-conservatively 105)
 (add-hook 'after-init-hook #'pixel-scroll-precision-mode)
 
 
@@ -176,6 +184,19 @@
 (setq select-enable-primary nil)
 (setq select-enable-clipboard t)
 (setq search-default-mode 'char-fold-to-regexp)
+
+(defun my/delete-current-line ()
+  (interactive)
+  (delete-region (line-beginning-position) (line-beginning-position 2))
+  (run-hooks 'my/delete-current-line-hook))
+
+(defun my/delete-to-beginning-of-line ()
+  "Delete from the current position to the beginning of the line."
+  (interactive)
+  (delete-region (line-beginning-position) (point)))
+
+(global-set-key (kbd "s-<backspace>") 'my/delete-current-line)
+(global-set-key (kbd "C-<backspace>") 'my/delete-to-beginning-of-line)
 
 
 ;;; EMMS

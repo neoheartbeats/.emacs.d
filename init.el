@@ -11,10 +11,17 @@
 
 ;;; Code:
 
-;; Speed up startup
-(setq-default bidi-display-reordering 'left-to-right)
+;;; Speed up startup
+;;
+;; Temporarily increase gc-cons-threshold during startup
+(let ((gc-cons-threshold most-positive-fixnum)
+      (gc-cons-percentage 0.6))
+  (add-hook 'emacs-startup-hook #'(lambda ()
+				    ;; Increase garbage collection threshold to 120MB
+				    (setq gc-cons-threshold (* 120 1000 1000))
+				    (setq gc-cons-percentage 0.6))))
 
-(setq gc-cons-threshold most-positive-fixnum)
+(setq-default bidi-display-reordering 'left-to-right)
 (setq read-process-output-max (* 4 1024 1024))
 (setq process-adaptive-read-buffering nil)
 
@@ -33,15 +40,15 @@
 ;; fonts that are larger than the system default (which would resize the frame).
 (setq frame-inhibit-implied-resize t)
 
-;; Don't ping things that look like domain names.
+;; Don't ping things that look like domain names
 (setq ffap-machine-p-known 'reject)
 
 ;; Don't pass case-insensitive to `auto-mode-alist'
 (setq auto-mode-case-fold nil)
 
 ;; Suppress GUI features
-(setq use-dialog-box nil)
-(setq use-file-dialog nil)
+(setq use-dialog-box nil
+      use-file-dialog nil)
 
 (setq inhibit-splash-screen t
       inhibit-startup-buffer-menu t)
@@ -82,14 +89,14 @@
 (straight-use-package 'bind-key)
 (straight-use-package 'diminish)
 
-;; (diminish 'eldoc-mode)
+(diminish 'eldoc-mode)
 
 (eval-when-compile
   (eval-after-load 'advice
     `(setq ad-redefinition-action 'accept))
   (setq use-package-verbose nil
         use-package-compute-statistics nil
-        use-package-minimum-reported-time 0.01
+        use-package-minimum-reported-time 0.1
         use-package-enable-imenu-support t)
   (require 'cl-lib)
   (require 'use-package))
@@ -113,14 +120,14 @@
 
 
 ;; GCMH
-(use-package gcmh
-  :straight t
-  :diminish (gcmh-mode)
-  :config
-  (setq gcmh-high-cons-threshold (* 512 1024 1024))
-  (gcmh-mode 1))
+;; (use-package gcmh
+;;   :straight t
+;;   :diminish (gcmh-mode)
+;;   :config
+;;   (setq gcmh-high-cons-threshold (* 512 1024 1024))
+;;   (gcmh-mode 1))
 
-(setq jit-lock-defer-time 0)
+;; (setq jit-lock-defer-time 0)
 
 
 ;; Load components

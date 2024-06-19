@@ -7,12 +7,20 @@
 ;;; Commentary:
 ;;; Code:
 
-;; Electric parenthesis
-(add-hook 'after-init-hook #'electric-pair-mode)
-
 ;; Highlight parenthesis matched off-screen
 (setq blink-matching-paren-highlight-offscreen t)
 
+;; Smart pairing parenthesis
+(use-package smartparens
+  :straight t
+  :config
+  (require 'smartparens-config)
+  (add-hook 'prog-mode-hook #'(lambda ()
+				(smartparens-strict-mode 1)))
+  (add-hook 'org-mode-hook #'(lambda ()
+			       (smartparens-mode 1))))
+
+
 ;; Misc settings
 (setq undo-limit (* 160000 500)) ; Raise undo-limit to 80 Mb
 
@@ -25,11 +33,7 @@
   :diminish (auto-revert-mode)
   :hook (after-init . global-auto-revert-mode))
 
-;; Framework for mode-specific buffer indexes
-(use-package imenu
-  :bind ("s-m" . imenu))
-
-;; Using rainbow delimiters
+;; Using rainbow delimiters [TODO]
 (use-package rainbow-delimiters
   :straight t
   :diminish (rainbow-delimiters-mode)
@@ -46,30 +50,51 @@
 
 ;; Display line numbers
 (setq-default display-line-numbers-width 4)
-;; (global-display-line-numbers-mode 1)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
 
-;;; Basics for file formattings
-(defun pp-current-el-buffer ()
-  "Pretty-print the current buffer as Emacs Lisp code."
-  (interactive)
-  (let ((current-buffer-content (buffer-string)))
-    (with-temp-buffer
-      (insert current-buffer-content)
-      (goto-char (point-min))
-      (let ((pretty-printed (pp-to-string (read (current-buffer)))))
-        (with-current-buffer (current-buffer)
-          (erase-buffer)
-          (insert pretty-printed))))))
+(use-package pulsar
+  :straight t
+  :config
+  (setq pulsar-pulse t
+	pulsar-delay 0.1
+	pulsar-iterations 15
+	pulsar-face 'pulsar-green
+	pulsar-highlight-face 'pulsar-magenta)
 
-(global-set-key (kbd "C-c C-p") 'pp-current-el-buffer)
+  (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line-cyan)
+  (add-hook 'after-save-hook #'pulsar-pulse-line-green)
+  
+  (add-hook 'my/delete-current-line-hook #'pulsar-pulse-line-magenta)
+  (add-hook 'my/cycle-to-next-buffer-hook #'pulsar-recenter-top)
+  (add-hook 'my/cycle-to-previous-buffer-hook #'pulsar-recenter-top)
+  
+  (require 'init-comp)
+  (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
+  
+  (pulsar-global-mode 1))
 
-;; EditorConfig for Emacs
-;; (use-package editorconfig
-;;   :straight t
-;;   :diminish (editorconfig-mode)
-;;   :config (editorconfig-mode 1))
+
+(use-package focus
+  :straight t
+  :config (add-hook 'org-mode-hook #'(lambda ()
+				       (focus-mode 1))))
+
+
+;;; Basics for file formattings [TODO]
+;; (defun pp-current-el-buffer ()
+;;   "Pretty-print the current buffer as Emacs Lisp code."
+;;   (interactive)
+;;   (let ((current-buffer-content (buffer-string)))
+;;     (with-temp-buffer
+;;       (insert current-buffer-content)
+;;       (goto-char (point-min))
+;;       (let ((pretty-printed (pp-to-string (read (current-buffer)))))
+;;         (with-current-buffer (current-buffer)
+;;           (erase-buffer)
+;;           (insert pretty-printed))))))
+
+;; (global-set-key (kbd "C-c C-p") 'pp-current-el-buffer)
 
 
 (use-package indent-bars
@@ -88,62 +113,6 @@
 	indent-bars-starting-column 0
 	indent-bars-zigzag nil
 	indent-bars-display-on-blank-lines t)
-
-  (defun indent-bars--guess-spacing ()
-    "Get indentation spacing of current buffer.
-Adapted from `highlight-indentation-mode'."
-    (cond
-     ((and (derived-mode-p 'python-mode) (boundp 'py-indent-offset))
-      py-indent-offset)
-     ((and (derived-mode-p 'python-mode) (boundp 'python-indent-offset))
-      python-indent-offset)
-     ((and (derived-mode-p 'ruby-mode) (boundp 'ruby-indent-level))
-      ruby-indent-level)
-     ((and (derived-mode-p 'scala-mode) (boundp 'scala-indent:step))
-      scala-indent:step)
-     ((and (derived-mode-p 'scala-mode) (boundp 'scala-mode-indent:step))
-      scala-mode-indent:step)
-     ((and (or (derived-mode-p 'scss-mode) (derived-mode-p 'css-mode))
-	   (boundp 'css-indent-offset))
-      css-indent-offset)
-     ((and (derived-mode-p 'nxml-mode) (boundp 'nxml-child-indent))
-      nxml-child-indent)
-     ((and (derived-mode-p 'coffee-mode) (boundp 'coffee-tab-width))
-      coffee-tab-width)
-     ((and (derived-mode-p 'js-mode) (boundp 'js-indent-level))
-      js-indent-level)
-     ((and (derived-mode-p 'js2-mode) (boundp 'js2-basic-offset))
-      js2-basic-offset)
-     ((and (derived-mode-p 'sws-mode) (boundp 'sws-tab-width))
-      sws-tab-width)
-     ((and (derived-mode-p 'web-mode) (boundp 'web-mode-markup-indent-offset))
-      web-mode-markup-indent-offset)
-     ((and (derived-mode-p 'web-mode) (boundp 'web-mode-html-offset)) ; old var
-      web-mode-html-offset)
-     ((and (local-variable-p 'c-basic-offset) (numberp c-basic-offset))
-      c-basic-offset)
-     ((and (derived-mode-p 'yaml-mode) (boundp 'yaml-indent-offset))
-      yaml-indent-offset)
-     ((and (derived-mode-p 'elixir-mode) (boundp 'elixir-smie-indent-basic))
-      elixir-smie-indent-basic)
-     ((and (derived-mode-p 'lisp-data-mode) (boundp 'lisp-body-indent))
-      lisp-body-indent)
-     ((and (derived-mode-p 'cobol-mode) (boundp 'cobol-tab-width))
-      cobol-tab-width)
-     ((or (derived-mode-p 'go-ts-mode) (derived-mode-p 'go-mode))
-      tab-width)
-     ((derived-mode-p 'nix-mode)
-      tab-width)
-     ((and (derived-mode-p 'nix-ts-mode) (boundp 'nix-ts-mode-indent-offset))
-      nix-ts-mode-indent-offset)
-     ((and (derived-mode-p 'json-ts-mode) (boundp 'json-ts-mode-indent-offset))
-      json-ts-mode-indent-offset)
-     ((and (derived-mode-p 'json-mode) (boundp 'js-indent-level))
-      js-indent-level)
-     ((and (boundp 'standard-indent) standard-indent))
-     ((and (derived-mode-p 'org-mode) (boundp 'org-list-indent-offset))
-      org-list-indent-offset)
-     (t 4)))
   :hook ((python-ts-mode) . indent-bars-mode))
 
 (provide 'init-editing-utils)
