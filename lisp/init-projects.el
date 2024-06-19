@@ -20,13 +20,14 @@
 
 
 ;; Project management using Projectile
-;; (use-package projectile
-;;   :straight t
-;;   :diminish (projectile-mode)
-;;   :config
-;;   (projectile-mode 1)
-;;   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map))
+(use-package projectile
+  :straight t
+  :diminish (projectile-mode)
+  :config
+  (projectile-mode 1)
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map))
 
+(global-unset-key (kbd"C-x p"))
 
 (provide 'init-projects)
 ;;;

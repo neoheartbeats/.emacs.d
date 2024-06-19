@@ -86,6 +86,9 @@
 ;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
 
+;; Speed keys
+(setq org-use-speed-commands t)
+
 
 ;; The Zettlekasten note-taking system by Denote
 (use-package denote

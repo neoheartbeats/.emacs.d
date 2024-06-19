@@ -43,16 +43,16 @@
 ;; See https://github.com/radian-software/straight.el/issues/1146
 
 ;; Speed up
-(use-package eglot-booster
-  :straight (eglot-booster
-             :type git
-             :host github
-             :repo "jdtsmith/eglot-booster")
-  :init
-  (add-to-list 'exec-path (expand-file-name "bin/" user-emacs-directory))
-  :config
-  (setq eglot-booster-no-remote-boost t)
-  (eglot-booster-mode 1))
+;; (use-package eglot-booster
+;;   :straight (eglot-booster
+;;              :type git
+;;              :host github
+;;              :repo "jdtsmith/eglot-booster")
+;;   :init
+;;   (add-to-list 'exec-path (expand-file-name "bin/" user-emacs-directory))
+;;   :config
+;;   (setq eglot-booster-no-remote-boost t)
+;;   (eglot-booster-mode 1))
 
 ;; Auto confirm `.dir-locals.el' files
 (setq-default enable-local-variables :safe)
