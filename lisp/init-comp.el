@@ -29,15 +29,19 @@
   (setq tab-always-indent 'complete))
 
 ;; Fuzzy searching: simple but effective sorting and filtering by `prescient'
-(use-package prescient
-  :straight t
-  :config
-  (setq prescient-filter-method '(fuzzy prefix initialism))
-  (prescient-persist-mode 1))
+;; (use-package prescient
+;;   :straight t
+;;   :config
+;;   (setq prescient-filter-method '(fuzzy prefix initialism))
+;;   (prescient-persist-mode 1))
 
-(setq completion-styles '(prescient basic)
-      completion-category-defaults nil
-      completion-category-overrides '((file (styles partial-completion))))
+;; Use the `orderless' completion style
+(use-package orderless
+  :straight t)
+
+(setq completion-styles '(orderless basic)
+      completion-category-overrides '((file (styles basic partial-completion)))
+      orderless-component-separator #'orderless-escapable-split-on-space)
 
 ;; Ignore cases
 (setq completion-ignore-case t)
@@ -61,18 +65,18 @@
   ;; Do not render italic fonts
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
 
-  (vertico-mode 1)
+  (vertico-mode 1))
 
-  ;; See also `prescient'
-  (use-package vertico-prescient
-    :straight t
-    :config
-    (setq vertico-prescient-enable-sorting t)
-    (vertico-prescient-mode 1))
-  :bind ((:map vertico-map
-               ("<tab>" . vertico-insert)
-               ("<return>" . vertico-directory-enter)
-               ("<backspace>" . vertico-directory-delete-char))))
+;; See also `prescient'
+;; (use-package vertico-prescient
+;;   :straight t
+;;   :config
+;;   (setq vertico-prescient-enable-sorting t)
+;;   (vertico-prescient-mode 1))
+;; :bind ((:map vertico-map
+;;              ("<tab>" . vertico-insert)
+;;              ("<return>" . vertico-directory-enter)
+;;              ("<backspace>" . vertico-directory-delete-char))))
 
 ;; Do not allow the cursor in the minibuffer prompt
 (setq minibuffer-prompt-properties
@@ -91,12 +95,12 @@
                 (apply args))))
 
 ;; Truncation for long candidates in `vertico' completion
-(use-package vertico-truncate
-  :straight (vertico-truncate
-	     :type git
-	     :host github
-	     :repo "jdtsmith/vertico-truncate")
-  :config (vertico-truncate-mode 1))
+;; (use-package vertico-truncate
+;;   :straight (vertico-truncate
+;; 	     :type git
+;; 	     :host github
+;; 	     :repo "jdtsmith/vertico-truncate")
+;;   :config (vertico-truncate-mode 1))
 
 
 ;; Rich annotations for minibuffer
@@ -145,10 +149,6 @@ DEFS is a plist associating completion categories to commands."
 			 'consult-location #'previous-history-element
 			 'file #'consult-find-for-minibuffer)
 
-  ;; Support for eshell prompts
-  (add-hook 'eshell-mode-hook (lambda ()
-				(setq outline-regexp eshell-prompt-regexp)))
-
   ;; Only display normal buffers using `consult-buffer'
   (dolist (src consult-buffer-sources)
     (unless (eq src 'consult--source-buffer)
@@ -170,25 +170,12 @@ DEFS is a plist associating completion categories to commands."
   ;; Skipping directories when using `consult-find'
   (setq consult-find-args
 	"find . -not ( -wholename */.* -prune -o -name node_modules -prune )")
-
-  ;; Use Consult to select xref locations with preview
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
   
   :bind (:map global-map
 	      ("C-s" . consult-line)
 	      ("M-s" . consult-ripgrep)
               ("C-v" . consult-yank-from-kill-ring)
-              ("M-i" . consult-imenu)
-              ("C-o" . consult-recent-file)))
-
-(use-package consult-flyspell
-  :straight t
-  :bind ("M-g s" . consult-flyspell))
-
-(use-package consult-yasnippet
-  :straight t
-  :bind ("M-g y" . consult-yasnippet))
+              ("M-i" . consult-imenu)))
 
 
 ;; Dabbrev settings
@@ -255,13 +242,11 @@ DEFS is a plist associating completion categories to commands."
   (add-to-list 'savehist-additional-variables 'corfu-history)
 
   ;; See also `prescient'
-  (use-package corfu-prescient
-    :straight t
-    :config
-    (setq corfu-prescient-enable-sorting t)
-    (corfu-prescient-mode 1))
-  :hook (eshell-mode . (lambda ()
-                         (setq-local corfu-auto nil)))
+  ;; (use-package corfu-prescient
+  ;;   :straight t
+  ;;   :config
+  ;;   (setq corfu-prescient-enable-sorting t)
+  ;;   (corfu-prescient-mode 1))
   :bind (:map corfu-map
               ("<down>" . corfu-next)
 	      ("<tab>" . corfu-next)

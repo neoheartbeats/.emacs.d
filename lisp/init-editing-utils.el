@@ -16,7 +16,7 @@
   :config
   (require 'smartparens-config)
   (add-hook 'prog-mode-hook #'(lambda ()
-				(smartparens-strict-mode 1)))
+				(smartparens-mode 1)))
   (add-hook 'org-mode-hook #'(lambda ()
 			       (smartparens-mode 1))))
 
