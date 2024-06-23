@@ -11,12 +11,12 @@
 (setq org-directory "~/Sthenno/")
 
 ;; Org Mode buffer init behaviors
-;; (setq org-startup-with-inline-images t
-;;       org-startup-with-latex-preview t)
+(setq org-startup-with-inline-images t
+      org-startup-with-latex-preview t)
 
 ;; Install AUCTeX
-;; (use-package tex
-;;   :straight auctex)
+(use-package tex
+  :straight auctex)
 
 
 ;; Images and files
@@ -194,10 +194,10 @@
 
 ;; Org LaTeX customizations
 ;; Use CDLaTeX to improve editing experiences
-;; (use-package cdlatex
-;;   :straight t
-;;   :diminish (org-cdlatex-mode)
-;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+(use-package cdlatex
+  :straight t
+  :diminish (org-cdlatex-mode)
+  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 
 ;; Load languages for Org Babel

@@ -100,8 +100,7 @@
 (setq sthenno-endpoint-u "http://localhost:8000")
 
 (defun sthenno-post (endpoint content)
-  "Send a json formatted post request to the specified ENDPOINT using
-CONTENT."
+  "Send a json formatted post request to the specified ENDPOINT using CONTENT."
   (let* ((url-request-method "POST")
          (url-request-extra-headers '(("Content-Type" . "application/json")))
          (url-request-data (encode-coding-string
