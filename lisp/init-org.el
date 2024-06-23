@@ -19,6 +19,11 @@
   :straight auctex)
 
 
+;; TEC's Org specific
+(add-hook 'org-mode-hook #'(lambda ()
+                             (org-latex-preview-auto-mode 1)))
+
+
 ;; Images and files
 (setq org-yank-dnd-method 'file-link)
 (setq org-yank-image-save-method
