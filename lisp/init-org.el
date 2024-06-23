@@ -76,10 +76,6 @@
 ;; Org fragments and overlays
 (setq org-image-max-width 420)
 
-;; Auto fill lines [TODO]
-(add-hook 'org-mode-hook #'(lambda ()
-			     (auto-fill-mode 1)))
-
 ;; Org links
 (setq org-return-follows-link t)
 

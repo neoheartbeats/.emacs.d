@@ -17,27 +17,28 @@
 (let ((gc-cons-threshold most-positive-fixnum)
       (gc-cons-percentage 0.6))
   (add-hook 'emacs-startup-hook #'(lambda ()
-				    ;; Increase garbage collection threshold to 120MB
-				    (setq gc-cons-threshold (* 120 1000 1000))
+				    (setq gc-cons-threshold (* 120 1000 1000)) ; 120MB
 				    (setq gc-cons-percentage 0.6))))
 
-(setq-default bidi-display-reordering 'left-to-right)
-(setq read-process-output-max (* 4 1024 1024))
-(setq process-adaptive-read-buffering nil)
+(setq-default read-process-output-max (* 4 1024 1024))
+(setq-default process-adaptive-read-buffering nil)
 
 ;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions
 ;; in non-focused windows
-(setq-default cursor-in-non-selected-windows nil
-	      highlight-nonselected-windows nil)
+(setq-default cursor-in-non-selected-windows nil)
+(setq highlight-nonselected-windows nil)
 
 ;; More performant rapid scrolling over unfontified regions. May cause brief
-;; spells of inaccurate fontification immediately after scrolling.
+;; spells of inaccurate fontification immediately after scrolling
 (setq fast-but-imprecise-scrolling t)
+
+;; Introduced in Emacs 30, this inhibits fontification while
+;; receiving input, which should help a little with scrolling performance
 (setq redisplay-skip-fontification-on-input t)
 
 ;; Resizing the Emacs frame can be a terribly expensive part of changing the
 ;; font. By inhibiting this, we halve startup times, particularly when we use
-;; fonts that are larger than the system default (which would resize the frame).
+;; fonts that are larger than the system default (which would resize the frame)
 (setq frame-inhibit-implied-resize t)
 
 ;; Don't ping things that look like domain names
@@ -46,6 +47,20 @@
 ;; Don't pass case-insensitive to `auto-mode-alist'
 (setq auto-mode-case-fold nil)
 
+;; Disable bidirectional text scanning for a modest performance boost
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right)
+
+;; Disabling BPA makes redisplay faster, but might produce incorrect
+;; reordering of bidirectional text with embedded parentheses
+(setq bidi-inhibit-bpa t)
+
+;; Emacs "updates" its ui more often than it needs to, so slow it down slightly
+(setq idle-update-delay 1.0) ; default is 0.5
+
+(setq inhibit-compacting-font-caches t)
+
+
 ;; Suppress GUI features
 (setq use-dialog-box nil
       use-file-dialog nil)

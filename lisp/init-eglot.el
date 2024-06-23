@@ -29,6 +29,7 @@
 
 ;; Initialize `eglot'
 (use-package eglot
+  :straight t
   :config
 
   ;; Use Pyright as the default language server
@@ -62,7 +63,7 @@
 (setq-default enable-local-variables :safe)
 
 
-;;; Python project management
+;;; Python project management [TODO]
 (use-package python
   :straight t
   :config
@@ -89,7 +90,7 @@
   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
 
-;;; sthenno-endpoints Client
+;;; Python API: sthenno-endpoints Client
 ;;
 ;; Translation
 (require 'url)
@@ -98,8 +99,8 @@
 (setq sthenno-endpoint-u "http://localhost:8000")
 
 (defun sthenno-post (endpoint content)
-  "Send a JSON formatted POST request to the specified endpoint using
-the given content."
+  "Send a json formatted post request to the specified ENDPOINT using
+CONTENT."
   (let* ((url-request-method "POST")
          (url-request-extra-headers '(("Content-Type" . "application/json")))
          (url-request-data (encode-coding-string
@@ -147,9 +148,14 @@ the given content."
     (message (format "Translation: %s" translation))
     translation))
 
-(bind-keys* :map org-mode-map
-	    ("C-c t" . sthenno-trans-to-zh-selected)
-	    ("C-c e" . sthenno-trans-to-en-selected))
+(define-prefix-command 'my-sthenno-endpoints-map)
+
+;; "、" 这个按键极为罕见被用到, 但在键盘上非常触手可及.
+;; (bind-key "\" 'my-sthenno-endpoints-map)
+;;
+;; (bind-keys :map my-translation-map
+;; 	   ("z" . sthenno-trans-to-zh-selected)
+;; 	   ("e" . sthenno-trans-to-en-selected))
 
 (provide 'init-eglot)
 ;;;

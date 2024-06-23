@@ -13,6 +13,7 @@
 ;; Smart pairing parenthesis
 (use-package smartparens
   :straight t
+  :diminish (smartparens-mode)
   :config
   (require 'smartparens-config)
   (add-hook 'prog-mode-hook #'(lambda ()
@@ -46,7 +47,10 @@
 
 ;; Fill columns
 (setq display-fill-column-indicator-character ?\u254e)
-(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+(add-hook 'prog-mode-hook #'(lambda ()
+			      (display-fill-column-indicator-mode 1)))
+(add-hook 'org-mode-hook #'(lambda ()
+			     (display-fill-column-indicator-mode 1)))
 
 ;; Display line numbers
 (setq-default display-line-numbers-width 4)
@@ -57,17 +61,18 @@
   :straight t
   :config
   (setq pulsar-pulse t
-	pulsar-delay 0.1
-	pulsar-iterations 15
+	pulsar-delay 0.075
+	pulsar-iterations 10
 	pulsar-face 'pulsar-green
 	pulsar-highlight-face 'pulsar-magenta)
 
   (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line-cyan)
+  (add-hook 'indent-current-buffer-hook #'pulsar-pulse-line-cyan)
   (add-hook 'after-save-hook #'pulsar-pulse-line-green)
   
   (add-hook 'my/delete-current-line-hook #'pulsar-pulse-line-magenta)
-  (add-hook 'my/cycle-to-next-buffer-hook #'pulsar-recenter-top)
-  (add-hook 'my/cycle-to-previous-buffer-hook #'pulsar-recenter-top)
+  (add-hook 'my/cycle-to-next-buffer-hook #'pulsar-pulse-line-cyan)
+  (add-hook 'my/cycle-to-previous-buffer-hook #'pulsar-pulse-line-cyan)
   
   (require 'init-comp)
   (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
@@ -77,26 +82,14 @@
 
 (use-package focus
   :straight t
-  :config (add-hook 'org-mode-hook #'(lambda ()
-				       (focus-mode 1))))
+  :config
+  (add-hook 'org-mode-hook #'(lambda ()
+			       (focus-mode 1)))
+  (add-hook 'prog-mode-hook #'(lambda ()
+				     (focus-mode 1))))
 
 
-;;; Basics for file formattings [TODO]
-;; (defun pp-current-el-buffer ()
-;;   "Pretty-print the current buffer as Emacs Lisp code."
-;;   (interactive)
-;;   (let ((current-buffer-content (buffer-string)))
-;;     (with-temp-buffer
-;;       (insert current-buffer-content)
-;;       (goto-char (point-min))
-;;       (let ((pretty-printed (pp-to-string (read (current-buffer)))))
-;;         (with-current-buffer (current-buffer)
-;;           (erase-buffer)
-;;           (insert pretty-printed))))))
-
-;; (global-set-key (kbd "C-c C-p") 'pp-current-el-buffer)
-
-
+;;;; [TODO] Integration with `focus-mode'
 (use-package indent-bars
   :straight (indent-bars
              :type git

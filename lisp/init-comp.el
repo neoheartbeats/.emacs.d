@@ -28,13 +28,6 @@
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
 
-;; Fuzzy searching: simple but effective sorting and filtering by `prescient'
-;; (use-package prescient
-;;   :straight t
-;;   :config
-;;   (setq prescient-filter-method '(fuzzy prefix initialism))
-;;   (prescient-persist-mode 1))
-
 ;; Use the `orderless' completion style
 (use-package orderless
   :straight t)
@@ -52,6 +45,9 @@
 ;; Completion for minibuffers
 (use-package vertico
   :straight t
+  :init
+  (add-hook 'after-init-hook #'(lambda ()
+   				 (vertico-mode 1)))
   :config
   (setq vertico-count 10)
   (setq vertico-cycle t)
@@ -65,18 +61,18 @@
   ;; Do not render italic fonts
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
 
-  (vertico-mode 1))
-
-;; See also `prescient'
-;; (use-package vertico-prescient
-;;   :straight t
-;;   :config
-;;   (setq vertico-prescient-enable-sorting t)
-;;   (vertico-prescient-mode 1))
-;; :bind ((:map vertico-map
-;;              ("<tab>" . vertico-insert)
-;;              ("<return>" . vertico-directory-enter)
-;;              ("<backspace>" . vertico-directory-delete-char))))
+  ;; Cut long candidates in `vertico' completion
+  (use-package vertico-truncate
+    :straight (vertico-truncate
+	       :type git
+	       :host github
+	       :repo "jdtsmith/vertico-truncate")
+    :config (vertico-truncate-mode 1))
+  
+  :bind ((:map vertico-map
+               ("<tab>" . vertico-insert)
+               ("<return>" . vertico-directory-enter)
+               ("<backspace>" . vertico-directory-delete-char))))
 
 ;; Do not allow the cursor in the minibuffer prompt
 (setq minibuffer-prompt-properties
@@ -93,14 +89,6 @@
               (cl-letf (((symbol-function #'minibuffer-completion-help)
                          #'ignore))
                 (apply args))))
-
-;; Truncation for long candidates in `vertico' completion
-;; (use-package vertico-truncate
-;;   :straight (vertico-truncate
-;; 	     :type git
-;; 	     :host github
-;; 	     :repo "jdtsmith/vertico-truncate")
-;;   :config (vertico-truncate-mode 1))
 
 
 ;; Rich annotations for minibuffer
@@ -119,8 +107,7 @@
    [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
   (global-set-key
    [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
-  (global-set-key [remap project-switch-to-buffer] 'consult-project-buffer)
-
+  
   ;; Framework for mode-specific buffer indexes
   (global-set-key [remap imenu] 'consult-imenu)
   :config
@@ -154,28 +141,11 @@ DEFS is a plist associating completion categories to commands."
     (unless (eq src 'consult--source-buffer)
       (set src (plist-put (symbol-value src) :hidden t))))
 
-  ;; Previewing files in `find-file'
-  (setq read-file-name-function #'consult-find-file-with-preview)
-
-  (defun consult-find-file-with-preview (prompt &optional dir default mustmatch initial pred)
-    (interactive)
-    (let ((default-directory (or dir default-directory))
-          (minibuffer-completing-file-name t))
-      (consult--read #'read-file-name-internal :state (consult--file-preview)
-                     :prompt prompt
-                     :initial initial
-                     :require-match mustmatch
-                     :predicate pred)))
-
-  ;; Skipping directories when using `consult-find'
-  (setq consult-find-args
-	"find . -not ( -wholename */.* -prune -o -name node_modules -prune )")
-  
   :bind (:map global-map
 	      ("C-s" . consult-line)
 	      ("M-s" . consult-ripgrep)
               ("C-v" . consult-yank-from-kill-ring)
-              ("M-i" . consult-imenu)))
+              ("s-m" . consult-imenu)))
 
 
 ;; Dabbrev settings
@@ -208,13 +178,20 @@ DEFS is a plist associating completion categories to commands."
       (add-to-list 'completion-at-point-functions cape)))
 
   (defun my-cape-prog-mode-setup ()
-    (my-cape-setup 'cape-dabbrev 'cape-file 'cape-keyword 'cape-abbrev))
+    (my-cape-setup 'cape-dabbrev
+		   'cape-file
+		   'cape-keyword))
 
   (defun my-cape-emacs-lisp-mode-setup ()
-    (my-cape-setup 'cape-dabbrev 'cape-file 'cape-keyword 'cape-elisp-symbol 'cape-abbrev))
+    (my-cape-setup 'cape-dabbrev
+		   'cape-file
+		   'cape-keyword
+		   'cape-elisp-symbol))
 
   (defun my-cape-org-mode-setup ()
-    (my-cape-setup 'cape-dabbrev 'cape-file 'cape-elisp-block 'cape-dict 'cape-keyword))
+    (my-cape-setup 'cape-dabbrev
+		   'cape-file
+		   'cape-dict))
 
   :hook ((prog-mode . my-cape-prog-mode-setup)
          (emacs-lisp-mode . my-cape-emacs-lisp-mode-setup)
@@ -240,13 +217,7 @@ DEFS is a plist associating completion categories to commands."
   (require 'corfu-history)
   (corfu-history-mode 1)
   (add-to-list 'savehist-additional-variables 'corfu-history)
-
-  ;; See also `prescient'
-  ;; (use-package corfu-prescient
-  ;;   :straight t
-  ;;   :config
-  ;;   (setq corfu-prescient-enable-sorting t)
-  ;;   (corfu-prescient-mode 1))
+  
   :bind (:map corfu-map
               ("<down>" . corfu-next)
 	      ("<tab>" . corfu-next)

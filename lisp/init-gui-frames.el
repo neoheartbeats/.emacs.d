@@ -5,61 +5,67 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
+;;
+;; 这个文件的内容主要包含了针对 GUI 模式下优化的 Emacs UI 设计.
+;; 本文件主要配置了 `modus-themes', 字体, 一些全局的 `face' 和 `mode-line' 的样式.
+;; 对于那些功能性专有的 `face', 它们的配置代码是被隔离开的, 典型的例子是 `prettify-symbols-mode'.
+;; See also `init-editing-utils', `init-org'.
+;;
 ;;; Code:
 
 ;;;
 ;;
 ;; Modus Themes
-;;
-;; Load the built-in theme before customization
-(require-theme 'modus-themes)
+(use-package modus-themes
+  :straight t
+  :config
+  (setq modus-themes-common-palette-overrides
+	'(
+	  ;; Make the mode line borderless
+	  (border-mode-line-active bg-mode-line-active)
+	  (border-mode-line-inactive bg-mode-line-inactive)
 
-(setq modus-themes-common-palette-overrides
-      '(
-	;; Make the mode line borderless
-	(border-mode-line-active bg-mode-line-active)
-	(border-mode-line-inactive bg-mode-line-inactive)
+	  ;; Set color faces for `display-line-numbers-mode'
+	  (fg-line-number-inactive "gray50")
+	  (fg-line-number-active fg-main)
+	  (bg-line-number-inactive unspecified)
+	  (bg-line-number-active bg-hl-line)
 
-	;; Set color faces for `display-line-numbers-mode'
-	(fg-line-number-inactive "gray50")
-	(fg-line-number-active fg-main)
-	(bg-line-number-inactive unspecified)
-	(bg-line-number-active bg-hl-line)
+	  ;; Make the fringe invisible
+	  (fringe unspecified)
 
-	;; Make the fringe invisible
-	(fringe unspecified)
+	  ;; Subtle underlines
+	  (underline-link border)
+	  (underline-link-visited border)
+	  (underline-link-symbolic border)
 
-	;; Subtle underlines
-	(underline-link border)
-	(underline-link-visited border)
-	(underline-link-symbolic border)
+	  ;; Make links the same color as `fg-main'
+	  ;; This also affects `button' faces in Modus Themes
+	  (fg-link unspecified)
+	  (fg-link-visited unspecified)
 
-	;; Make links the same color as `fg-main'
-	;; This also affects `button' faces in Modus Themes
-	(fg-link unspecified)
-	(fg-link-visited unspecified)
+	  ;; Completions
+	  ;; (fg-completion-match-0 fg-main)
+	  ;; (bg-completion-match-0 bg-red-intense)
 
-	;; Completions
-	;; (fg-completion-match-0 fg-main)
-	;; (bg-completion-match-0 bg-red-intense)
+	  (bg-paren-match bg-green-intense)
+	  ;; (underline-paren-match fg-main)
 
-	(bg-paren-match bg-green-intense)
-	;; (underline-paren-match fg-main)
+	  ;; Make DONE less intense
+	  (prose-done fg-dim)
 
-	;; Make DONE less intense
-	(prose-done fg-dim)
+	  ;; Custom region colors
+	  ;; (bg-region bg-red-intense)
+	  (fg-region unspecified)))
 
-	;; Custom region colors
-	;; (bg-region bg-red-intense)
-	(fg-region unspecified)))
+  (setq modus-themes-prompts '(extrabold)
+	modus-themes-completions '((t . (extrabold))))
 
-(setq modus-themes-prompts '(extrabold)
-      modus-themes-completions '((t . (extrabold))))
+  ;; diable other themes before loading Modus Themes
+  (mapc #'disable-theme custom-enabled-themes)
+  (load-theme 'modus-vivendi :no-confirm))
 
-;; diable other themes before loading Modus Themes
-(mapc #'disable-theme custom-enabled-themes)
-(load-theme 'modus-vivendi :no-confirm)
-
+
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.15)
 
@@ -75,28 +81,7 @@
 (add-hook 'after-init-hook #'global-hl-line-mode)
 
 ;; Custom font
-(set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
-
-;; Font ligatures support [TODO]
-(use-package ligature
-  :straight t
-  :config
-  (ligature-set-ligatures
-   't
-   '("-<<" "-<" "-<-" "<--" "<---" "<<-" "<-"
-     "->" "->>" "-->" "--->" "->-" ">-" ">>-"
-     "=<<" "=<" "=<=" "<==" "<===" "<<=" "<="
-     "=>" "=>>" "==>" "===>" "=>=" ">=" ">>="
-     "<->" "<-->" "<--->" "<---->"
-     "<=>" "<==>" "<===>" "<====>"
-     "::" ":::" "__" "..." ".."
-     "<~~" "</" "</>" "/>" "~~>"
-     "==" "!=" "<>" "===" "!==" "!==="
-     "<:" ":=" "*=" "*+" "<*" "<*>" "*>"
-     "<|" "<|>" "|>" "<." "<.>" ".>" "+*" "=*" "=:" ":>"
-     "(* *)" "/*" "*/" "[|" "|]" "{|" "|}"
-     "++" "+++" "\\/" "/\\" "|-" "-|" "<!--" "<!---"))
-  (global-ligature-mode 1))
+(set-face-attribute 'default nil :family "Monaco" :height 140)
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
@@ -111,15 +96,6 @@
 ;; Mode Line settings
 (setq mode-line-compact t)
 (setq line-number-mode nil)
-
-;; Make Dired more colorful
-;; (use-package diredfl
-;;   :straight t
-;;   :config (diredfl-global-mode 1))
-
-;; (add-hook 'dired-mode-hook #'(lambda ()
-;; 			       (dired-hide-details-mode 1)
-;; 			       (dired-sort-toggle-or-edit)))
 
 
 ;; Better margins

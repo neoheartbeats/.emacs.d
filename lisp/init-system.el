@@ -78,12 +78,6 @@
   (setq savehist-save-minibuffer-history t)
   (savehist-mode 1))
 
-;; Searching for recent files
-(use-package recentf
-  :config
-  (setq recentf-max-saved-items 150)
-  (recentf-mode 1))
-
 ;; Auto saving mechanism
 (setq auto-save-interval 2400
       auto-save-timeout 300)
@@ -118,7 +112,6 @@
 (setq tab-width 4)
 (setq indent-tabs-mode nil)
 (setq require-final-newline t)
-(setq inhibit-compacting-font-caches t)
 (setq vc-follow-symlinks t)
 
 
@@ -138,7 +131,8 @@
   (interactive)
   (save-excursion
     (indent-region (point-min) (point-max) nil)
-    (save-buffer)))
+    (save-buffer))
+  (run-hooks 'indent-current-buffer-hook))
 
 ;; To access the `.emacs.d' root
 (defun open-emacs-config-dir ()
