@@ -16,27 +16,27 @@
 (setq mac-command-modifier 'super)
 
 (bind-keys :map global-map
-	   ("s-a" . mark-whole-buffer)
-	   ("s-c" . kill-ring-save)
-	   ("s-i" . indent-current-buffer)
-	   ("s-l" . goto-line)
-	   ("s-q" . save-buffers-kill-emacs)
-	   ("s-s" . save-buffer)
-	   ("s-v" . yank)
-	   ("s-w" . kill-current-buffer)
-	   ("s-e" . delete-window)
-	   ("s-r" . restart-emacs)
-	   ("s-z" . undo)
-	   ("s-d" . find-file))
+	       ("s-a" . mark-whole-buffer)
+	       ("s-c" . kill-ring-save)
+	       ("s-i" . indent-current-buffer)
+	       ("s-l" . goto-line)
+	       ("s-q" . save-buffers-kill-emacs)
+	       ("s-s" . save-buffer)
+	       ("s-v" . yank)
+	       ("s-w" . kill-current-buffer)
+	       ("s-e" . delete-window)
+	       ("s-r" . restart-emacs)
+	       ("s-z" . undo)
+	       ("s-d" . find-file))
 
 (bind-keys :map global-map
-	   ("s-1" . delete-other-windows)
-	   ("s-2" . split-window-below)
-	   ("s-3" . split-window-right)
-	   ("s-<backspace>" . kill-whole-line))
+	       ("s-1" . delete-other-windows)
+	       ("s-2" . split-window-below)
+	       ("s-3" . split-window-right)
+	       ("s-<backspace>" . kill-whole-line))
 
 (bind-keys :map emacs-lisp-mode-map
-	   ("C-c C-c". eval-buffer))
+	       ("C-c C-c". eval-buffer))
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
@@ -47,7 +47,7 @@
 
 ;; "s-[" is used as the prefix key standing for "insert" (see also `init-temp')
 (bind-keys :map global-map
-	   ("s-[ f" . insert-file))
+	       ("s-[ f" . insert-file))
 
 ;; Disable these keys
 (global-unset-key (kbd "<pinch>"))
@@ -100,17 +100,15 @@
 (setq create-lockfiles nil)
 (setq make-backup-files nil)
 (setq mark-even-if-inactive nil)
-(setq make-pointer-invisible nil)
 (setq ring-bell-function 'ignore)
 (setq save-silently t)
 (setq set-mark-command-repeat-pop t)
 (setq truncate-lines nil)
 (setq truncate-partial-width-windows nil)
 (setq help-window-select t)
-(setq xref-search-program 'ripgrep)
 (setq fill-column 88)
 (setq tab-width 4)
-(setq indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil)
 (setq require-final-newline t)
 (setq vc-follow-symlinks t)
 
@@ -123,7 +121,7 @@
     (error "No file is currently being edited"))
   (when (yes-or-no-p
          (format "Really delete '%s'?"
-		 (file-name-nondirectory buffer-file-name)))
+		         (file-name-nondirectory buffer-file-name)))
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
 
@@ -147,7 +145,7 @@
   (let ((original-buffer (current-buffer)))
     (funcall cycle-func)
     (while (and (string-match-p "\\*.*\\*" (buffer-name))
-		(not (eq original-buffer (current-buffer))))
+		        (not (eq original-buffer (current-buffer))))
       (funcall cycle-func))))
 
 (defun my/cycle-to-next-buffer ()
@@ -161,16 +159,16 @@
   (run-hooks 'my/cycle-to-previous-buffer-hook))
 
 (bind-keys :map global-map
-	   ("<s-right>" . my/cycle-to-next-buffer)
-	   ("<s-left>" . my/cycle-to-previous-buffer))
+	       ("<s-right>" . my/cycle-to-next-buffer)
+	       ("<s-left>" . my/cycle-to-previous-buffer))
 
 
 ;; Mouse and scroll settings
 (setq scroll-preserve-screen-position t
       scroll-margin 0
       scroll-conservatively 105)
-(add-hook 'after-init-hook #'pixel-scroll-precision-mode)
-
+(add-hook 'after-init-hook #'(lambda ()
+			                   (pixel-scroll-precision-mode 1)))
 
 
 ;; Disable auto copyings
@@ -191,17 +189,6 @@
 
 (global-set-key (kbd "s-<backspace>") 'my/delete-current-line)
 (global-set-key (kbd "C-<backspace>") 'my/delete-to-beginning-of-line)
-
-
-;;; EMMS
-;; (use-package emms
-;;   :straight t
-;;   :config
-;;   (emms-minimalistic)
-;;   (emms-default-players)
-;;   (setq emms-source-file-default-directory "~/Music/A55/")
-;;   (setq emms-mode-line-icon-enabled-p 'nil)
-;;   (add-hook 'emms-player-started-hook #'emms-shuffle))
 
 (provide 'init-system)
 ;;;

@@ -7,8 +7,6 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'org)
-
 ;; Setup default directory
 (setq org-directory "~/Sthenno/")
 

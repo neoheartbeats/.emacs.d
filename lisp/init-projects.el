@@ -19,6 +19,22 @@
 ;;   :config (global-diff-hl-mode 1))
 
 
+;;; Cross-reference
+;;
+;; Xref
+;; For further backends support, see also `etags', `init-eglot'
+(use-package xref
+  :config
+  (setq xref-search-program 'ripgrep)
+  :bind (:map global-map
+	      ("M-/" . xref-find-references)))
+
+;; TAGS
+(use-package etags
+  :config
+  (etags-regen-mode 1))
+
+
 ;; Project management using Projectile
 (use-package projectile
   :straight t

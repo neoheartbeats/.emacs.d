@@ -29,7 +29,6 @@
 
 ;; Initialize `eglot'
 (use-package eglot
-  :straight t
   :config
 
   ;; Use Pyright as the default language server
@@ -73,7 +72,8 @@
 ;; Reformat python buffers using the `black' formatter
 (use-package blacken
   :straight t
-  :config (add-hook 'python-ts-mode-hook #'blacken-mode)
+  :config (add-hook 'python-ts-mode-hook #'(lambda ()
+					     (blacken-mode 1)))
   :bind
   (:map python-ts-mode-map
 	("s-i" . blacken-buffer)))
@@ -108,55 +108,53 @@ CONTENT."
 			    (json-encode `(("content" . ,content))) 'utf-8))
          (url (format "%s/%s/" sthenno-endpoint-u endpoint))
          response)
-    (with-current-buffer (url-retrieve-synchronously url)
+    (with-current-buffer (url-retrieve-synchronously url t) ; t means silent
       (goto-char url-http-end-of-headers)
       (setq response (buffer-substring-no-properties (point) (point-max)))
       (kill-buffer (current-buffer)))
     (json-read-from-string (decode-coding-string response 'utf-8))))
 
 (defun sthenno-trans-to-zh (content)
+  "Translate the CONTENT to Simplified Chinese.
+Return the translation."
   (let* ((obj (sthenno-post "trans_to_zh" content))
 	 (translation (cdr (assoc 'translation obj))))
     translation))
 
 (defun sthenno-trans-to-en (content)
+  "Translate the CONTENT to English.
+Return the translation."
   (let* ((obj (sthenno-post "trans_to_en" content))
 	 (translation (cdr (assoc 'translation obj))))
     translation))
 
-(defun sthenno-selected-text ()
-  (interactive)
-  (if (use-region-p)
-      (let* ((start (region-beginning))
-	     (end (region-end))
-	     (text (buffer-substring-no-properties start end)))
-	text)
-    (message "No text selected.")))
-
-(defun sthenno-trans-to-zh-selected ()
-  (interactive)
-  (let* ((text (sthenno-selected-text))
-	 (translation (sthenno-trans-to-zh text)))
+(defun sthenno-trans-to-zh-target (target)
+  (let ((translation (sthenno-trans-to-zh target)))
     (kill-new translation)
-    (message (format "Translation: %s" translation))
-    translation))
+    (message (format "Translation: %s" translation))))
 
-(defun sthenno-trans-to-en-selected ()
-  (interactive)
-  (let* ((text (sthenno-selected-text))
-	 (translation (sthenno-trans-to-en text)))
+(defun sthenno-trans-to-en-target (target)
+  (let ((translation (sthenno-trans-to-en target)))
     (kill-new translation)
-    (message (format "Translation: %s" translation))
-    translation))
+    (message (format "Translation: %s" translation))))
 
-(define-prefix-command 'my-sthenno-endpoints-map)
+;; Binding keys (see also `init-comp') [TODO]
+(use-package embark
+  :config
+  (defun embark-target-word-at-point ()
+    "Target the word at point for Embark."
+    (save-excursion
+      (let ((word (thing-at-point 'word)))
+        (save-match-data
+          (when word
+            (cons 'word word))))))
+  (add-to-list 'embark-target-finders 'embark-target-word-at-point)
 
-;; "、" 这个按键极为罕见被用到, 但在键盘上非常触手可及. [TODO]
-;; (bind-key "\" 'my-sthenno-endpoints-map)
-;;
-;; (bind-keys :map my-translation-map
-;; 	   ("z" . sthenno-trans-to-zh-selected)
-;; 	   ("e" . sthenno-trans-to-en-selected))
+  ;; (keymap-set embark-general-map "t z" #'sthenno-trans-to-zh-target)
+  ;; (keymap-set embark-general-map "t e" #'sthenno-trans-to-en-target)
+  (bind-keys :map embark-general-map
+             ("T" . sthenno-trans-to-zh-target)
+             ("E" . sthenno-trans-to-en-target)))
 
 (provide 'init-eglot)
 ;;;
@@ -164,3 +162,19 @@ CONTENT."
 ;; no-byte-compile: t
 ;; End:
 ;;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

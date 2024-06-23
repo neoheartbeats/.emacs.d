@@ -144,7 +144,12 @@
 
 ;; (setq jit-lock-defer-time 0)
 
+
+
 
+;; Load dependences
+(require 'org)
+
 ;; Load components
 (require 'init-system)
 (require 'init-gui-frames)

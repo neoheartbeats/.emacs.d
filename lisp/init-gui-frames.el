@@ -6,10 +6,11 @@
 
 ;;; Commentary:
 ;;
-;; 这个文件的内容主要包含了针对 GUI 模式下优化的 Emacs UI 设计.
-;; 本文件主要配置了 `modus-themes', 字体, 一些全局的 `face' 和 `mode-line' 的样式.
-;; 对于那些功能性专有的 `face', 它们的配置代码是被隔离开的, 典型的例子是 `prettify-symbols-mode'.
-;; See also `init-editing-utils', `init-org'.
+;; The content of this file mainly includes an Emacs UI design optimized
+;; for GUI mode. This file mainly configures `modus-themes', fonts, some
+;; global `face' and `mode-line' styles. For those feature-specific
+;; `faces', their configuration code is isolated. A typical example is
+;; `prettify-symbols-mode'. See also: `init-editing-utils', `init-org'.
 ;;
 ;;; Code:
 
@@ -45,8 +46,8 @@
 	  (fg-link-visited unspecified)
 
 	  ;; Yellow comments and green strings
-	  (comment yellow-cooler)
-	  (string green-cooler)
+	  ;; (comment yellow-cooler)
+	  ;; (string green-cooler)
 
 	  ;; Completions
 	  ;; (fg-completion-match-0 fg-main)
@@ -86,6 +87,7 @@
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji") nil 'prepend)
 
 ;; Note this make all italic font style disabled
 (set-face-attribute 'italic nil :slant 'normal)
@@ -101,15 +103,18 @@
 (setq mode-line-compact t)
 (setq line-number-mode nil)
 
+;; (use-package emacs
+;;   :custom-face
+;;   (mode-line ((t (:foreground "bg-mode-line-active" :height 0.1))))
+;;   (mode-line-inactive ((t (:inherit mode-line))))
+;;   :config (setq-default mode-line-format '("")))
+
 
 ;; Automatic adjusting for margins
 (use-package perfect-margin
   :straight t
   :diminish (perfect-margin-mode)
-  :config
-  (setq perfect-margin-ignore-filters nil
-	perfect-margin-ignore-regexps nil)
-  (perfect-margin-mode 1))
+  :config (perfect-margin-mode 1))
 
 (provide 'init-gui-frames)
 ;;;

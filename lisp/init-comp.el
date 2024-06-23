@@ -53,6 +53,7 @@
   (setq vertico-cycle t)
 
   ;; Load extensions
+  (require 'vertico-multiform) ; This is required by `embark' configurations
   (require 'vertico-directory)
 
   ;; Correct file path when changed
@@ -147,12 +148,49 @@ DEFS is a plist associating completion categories to commands."
               ("C-v" . consult-yank-from-kill-ring)
               ("s-m" . consult-imenu)))
 
+;;; Embark: Emacs Mini-Buffer Actions Rooted in Keymaps
+(use-package embark
+  :straight t
+  :init
+  
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+  :config
+  (global-set-key [remap describe-bindings] 'embark-bindings)
+
+  (setq embark-indicators
+        '(embark-minimal-indicator  ; Default is `embark-mixed-indicator'
+          embark-highlight-indicator
+          embark-isearch-highlight-indicator))
+
+  ;; A `which-key' styled integration for `embark' keys
+  (require 'vertico-multiform)
+  (add-to-list 'vertico-multiform-categories '(embark-keybinding grid))
+  (vertico-multiform-mode 1)
+
+  ;; Quitting the minibuffer after an action
+  (setq embark-quit-after-action '((kill-buffer . t) (t . nil)))
+  
+  ;; Hide the mode line of the Embark completion buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none))))
+  :bind ("s-/" . embark-act))
+
+(use-package embark-consult
+  :straight t
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
+
 
 ;; Dabbrev settings
 (use-package dabbrev
   :config
 
-  ;; Better letter cases
+  ;; Better letter casesx
   (setq dabbrev-case-distinction nil
 	dabbrev-case-replace nil
 	dabbrev-case-fold-search t
@@ -201,7 +239,8 @@ DEFS is a plist associating completion categories to commands."
 ;; The main completion frontend by Corfu
 (use-package corfu
   :straight (:files (:defaults "extensions/*"))
-  :init (add-hook 'after-init-hook #'global-corfu-mode)
+  :init (add-hook 'after-init-hook #'(lambda ()
+				       (global-corfu-mode 1)))
   :config
   (setq corfu-auto t)
   (setq corfu-auto-delay 0.02) ; Making this to 0 is too expensive

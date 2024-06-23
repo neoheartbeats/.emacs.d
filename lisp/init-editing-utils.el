@@ -92,7 +92,7 @@
   :bind (:map global-map
 	      ("M-<up>" . focus-prev-thing)
 	      ("M-<down>" . focus-next-thing))
-  :hook ((prog-mode org-mode) . focus-mode))
+  :hook ((python-ts-mode org-mode) . focus-mode))
 
 
 ;;;; [TODO] Integration with `focus-mode'
