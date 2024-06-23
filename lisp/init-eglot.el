@@ -33,7 +33,7 @@
 
   ;; Use Pyright as the default language server
   (add-to-list 'eglot-server-programs
-	       '(python-ts-mode . ("pyright-langserver" "--stdio")))
+	           '(python-ts-mode . ("pyright-langserver" "--stdio")))
   (add-hook 'python-ts-mode #'eglot-ensure)
 
   ;; Config `corfu' for `eglot', see also `init-comp'
@@ -42,7 +42,7 @@
   ;; sufficiently many candidates in the first place
   (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
   :bind (:map eglot-mode-map
-	      ("<f6>" . eglot-rename)))
+	          ("<f6>" . eglot-rename)))
 
 ;; Note `project' is a dependency for `eglot' but not declared by `projectile'
 ;; See https://github.com/radian-software/straight.el/issues/1146 [TODO]
@@ -73,10 +73,10 @@
 (use-package blacken
   :straight t
   :config (add-hook 'python-ts-mode-hook #'(lambda ()
-					     (blacken-mode 1)))
+					                         (blacken-mode 1)))
   :bind
   (:map python-ts-mode-map
-	("s-i" . blacken-buffer)))
+	    ("s-i" . blacken-buffer)))
 
 
 ;;; AI Integration
@@ -84,9 +84,9 @@
 ;; GitHub Copilot
 (use-package copilot
   :straight (
-	     :host github
-	     :repo "copilot-emacs/copilot.el"
-	     :files ("*.el"))
+	         :host github
+	         :repo "copilot-emacs/copilot.el"
+	         :files ("*.el"))
   :config
   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
@@ -105,7 +105,7 @@ CONTENT."
   (let* ((url-request-method "POST")
          (url-request-extra-headers '(("Content-Type" . "application/json")))
          (url-request-data (encode-coding-string
-			    (json-encode `(("content" . ,content))) 'utf-8))
+			                (json-encode `(("content" . ,content))) 'utf-8))
          (url (format "%s/%s/" sthenno-endpoint-u endpoint))
          response)
     (with-current-buffer (url-retrieve-synchronously url t) ; t means silent
@@ -118,14 +118,14 @@ CONTENT."
   "Translate the CONTENT to Simplified Chinese.
 Return the translation."
   (let* ((obj (sthenno-post "trans_to_zh" content))
-	 (translation (cdr (assoc 'translation obj))))
+	     (translation (cdr (assoc 'translation obj))))
     translation))
 
 (defun sthenno-trans-to-en (content)
   "Translate the CONTENT to English.
 Return the translation."
   (let* ((obj (sthenno-post "trans_to_en" content))
-	 (translation (cdr (assoc 'translation obj))))
+	     (translation (cdr (assoc 'translation obj))))
     translation))
 
 (defun sthenno-trans-to-zh-target (target)

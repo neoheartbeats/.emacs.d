@@ -47,7 +47,7 @@
   :straight t
   :init
   (add-hook 'after-init-hook #'(lambda ()
-   				 (vertico-mode 1)))
+   				                 (vertico-mode 1)))
   :config
   (setq vertico-count 10)
   (setq vertico-cycle t)
@@ -65,9 +65,9 @@
   ;; Cut long candidates in `vertico' completion
   (use-package vertico-truncate
     :straight (vertico-truncate
-	       :type git
-	       :host github
-	       :repo "jdtsmith/vertico-truncate")
+	           :type git
+	           :host github
+	           :repo "jdtsmith/vertico-truncate")
     :config (vertico-truncate-mode 1))
   
   :bind ((:map vertico-map
@@ -125,17 +125,17 @@
     "Define KEY conditionally in the minibuffer.
 DEFS is a plist associating completion categories to commands."
     (define-key minibuffer-local-map key
-		(list 'menu-item nil defs :filter
-		      (lambda (d)
-			(plist-get d (completion-metadata-get
-				      (completion-metadata (minibuffer-contents)
-							   minibuffer-completion-table
-							   minibuffer-completion-predicate)
-				      'category))))))
+		        (list 'menu-item nil defs :filter
+		              (lambda (d)
+			            (plist-get d (completion-metadata-get
+				                      (completion-metadata (minibuffer-contents)
+							                               minibuffer-completion-table
+							                               minibuffer-completion-predicate)
+				                      'category))))))
 
   (define-minibuffer-key "\C-s"
-			 'consult-location #'previous-history-element
-			 'file #'consult-find-for-minibuffer)
+			             'consult-location #'previous-history-element
+			             'file #'consult-find-for-minibuffer)
 
   ;; Only display normal buffers using `consult-buffer'
   (dolist (src consult-buffer-sources)
@@ -143,8 +143,8 @@ DEFS is a plist associating completion categories to commands."
       (set src (plist-put (symbol-value src) :hidden t))))
 
   :bind (:map global-map
-	      ("C-s" . consult-line)
-	      ("M-s" . consult-ripgrep)
+	          ("C-s" . consult-line)
+	          ("M-s" . consult-ripgrep)
               ("C-v" . consult-yank-from-kill-ring)
               ("s-m" . consult-imenu)))
 
@@ -192,9 +192,9 @@ DEFS is a plist associating completion categories to commands."
 
   ;; Better letter casesx
   (setq dabbrev-case-distinction nil
-	dabbrev-case-replace nil
-	dabbrev-case-fold-search t
-	dabbrev-upcase-means-case-search t)
+	    dabbrev-case-replace nil
+	    dabbrev-case-fold-search t
+	    dabbrev-upcase-means-case-search t)
 
   ;; See https://github.com/minad/corfu
   (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
@@ -217,19 +217,19 @@ DEFS is a plist associating completion categories to commands."
 
   (defun my-cape-prog-mode-setup ()
     (my-cape-setup 'cape-dabbrev
-		   'cape-file
-		   'cape-keyword))
+		           'cape-file
+		           'cape-keyword))
 
   (defun my-cape-emacs-lisp-mode-setup ()
     (my-cape-setup 'cape-dabbrev
-		   'cape-file
-		   'cape-keyword
-		   'cape-elisp-symbol))
+		           'cape-file
+		           'cape-keyword
+		           'cape-elisp-symbol))
 
   (defun my-cape-org-mode-setup ()
     (my-cape-setup 'cape-dabbrev
-		   'cape-file
-		   'cape-dict))
+		           'cape-file
+		           'cape-dict))
 
   :hook ((prog-mode . my-cape-prog-mode-setup)
          (emacs-lisp-mode . my-cape-emacs-lisp-mode-setup)
@@ -240,7 +240,7 @@ DEFS is a plist associating completion categories to commands."
 (use-package corfu
   :straight (:files (:defaults "extensions/*"))
   :init (add-hook 'after-init-hook #'(lambda ()
-				       (global-corfu-mode 1)))
+				                       (global-corfu-mode 1)))
   :config
   (setq corfu-auto t)
   (setq corfu-auto-delay 0.02) ; Making this to 0 is too expensive
@@ -259,9 +259,9 @@ DEFS is a plist associating completion categories to commands."
   
   :bind (:map corfu-map
               ("<down>" . corfu-next)
-	      ("<tab>" . corfu-next)
+	          ("<tab>" . corfu-next)
               ("<up>" . corfu-previous)
-	      ("s-<tab>" . corfu-previous)
+	          ("s-<tab>" . corfu-previous)
               ("<escape>" . corfu-quit)))
 
 (provide 'init-comp)

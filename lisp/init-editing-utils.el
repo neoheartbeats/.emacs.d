@@ -17,9 +17,9 @@
   :config
   (require 'smartparens-config)
   (add-hook 'prog-mode-hook #'(lambda ()
-				(smartparens-mode 1)))
+				                (smartparens-mode 1)))
   (add-hook 'org-mode-hook #'(lambda ()
-			       (smartparens-mode 1))))
+			                   (smartparens-mode 1))))
 
 
 ;; Misc settings
@@ -48,24 +48,24 @@
 ;; Fill columns
 ;; Face `fill-column-indicator' is set in `init-gui-frames'
 (add-hook 'prog-mode-hook #'(lambda ()
-			      (display-fill-column-indicator-mode 1)))
+			                  (display-fill-column-indicator-mode 1)))
 (add-hook 'org-mode-hook #'(lambda ()
-			     (display-fill-column-indicator-mode 1)))
+			                 (display-fill-column-indicator-mode 1)))
 
 ;; Display line numbers
 (setq-default display-line-numbers-width 4)
 (add-hook 'prog-mode-hook #'(lambda ()
-			      (display-line-numbers-mode 1)))
+			                  (display-line-numbers-mode 1)))
 
 
 (use-package pulsar
   :straight t
   :config
   (setq pulsar-pulse t
-	pulsar-delay 0.075
-	pulsar-iterations 10
-	pulsar-face 'pulsar-green
-	pulsar-highlight-face 'pulsar-magenta)
+	    pulsar-delay 0.075
+	    pulsar-iterations 10
+	    pulsar-face 'pulsar-green
+	    pulsar-highlight-face 'pulsar-magenta)
 
   (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line-cyan)
   (add-hook 'indent-current-buffer-hook #'pulsar-pulse-line-cyan)
@@ -90,8 +90,8 @@
   ;; and `indent-bars-mode' in most cases [TODO]
   (add-to-list 'focus-mode-to-thing '(python-ts-mode . paragraph))
   :bind (:map global-map
-	      ("M-<up>" . focus-prev-thing)
-	      ("M-<down>" . focus-next-thing))
+	          ("M-<up>" . focus-prev-thing)
+	          ("M-<down>" . focus-next-thing))
   :hook ((python-ts-mode org-mode) . focus-mode))
 
 
@@ -103,17 +103,17 @@
              :repo "jdtsmith/indent-bars")
   :config
   (setq indent-bars-treesit-support t
-	indent-bars-treesit-ignore-blank-lines-types '("module"))
+	    indent-bars-treesit-ignore-blank-lines-types '("module"))
 
   ;; Stipple-based pixle-toggling is not supported by NS built Emacs
   (setq indent-bars-prefer-character t)
   (setq indent-bars-no-stipple-char ?\u239c) ; ?\u239c
   :config
   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
-	indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-	indent-bars-highlight-current-depth '(:blend 0.8)
-	indent-bars-starting-column 0
-	indent-bars-display-on-blank-lines t)
+	    indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+	    indent-bars-highlight-current-depth '(:blend 0.8)
+	    indent-bars-starting-column 0
+	    indent-bars-display-on-blank-lines t)
   :hook ((python-ts-mode) . indent-bars-mode))
 
 (provide 'init-editing-utils)

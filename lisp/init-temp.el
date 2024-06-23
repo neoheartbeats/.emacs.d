@@ -35,7 +35,7 @@
     (yas-expand-snippet snippet)))
 
 (bind-keys :map org-mode-map
-	   ("s-[ m" . my/yas-insert-latex-matrix))
+	       ("s-[ m" . my/yas-insert-latex-matrix))
 
 (provide 'init-temp)
 ;;;
