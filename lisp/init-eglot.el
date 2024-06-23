@@ -54,7 +54,8 @@
 ;;              :type git
 ;;              :host github
 ;;              :repo "jdtsmith/eglot-booster")
-;;   :init (add-to-list 'exec-path (expand-file-name "bin/" user-emacs-directory))
+;;   :init
+;;   (add-to-list 'exec-path (expand-file-name "bin/" user-emacs-directory))
 ;;   :config
 ;;   (setq eglot-booster-no-remote-boost t)
 ;;   (eglot-booster-mode 1))
@@ -150,7 +151,7 @@ CONTENT."
 
 (define-prefix-command 'my-sthenno-endpoints-map)
 
-;; "、" 这个按键极为罕见被用到, 但在键盘上非常触手可及.
+;; "、" 这个按键极为罕见被用到, 但在键盘上非常触手可及. [TODO]
 ;; (bind-key "\" 'my-sthenno-endpoints-map)
 ;;
 ;; (bind-keys :map my-translation-map

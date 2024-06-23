@@ -46,7 +46,7 @@
                                (modify-syntax-entry ?< ".")))
 
 ;; Fill columns
-(setq display-fill-column-indicator-character ?\u254e)
+;; Face `fill-column-indicator' is set in `init-gui-frames'
 (add-hook 'prog-mode-hook #'(lambda ()
 			      (display-fill-column-indicator-mode 1)))
 (add-hook 'org-mode-hook #'(lambda ()
@@ -54,7 +54,8 @@
 
 ;; Display line numbers
 (setq-default display-line-numbers-width 4)
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+(add-hook 'prog-mode-hook #'(lambda ()
+			      (display-line-numbers-mode 1)))
 
 
 (use-package pulsar
@@ -83,10 +84,15 @@
 (use-package focus
   :straight t
   :config
-  (add-hook 'org-mode-hook #'(lambda ()
-			       (focus-mode 1)))
-  (add-hook 'prog-mode-hook #'(lambda ()
-				     (focus-mode 1))))
+  
+  ;; Rendering for comments may not be correct if using the default style
+  ;; `defun'. Note this may cause conflict with `highlight-paren-mode'
+  ;; and `indent-bars-mode' in most cases [TODO]
+  ;; (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . paragraph))
+  :bind (:map global-map
+	      ("M-<up>" . focus-prev-thing)
+	      ("M-<down>" . focus-next-thing))
+  :hook ((prog-mode org-mode) . focus-mode))
 
 
 ;;;; [TODO] Integration with `focus-mode'
@@ -95,16 +101,18 @@
              :type git
              :host github
              :repo "jdtsmith/indent-bars")
-  :custom
-  (indent-bars-treesit-support t)
-  (indent-bars-treesit-ignore-blank-lines-types '("module"))
-  (indent-bars-prefer-character t)
+  :config
+  (setq indent-bars-treesit-support t
+	indent-bars-treesit-ignore-blank-lines-types '("module"))
+
+  ;; Stipple-based pixle-toggling is not supported by NS built Emacs
+  (setq indent-bars-prefer-character t)
+  (setq indent-bars-no-stipple-char ?\u239c) ; ?\u239c
   :config
   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
 	indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
 	indent-bars-highlight-current-depth '(:blend 0.8)
 	indent-bars-starting-column 0
-	indent-bars-zigzag nil
 	indent-bars-display-on-blank-lines t)
   :hook ((python-ts-mode) . indent-bars-mode))
 

@@ -44,6 +44,10 @@
 	  (fg-link unspecified)
 	  (fg-link-visited unspecified)
 
+	  ;; Yellow comments and green strings
+	  (comment yellow-cooler)
+	  (string green-cooler)
+
 	  ;; Completions
 	  ;; (fg-completion-match-0 fg-main)
 	  ;; (bg-completion-match-0 bg-red-intense)
@@ -61,14 +65,10 @@
   (setq modus-themes-prompts '(extrabold)
 	modus-themes-completions '((t . (extrabold))))
 
-  ;; diable other themes before loading Modus Themes
-  (mapc #'disable-theme custom-enabled-themes)
-  (load-theme 'modus-vivendi :no-confirm))
+  ;; Enable and load the theme
+  (modus-themes-load-theme 'modus-vivendi))
 
 
-;; Make `fill-column-indicator' thinner
-(set-face-attribute 'fill-column-indicator nil :height 0.15)
-
 ;; Clean up the title bar content
 (setq-default frame-title-format nil)
 (setq-default ns-use-proxy-icon nil)
@@ -90,30 +90,26 @@
 ;; Note this make all italic font style disabled
 (set-face-attribute 'italic nil :slant 'normal)
 
+;; Make `fill-column-indicator' thinner
+(set-face-attribute 'fill-column-indicator nil :height 0.1)
+
 ;; Stop showing fringe bitmaps
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
 
+
 ;; Mode Line settings
 (setq mode-line-compact t)
 (setq line-number-mode nil)
 
 
-;; Better margins
+;; Automatic adjusting for margins
 (use-package perfect-margin
   :straight t
   :diminish (perfect-margin-mode)
   :config
-  (perfect-margin-mode 1)
-  (setq perfect-margin-ignore-filters nil)
-  (setq perfect-margin-ignore-regexps nil)
-
-  ;; Add additinal bding on margin area
-  (dolist (margin '("<left-margin> " "<right-margin> "))
-    (global-set-key (kbd (concat margin "<mouse-1>")) 'ignore)
-    (global-set-key (kbd (concat margin "<mouse-3>")) 'ignore)
-    (dolist (multiple '("" "double-" "triple-"))
-      (global-set-key (kbd (concat margin "<" multiple "wheel-up>")) 'mwheel-scroll)
-      (global-set-key (kbd (concat margin "<" multiple "wheel-down>")) 'mwheel-scroll))))
+  (setq perfect-margin-ignore-filters nil
+	perfect-margin-ignore-regexps nil)
+  (perfect-margin-mode 1))
 
 (provide 'init-gui-frames)
 ;;;
