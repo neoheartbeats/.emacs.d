@@ -88,7 +88,7 @@
   ;; Rendering for comments may not be correct if using the default style
   ;; `defun'. Note this may cause conflict with `highlight-paren-mode'
   ;; and `indent-bars-mode' in most cases [TODO]
-  ;; (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . paragraph))
+  (add-to-list 'focus-mode-to-thing '(python-ts-mode . paragraph))
   :bind (:map global-map
 	      ("M-<up>" . focus-prev-thing)
 	      ("M-<down>" . focus-next-thing))
