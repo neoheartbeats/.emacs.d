@@ -45,22 +45,12 @@
 	      (fg-link unspecified)
 	      (fg-link-visited unspecified)
 
-	      ;; Yellow comments and green strings
-	      ;; (comment yellow-cooler)
-	      ;; (string green-cooler)
-
-	      ;; Completions
-	      ;; (fg-completion-match-0 fg-main)
-	      ;; (bg-completion-match-0 bg-red-intense)
-
 	      (bg-paren-match bg-green-intense)
-	      ;; (underline-paren-match fg-main)
 
 	      ;; Make DONE less intense
 	      (prose-done fg-dim)
 
 	      ;; Custom region colors
-	      ;; (bg-region bg-red-intense)
 	      (fg-region unspecified)))
 
   (setq modus-themes-prompts '(extrabold)
@@ -82,7 +72,7 @@
 (add-hook 'after-init-hook #'global-hl-line-mode)
 
 ;; Custom font
-(set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
+(set-face-attribute 'default nil :family "Sthenno Mono" :height 150)
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
@@ -99,22 +89,81 @@
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
 
 
-;; Mode Line settings
+;;; Mode Line settings
 (setq mode-line-compact t)
 (setq line-number-mode nil)
 
-;; (use-package emacs
-;;   :custom-face
-;;   (mode-line ((t (:foreground "bg-mode-line-active" :height 0.1))))
-;;   (mode-line-inactive ((t (:inherit mode-line))))
-;;   :config (setq-default mode-line-format '("")))
+;; MLScroll
+(use-package mlscroll
+  :straight t
+  :config
+  (setq mlscroll-out-color "#989898") ; `fg-dim' of `modus-vivendi'
+  (mlscroll-mode 1))
+
+;; Removal of mule-info, and a trim of all double-spaces anywhere in the mode line
+;; format to a single space
+(setq-default
+ mode-line-format
+ (cl-nsubst-if " " (lambda (x) (and (stringp x) (string-blank-p x) (> (length x) 1)))
+		       (remove 'mode-line-mule-info mode-line-format)))
+
+(use-package cyphejor
+  :straight t
+  :config
+  (setq cyphejor-rules
+        '(:upcase
+          ("buffer"      "β")
+          ("diff"        "Δ")
+          ("dired"       "􀩚")
+          ("emacs"       "E")
+          ("lisp"        "L" :postfix)
+          ("menu"        "􀓕" :postfix)
+          ("mode"        "")
+          ("shell"       "􀩼")
+          ("text"        "T")
+          ("org"         "􀐘")))
+  (cyphejor-mode 1))
 
 
 ;; Automatic adjusting for margins
-(use-package perfect-margin
+;;
+;; (use-package perfect-margin
+;;   :straight t
+;;   :diminish (perfect-margin-mode)
+;;   :config (perfect-margin-mode 1))
+
+(use-package spacious-padding
   :straight t
-  :diminish (perfect-margin-mode)
-  :config (perfect-margin-mode 1))
+  :config (spacious-padding-mode 1))
+
+
+;; Sthenno's version of https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
+(defvar sthenno-quit-messages
+  `(
+    "Anyone else but you?"
+    "She depends on you."
+    "Please take care of Sthenno."
+    "It's not like I'll miss you or anything, b-baka!"
+    "Please don't go!")
+  "A list of quit messages, picked randomly by `sthenno-quit'.")
+
+(defun sthenno-quit-p (&optional prompt)
+  "Prompt the user for confirmation when killing Emacs.
+
+Returns t if it is safe to kill this session. Does not prompt if no real buffers
+are open."
+  (or (yes-or-no-p (format "%s" (or prompt "Really quit Emacs?")))
+      (ignore (message "Aborted"))))
+
+(defun sthenno-quit-fn (&rest _)
+  (sthenno-quit-p
+   (format "%s  %s"
+           (propertize (nth (random (length sthenno-quit-messages))
+                            sthenno-quit-messages)
+                       'face '(default))
+           "Really quit Emacs?")))
+
+(setq confirm-kill-emacs #'sthenno-quit-fn)
 
 (provide 'init-gui-frames)
 ;;;
