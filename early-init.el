@@ -23,6 +23,7 @@
 
 ;; To ensure `.eln' files are created correctly
 (setq native-comp-async-query-on-exit t)
+(setq native-compile-prune-cache t)
 
 ;; Do not enable packages during this early stage
 (setq package-enable-at-startup nil)

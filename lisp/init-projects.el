@@ -11,7 +11,9 @@
 ;; Git client using Magit
 (use-package magit
   :straight t
-  :config (setq magit-diff-refine-hunk t)
+  :config
+  (setq magit-section-visibility-indicator '(" 􀰌"))
+  (setq magit-diff-refine-hunk t)
   :bind ("C-x g" . magit-status))
 
 ;; (use-package diff-hl

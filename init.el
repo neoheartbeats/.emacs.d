@@ -175,6 +175,8 @@
                    "(provide 'org-version)\n")))
               :pin nil))
 
+(setq org-modules nil)
+
 ;; Load components
 (require 'init-system)
 (require 'init-gui-frames)

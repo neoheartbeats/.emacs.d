@@ -26,6 +26,12 @@
 	      (border-mode-line-active bg-mode-line-active)
 	      (border-mode-line-inactive bg-mode-line-inactive)
 
+          ;; Make the mode-line borderless and stand out less
+          (bg-mode-line-active bg-inactive)
+          (fg-mode-line-active fg-main)
+          (bg-mode-line-inactive bg-main)
+          (fg-mode-line-active fg-dim)
+
 	      ;; Set color faces for `display-line-numbers-mode'
 	      (fg-line-number-inactive "gray50")
 	      (fg-line-number-active fg-main)
@@ -104,7 +110,8 @@
 ;; format to a single space
 (setq-default
  mode-line-format
- (cl-nsubst-if " " (lambda (x) (and (stringp x) (string-blank-p x) (> (length x) 1)))
+ (cl-nsubst-if " " (lambda (x)
+                     (and (stringp x) (string-blank-p x) (> (length x) 1)))
 		       (remove 'mode-line-mule-info mode-line-format)))
 
 (use-package cyphejor

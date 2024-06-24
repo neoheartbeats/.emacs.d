@@ -110,7 +110,9 @@
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
 (setq require-final-newline t)
+
 (setq vc-follow-symlinks t)
+(setq echo-keystrokes-help nil)
 
 
 ;; Global functions
@@ -189,6 +191,17 @@
 
 (global-set-key (kbd "s-<backspace>") 'my/delete-current-line)
 (global-set-key (kbd "C-<backspace>") 'my/delete-to-beginning-of-line)
+
+
+(use-package dired
+  :config
+  (setq dired-auto-revert-buffer #'dired-directory-changed-p)
+  (setq dired-make-directory-clickable t)
+  (setq dired-free-space nil)
+  (setq dired-mouse-drag-files t)
+
+  (add-hook 'dired-mode-hook #'dired-hide-details-mode))
+
 
 (provide 'init-system)
 ;;;

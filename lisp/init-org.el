@@ -98,6 +98,7 @@
 (setq org-hide-emphasis-markers t)
 (setq org-auto-align-tags nil)
 (setq org-tags-column 0)
+(setq org-fontify-whole-heading-line t)
 
 ;; Use this with `C-<return>'
 (setq org-insert-heading-respect-content t)
