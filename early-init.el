@@ -39,7 +39,7 @@
 (push '(alpha . (90 . 90)) default-frame-alist)
 
 (push '(width . 240) default-frame-alist)
-(push '(height . 60) default-frame-alist)
+(push '(height . 65) default-frame-alist)
 ;;;
 ;; coding: utf-8
 ;; no-byte-compile: t

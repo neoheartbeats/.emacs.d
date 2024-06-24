@@ -137,17 +137,13 @@ DEFS is a plist associating completion categories to commands."
 			             'consult-location #'previous-history-element
 			             'file #'consult-find-for-minibuffer)
 
-  ;; Only display normal buffers using `consult-buffer'
-  (dolist (src consult-buffer-sources)
-    (unless (eq src 'consult--source-buffer)
-      (set src (plist-put (symbol-value src) :hidden t))))
-
   :bind (:map global-map
 	          ("C-s" . consult-line)
 	          ("M-s" . consult-ripgrep)
               ("C-v" . consult-yank-from-kill-ring)
               ("s-m" . consult-imenu)))
 
+
 ;;; Embark: Emacs Mini-Buffer Actions Rooted in Keymaps
 (use-package embark
   :straight t
@@ -184,6 +180,41 @@ DEFS is a plist associating completion categories to commands."
 (use-package embark-consult
   :straight t
   :hook (embark-collect-mode . consult-preview-at-point-mode))
+
+
+;; Beframe (beframe.el): Isolate Emacs buffers per frame
+(use-package beframe
+  :straight t
+  :config
+  (setq beframe-global-buffers nil
+        beframe-create-frame-scratch-buffer nil)
+  (beframe-mode 1)
+
+  ;; Integration with `consult-buffer'
+  (defvar consult-buffer-sources)
+  (declare-function consult--buffer-state "consult")
+
+  (with-eval-after-load 'consult
+    (defface beframe-buffer
+      '((t :inherit font-lock-string-face))
+      "Face for `consult' framed buffers.")
+
+    (defun my-beframe-buffer-names-sorted (&optional frame)
+      "Return the list of buffers from `beframe-buffer-names' sorted by visibility.
+With optional argument FRAME, return the list of buffers of FRAME."
+      (beframe-buffer-names frame :sort #'beframe-buffer-sort-visibility))
+
+    (defvar beframe-consult-source
+      `( :name     "Frame-specific buffers (current frame)"
+         :narrow   ?F
+         :category buffer
+         :face     beframe-buffer
+         :history  beframe-history
+         :items    ,#'my-beframe-buffer-names-sorted
+         :action   ,#'switch-to-buffer
+         :state    ,#'consult--buffer-state))
+
+    (add-to-list 'consult-buffer-sources 'beframe-consult-source)))
 
 
 ;; Dabbrev settings

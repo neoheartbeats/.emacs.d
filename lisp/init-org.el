@@ -19,9 +19,51 @@
   :straight auctex)
 
 
-;; TEC's Org specific
+;; TEC's Org specific (`org-latex-preview')
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
+
+(setq org-latex-packages-alist
+      '(("T1" "fontenc" t)
+        ("" "amsmath" t)
+        ("" "mathtools" t)
+        ("" "siunitx" t)
+        ("" "physics2" t)
+	    ("" "newtxmath" t)))
+
+(setq org-latex-preview-preamble
+      "\\documentclass{article}
+[DEFAULT-PACKAGES]
+[PACKAGES]
+\\usepackage{xcolor}
+\\usephysicsmodule{ab,ab.braket,diagmat,xmat}%
+")
+
+;; (setq org-latex-preview-live nil) ; Do not generate live previews
+(setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
+
+;; Remove dollars and "begin" as delimiters. This may keep LaTeX source
+;; code uniform
+(plist-put org-latex-preview-appearance-options :matchers '("\\(" "\\["))
+(plist-put org-latex-preview-appearance-options :scale 1.35)
+(plist-put org-latex-preview-appearance-options :zoom 1.35)
+
+(setq org-latex-preview-process-alist
+      '((dvisvgm
+	     :programs ("latex" "dvisvgm")
+	     :description "dvi > svg"
+	     :message "you need to install the programs: latex and dvisvgm."
+	     :image-input-type "dvi"
+	     :image-output-type "svg"
+	     :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
+	     :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
+	     :image-converter ; [TODO] Add "libgs" to PATH
+	     ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts
+--exact-bbox --bbox=preview
+--libgs=/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib
+-v4 -o %B-%%9p.svg %f"))))
+
+(setq org-highlight-latex-and-related '(native))
 
 
 ;; Images and files

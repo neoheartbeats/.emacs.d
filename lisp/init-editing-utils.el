@@ -92,7 +92,7 @@
   :bind (:map global-map
 	          ("M-<up>" . focus-prev-thing)
 	          ("M-<down>" . focus-next-thing))
-  :hook ((python-ts-mode org-mode) . focus-mode))
+  :hook ((python-ts-mode) . focus-mode))
 
 
 ;;;; [TODO] Integration with `focus-mode'
@@ -107,7 +107,7 @@
 
   ;; Stipple-based pixle-toggling is not supported by NS built Emacs
   (setq indent-bars-prefer-character t)
-  (setq indent-bars-no-stipple-char ?\u239c) ; ?\u239c
+  
   :config
   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
 	    indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
