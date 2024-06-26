@@ -5,6 +5,9 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
+;;
+;; [TODO] prescient.el
+;;
 ;;; Code:
 
 ;;; Build the completion framework
@@ -45,35 +48,167 @@
 ;; Completion for minibuffers
 (use-package vertico
   :straight t
-  :init
-  (add-hook 'after-init-hook #'(lambda ()
-   				                 (vertico-mode 1)))
+  :init (vertico-mode 1)
   :config
   (setq vertico-count 10)
   (setq vertico-cycle t)
 
-  ;; Load extensions
-  (require 'vertico-multiform) ; This is required by `embark' configurations
-  (require 'vertico-directory)
-
-  ;; Correct file path when changed
-  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
-
   ;; Do not render italic fonts
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
 
-  ;; Cut long candidates in `vertico' completion
-  (use-package vertico-truncate
-    :straight (vertico-truncate
-	           :type git
-	           :host github
-	           :repo "jdtsmith/vertico-truncate")
-    :config (vertico-truncate-mode 1))
+  ;; Integration with `posframe'
+  (use-package posframe
+    :straight t)
+
+  (use-package vertico-posframe
+    :straight t
+    :init (vertico-posframe-mode 1)
+    :config
+    (setq vertico-posframe-border-width 10)
+
+    ;; Set the background-color to  `bg-inactive' of `modus-vivendi'
+    (set-face-attribute 'vertico-posframe-border nil :background "#303030")
+    (setq vertico-posframe-parameters '((background-color . "#303030")))
+
+    ;; Overwrite this function
+    (defun vertico-posframe--show (buffer window-point)
+      "`posframe-show' of vertico-posframe."
+
+      ;; Some posframe poshandlers need infos of last-window
+      (with-selected-window (vertico-posframe-last-window)
+        (apply #'posframe-show
+               buffer
+               :cursor '(bar . 1)
+               :window-point window-point
+               :font (buffer-local-value 'vertico-posframe-font buffer)
+               :poshandler (buffer-local-value 'vertico-posframe-poshandler buffer)
+               :background-color (face-attribute 'vertico-posframe :background nil t)
+               :foreground-color (face-attribute 'vertico-posframe :foreground nil t)
+               :border-width (buffer-local-value 'vertico-posframe-border-width buffer)
+               :border-color (vertico-posframe--get-border-color)
+               :override-parameters (buffer-local-value 'vertico-posframe-parameters buffer)
+               :refposhandler (buffer-local-value 'vertico-posframe-refposhandler buffer)
+               :hidehandler #'vertico-posframe-hidehandler
+               :lines-truncate (buffer-local-value 'vertico-posframe-truncate-lines buffer)
+               (funcall (buffer-local-value 'vertico-posframe-size-function buffer) buffer))))
+    
+    (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center))
+
+  
+  (use-package vertico-multiform
+    :init (vertico-multiform-mode 1)
+    :config
+    (defvar +vertico-transform-functions nil)
+
+    (cl-defmethod vertico--format-candidate :around
+      (cand prefix suffix index start &context ((not +vertico-transform-functions) null))
+      (dolist (fun (ensure-list +vertico-transform-functions))
+        (setq cand (funcall fun cand)))
+      (cl-call-next-method cand prefix suffix index start))
+
+    (defun sort-directories-first (files)
+      
+      ;; Still sort by history position, length and alphabetically
+      (setq files (vertico-sort-history-length-alpha files))
+      
+      ;; But then move directories first
+      (nconc (seq-filter (lambda (x) (string-suffix-p "/" x)) files)
+             (seq-remove (lambda (x) (string-suffix-p "/" x)) files)))
+
+    (defun +vertico-highlight-directory (file)
+      "If FILE ends with a slash, highlight it as a directory."
+      (if (string-suffix-p "/" file)
+          (propertize file 'face 'dired-directory)
+        file))
+
+    ;; function to highlight enabled modes similar to counsel-M-x
+    (defun +vertico-highlight-enabled-mode (cmd)
+      "If MODE is enabled, highlight it as font-lock-constant-face."
+      (let ((sym (intern cmd)))
+        (if (or (eq sym major-mode)
+                (and
+                 (memq sym minor-mode-list)
+                 (boundp sym)))
+            (propertize cmd 'face 'font-lock-constant-face)
+          cmd)))
+
+    ;; add-to-list works if 'file isn't already in the alist
+    ;; setq can be used but will overwrite all existing values
+    (add-to-list 'vertico-multiform-categories
+                 '(file
+                   
+                   ;; this is also defined in the wiki, uncomment if used
+                   (vertico-sort-function . sort-directories-first)
+                   (+vertico-transform-functions . +vertico-highlight-directory)))
+    (add-to-list 'vertico-multiform-commands
+                 '(execute-extended-command 
+                   (+vertico-transform-functions . +vertico-highlight-enabled-mode))))
+
+  ;; Additions for moving up and down directories in `find-file'
+  (use-package vertico-directory
+    :config
+
+    ;; Update minibuffer history with candidate insertions
+    (defun vertico-insert-add-history ()
+      "Make `vertico-insert' add to the minibuffer history."
+      (unless (eq minibuffer-history-variable t)
+        (add-to-history minibuffer-history-variable (minibuffer-contents))))
+
+    (advice-add 'vertico-insert :after #'vertico-insert-add-history)
+
+    ;; Pre-select previous directory when entering parent directory from within `find-file'
+    ;;
+    ;; Advise `vertico-directory-up' to save the directory being exited
+    (defvar previous-directory nil
+      "The directory that was just left. It is set when leaving a directory and
+    set back to nil once it is used in the parent directory.")
+
+    (defun set-previous-directory ()
+      "Set the directory that was just exited from within find-file."
+      (when (> (minibuffer-prompt-end) (point))
+        (save-excursion
+          (goto-char (1- (point)))
+          (when (search-backward "/" (minibuffer-prompt-end) t)
+            ;; set parent directory
+            (setq previous-directory (buffer-substring (1+ (point)) (point-max)))
+            ;; set back to nil if not sorting by directories or what was deleted is not a directory
+            (when (not (string-suffix-p "/" previous-directory))
+              (setq previous-directory nil))
+            t))))
+
+    (advice-add #'vertico-directory-up :before #'set-previous-directory)
+
+    ;; Advise `vertico--update' to select the previous directory
+    (define-advice vertico--update (:after (&rest _) choose-candidate)
+      "Pick the previous directory rather than the prompt after updating candidates."
+      (cond
+       (previous-directory ; select previous directory
+        (setq vertico--index (or (seq-position vertico--candidates previous-directory)
+                                 vertico--index))
+        (setq previous-directory nil))))
+
+    ;; Left-truncate `recentf' filename candidates
+    (defun my/vertico-truncate-candidates (args)
+      (if-let ((arg (car args))
+               (type (get-text-property 0 'multi-category arg))
+               ((eq (car-safe type) 'file))
+               (w (max 30 (- (window-width) 38)))
+               (l (length arg))
+               ((> l w)))
+          (setcar args (concat "…" (truncate-string-to-width arg l (- l w)))))
+      args)
+    (advice-add #'vertico--format-candidate :filter-args #'my/vertico-truncate-candidates)
+
+    ;; Correct file path when changed (tidy shadowed file names)
+    (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+    
+    :bind (:map vertico-map
+                ("<return>" . vertico-directory-enter)
+                ("<backspace>" . vertico-directory-delete-char)
+                ("M-<backspace>" . vertico-directory-delete-word)))
   
   :bind ((:map vertico-map
-               ("<tab>" . vertico-insert)
-               ("<return>" . vertico-directory-enter)
-               ("<backspace>" . vertico-directory-delete-char))))
+               ("<tab>" . vertico-insert))))
 
 ;; Do not allow the cursor in the minibuffer prompt
 (setq minibuffer-prompt-properties
@@ -111,6 +246,7 @@
   
   ;; Framework for mode-specific buffer indexes
   (global-set-key [remap imenu] 'consult-imenu)
+  
   :config
 
   ;; Back to last visited by C-s C-s if using `consult-line'
@@ -161,12 +297,7 @@ DEFS is a plist associating completion categories to commands."
         '(embark-minimal-indicator  ; Default is `embark-mixed-indicator'
           embark-highlight-indicator
           embark-isearch-highlight-indicator))
-
-  ;; A `which-key' styled integration for `embark' keys
-  (require 'vertico-multiform)
-  (add-to-list 'vertico-multiform-categories '(embark-keybinding grid))
-  (vertico-multiform-mode 1)
-
+  
   ;; Quitting the minibuffer after an action
   (setq embark-quit-after-action '((kill-buffer . t) (t . nil)))
   
