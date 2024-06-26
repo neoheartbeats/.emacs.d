@@ -116,6 +116,16 @@
 	    indent-bars-display-on-blank-lines t)
   :hook ((python-ts-mode) . indent-bars-mode))
 
+
+;; Don't forget about your code comments!
+(use-package hl-todo
+  :straight t
+  :config
+  (setq hl-todo-keyword-faces '(("TODO"  . "#6ae4b9")
+                                ("FIXME" . "#ff5f59")
+                                ("NOTE"  . "#efef80")))
+  (global-hl-todo-mode 1))
+
 (provide 'init-editing-utils)
 ;;;
 ;; coding: utf-8

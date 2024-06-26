@@ -21,22 +21,24 @@
   :straight t
   :config
   (setq modus-themes-common-palette-overrides
-	    '(
-	      ;; Make the mode line borderless
-	      (border-mode-line-active bg-mode-line-active)
-	      (border-mode-line-inactive bg-mode-line-inactive)
-
+	    '((border bg-inactive)
+          (bg-hl-line border)
+          
           ;; Make the mode-line borderless and stand out less
-          (bg-mode-line-active bg-inactive)
+          (bg-mode-line-active border)
           (fg-mode-line-active fg-main)
           (bg-mode-line-inactive bg-main)
           (fg-mode-line-active fg-dim)
 
+          ;; Make the mode line borderless
+	      (border-mode-line-active border)
+	      (border-mode-line-inactive bg-main)
+
 	      ;; Set color faces for `display-line-numbers-mode'
-	      (fg-line-number-inactive "gray50")
 	      (fg-line-number-active fg-main)
+          (bg-line-number-active bg-hl-line)
+          (fg-line-number-inactive fg-dim)
 	      (bg-line-number-inactive unspecified)
-	      (bg-line-number-active bg-hl-line)
 
 	      ;; Make the fringe invisible
 	      (fringe unspecified)
@@ -51,19 +53,32 @@
 	      (fg-link unspecified)
 	      (fg-link-visited unspecified)
 
-	      (bg-paren-match bg-green-intense)
-
 	      ;; Make DONE less intense
 	      (prose-done fg-dim)
 
 	      ;; Custom region colors
-	      (fg-region unspecified)))
+	      (fg-region unspecified)
+          (bg-region bg-green-intense)
 
-  (setq modus-themes-prompts '(extrabold)
+          ;; Make code blocks more minimal
+          (bg-prose-block-contents unspecified)
+          (bg-prose-block-delimiter unspeficied)
+          (fg-prose-block-delimiter fg-dim)
+
+          ;; Completions
+          (bg-completion bg-hl-line)
+
+          (cursor bg-graph-green-0)))
+
+  (setq modus-themes-bold-constructs t
+        modus-themes-prompts '(extrabold)
 	    modus-themes-completions '((t . (extrabold))))
 
   ;; Enable and load the theme
   (modus-themes-load-theme 'modus-vivendi))
+
+;; Do not extend `region' background past the end of the line
+(custom-set-faces '(region ((t :extend nil))))
 
 
 ;; Clean up the title bar content
@@ -133,12 +148,6 @@
 
 
 ;; Automatic adjusting for margins
-;;
-;; (use-package perfect-margin
-;;   :straight t
-;;   :diminish (perfect-margin-mode)
-;;   :config (perfect-margin-mode 1))
-
 (use-package spacious-padding
   :straight t
   :config (spacious-padding-mode 1))

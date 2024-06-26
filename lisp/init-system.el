@@ -114,6 +114,8 @@
 (setq vc-follow-symlinks t)
 (setq echo-keystrokes-help nil)
 
+(setq locate-command "mdfind")
+
 
 ;; Global functions
 (defun delete-current-file ()
@@ -136,9 +138,10 @@
 
 ;; To access the `.emacs.d' root
 (defun open-emacs-config-dir ()
-  "Open the Emacs configuration directory."
+  "Prompt the user to open a file in the user's Emacs config directory."
   (interactive)
-  (find-file "~/.emacs.d/lisp/"))
+  (let ((default-directory (concat user-emacs-directory "lisp/")))
+    (call-interactively 'find-file)))
 
 (global-set-key (kbd "<f12>") 'open-emacs-config-dir)
 

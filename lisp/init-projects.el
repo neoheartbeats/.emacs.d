@@ -21,9 +21,8 @@
 ;;   :config (global-diff-hl-mode 1))
 
 
-;;; Cross-reference
-;;
 ;; Xref
+;;
 ;; For further backends support, see also `etags', `init-eglot'
 (use-package xref
   :config
@@ -33,17 +32,7 @@
 
 ;; TAGS
 (use-package etags
-  :config
-  (etags-regen-mode 1))
-
-
-;; Project management using Projectile
-(use-package projectile
-  :straight t
-  :diminish (projectile-mode)
-  :config
-  (projectile-mode 1)
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map))
+  :config (etags-regen-mode 1))
 
 (provide 'init-projects)
 ;;;

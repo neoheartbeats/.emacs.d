@@ -45,30 +45,33 @@
       read-buffer-completion-ignore-case t)
 
 
-;; Completion for minibuffers
+;;; UI
+(use-package posframe
+  :straight t)
+
+
+;;; Completion for minibuffers
 (use-package vertico
   :straight t
   :init (vertico-mode 1)
   :config
   (setq vertico-count 10)
   (setq vertico-cycle t)
+  (setq vertico-count-format (cons "%-6s " "[%s/%s]"))
 
   ;; Do not render italic fonts
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
 
   ;; Integration with `posframe'
-  (use-package posframe
-    :straight t)
-
   (use-package vertico-posframe
     :straight t
     :init (vertico-posframe-mode 1)
     :config
     (setq vertico-posframe-border-width 10)
 
-    ;; Set the background-color to  `bg-inactive' of `modus-vivendi'
-    (set-face-attribute 'vertico-posframe-border nil :background "#303030")
-    (setq vertico-posframe-parameters '((background-color . "#303030")))
+    ;; Set the background-color to  `bg-dim' of `modus-vivendi'
+    (set-face-attribute 'vertico-posframe-border nil :background "#1e1e1e")
+    (setq vertico-posframe-parameters '((background-color . "#1e1e1e")))
 
     ;; Overwrite this function
     (defun vertico-posframe--show (buffer window-point)
@@ -215,8 +218,8 @@
       '(read-only t cursor-intangible t face minibuffer-prompt))
 (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
-;; Support opening new minibuffers from inside existing minibuffers.
-(setq enable-recursive-minibuffers t)
+;; Support opening new minibuffers from inside existing minibuffers
+;; (setq enable-recursive-minibuffers t)
 
 ;; Disable showing the *Completions* buffer that conflicts with vertico
 ;; if using `ffap-menu'
@@ -306,6 +309,61 @@ DEFS is a plist associating completion categories to commands."
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
                  (window-parameters (mode-line-format . none))))
+
+  ;; I personally prefer the '' delimeters
+  (defun embark-eldoc-first-target (report &rest _)
+    "Eldoc function reporting the first Embark target at point.
+This function uses the eldoc REPORT callback and is meant to be
+added to `eldoc-documentation-functions'."
+    (when-let (((not (minibufferp)))
+               (target (car (embark--targets))))
+      (funcall report
+               (format "Embark on %s '%s'" ; [NOTE]
+                       (plist-get target :type)
+                       (embark--truncate-target (plist-get target :target))))))
+
+  (defun embark--format-targets (target shadowed-targets rep)
+    "Return a formatted string indicating the TARGET of an action.
+
+This is used internally by the minimal indicator and for the
+targets section of the verbose indicator.  The string will also
+mention any SHADOWED-TARGETS.  A non-nil REP indicates we are in
+a repeating sequence of actions."
+    (let ((act (propertize
+                (cond
+                 ((plist-get target :multi) "∀ct")
+                 (rep "Rep")
+                 (t "Act"))
+                'face 'highlight)))
+      (cond
+       ((eq (plist-get target :type) 'embark-become)
+        (propertize "Become" 'face 'highlight))
+       ((and (minibufferp)
+             (not (eq 'embark-keybinding
+                      (completion-metadata-get
+                       (embark--metadata)
+                       'category))))
+        ;; we are in a minibuffer but not from the
+        ;; completing-read prompter, use just "Act"
+        act)
+       ((plist-get target :multi)
+        (format "%s on %s %ss"
+                act
+                (plist-get target :multi)
+                (plist-get target :type)))
+       (t (format
+           "%s on %s%s '%s'" ; [NOTE]
+           act
+           (plist-get target :type)
+           (if shadowed-targets
+               (format (propertize "(%s)" 'face 'shadow)
+                       (mapconcat
+                        (lambda (target) (symbol-name (plist-get target :type)))
+                        shadowed-targets
+                        ", "))
+             "")
+           (embark--truncate-target (plist-get target :target)))))))
+  
   :bind ("s-/" . embark-act))
 
 (use-package embark-consult
@@ -401,8 +459,7 @@ With optional argument FRAME, return the list of buffers of FRAME."
 ;; The main completion frontend by Corfu
 (use-package corfu
   :straight (:files (:defaults "extensions/*"))
-  :init (add-hook 'after-init-hook #'(lambda ()
-				                       (global-corfu-mode 1)))
+  :init (global-corfu-mode 1)
   :config
   (setq corfu-auto t)
   (setq corfu-auto-delay 0.02) ; Making this to 0 is too expensive

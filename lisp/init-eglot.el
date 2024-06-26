@@ -138,22 +138,22 @@ Return the translation."
     (message (format "Translation: %s" translation))))
 
 ;; Binding keys (see also `init-comp') [TODO]
-(use-package embark
-  :config
-  (defun embark-target-word-at-point ()
-    "Target the word at point for Embark."
-    (save-excursion
-      (let ((word (thing-at-point 'word)))
-        (save-match-data
-          (when word
-            (cons 'word word))))))
-  (add-to-list 'embark-target-finders 'embark-target-word-at-point)
+;; (use-package embark
+;;   :config
+;;   (defun embark-target-word-at-point ()
+;;     "Target the word at point for Embark."
+;;     (save-excursion
+;;       (let ((word (thing-at-point 'word)))
+;;         (save-match-data
+;;           (when word
+;;             (cons 'word word))))))
+;;   (add-to-list 'embark-target-finders 'embark-target-word-at-point)
 
-  ;; (keymap-set embark-general-map "t z" #'sthenno-trans-to-zh-target)
-  ;; (keymap-set embark-general-map "t e" #'sthenno-trans-to-en-target)
-  (bind-keys :map embark-general-map
-             ("T" . sthenno-trans-to-zh-target)
-             ("E" . sthenno-trans-to-en-target)))
+;;   ;; (keymap-set embark-general-map "t z" #'sthenno-trans-to-zh-target)
+;;   ;; (keymap-set embark-general-map "t e" #'sthenno-trans-to-en-target)
+;;   (bind-keys :map embark-general-map
+;;              ("T" . sthenno-trans-to-zh-target)
+;;              ("E" . sthenno-trans-to-en-target)))
 
 (provide 'init-eglot)
 ;;;
