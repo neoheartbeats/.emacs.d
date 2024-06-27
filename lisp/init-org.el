@@ -7,6 +7,9 @@
 ;;; Commentary:
 ;;; Code:
 
+;;
+(require 'org-latex-preview)
+
 ;; Setup default directory
 (setq org-directory "~/Sthenno/")
 

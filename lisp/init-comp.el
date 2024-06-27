@@ -46,8 +46,8 @@
 
 
 ;;; UI
-(use-package posframe
-  :straight t)
+;; (use-package posframe
+;;   :straight t)
 
 
 ;;; Completion for minibuffers
@@ -63,39 +63,39 @@
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
 
   ;; Integration with `posframe'
-  (use-package vertico-posframe
-    :straight t
-    :init (vertico-posframe-mode 1)
-    :config
-    (setq vertico-posframe-border-width 10)
+  ;; (use-package vertico-posframe
+  ;;   :straight t
+  ;;   :init (vertico-posframe-mode 1)
+  ;;   :config
+  ;;   (setq vertico-posframe-border-width 10)
 
-    ;; Set the background-color to  `bg-dim' of `modus-vivendi'
-    (set-face-attribute 'vertico-posframe-border nil :background "#1e1e1e")
-    (setq vertico-posframe-parameters '((background-color . "#1e1e1e")))
+  ;;   ;; Set the background-color to  `bg-dim' of `modus-vivendi'
+  ;;   (set-face-attribute 'vertico-posframe-border nil :background "#1e1e1e")
+  ;;   (setq vertico-posframe-parameters '((background-color . "#1e1e1e")))
 
-    ;; Overwrite this function
-    (defun vertico-posframe--show (buffer window-point)
-      "`posframe-show' of vertico-posframe."
+  ;;   ;; Overwrite this function
+  ;;   (defun vertico-posframe--show (buffer window-point)
+  ;;     "`posframe-show' of vertico-posframe."
 
-      ;; Some posframe poshandlers need infos of last-window
-      (with-selected-window (vertico-posframe-last-window)
-        (apply #'posframe-show
-               buffer
-               :cursor '(bar . 1)
-               :window-point window-point
-               :font (buffer-local-value 'vertico-posframe-font buffer)
-               :poshandler (buffer-local-value 'vertico-posframe-poshandler buffer)
-               :background-color (face-attribute 'vertico-posframe :background nil t)
-               :foreground-color (face-attribute 'vertico-posframe :foreground nil t)
-               :border-width (buffer-local-value 'vertico-posframe-border-width buffer)
-               :border-color (vertico-posframe--get-border-color)
-               :override-parameters (buffer-local-value 'vertico-posframe-parameters buffer)
-               :refposhandler (buffer-local-value 'vertico-posframe-refposhandler buffer)
-               :hidehandler #'vertico-posframe-hidehandler
-               :lines-truncate (buffer-local-value 'vertico-posframe-truncate-lines buffer)
-               (funcall (buffer-local-value 'vertico-posframe-size-function buffer) buffer))))
+  ;;     ;; Some posframe poshandlers need infos of last-window
+  ;;     (with-selected-window (vertico-posframe-last-window)
+  ;;       (apply #'posframe-show
+  ;;              buffer
+  ;;              :cursor '(bar . 1)
+  ;;              :window-point window-point
+  ;;              :font (buffer-local-value 'vertico-posframe-font buffer)
+  ;;              :poshandler (buffer-local-value 'vertico-posframe-poshandler buffer)
+  ;;              :background-color (face-attribute 'vertico-posframe :background nil t)
+  ;;              :foreground-color (face-attribute 'vertico-posframe :foreground nil t)
+  ;;              :border-width (buffer-local-value 'vertico-posframe-border-width buffer)
+  ;;              :border-color (vertico-posframe--get-border-color)
+  ;;              :override-parameters (buffer-local-value 'vertico-posframe-parameters buffer)
+  ;;              :refposhandler (buffer-local-value 'vertico-posframe-refposhandler buffer)
+  ;;              :hidehandler #'vertico-posframe-hidehandler
+  ;;              :lines-truncate (buffer-local-value 'vertico-posframe-truncate-lines buffer)
+  ;;              (funcall (buffer-local-value 'vertico-posframe-size-function buffer) buffer))))
     
-    (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center))
+  ;;   (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center))
 
   
   (use-package vertico-multiform

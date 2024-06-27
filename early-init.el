@@ -12,6 +12,11 @@
 ;;; Code:
 ;;
 
+;;
+(setenv "LIBRARY_PATH" (concat "/opt/homebrew/opt/gcc/lib/gcc/14:"
+                               "/opt/homebrew/opt/libgccjit/lib/gcc/14:"
+                               "/opt/homebrew/opt/gcc/lib/gcc/14/gcc/aarch64-apple-darwin23/14"))
+
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
 
@@ -37,10 +42,10 @@
 ;;; GUI frames
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
-(push '(alpha . (90 . 90)) default-frame-alist)
+(push '(alpha-background . 70) default-frame-alist)
 
-(push '(width . 240) default-frame-alist)
-(push '(height . 65) default-frame-alist)
+(push '(width . 110) default-frame-alist)
+(push '(height . 45) default-frame-alist)
 ;;;
 ;; coding: utf-8
 ;; no-byte-compile: t
