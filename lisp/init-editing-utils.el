@@ -6,6 +6,7 @@
 
 ;;; Commentary:
 ;;; Code:
+;;
 
 ;; Highlight parenthesis matched off-screen
 (setq blink-matching-paren-highlight-offscreen t)
@@ -95,7 +96,7 @@
   :hook ((python-ts-mode) . focus-mode))
 
 
-;;;; [TODO] Integration with `focus-mode'
+;; [TODO] Integration with `focus-mode'
 (use-package indent-bars
   :straight (indent-bars
              :type git
@@ -120,11 +121,11 @@
 ;; Don't forget about your code comments!
 (use-package hl-todo
   :straight t
-  :config
+  :init
   (setq hl-todo-keyword-faces '(("TODO"  . "#6ae4b9")
                                 ("FIXME" . "#ff5f59")
                                 ("NOTE"  . "#efef80")))
-  (global-hl-todo-mode 1))
+  :config (global-hl-todo-mode 1))
 
 (provide 'init-editing-utils)
 ;;;

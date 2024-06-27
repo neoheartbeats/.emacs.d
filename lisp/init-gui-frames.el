@@ -13,9 +13,8 @@
 ;; `prettify-symbols-mode'. See also: `init-editing-utils', `init-org'.
 ;;
 ;;; Code:
-
-;;;
 ;;
+
 ;; Modus Themes
 (use-package modus-themes
   :straight t
@@ -105,14 +104,13 @@
                (46 . ".\\(?:\\.[.<]\\|[.:<-]\\)") ; .. .< .:
                (47 . ".\\(?:\\*/\\|//\\|[*/>]\\)") ; */ // /->
                (58 . ".\\(?:::\\|[:=]\\)") ; :: :=
-               (59 . ".\\(?:;;\\|;>\\)") ; ;;
                (60 . ".\\(?:!--\\|--\\|<[<=|-]\\|=[<=|-]\\|<=\\)") ; <!-- << <- <=
                (61 . ".\\(?:\\|=[=>]\\|=>\\)") ; == =>
                (62 . ".\\(?:>>\\|>[=>-]\\|>=\\)") ; >> >=
                (63 . ".\\(?:\\?\\?\\|[:=?]\\)") ; ?? ?: ?
                (92 . ".\\(?:\\\\\\\\\\|[\\n]\\)"))) ; \\ \n
-               (set-char-table-range composition-table (car char-regexp-replacement)
-                                     `([,(cdr char-regexp-replacement) 0 font-shape-gstring])))
+      (set-char-table-range composition-table (car char-regexp-replacement)
+                            `([,(cdr char-regexp-replacement) 0 font-shape-gstring])))
     
     (set-char-table-parent composition-table composition-function-table)
     (setq composition-function-table composition-table)))

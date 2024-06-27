@@ -8,8 +8,8 @@
 ;;
 ;; This file provides macOS specific settings.
 ;;
-
 ;;; Code:
+;;
 
 ;; macOS specified key mapping
 (setq mac-option-modifier 'meta)
@@ -44,10 +44,6 @@
 ;; It is better distinguish it. Note this just makes "C-i" bacome undefined
 ;; and it still cannot be used as any effective keys
 (define-key input-decode-map "\C-i" [C-i])
-
-;; "s-[" is used as the prefix key standing for "insert" (see also `init-temp')
-(bind-keys :map global-map
-	       ("s-[ f" . insert-file))
 
 ;; Disable these keys
 (global-unset-key (kbd "<pinch>"))
@@ -95,6 +91,7 @@
 ;; Misc options
 (setq use-short-answers t)
 (setq dired-use-ls-dired nil)
+(setq delete-by-moving-to-trash t)
 (setq auto-hscroll-mode 'current-line)
 (setq case-fold-search t)
 (setq create-lockfiles nil)
@@ -204,7 +201,6 @@
   (setq dired-mouse-drag-files t)
 
   (add-hook 'dired-mode-hook #'dired-hide-details-mode))
-
 
 (provide 'init-system)
 ;;;

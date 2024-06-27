@@ -5,9 +5,12 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
-;;; Code:
-
 ;;
+;;
+;;
+;;; Code:
+;;
+
 (require 'org-latex-preview)
 
 ;; Setup default directory
@@ -65,8 +68,6 @@
 --exact-bbox --bbox=preview
 --libgs=/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib
 -v4 -o %B-%%9p.svg %f"))))
-
-(setq org-highlight-latex-and-related '(native))
 
 
 ;; Images and files

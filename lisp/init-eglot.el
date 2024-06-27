@@ -10,6 +10,7 @@
 ;;
 
 ;;; Code:
+;;
 
 ;;; Setup `treesit' for better performance for processing coding syntax
 ;;
@@ -91,7 +92,10 @@
   (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
 
-;;; Python API: sthenno-endpoints Client
+;; Python API: sthenno-endpoints Client
+;;
+;; [TODO] Use the `plz' lib.
+;; https://github.com/alphapapa/plz.el
 ;;
 ;; Translation
 (require 'url)

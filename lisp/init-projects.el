@@ -6,8 +6,8 @@
 
 ;;; Commentary:
 ;;; Code:
+;;
 
-
 ;; Git client using Magit
 (use-package magit
   :straight t

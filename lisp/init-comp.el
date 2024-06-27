@@ -5,14 +5,11 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
-;;
-;; [TODO] prescient.el
-;;
 ;;; Code:
+;;
 
 ;;; Build the completion framework
 ;;
-;; Before we start
 (use-package emacs
   :init
   
@@ -56,11 +53,24 @@
   :init (vertico-mode 1)
   :config
   (setq vertico-count 10)
+  (setq vertico-scroll-margin 4)
   (setq vertico-cycle t)
   (setq vertico-count-format (cons "%-6s " "[%s/%s]"))
 
   ;; Do not render italic fonts
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
+
+  ;; Prefix candidates
+  (defvar +vertico-current-arrow t)
+
+  (cl-defmethod vertico--format-candidate :around
+    (cand prefix suffix index start &context ((and +vertico-current-arrow
+                                                   (not (bound-and-true-p vertico-flat-mode)))
+                                              (eql t)))
+    (setq cand (cl-call-next-method cand prefix suffix index start))
+    (if (= vertico--index index)
+        (concat #("◉ " 0 1 (face modus-themes-prompt)) cand)
+      (concat #("○ " 0 1 (face shadow)) cand)))
 
   ;; Integration with `posframe'
   ;; (use-package vertico-posframe
@@ -94,7 +104,7 @@
   ;;              :hidehandler #'vertico-posframe-hidehandler
   ;;              :lines-truncate (buffer-local-value 'vertico-posframe-truncate-lines buffer)
   ;;              (funcall (buffer-local-value 'vertico-posframe-size-function buffer) buffer))))
-    
+  
   ;;   (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center))
 
   
@@ -124,17 +134,6 @@
           (propertize file 'face 'dired-directory)
         file))
 
-    ;; function to highlight enabled modes similar to counsel-M-x
-    (defun +vertico-highlight-enabled-mode (cmd)
-      "If MODE is enabled, highlight it as font-lock-constant-face."
-      (let ((sym (intern cmd)))
-        (if (or (eq sym major-mode)
-                (and
-                 (memq sym minor-mode-list)
-                 (boundp sym)))
-            (propertize cmd 'face 'font-lock-constant-face)
-          cmd)))
-
     ;; add-to-list works if 'file isn't already in the alist
     ;; setq can be used but will overwrite all existing values
     (add-to-list 'vertico-multiform-categories
@@ -142,10 +141,7 @@
                    
                    ;; this is also defined in the wiki, uncomment if used
                    (vertico-sort-function . sort-directories-first)
-                   (+vertico-transform-functions . +vertico-highlight-directory)))
-    (add-to-list 'vertico-multiform-commands
-                 '(execute-extended-command 
-                   (+vertico-transform-functions . +vertico-highlight-enabled-mode))))
+                   (+vertico-transform-functions . +vertico-highlight-directory))))
 
   ;; Additions for moving up and down directories in `find-file'
   (use-package vertico-directory
@@ -231,6 +227,9 @@
 
 
 ;; Rich annotations for minibuffer
+;;
+;; [TODO] Propertize `marginalia'
+;;
 (use-package marginalia
   :straight t
   :init (marginalia-mode 1))
@@ -284,91 +283,91 @@ DEFS is a plist associating completion categories to commands."
 
 
 ;;; Embark: Emacs Mini-Buffer Actions Rooted in Keymaps
-(use-package embark
-  :straight t
-  :init
-  
-  ;; Optionally replace the key help with a completing-read interface
-  (setq prefix-help-command #'embark-prefix-help-command)
+;; (use-package embark
+;;   :straight t
+;;   :init
 
-  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
-  (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
-  :config
-  (global-set-key [remap describe-bindings] 'embark-bindings)
+;;   ;; Optionally replace the key help with a completing-read interface
+;;   (setq prefix-help-command #'embark-prefix-help-command)
 
-  (setq embark-indicators
-        '(embark-minimal-indicator  ; Default is `embark-mixed-indicator'
-          embark-highlight-indicator
-          embark-isearch-highlight-indicator))
-  
-  ;; Quitting the minibuffer after an action
-  (setq embark-quit-after-action '((kill-buffer . t) (t . nil)))
-  
-  ;; Hide the mode line of the Embark completion buffers
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none))))
+;;   (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+;;   (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+;;   :config
+;;   (global-set-key [remap describe-bindings] 'embark-bindings)
 
-  ;; I personally prefer the '' delimeters
-  (defun embark-eldoc-first-target (report &rest _)
-    "Eldoc function reporting the first Embark target at point.
-This function uses the eldoc REPORT callback and is meant to be
-added to `eldoc-documentation-functions'."
-    (when-let (((not (minibufferp)))
-               (target (car (embark--targets))))
-      (funcall report
-               (format "Embark on %s '%s'" ; [NOTE]
-                       (plist-get target :type)
-                       (embark--truncate-target (plist-get target :target))))))
+;;   (setq embark-indicators
+;;         '(embark-minimal-indicator  ; Default is `embark-mixed-indicator'
+;;           embark-highlight-indicator
+;;           embark-isearch-highlight-indicator))
 
-  (defun embark--format-targets (target shadowed-targets rep)
-    "Return a formatted string indicating the TARGET of an action.
+;;   ;; Quitting the minibuffer after an action
+;;   (setq embark-quit-after-action '((kill-buffer . t) (t . nil)))
 
-This is used internally by the minimal indicator and for the
-targets section of the verbose indicator.  The string will also
-mention any SHADOWED-TARGETS.  A non-nil REP indicates we are in
-a repeating sequence of actions."
-    (let ((act (propertize
-                (cond
-                 ((plist-get target :multi) "∀ct")
-                 (rep "Rep")
-                 (t "Act"))
-                'face 'highlight)))
-      (cond
-       ((eq (plist-get target :type) 'embark-become)
-        (propertize "Become" 'face 'highlight))
-       ((and (minibufferp)
-             (not (eq 'embark-keybinding
-                      (completion-metadata-get
-                       (embark--metadata)
-                       'category))))
-        ;; we are in a minibuffer but not from the
-        ;; completing-read prompter, use just "Act"
-        act)
-       ((plist-get target :multi)
-        (format "%s on %s %ss"
-                act
-                (plist-get target :multi)
-                (plist-get target :type)))
-       (t (format
-           "%s on %s%s '%s'" ; [NOTE]
-           act
-           (plist-get target :type)
-           (if shadowed-targets
-               (format (propertize "(%s)" 'face 'shadow)
-                       (mapconcat
-                        (lambda (target) (symbol-name (plist-get target :type)))
-                        shadowed-targets
-                        ", "))
-             "")
-           (embark--truncate-target (plist-get target :target)))))))
-  
-  :bind ("s-/" . embark-act))
+;;   ;; Hide the mode line of the Embark completion buffers
+;;   (add-to-list 'display-buffer-alist
+;;                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+;;                  nil
+;;                  (window-parameters (mode-line-format . none))))
 
-(use-package embark-consult
-  :straight t
-  :hook (embark-collect-mode . consult-preview-at-point-mode))
+;;   ;; I personally prefer the '' delimeters
+;;   (defun embark-eldoc-first-target (report &rest _)
+;;     "Eldoc function reporting the first Embark target at point.
+;; This function uses the eldoc REPORT callback and is meant to be
+;; added to `eldoc-documentation-functions'."
+;;     (when-let (((not (minibufferp)))
+;;                (target (car (embark--targets))))
+;;       (funcall report
+;;                (format "Embark on %s '%s'" ; [NOTE]
+;;                        (plist-get target :type)
+;;                        (embark--truncate-target (plist-get target :target))))))
+
+;;   (defun embark--format-targets (target shadowed-targets rep)
+;;     "Return a formatted string indicating the TARGET of an action.
+
+;; This is used internally by the minimal indicator and for the
+;; targets section of the verbose indicator.  The string will also
+;; mention any SHADOWED-TARGETS.  A non-nil REP indicates we are in
+;; a repeating sequence of actions."
+;;     (let ((act (propertize
+;;                 (cond
+;;                  ((plist-get target :multi) "∀ct")
+;;                  (rep "Rep")
+;;                  (t "Act"))
+;;                 'face 'highlight)))
+;;       (cond
+;;        ((eq (plist-get target :type) 'embark-become)
+;;         (propertize "Become" 'face 'highlight))
+;;        ((and (minibufferp)
+;;              (not (eq 'embark-keybinding
+;;                       (completion-metadata-get
+;;                        (embark--metadata)
+;;                        'category))))
+;;         ;; we are in a minibuffer but not from the
+;;         ;; completing-read prompter, use just "Act"
+;;         act)
+;;        ((plist-get target :multi)
+;;         (format "%s on %s %ss"
+;;                 act
+;;                 (plist-get target :multi)
+;;                 (plist-get target :type)))
+;;        (t (format
+;;            "%s on %s%s '%s'" ; [NOTE]
+;;            act
+;;            (plist-get target :type)
+;;            (if shadowed-targets
+;;                (format (propertize "(%s)" 'face 'shadow)
+;;                        (mapconcat
+;;                         (lambda (target) (symbol-name (plist-get target :type)))
+;;                         shadowed-targets
+;;                         ", "))
+;;              "")
+;;            (embark--truncate-target (plist-get target :target)))))))
+
+;;   :bind ("s-/" . embark-act))
+
+;; (use-package embark-consult
+;;   :straight t
+;;   :hook (embark-collect-mode . consult-preview-at-point-mode))
 
 
 ;; Beframe (beframe.el): Isolate Emacs buffers per frame
