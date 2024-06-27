@@ -71,8 +71,8 @@
           (cursor bg-graph-green-0)))
 
   (setq modus-themes-bold-constructs t
-        modus-themes-prompts '(extrabold)
-	    modus-themes-completions '((t . (extrabold))))
+        modus-themes-prompts '(bold)
+	    modus-themes-completions '((t . (bold))))
 
   ;; Enable and load the theme
   (modus-themes-load-theme 'modus-vivendi))
@@ -93,7 +93,28 @@
 (add-hook 'after-init-hook #'global-hl-line-mode)
 
 ;; Custom font
-(set-face-attribute 'default nil :family "Sthenno Mono" :height 150)
+(set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
+
+;; Define the ligation dictionary [FIXME]
+(let ((composition-table (make-char-table nil)))
+  (dolist (char-regexp-replacement
+           '((33 . ".\\(?:\\(==\\|!=\\)\\|[!=]\\)") ; != ==
+             (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)") ; ### ## #( #_
+             (45 . ".\\(?:->\\|--\\|[<>|~-]\\)") ; -> -- >>
+             (46 . ".\\(?:\\.[.<]\\|[.:<-]\\)") ; .. .< .:
+             (47 . ".\\(?:\\*/\\|//\\|[*/>]\\)") ; */ // /->
+             (58 . ".\\(?:::\\|[:=]\\)") ; :: :=
+             (59 . ".\\(?:;;\\|;>\\)") ; ;;
+             (60 . ".\\(?:!--\\|--\\|<[<=|-]\\|=[<=|-]\\|<=\\)") ; <!-- << <- <=
+             (61 . ".\\(?:\\|=[=>]\\|=>\\)") ; == =>
+             (62 . ".\\(?:>>\\|>[=>-]\\|>=\\)") ; >> >=
+             (63 . ".\\(?:\\?\\?\\|[:=?]\\)") ; ?? ?: ?
+             (92 . ".\\(?:\\\\\\\\\\|[\\n]\\)") ; \\ \n
+             (set-char-table-range composition-table (car char-regexp-replacement)
+                                   `([,(cdr char-regexp-replacement) 0 font-shape-gstring])))))
+  
+  (set-char-table-parent composition-table composition-function-table)
+  (setq composition-function-table composition-table))
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")
@@ -123,34 +144,44 @@
 
 ;; Removal of mule-info, and a trim of all double-spaces anywhere in the mode line
 ;; format to a single space
-(setq-default
- mode-line-format
- (cl-nsubst-if " " (lambda (x)
-                     (and (stringp x) (string-blank-p x) (> (length x) 1)))
-		       (remove 'mode-line-mule-info mode-line-format)))
+;; (setq-default
+;;  mode-line-format
+;;  (cl-nsubst-if " " (lambda (x)
+;;                      (and (stringp x) (string-blank-p x) (> (length x) 1)))
+;; 		       (remove 'mode-line-mule-info mode-line-format)))
 
-(use-package cyphejor
-  :straight t
-  :config
-  (setq cyphejor-rules
-        '(:upcase
-          ("buffer"      "β")
-          ("diff"        "Δ")
-          ("dired"       "􀩚")
-          ("emacs"       "E")
-          ("lisp"        "L" :postfix)
-          ("menu"        "􀓕" :postfix)
-          ("mode"        "")
-          ("shell"       "􀩼")
-          ("text"        "T")
-          ("org"         "􀐘")))
-  (cyphejor-mode 1))
+;; (use-package cyphejor
+;;   :straight t
+;;   :config
+;;   (setq cyphejor-rules
+;;         '(:upcase
+;;           ("buffer"      "β")
+;;           ("diff"        "Δ")
+;;           ("dired"       "􀩚")
+;;           ("emacs"       "E")
+;;           ("lisp"        "L" :postfix)
+;;           ("menu"        "􀓕" :postfix)
+;;           ("mode"        "")
+;;           ("shell"       "􀩼")
+;;           ("text"        "T")
+;;           ("org"         "􀐘")))
+;;   (cyphejor-mode 1))
 
 
 ;; Automatic adjusting for margins
 (use-package spacious-padding
   :straight t
-  :config (spacious-padding-mode 1))
+  :config
+  (setq spacious-padding-widths
+        '( :internal-border-width 15
+           :header-line-width 0
+           :mode-line-width 4
+           :tab-width 4
+           :right-divider-width 0
+           :scroll-bar-width 0
+           :fringe-width 10))
+  
+  (spacious-padding-mode 1))
 
 
 ;; Sthenno's version of https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
