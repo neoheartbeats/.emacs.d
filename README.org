@@ -1,13 +1,10 @@
-This is a simple setup for GNU Emacs focusing on scientific writing in Org Mode.
+A simple setup for GNU Emacs focusing on scientific writing in Org Mode.
 
 -----
 
-*** Demo picture:
+*** Screenshot
 
 [[./resources/demo.png]]
-*** As Python IDE:
-
-[[./resources/ide-demo.png]]
 
 -----
 
