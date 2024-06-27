@@ -6,11 +6,10 @@
 
 ;;; Commentary:
 ;;
-;; The content of this file mainly includes an Emacs UI design optimized
-;; for GUI mode. This file mainly configures `modus-themes', fonts, some
-;; global `face' and `mode-line' styles. For those feature-specific
-;; `faces', their configuration code is isolated. A typical example is
-;; `prettify-symbols-mode'. See also: `init-editing-utils', `init-org'.
+;; This file mainly includes an Emacs UI design optimized for GUI mode. This file mainly
+;; configures `modus-themes', fonts, some global `face' and `mode-line' styles.
+;; For those feature-specific `faces', their configuration code is isolated. A typical
+;; example is `prettify-symbols-mode'. See also: `init-editing-utils', `init-org'.
 ;;
 ;;; Code:
 ;;

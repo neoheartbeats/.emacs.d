@@ -9,7 +9,6 @@
 ;;
 
 ;;; Build the completion framework
-;;
 (use-package emacs
   :init
   
