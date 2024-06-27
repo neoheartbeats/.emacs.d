@@ -96,25 +96,28 @@
 (set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
 
 ;; Define the ligation dictionary [FIXME]
-(let ((composition-table (make-char-table nil)))
-  (dolist (char-regexp-replacement
-           '((33 . ".\\(?:\\(==\\|!=\\)\\|[!=]\\)") ; != ==
-             (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)") ; ### ## #( #_
-             (45 . ".\\(?:->\\|--\\|[<>|~-]\\)") ; -> -- >>
-             (46 . ".\\(?:\\.[.<]\\|[.:<-]\\)") ; .. .< .:
-             (47 . ".\\(?:\\*/\\|//\\|[*/>]\\)") ; */ // /->
-             (58 . ".\\(?:::\\|[:=]\\)") ; :: :=
-             (59 . ".\\(?:;;\\|;>\\)") ; ;;
-             (60 . ".\\(?:!--\\|--\\|<[<=|-]\\|=[<=|-]\\|<=\\)") ; <!-- << <- <=
-             (61 . ".\\(?:\\|=[=>]\\|=>\\)") ; == =>
-             (62 . ".\\(?:>>\\|>[=>-]\\|>=\\)") ; >> >=
-             (63 . ".\\(?:\\?\\?\\|[:=?]\\)") ; ?? ?: ?
-             (92 . ".\\(?:\\\\\\\\\\|[\\n]\\)") ; \\ \n
-             (set-char-table-range composition-table (car char-regexp-replacement)
-                                   `([,(cdr char-regexp-replacement) 0 font-shape-gstring])))))
-  
-  (set-char-table-parent composition-table composition-function-table)
-  (setq composition-function-table composition-table))
+(defun sthenno-mono-ligation-setup ()
+  (let ((composition-table (make-char-table nil)))
+    (dolist (char-regexp-replacement
+             '((33 . ".\\(?:\\(==\\|!=\\)\\|[!=]\\)") ; != ==
+               (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)") ; ### ## #( #_
+               (45 . ".\\(?:->\\|--\\|[<>|~-]\\)") ; -> -- >>
+               (46 . ".\\(?:\\.[.<]\\|[.:<-]\\)") ; .. .< .:
+               (47 . ".\\(?:\\*/\\|//\\|[*/>]\\)") ; */ // /->
+               (58 . ".\\(?:::\\|[:=]\\)") ; :: :=
+               (59 . ".\\(?:;;\\|;>\\)") ; ;;
+               (60 . ".\\(?:!--\\|--\\|<[<=|-]\\|=[<=|-]\\|<=\\)") ; <!-- << <- <=
+               (61 . ".\\(?:\\|=[=>]\\|=>\\)") ; == =>
+               (62 . ".\\(?:>>\\|>[=>-]\\|>=\\)") ; >> >=
+               (63 . ".\\(?:\\?\\?\\|[:=?]\\)") ; ?? ?: ?
+               (92 . ".\\(?:\\\\\\\\\\|[\\n]\\)"))) ; \\ \n
+               (set-char-table-range composition-table (car char-regexp-replacement)
+                                     `([,(cdr char-regexp-replacement) 0 font-shape-gstring])))
+    
+    (set-char-table-parent composition-table composition-function-table)
+    (setq composition-function-table composition-table)))
+
+(add-hook 'after-init-hook #'sthenno-mono-ligation-setup)
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'unicode "SF Pro")

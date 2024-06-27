@@ -42,7 +42,7 @@
 ;;; GUI frames
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
-(push '(alpha-background . 70) default-frame-alist)
+(push '(alpha-background . 50) default-frame-alist)
 
 (push '(width . 110) default-frame-alist)
 (push '(height . 45) default-frame-alist)
