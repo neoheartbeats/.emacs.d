@@ -30,9 +30,9 @@
   :bind (:map global-map
 	          ("M-/" . xref-find-references)))
 
-;; TAGS
-(use-package etags
-  :config (etags-regen-mode 1))
+;; TAGS [FIXME]
+;; (use-package etags
+;;   :config (etags-regen-mode 1))
 
 (provide 'init-projects)
 ;;;

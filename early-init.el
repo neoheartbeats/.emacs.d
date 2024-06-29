@@ -33,19 +33,19 @@
 ;; Do not enable packages during this early stage
 (setq package-enable-at-startup nil)
 
-;; Perform darwing the frame when initialization
+;;; Perform darwing the frame when initialization
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
-(push '(horizontal-scroll-bars) default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
+(push '(horizontal-scroll-bars . nil) default-frame-alist)
+(push '(vertical-scroll-bars . nil) default-frame-alist)
 
-;;; GUI frames
+;; GUI
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
 (push '(alpha-background . 50) default-frame-alist)
-
 (push '(width . 110) default-frame-alist)
 (push '(height . 45) default-frame-alist)
+
 ;;;
 ;; coding: utf-8
 ;; no-byte-compile: t

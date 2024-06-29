@@ -23,12 +23,19 @@
 			                   (smartparens-mode 1))))
 
 
+(use-package eldoc
+  :diminish (eldoc-mode)
+  :init
+  (setq eldoc-idle-delay 0))
+
+
 ;; Misc settings
 (setq undo-limit (* 160000 500)) ; Raise undo-limit to 80 Mb
 
 ;; Delete selection if you insert
 (use-package delsel
-  :hook (after-init . delete-selection-mode))
+  :hook (after-init . (lambda ()
+                        (delete-selection-mode 1))))
 
 ;; Automatically reload files was modified by external program
 (use-package autorevert
@@ -66,15 +73,17 @@
 	    pulsar-delay 0.075
 	    pulsar-iterations 10
 	    pulsar-face 'pulsar-green
-	    pulsar-highlight-face 'pulsar-magenta)
+	    pulsar-highlight-face 'pulsar-green)
 
   (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line-cyan)
   (add-hook 'indent-current-buffer-hook #'pulsar-pulse-line-cyan)
   (add-hook 'after-save-hook #'pulsar-pulse-line-green)
-  
   (add-hook 'my/delete-current-line-hook #'pulsar-pulse-line-magenta)
   (add-hook 'my/cycle-to-next-buffer-hook #'pulsar-pulse-line-cyan)
   (add-hook 'my/cycle-to-previous-buffer-hook #'pulsar-pulse-line-cyan)
+
+  (add-hook 'split-window-below-focus-hook #'pulsar-highlight-line)
+  (add-hook 'split-window-right-focus-hook #'pulsar-highlight-line)
   
   (require 'init-comp)
   (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
@@ -82,21 +91,6 @@
   (pulsar-global-mode 1))
 
 
-(use-package focus
-  :straight t
-  :config
-  
-  ;; Rendering for comments may not be correct if using the default style
-  ;; `defun'. Note this may cause conflict with `highlight-paren-mode'
-  ;; and `indent-bars-mode' in most cases [TODO]
-  (add-to-list 'focus-mode-to-thing '(python-ts-mode . paragraph))
-  :bind (:map global-map
-	          ("M-<up>" . focus-prev-thing)
-	          ("M-<down>" . focus-next-thing))
-  :hook ((python-ts-mode) . focus-mode))
-
-
-;; [TODO] Integration with `focus-mode'
 (use-package indent-bars
   :straight (indent-bars
              :type git

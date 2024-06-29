@@ -2,4 +2,4 @@
 # name: gsk
 # key: gsk
 # --
-(global-set-key (kbd "$1") '$0)
+(global-set-key (kbd "$1") #'$0)

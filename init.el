@@ -99,6 +99,8 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(setq debug-on-error t)
+
 ;; The `use-package' macro
 (straight-use-package 'use-package)
 (straight-use-package 'bind-key)

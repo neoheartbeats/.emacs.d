@@ -11,7 +11,9 @@
 ;;; Build the completion framework
 (use-package emacs
   :init
-  
+
+  ;;; Completion basics. See also `orderless'
+  ;;
   ;; TAB cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
 
@@ -27,23 +29,29 @@
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
 
+(use-package minibuffer
+  :init
+  (setq minibuffer-default-prompt-format " [%s]")
+  (setq echo-keystrokes 0.02)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
+
 ;; Use the `orderless' completion style
 (use-package orderless
-  :straight t)
-
-(setq completion-styles '(orderless basic)
-      completion-category-overrides '((file (styles basic partial-completion)))
-      orderless-component-separator #'orderless-escapable-split-on-space)
+  :straight t
+  :config
+  (setq orderless-component-separator " +\\|[-/]") ; Spaces, hyphen or slash
+  (setq completion-styles '(orderless flex basic)
+        completion-category-overrides '((file (styles . (partial-completion orderless)))
+                                        (eglot (styles . (orderless))))))
 
 ;; Ignore cases
 (setq completion-ignore-case t)
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t)
-
-
-;;; UI
-;; (use-package posframe
-;;   :straight t)
 
 
 ;;; Completion for minibuffers
@@ -71,42 +79,6 @@
         (concat #("◉ " 0 1 (face modus-themes-prompt)) cand)
       (concat #("○ " 0 1 (face shadow)) cand)))
 
-  ;; Integration with `posframe'
-  ;; (use-package vertico-posframe
-  ;;   :straight t
-  ;;   :init (vertico-posframe-mode 1)
-  ;;   :config
-  ;;   (setq vertico-posframe-border-width 10)
-
-  ;;   ;; Set the background-color to  `bg-dim' of `modus-vivendi'
-  ;;   (set-face-attribute 'vertico-posframe-border nil :background "#1e1e1e")
-  ;;   (setq vertico-posframe-parameters '((background-color . "#1e1e1e")))
-
-  ;;   ;; Overwrite this function
-  ;;   (defun vertico-posframe--show (buffer window-point)
-  ;;     "`posframe-show' of vertico-posframe."
-
-  ;;     ;; Some posframe poshandlers need infos of last-window
-  ;;     (with-selected-window (vertico-posframe-last-window)
-  ;;       (apply #'posframe-show
-  ;;              buffer
-  ;;              :cursor '(bar . 1)
-  ;;              :window-point window-point
-  ;;              :font (buffer-local-value 'vertico-posframe-font buffer)
-  ;;              :poshandler (buffer-local-value 'vertico-posframe-poshandler buffer)
-  ;;              :background-color (face-attribute 'vertico-posframe :background nil t)
-  ;;              :foreground-color (face-attribute 'vertico-posframe :foreground nil t)
-  ;;              :border-width (buffer-local-value 'vertico-posframe-border-width buffer)
-  ;;              :border-color (vertico-posframe--get-border-color)
-  ;;              :override-parameters (buffer-local-value 'vertico-posframe-parameters buffer)
-  ;;              :refposhandler (buffer-local-value 'vertico-posframe-refposhandler buffer)
-  ;;              :hidehandler #'vertico-posframe-hidehandler
-  ;;              :lines-truncate (buffer-local-value 'vertico-posframe-truncate-lines buffer)
-  ;;              (funcall (buffer-local-value 'vertico-posframe-size-function buffer) buffer))))
-  
-  ;;   (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center))
-
-  
   (use-package vertico-multiform
     :init (vertico-multiform-mode 1)
     :config
@@ -119,10 +91,10 @@
       (cl-call-next-method cand prefix suffix index start))
 
     (defun sort-directories-first (files)
-      
+
       ;; Still sort by history position, length and alphabetically
       (setq files (vertico-sort-history-length-alpha files))
-      
+
       ;; But then move directories first
       (nconc (seq-filter (lambda (x) (string-suffix-p "/" x)) files)
              (seq-remove (lambda (x) (string-suffix-p "/" x)) files)))
@@ -137,7 +109,7 @@
     ;; setq can be used but will overwrite all existing values
     (add-to-list 'vertico-multiform-categories
                  '(file
-                   
+
                    ;; this is also defined in the wiki, uncomment if used
                    (vertico-sort-function . sort-directories-first)
                    (+vertico-transform-functions . +vertico-highlight-directory))))
@@ -167,9 +139,11 @@
         (save-excursion
           (goto-char (1- (point)))
           (when (search-backward "/" (minibuffer-prompt-end) t)
-            ;; set parent directory
+
+            ;; Set parent directory
             (setq previous-directory (buffer-substring (1+ (point)) (point-max)))
-            ;; set back to nil if not sorting by directories or what was deleted is not a directory
+
+            ;; Set back to nil if not sorting by directories or what was deleted is not a directory
             (when (not (string-suffix-p "/" previous-directory))
               (setq previous-directory nil))
             t))))
@@ -199,19 +173,14 @@
 
     ;; Correct file path when changed (tidy shadowed file names)
     (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
-    
+
     :bind (:map vertico-map
                 ("<return>" . vertico-directory-enter)
                 ("<backspace>" . vertico-directory-delete-char)
                 ("M-<backspace>" . vertico-directory-delete-word)))
-  
+
   :bind ((:map vertico-map
                ("<tab>" . vertico-insert))))
-
-;; Do not allow the cursor in the minibuffer prompt
-(setq minibuffer-prompt-properties
-      '(read-only t cursor-intangible t face minibuffer-prompt))
-(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
 ;; Support opening new minibuffers from inside existing minibuffers
 ;; (setq enable-recursive-minibuffers t)
@@ -244,10 +213,10 @@
    [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
   (global-set-key
    [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
-  
+
   ;; Framework for mode-specific buffer indexes
   (global-set-key [remap imenu] 'consult-imenu)
-  
+
   :config
 
   ;; Back to last visited by C-s C-s if using `consult-line'
@@ -281,94 +250,6 @@ DEFS is a plist associating completion categories to commands."
               ("s-m" . consult-imenu)))
 
 
-;;; Embark: Emacs Mini-Buffer Actions Rooted in Keymaps
-;; (use-package embark
-;;   :straight t
-;;   :init
-
-;;   ;; Optionally replace the key help with a completing-read interface
-;;   (setq prefix-help-command #'embark-prefix-help-command)
-
-;;   (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
-;;   (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
-;;   :config
-;;   (global-set-key [remap describe-bindings] 'embark-bindings)
-
-;;   (setq embark-indicators
-;;         '(embark-minimal-indicator  ; Default is `embark-mixed-indicator'
-;;           embark-highlight-indicator
-;;           embark-isearch-highlight-indicator))
-
-;;   ;; Quitting the minibuffer after an action
-;;   (setq embark-quit-after-action '((kill-buffer . t) (t . nil)))
-
-;;   ;; Hide the mode line of the Embark completion buffers
-;;   (add-to-list 'display-buffer-alist
-;;                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-;;                  nil
-;;                  (window-parameters (mode-line-format . none))))
-
-;;   ;; I personally prefer the '' delimeters
-;;   (defun embark-eldoc-first-target (report &rest _)
-;;     "Eldoc function reporting the first Embark target at point.
-;; This function uses the eldoc REPORT callback and is meant to be
-;; added to `eldoc-documentation-functions'."
-;;     (when-let (((not (minibufferp)))
-;;                (target (car (embark--targets))))
-;;       (funcall report
-;;                (format "Embark on %s '%s'" ; [NOTE]
-;;                        (plist-get target :type)
-;;                        (embark--truncate-target (plist-get target :target))))))
-
-;;   (defun embark--format-targets (target shadowed-targets rep)
-;;     "Return a formatted string indicating the TARGET of an action.
-
-;; This is used internally by the minimal indicator and for the
-;; targets section of the verbose indicator.  The string will also
-;; mention any SHADOWED-TARGETS.  A non-nil REP indicates we are in
-;; a repeating sequence of actions."
-;;     (let ((act (propertize
-;;                 (cond
-;;                  ((plist-get target :multi) "∀ct")
-;;                  (rep "Rep")
-;;                  (t "Act"))
-;;                 'face 'highlight)))
-;;       (cond
-;;        ((eq (plist-get target :type) 'embark-become)
-;;         (propertize "Become" 'face 'highlight))
-;;        ((and (minibufferp)
-;;              (not (eq 'embark-keybinding
-;;                       (completion-metadata-get
-;;                        (embark--metadata)
-;;                        'category))))
-;;         ;; we are in a minibuffer but not from the
-;;         ;; completing-read prompter, use just "Act"
-;;         act)
-;;        ((plist-get target :multi)
-;;         (format "%s on %s %ss"
-;;                 act
-;;                 (plist-get target :multi)
-;;                 (plist-get target :type)))
-;;        (t (format
-;;            "%s on %s%s '%s'" ; [NOTE]
-;;            act
-;;            (plist-get target :type)
-;;            (if shadowed-targets
-;;                (format (propertize "(%s)" 'face 'shadow)
-;;                        (mapconcat
-;;                         (lambda (target) (symbol-name (plist-get target :type)))
-;;                         shadowed-targets
-;;                         ", "))
-;;              "")
-;;            (embark--truncate-target (plist-get target :target)))))))
-
-;;   :bind ("s-/" . embark-act))
-
-;; (use-package embark-consult
-;;   :straight t
-;;   :hook (embark-collect-mode . consult-preview-at-point-mode))
-
-
 ;; Beframe (beframe.el): Isolate Emacs buffers per frame
 (use-package beframe
   :straight t
@@ -376,7 +257,7 @@ DEFS is a plist associating completion categories to commands."
   (setq beframe-global-buffers nil
         beframe-create-frame-scratch-buffer nil)
   (beframe-mode 1)
-
+  
   ;; Integration with `consult-buffer'
   (defvar consult-buffer-sources)
   (declare-function consult--buffer-state "consult")
@@ -392,7 +273,7 @@ With optional argument FRAME, return the list of buffers of FRAME."
       (beframe-buffer-names frame :sort #'beframe-buffer-sort-visibility))
 
     (defvar beframe-consult-source
-      `( :name     "Frame-specific buffers (current frame)"
+      `( :name     "Frame-specific buffers"
          :narrow   ?F
          :category buffer
          :face     beframe-buffer
@@ -416,11 +297,11 @@ With optional argument FRAME, return the list of buffers of FRAME."
 
   ;; See https://github.com/minad/corfu
   (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
-  
+
   ;; Since 29.1, use `dabbrev-ignored-buffer-regexps' on older.
-  (add-to-list 'dabbrev-ignored-buffer-modes 'doc-view-mode)
-  (add-to-list 'dabbrev-ignored-buffer-modes 'pdf-view-mode)
-  (add-to-list 'dabbrev-ignored-buffer-modes 'tags-table-mode))
+  (add-to-list 'dabbrev-ignored-buffer-modes #'doc-view-mode)
+  (add-to-list 'dabbrev-ignored-buffer-modes #'pdf-view-mode)
+  (add-to-list 'dabbrev-ignored-buffer-modes #'tags-table-mode))
 
 ;; Add extensions for the completion backend
 (use-package cape
@@ -428,30 +309,33 @@ With optional argument FRAME, return the list of buffers of FRAME."
   :config
   (setq cape-dabbrev-min-length 4)
 
-  (defun my-cape-setup (&rest capes)
-    "Add CAPES to `completion-at-point-functions'."
-    (dolist (cape capes)
-      (add-to-list 'completion-at-point-functions cape)))
+  (defun completion-at-point-functions-setup (capfs-map)
+    "Set up completion at point functions based on CAPFS-MAP.
+CAPFS-MAP is an association list where each key is a major mode symbol
+and each value is a list of functions to add to `completion-at-point-functions'."
+    (dolist (mode-func-pair capfs-map)
+      (let ((mode (car mode-func-pair))
+            (functions (cdr mode-func-pair)))
 
-  (defun my-cape-prog-mode-setup ()
-    (my-cape-setup 'cape-dabbrev
-		           'cape-file
-		           'cape-keyword))
+        ;; Add functions to specific major mode
+        (add-hook (intern (concat (symbol-name mode) "-hook"))
+                  (lambda ()
+                    (dolist (func functions)
+                      (add-to-list 'completion-at-point-functions func)))))))
 
-  (defun my-cape-emacs-lisp-mode-setup ()
-    (my-cape-setup 'cape-dabbrev
-		           'cape-file
-		           'cape-keyword
-		           'cape-elisp-symbol))
+  (defvar my/capfs-map
+    '((prog-mode . (cape-dict
+                    cape-file))
+      (emacs-lisp-mode . (cape-dict
+                          cape-file
+                          cape-elisp-symbol))
+      (org-mode . (cape-dict
+                   cape-elisp-block
+                   cape-file)))
+    "An alist of (mode . list-of-capfs) to append.
+The elements in list-of-capfs further down the list have deeper priority in completion.")
 
-  (defun my-cape-org-mode-setup ()
-    (my-cape-setup 'cape-dabbrev
-		           'cape-file
-		           'cape-dict))
-
-  :hook ((prog-mode . my-cape-prog-mode-setup)
-         (emacs-lisp-mode . my-cape-emacs-lisp-mode-setup)
-         (org-mode . my-cape-org-mode-setup)))
+  (completion-at-point-functions-setup my/capfs-map))
 
 
 ;; The main completion frontend by Corfu
@@ -459,12 +343,14 @@ With optional argument FRAME, return the list of buffers of FRAME."
   :straight (:files (:defaults "extensions/*"))
   :init (global-corfu-mode 1)
   :config
-  (setq corfu-auto t)
-  (setq corfu-auto-delay 0.02) ; Making this to 0 is too expensive
-  (setq corfu-auto-prefix 2)
+  (setq corfu-auto t
+        corfu-auto-delay 0.02 ; Making this to 0 is too expensive
+        corfu-auto-prefix 2)
+
+  (setq corfu-quit-at-boundary 'separator
+        corfu-quit-no-match t)
+
   (setq corfu-cycle t)
-  (setq corfu-quit-at-boundary 'separator)
-  (setq corfu-quit-no-match t)
   (setq corfu-preview-current nil)
   (setq corfu-preselect 'directory) ; Auto select the first except directories
 
@@ -473,7 +359,7 @@ With optional argument FRAME, return the list of buffers of FRAME."
   (require 'corfu-history)
   (corfu-history-mode 1)
   (add-to-list 'savehist-additional-variables 'corfu-history)
-  
+
   :bind (:map corfu-map
               ("<down>" . corfu-next)
 	          ("<tab>" . corfu-next)

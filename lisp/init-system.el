@@ -27,22 +27,17 @@
 	       ("s-e" . delete-window)
 	       ("s-r" . restart-emacs)
 	       ("s-z" . undo)
-	       ("s-d" . find-file))
-
-(bind-keys :map global-map
-	       ("s-1" . delete-other-windows)
-	       ("s-2" . split-window-below)
-	       ("s-3" . split-window-right)
-	       ("s-<backspace>" . kill-whole-line))
+	       ("s-d" . find-file)
+           ("s-<backspace>" . kill-whole-line))
 
 (bind-keys :map emacs-lisp-mode-map
 	       ("C-c C-c". eval-buffer))
 
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
 ;; "C-i" is treated as the same of "TAB" by default.
 ;; It is better distinguish it. Note this just makes "C-i" bacome undefined
-;; and it still cannot be used as any effective keys
+;; and it still cannot be used as any effective keys [FIXME]
 (define-key input-decode-map "\C-i" [C-i])
 
 ;; Disable these keys
@@ -51,6 +46,57 @@
 ;; Do not scaling frame using mouse
 (global-unset-key (kbd "C-<wheel-up>"))
 (global-unset-key (kbd "C-<wheel-down>"))
+
+;; Move point
+(global-unset-key (kbd "C-<up>")) ; `backward-paragraph', `M-<up>' is used instead
+(global-set-key (kbd "M-<up>") #'backward-paragraph)
+
+(global-unset-key (kbd "C-<down>")) ; `forward-paragraph', `M-<down>' is used instead
+(global-set-key (kbd "M-<down>") #'forward-paragraph)
+
+(global-unset-key (kbd "C-<left>")) ; `left-word', `M-<left>' is used instead
+(global-unset-key (kbd "C-<right>")) ; `right-word', `M-<right>' is used instead
+
+;; Split windows
+(defun split-window-below-focus ()
+  "Like `split-window-below', but focus to the new window after execution."
+  (interactive)
+  (split-window-below)
+  (windmove-down)
+  (run-hooks 'split-window-below-focus-hook))
+
+(defun split-window-right-focus ()
+  "Like `split-window-right', but focus to the new window after execution."
+  (interactive)
+  (split-window-right)
+  (windmove-right)
+  (run-hooks 'split-window-right-focus-hook))
+
+(defun delete-other-windows-reversible ()
+  "Like `delete-other-windows', but can be reserved.
+
+Activate again to undo this. If the window changes before then, the undo expires."
+  (interactive)
+  (if (and (one-window-p)
+           (assq ?_ register-alist))
+      (jump-to-register ?_)
+    (window-configuration-to-register ?_)
+    (delete-other-windows)))
+
+(bind-keys :map global-map
+	       ("s-1" . delete-other-windows-reversible)
+	       ("s-2" . split-window-below-focus)
+	       ("s-3" . split-window-right-focus))
+
+;; Move around windows
+(global-unset-key (kbd "C-x o")) ; `other-window', `C-o' is used instead
+(global-set-key (kbd "C-o") #'other-window)
+
+(bind-keys :map global-map
+           ("C-<up>" . windmove-up)
+           ("C-<down>" . windmove-down)
+           ("C-<left>" . windmove-left)
+           ("C-<right>" . windmove-right))
 
 
 ;; Fix environment for macOS
@@ -67,10 +113,11 @@
   :config (save-place-mode 1))
 
 (use-package savehist
+  :init
+  (setq history-length 200)
+  (setq history-delete-duplicates t)
   :config
   (setq savehist-file (expand-file-name "savehist" user-emacs-directory))
-  (setq history-length 1000)
-  (setq history-delete-duplicates t)
   (setq savehist-save-minibuffer-history t)
   (savehist-mode 1))
 
