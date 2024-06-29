@@ -99,14 +99,10 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-(setq debug-on-error t)
-
 ;; The `use-package' macro
 (straight-use-package 'use-package)
 (straight-use-package 'bind-key)
 (straight-use-package 'diminish)
-
-(diminish 'eldoc-mode)
 
 (eval-when-compile
   (eval-after-load 'advice
