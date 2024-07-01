@@ -25,14 +25,16 @@
 ;;
 ;; For further backends support, see also `etags', `init-eglot'
 (use-package xref
-  :config
-  (setq xref-search-program 'ripgrep)
+  :init (setq xref-search-program 'ripgrep)
   :bind (:map global-map
 	          ("M-/" . xref-find-references)))
 
 ;; TAGS [FIXME]
-;; (use-package etags
-;;   :config (etags-regen-mode 1))
+(use-package etags
+  :init
+  (setq etags-program-name "/opt/homebrew/bin/etags")
+  (add-hook 'emacs-lisp-mode-hook #'(lambda ()
+                                      (etags-regen-mode 1))))
 
 (provide 'init-projects)
 ;;;
