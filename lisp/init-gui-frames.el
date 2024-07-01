@@ -91,7 +91,7 @@
 (add-hook 'after-init-hook #'global-hl-line-mode)
 
 ;; Custom font
-(set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
+(set-face-attribute 'default nil :family "Sthenno Mono" :height 150)
 
 ;; Define the ligation dictionary [FIXME]
 (defun sthenno-mono-ligation-setup ()

@@ -7,11 +7,9 @@
 ;;; Commentary:
 ;;
 ;;
-;;
+
 ;;; Code:
 ;;
-
-(require 'org-latex-preview)
 
 ;; Setup default directory
 (setq org-directory "~/Sthenno/")
@@ -20,22 +18,50 @@
 (setq org-startup-with-inline-images t
       org-startup-with-latex-preview t)
 
+;; Fold titles by default
+(setq org-startup-folded 'content)
+
+
 ;; Install AUCTeX
 (use-package tex
   :straight auctex)
 
-
-;; TEC's Org specific (`org-latex-preview')
+;; Use CDLaTeX to improve editing experiences
+(use-package cdlatex
+  :straight t
+  :diminish (org-cdlatex-mode)
+  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+
+;;; Experimental: `org-latex-preview'
+(require 'org-latex-preview)
+
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
+
+;; Preview functions
+;;
+
+(defun my/org-latex-preview-reload ()
+  (interactive)
+  (call-interactively 'org-latex-preview-clear-cache)
+  (org-latex-preview))
+
+(bind-keys :map org-mode-map
+           ("s-p" . my/org-latex-preview-reload))
 
 (setq org-latex-packages-alist
       '(("T1" "fontenc" t)
         ("" "amsmath" t)
+        ("" "amssymb" t)
+        ("" "amsthm" t)
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
-	    ("" "newtxmath" t)))
+        ("libertinus" "newtx" t)
+
+        ;; Load this after all math to give access to bold math
+        ;; See https://ctan.math.illinois.edu/fonts/newtx/doc/newtxdoc.pdf
+        ("" "bm" t) ))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
@@ -45,29 +71,49 @@
 \\usephysicsmodule{ab,ab.braket,diagmat,xmat}%
 ")
 
-;; (setq org-latex-preview-live nil) ; Do not generate live previews
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 
-;; Remove dollars and "begin" as delimiters. This may keep LaTeX source
-;; code uniform
-(plist-put org-latex-preview-appearance-options :matchers '("\\(" "\\["))
-(plist-put org-latex-preview-appearance-options :scale 1.35)
-(plist-put org-latex-preview-appearance-options :zoom 1.35)
+(plist-put org-latex-preview-appearance-options :scale 2.80)
+(plist-put org-latex-preview-appearance-options :zoom 1.40)
+
+(setq org-pretty-entities t
+      org-pretty-entities-include-sub-superscripts nil)
+
+;;; [TODO]
+;;
+
+(setq org-latex-preview-process-default 'dvipng)
 
 (setq org-latex-preview-process-alist
-      '((dvisvgm
+      '((dvipng
+         :programs ("latex" "dvipng")
+         :description "dvi > png"
+         :message "you need to install the programs: latex and dvipng."
+         :image-input-type "dvi"
+         :image-output-type "png"
+         :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
+         :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\"
+mylatexformat.ltx %f")
+         :image-converter ("dvipng --follow -D %D -T tight --depth --height
+-o %B-%%09d.png %f")
+         :transparent-image-converter ("dvipng --follow -D %D -T tight -bg Transparent
+--depth --height -o %B-%%09d.png %f"))
+        (dvisvgm
 	     :programs ("latex" "dvisvgm")
 	     :description "dvi > svg"
 	     :message "you need to install the programs: latex and dvisvgm."
 	     :image-input-type "dvi"
 	     :image-output-type "svg"
 	     :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
-	     :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
-	     :image-converter ; [TODO] Add "libgs" to PATH
-	     ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts
+	     :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\"
+mylatexformat.ltx %f")
+	     :image-converter ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts
 --exact-bbox --bbox=preview
 --libgs=/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib
 -v4 -o %B-%%9p.svg %f"))))
+
+;; consult-reftex, see https://karthinks.com/software/reftex-in-org-mode/
+
 
 
 ;; Images and files
@@ -120,11 +166,9 @@
 (setq org-cycle-hide-drawer-startup t)
 (add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
 
-;; Fold titles by default
-(setq org-startup-folded 'content)
-
 ;; Org fragments and overlays
 (setq org-image-max-width 420)
+(setq org-image-actual-width nil)
 
 ;; Org links
 (setq org-return-follows-link t)
@@ -242,14 +286,6 @@
 (bind-keys :map org-mode-map
 	       ("s-<up>" . my/denote-open-previous-file)
 	       ("s-<down>" . my/denote-open-next-file))
-
-
-;; Org LaTeX customizations
-;; Use CDLaTeX to improve editing experiences
-(use-package cdlatex
-  :straight t
-  :diminish (org-cdlatex-mode)
-  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 
 ;; Load languages for Org Babel

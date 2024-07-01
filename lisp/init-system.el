@@ -125,9 +125,9 @@ Activate again to undo this. If the window changes before then, the undo expires
 (setq auto-save-interval 2400
       auto-save-timeout 300)
 (setq auto-save-list-file-prefix
-      (dir-concat user-cache-directory "auto-save-list/.saves-"))
+      (expand-file-name "auto-save-list/.saves-" user-cache-directory))
 (setq backup-directory-alist
-      `(("." . ,(dir-concat user-cache-directory "backup")))
+      `(("." . ,(expand-file-name "backup" user-cache-directory)))
       backup-by-copying t ; Use copies
       version-control t ; Use version numbers on backups
       delete-old-versions t ; Automatically delete excess backups

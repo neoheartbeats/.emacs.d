@@ -12,12 +12,12 @@
 ;;; Code:
 ;;
 
-;;
+;;; [FIXME]
 (setenv "LIBRARY_PATH" (concat "/opt/homebrew/opt/gcc/lib/gcc/14:"
                                "/opt/homebrew/opt/libgccjit/lib/gcc/14:"
                                "/opt/homebrew/opt/gcc/lib/gcc/14/gcc/aarch64-apple-darwin23/14"))
 
-;; Defer garbage collection further back in the startup process
+;;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
 
 ;;; Customize Native-Compilation
@@ -34,7 +34,7 @@
 (setq package-enable-at-startup nil)
 
 ;;; Perform darwing the frame when initialization
-(push '(menu-bar-lines . 0) default-frame-alist)
+;; (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(horizontal-scroll-bars . nil) default-frame-alist)
 (push '(vertical-scroll-bars . nil) default-frame-alist)
@@ -42,7 +42,7 @@
 ;; GUI
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
-(push '(alpha-background . 50) default-frame-alist)
+(push '(alpha-background . 60) default-frame-alist)
 (push '(width . 110) default-frame-alist)
 (push '(height . 45) default-frame-alist)
 

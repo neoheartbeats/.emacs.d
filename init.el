@@ -13,13 +13,7 @@
 
 ;;; Speed up startup
 ;;
-;; Temporarily increase gc-cons-threshold during startup
-(let ((gc-cons-threshold most-positive-fixnum)
-      (gc-cons-percentage 0.6))
-  (add-hook 'emacs-startup-hook #'(lambda ()
-				    (setq gc-cons-threshold (* 120 1000 1000)) ; 120MB
-				    (setq gc-cons-percentage 0.6))))
-
+;; Process performance tuning
 (setq-default read-process-output-max (* 4 1024 1024))
 (setq-default process-adaptive-read-buffering nil)
 
@@ -99,83 +93,71 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(defun straight-use-packages (packages)
+  "Install multiple PACKAGES using `straight-use-package'."
+  (dolist (pkg packages)
+    (straight-use-package pkg)))
+
 ;; The `use-package' macro
-(straight-use-package 'use-package)
-(straight-use-package 'bind-key)
-(straight-use-package 'diminish)
+(straight-use-packages '(use-package bind-key diminish))
 
 (eval-when-compile
   (eval-after-load 'advice
     `(setq ad-redefinition-action 'accept))
   (setq use-package-verbose nil
         use-package-compute-statistics nil
-        use-package-minimum-reported-time 0.1
-        use-package-enable-imenu-support t)
+        use-package-enable-imenu-support nil
+        use-package-minimum-reported-time 0.1)
   (require 'cl-lib)
   (require 'use-package))
 
-;; Load path
-(use-package emacs
+
+;;; GCMH
+(use-package gcmh
+  :straight t
+  :diminish (gcmh-mode)
   :config
-  (defun dir-concat (dir file)
-    "Join path DIR with filename FILE correctly."
-    (concat (file-name-as-directory dir) file))
+  (setq gcmh-high-cons-threshold (* 512 1024 1024))
+  (gcmh-mode 1))
 
-  ;; Add ~/.emacs.d to the load-path
-  (push (dir-concat user-emacs-directory "site-lisp/") load-path)
-  (push (dir-concat user-emacs-directory "lisp/") load-path)
+(setq jit-lock-defer-time 0)
 
-  (defvar user-cache-directory "~/.cache/emacs/"
-    "Location where files created by emacs are placed."))
+
+;;; Load path
+;;
+
+(let ((org-lisp-dir (expand-file-name "site-lisp/org/lisp/" user-emacs-directory)))
+  (add-to-list 'load-path org-lisp-dir)
+  (require 'org))
+
+;; From https://github.com/purcell/emacs.d/blob/master/lisp/init-site-lisp.el
+(defun add-subdirs-to-load-path (parent-dir)
+  "Add every non-hidden subdir of PARENT-DIR to `load-path'."
+  (let ((default-directory parent-dir))
+    (setq load-path
+          (append
+           (cl-remove-if-not
+            #'file-directory-p
+            (directory-files (expand-file-name parent-dir) t "^[^\\.]"))
+           load-path))))
+
+;; Add both site-lisp and its immediate subdirs to `load-path'
+(let ((site-lisp-dir (expand-file-name "site-lisp/" user-emacs-directory)))
+  (push site-lisp-dir load-path)
+  (add-subdirs-to-load-path site-lisp-dir))
+
+;; Dir for init-* files
+(push (expand-file-name "lisp/" user-emacs-directory) load-path) 
+
+;; [FIXME]
+(defvar user-cache-directory "~/.cache/emacs/"
+  "Location where files created by emacs are placed.")
 
 ;; Set path for custom-file
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
 
-;; GCMH
-;; (use-package gcmh
-;;   :straight t
-;;   :diminish (gcmh-mode)
-;;   :config
-;;   (setq gcmh-high-cons-threshold (* 512 1024 1024))
-;;   (gcmh-mode 1))
-
-;; (setq jit-lock-defer-time 0)
-
-
-
-
-;; Load dependences
-(use-package org
-  :straight `(org
-              :fork (
-		     :host nil
-                     :repo "https://git.tecosaur.net/tec/org-mode.git"
-                     :branch "dev"
-                     :remote "tecosaur")
-              :files (:defaults "etc")
-              :build t
-              :pre-build
-              (with-temp-file "org-version.el"
-                (require 'lisp-mnt)
-                (let ((version
-                       (with-temp-buffer
-                         (insert-file-contents "lisp/org.el")
-                         (lm-header "version")))
-                      (git-version
-                       (string-trim
-                        (with-temp-buffer
-                          (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
-                          (buffer-string)))))
-                  (insert
-                   (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
-                   (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
-                   "(provide 'org-version)\n")))
-              :pin nil))
-
-(setq org-modules nil)
-
-;; Load components
+;; Load init* files
 (require 'init-system)
 (require 'init-gui-frames)
 (require 'init-editing-utils)

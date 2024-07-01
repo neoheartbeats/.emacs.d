@@ -1,10 +1,10 @@
-A simple setup for GNU Emacs focusing on scientific writing in Org Mode.
+This is a simple setup for GNU Emacs focusing on scientific writing in Org Mode.
 
 -----
 
 *** Screenshot
 
-[[./resources/demo.png]]
+[[./resources/demop.png]]
 
 -----
 

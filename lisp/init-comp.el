@@ -311,6 +311,7 @@ With optional argument FRAME, return the list of buffers of FRAME."
 
   (defun completion-at-point-functions-setup (capfs-map)
     "Set up completion at point functions based on CAPFS-MAP.
+
 CAPFS-MAP is an association list where each key is a major mode symbol
 and each value is a list of functions to add to `completion-at-point-functions'."
     (dolist (mode-func-pair capfs-map)

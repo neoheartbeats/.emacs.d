@@ -30,11 +30,11 @@
 	          ("M-/" . xref-find-references)))
 
 ;; TAGS [FIXME]
-(use-package etags
-  :init
-  (setq etags-program-name "/opt/homebrew/bin/etags")
-  (add-hook 'emacs-lisp-mode-hook #'(lambda ()
-                                      (etags-regen-mode 1))))
+;; (use-package etags
+;;   :init
+;;   (setq etags-program-name "/opt/homebrew/bin/etags")
+;;   (add-hook 'emacs-lisp-mode-hook #'(lambda ()
+;;                                       (etags-regen-mode 1))))
 
 (provide 'init-projects)
 ;;;
