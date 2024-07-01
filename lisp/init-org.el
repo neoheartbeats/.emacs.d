@@ -73,8 +73,8 @@
 
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 
-(plist-put org-latex-preview-appearance-options :scale 2.80)
-(plist-put org-latex-preview-appearance-options :zoom 1.40)
+(plist-put org-latex-preview-appearance-options :scale 2.50)
+(plist-put org-latex-preview-appearance-options :zoom 1.25)
 
 (setq org-pretty-entities t
       org-pretty-entities-include-sub-superscripts nil)
