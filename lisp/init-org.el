@@ -19,7 +19,7 @@
       org-startup-with-latex-preview t)
 
 ;; Fold titles by default
-(setq org-startup-folded 'content)
+;; (setq org-startup-folded 'content)
 
 
 ;; Install AUCTeX
@@ -55,13 +55,14 @@
 ;; Preview functions
 ;;
 
-(defun my/org-latex-preview-reload ()
+(defun my-org-preview-fragments ()
   (interactive)
   (call-interactively 'org-latex-preview-clear-cache)
-  (org-latex-preview))
+  (org-latex-preview 'buffer)
+  (org-redisplay-inline-images))
 
 (bind-keys :map org-mode-map
-           ("s-p" . my/org-latex-preview-reload))
+           ("s-p" . my-org-preview-fragments))
 
 (setq org-latex-packages-alist
       '(("T1" "fontenc" t)
@@ -117,18 +118,7 @@
 mylatexformat.ltx %f")
          :image-converter ,dvisvgm-image-converter-command)))
 
-;; ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts
-;; --exact-bbox --bbox=preview
-;; --libgs=/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib
-;; -v4 -o %B-%%9p.svg %f")
-
 ;; [TODO] consult-reftex, see https://karthinks.com/software/reftex-in-org-mode/
-
-
-;; Images and files
-(setq org-yank-dnd-method 'file-link)
-(setq org-yank-image-save-method
-      (expand-file-name "images/" org-directory))
 
 
 ;;; Modern Org Mode theme
@@ -204,9 +194,12 @@ This is useful if using font Iosevka."
 ;; Org images
 ;;
 
-(setq org-image-max-width 420
-      org-image-align 'center
-      org-image-actual-width nil)
+(setq org-image-align 'left
+      org-image-actual-width '(240))
+
+(setq org-yank-dnd-method 'file-link)
+(setq org-yank-image-save-method
+      (expand-file-name "images/" org-directory))
 
 ;; Org links
 (setq org-return-follows-link t)
@@ -224,6 +217,8 @@ This is useful if using font Iosevka."
 ;;
 ;; Check https://github.com/minad/vertico
 ;; Check `init-comp'
+;;
+
 (setq org-refile-use-outline-path 'file
       org-outline-path-complete-in-steps t)
 
@@ -248,8 +243,7 @@ This is useful if using font Iosevka."
   :straight t
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
-  (setq denote-known-keywords '("dates" ; Keyword for journal files
-                                ))
+  (setq denote-known-keywords '("dates"))
   (setq denote-prompts '(title))
   (setq denote-save-buffers t)
 
@@ -260,7 +254,7 @@ This is useful if using font Iosevka."
   (setq denote-journal-extras-title-format "%F") ; Use ISO 8601 for titles
 
   ;; Do not include date, tags and ids in note files
-  (setq denote-org-front-matter "#+title: %1$s\n\n")
+  (setq denote-org-front-matter "#+title: %1$s. 􀙤\n\n")
 
   :bind
   (:map global-map

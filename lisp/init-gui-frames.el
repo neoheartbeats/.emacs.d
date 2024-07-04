@@ -144,8 +144,8 @@
 ;;
 ;; Format mode line buffer identification [TODO]
 ;;
-;; * Add `project' integration
-;; * Customize a scrollbar
+;; - Add `project' integration
+;; - Add `magit' integration
 ;;
 
 (defun my-modeline-buffer-identification-setup ()
