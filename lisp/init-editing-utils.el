@@ -12,21 +12,22 @@
 (setq blink-matching-paren-highlight-offscreen t)
 
 ;; Smart pairing parenthesis
-(use-package smartparens
-  :straight t
-  :diminish (smartparens-mode)
-  :config
-  (require 'smartparens-config)
-  (add-hook 'prog-mode-hook #'(lambda ()
-                                (smartparens-mode 1)))
-  (add-hook 'org-mode-hook #'(lambda ()
-                               (smartparens-mode 1))))
+;; (use-package smartparens
+;;   :straight t
+;;   :diminish (smartparens-mode)
+;;   :config
+;;   (require 'smartparens-config)
+;;   (add-hook 'prog-mode-hook #'(lambda ()
+;;                                 (smartparens-mode 1)))
+;;   (add-hook 'org-mode-hook #'(lambda ()
+;;                                (smartparens-mode 1))))
+(add-hook 'after-init-hook #'(lambda ()
+                               (electric-pair-mode 1)))
 
 
 (use-package eldoc
   :diminish (eldoc-mode)
-  :init
-  (setq eldoc-idle-delay 0))
+  :init (setq eldoc-idle-delay 0))
 
 
 ;; Misc settings
@@ -34,13 +35,14 @@
 
 ;; Delete selection if you insert
 (use-package delsel
-  :hook (after-init . (lambda ()
-                        (delete-selection-mode 1))))
+  :init (add-hook 'after-init-hook #'(lambda ()
+                                       (delete-selection-mode 1))))
 
 ;; Automatically reload files was modified by external program
 (use-package autorevert
   :diminish (auto-revert-mode)
-  :hook (after-init . global-auto-revert-mode))
+  :init (add-hook 'after-init-hook #'(lambda ()
+                                       (global-auto-revert-mode 1))))
 
 ;; Using rainbow delimiters [TODO]
 (use-package rainbow-delimiters
@@ -54,11 +56,12 @@
                                (modify-syntax-entry ?< ".")))
 
 ;; Fill columns
+;;
 ;; Face `fill-column-indicator' is set in `init-gui-frames'
-(add-hook 'prog-mode-hook #'(lambda ()
-                              (display-fill-column-indicator-mode 1)))
-(add-hook 'org-mode-hook #'(lambda ()
-                             (display-fill-column-indicator-mode 1)))
+;;
+
+(add-hook 'after-init-hook #'(lambda ()
+                               (global-display-fill-column-indicator-mode 1)))
 
 ;; Display line numbers
 (setq-default display-line-numbers-width 4)
@@ -75,6 +78,7 @@
         pulsar-face 'pulsar-green
         pulsar-highlight-face 'pulsar-green)
 
+  ;; Hooks
   (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line-cyan)
   (add-hook 'indent-current-buffer-hook #'pulsar-pulse-line-cyan)
   (add-hook 'after-save-hook #'pulsar-pulse-line-green)
@@ -109,16 +113,20 @@
         indent-bars-highlight-current-depth '(:blend 0.8)
         indent-bars-starting-column 0
         indent-bars-display-on-blank-lines t)
-  :hook ((python-ts-mode) . indent-bars-mode))
+
+  (add-hook 'python-ts-mode #'(lambda ()
+                                (indent-bars-ts-mode 1))))
 
 
 ;; Don't forget about your code comments!
 (use-package hl-todo
   :straight t
   :init
-  (setq hl-todo-keyword-faces '(("TODO"  . "#6ae4b9")
-                                ("FIXME" . "#ff5f59")
-                                ("NOTE"  . "#efef80")))
+  ;; (modus-themes-with-colors
+  ;;   (setq hl-todo-keyword-faces '(("TODO"  . info)
+  ;;                                 ("FIXME" . "#ff5f59")
+  ;;                                 ("NOTE"  . "#efef80"))))
+
   :config (global-hl-todo-mode 1))
 
 (provide 'init-editing-utils)

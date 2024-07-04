@@ -52,7 +52,9 @@
 ;; Emacs "updates" its ui more often than it needs to, so slow it down slightly
 (setq idle-update-delay 1.0) ; default is 0.5
 
+;;
 (setq inhibit-compacting-font-caches t)
+(setq jit-lock-defer-time 0)
 
 
 ;; Suppress GUI features
@@ -119,8 +121,6 @@
   :config
   (setq gcmh-high-cons-threshold (* 512 1024 1024))
   (gcmh-mode 1))
-
-(setq jit-lock-defer-time 0)
 
 
 ;;; Load path

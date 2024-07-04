@@ -5,6 +5,9 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
+;;
+;;
+;;
 ;;; Code:
 ;;
 
@@ -71,13 +74,15 @@
   (defvar +vertico-current-arrow t)
 
   (cl-defmethod vertico--format-candidate :around
-    (cand prefix suffix index start &context ((and +vertico-current-arrow
-                                                   (not (bound-and-true-p vertico-flat-mode)))
-                                              (eql t)))
+    (cand prefix suffix index start &context
+          ((and +vertico-current-arrow
+                (not (bound-and-true-p vertico-flat-mode)))
+           (eql t)))
     (setq cand (cl-call-next-method cand prefix suffix index start))
     (if (= vertico--index index)
-        (concat #("◉ " 0 1 (face modus-themes-prompt)) cand)
-      (concat #("○ " 0 1 (face shadow)) cand)))
+        (concat #("◉ " 0 2 (face (:background "#2f3849" :inherit modus-themes-prompt)))
+                cand)
+      (concat #("○ " 0 2 (face (:inherit shadow))) cand)))
 
   (use-package vertico-multiform
     :init (vertico-multiform-mode 1)
