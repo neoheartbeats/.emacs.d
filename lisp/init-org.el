@@ -226,7 +226,7 @@ mylatexformat.ltx %f")
   (setq denote-known-keywords '("dates" ; Keyword for journal files
                                 ))
   (setq denote-prompts '(title))
-  (setq denote-save-buffer-after-creation t)
+  (setq denote-save-buffers t)
 
   ;; Denote for journaling
   (setq denote-journal-extras-directory
@@ -237,8 +237,6 @@ mylatexformat.ltx %f")
   ;; Do not include date, tags and ids in note files
   (setq denote-org-front-matter "#+title: %1$s\n\n")
 
-  ;; No need confirmation using `denote-rename-file'
-  (setq denote-rename-no-confirm t)
   :bind
   (:map global-map
 
@@ -247,7 +245,8 @@ mylatexformat.ltx %f")
   (:map org-mode-map
         ("C-c i" . denote-link-or-create)
         ("C-c b" . denote-backlinks)
-        ("C-c e" . denote-org-extras-extract-org-subtree))
+        ("C-c e" . denote-org-extras-extract-org-subtree)
+        ("C-c k" . denote-rename-file-keywords))
   :hook (after-init . denote-journal-extras-new-or-existing-entry))
 
 ;; Extensions for Denote
