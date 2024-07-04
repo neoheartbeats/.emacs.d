@@ -92,19 +92,18 @@
 (plist-put org-latex-preview-appearance-options :zoom
            (- (/ (face-attribute 'default :height) 100.0) 0.025))
 
-;;; [TODO]
+;;;
 ;;
-
 (setq org-latex-preview-process-default 'dvisvgm)
 
 (defvar my/libgs-dylib-path "/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib"
   "Path to Ghostscript shared library.")
 
-(defvar dvisvgm-image-converter-command
-  `(concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts "
-           "--exact-bbox --bbox=preview "
-           "--libgs=" ,my/libgs-dylib-path
-           "-v4 -o %B-%%9p.svg %f"))
+(setq dvisvgm-image-converter-command
+      (list (concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts "
+                    "--exact-bbox --bbox=preview "
+                    "--libgs=" my/libgs-dylib-path
+                    "-v4 -o %B-%%9p.svg %f")))
 
 (setq org-latex-preview-process-alist
       `((dvisvgm
@@ -116,10 +115,12 @@
          :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
          :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\"
 mylatexformat.ltx %f")
-         :image-converter ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts
---exact-bbox --bbox=preview
---libgs=/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib
--v4 -o %B-%%9p.svg %f"))))
+         :image-converter ,dvisvgm-image-converter-command)))
+
+;; ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts
+;; --exact-bbox --bbox=preview
+;; --libgs=/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib
+;; -v4 -o %B-%%9p.svg %f")
 
 ;; [TODO] consult-reftex, see https://karthinks.com/software/reftex-in-org-mode/
 
@@ -130,24 +131,48 @@ mylatexformat.ltx %f")
       (expand-file-name "images/" org-directory))
 
 
-;; Modern Org Mode theme
+;;; Modern Org Mode theme
+;;
+;; - Prettify symbols
+;; - org-modern
+;;
+
+(defun my-org-prettify-symbols ()
+  (setq prettify-symbols-alist
+        (mapcan (lambda (x)
+                  (list x (cons (upcase (car x)) (cdr x))))
+                '(("#+title:"     . ?􀈣)
+                  ("#+results:"   . ?􀆀)
+                  ("#+attr_org:"  . ?􀏅))))
+  (prettify-symbols-mode 1))
+
+(add-hook 'org-mode-hook #'my-org-prettify-symbols)
+
 (use-package org-modern
   :straight t
   :config
   (setq org-modern-star 'fold
         org-modern-fold-stars '(("◉" . "○"))
         org-modern-hide-stars 'leading)
-  (setq org-modern-keyword "◉ ")
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '((?X . "􀃰")
                               (?- . "􀃞")
                               (?\s . "􀂒")))
-  (setq org-modern-table-vertical 2)
 
   ;; Disable these features
-  (setq org-modern-todo nil
+  (setq org-modern-keyword nil
         org-modern-tag nil
         org-modern-block-fringe nil)
+
+  ;; From https://github.com/karthink/.emacs.d/blob/master/lisp/setup-org.el
+  (defun my-org-modern-spacing ()
+    "Adjust line-spacing for `org-modern' to correct svg display.
+This is useful if using font Iosevka."
+    (setq-local line-spacing (if org-modern-mode
+                                 0.1
+                               0.0)))
+
+  (add-hook 'org-modern-mode-hook #'my-org-modern-spacing)
 
   (global-org-modern-mode 1))
 
