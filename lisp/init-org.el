@@ -1,4 +1,4 @@
-;;; init-org.el --- Org Mode -*- lexical-binding: t -*-
+;;; init-org.el --- Org Mode -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
@@ -12,7 +12,7 @@
 ;;
 
 ;; Setup default directory
-(setq org-directory "~/Sthenno/")
+(setq org-directory "~/Developer/sthenno-notebook/")
 
 ;;; Org Mode buffer init behaviors
 (setq org-startup-with-inline-images t
@@ -34,11 +34,23 @@
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 ;; Default LaTeX preview image directory
-(setq org-preview-latex-image-directory (expand-file-name "/ltximg/" user-emacs-directory))
+(setq org-preview-latex-image-directory
+      (expand-file-name "ltximg/" user-emacs-directory))
 
-;;; Experimental: `org-latex-preview'
-(add-hook 'org-mode-hook #'(lambda ()
-                             (org-latex-preview-auto-mode 1)))
+;; Experimental: `org-latex-preview'
+;;
+
+(use-package org-latex-preview
+  :init
+  (add-hook 'org-latex-preview-auto-ignored-commands #'next-line)
+  (add-hook 'org-latex-preview-auto-ignored-commands #'previous-line)
+  (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-up-command)
+  (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-down-command)
+  (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window)
+  (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window-down)
+  :config
+  (add-hook 'org-mode-hook #'(lambda ()
+                               (org-latex-preview-auto-mode 1))))
 
 ;; Preview functions
 ;;
@@ -74,33 +86,28 @@
 ")
 
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
+(setq org-use-sub-superscripts '{})
 
-(plist-put org-latex-preview-appearance-options :scale 2.50)
-(plist-put org-latex-preview-appearance-options :zoom 1.25)
-
-(setq org-pretty-entities t
-      org-pretty-entities-include-sub-superscripts nil)
+(plist-put org-latex-preview-appearance-options :scale 1.0)
+(plist-put org-latex-preview-appearance-options :zoom
+           (- (/ (face-attribute 'default :height) 100.0) 0.025))
 
 ;;; [TODO]
 ;;
 
-(setq org-latex-preview-process-default 'dvipng)
+(setq org-latex-preview-process-default 'dvisvgm)
+
+(defvar my/libgs-dylib-path "/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib"
+  "Path to Ghostscript shared library.")
+
+(defvar dvisvgm-image-converter-command
+  `(concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts "
+           "--exact-bbox --bbox=preview "
+           "--libgs=" ,my/libgs-dylib-path
+           "-v4 -o %B-%%9p.svg %f"))
 
 (setq org-latex-preview-process-alist
-      '((dvipng
-         :programs ("latex" "dvipng")
-         :description "dvi > png"
-         :message "you need to install the programs: latex and dvipng."
-         :image-input-type "dvi"
-         :image-output-type "png"
-         :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
-         :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\"
-mylatexformat.ltx %f")
-         :image-converter ("dvipng --follow -D %D -T tight --depth --height
--o %B-%%09d.png %f")
-         :transparent-image-converter ("dvipng --follow -D %D -T tight -bg Transparent
---depth --height -o %B-%%09d.png %f"))
-        (dvisvgm
+      `((dvisvgm
          :programs ("latex" "dvisvgm")
          :description "dvi > svg"
          :message "you need to install the programs: latex and dvisvgm."
@@ -114,8 +121,7 @@ mylatexformat.ltx %f")
 --libgs=/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib
 -v4 -o %B-%%9p.svg %f"))))
 
-;; consult-reftex, see https://karthinks.com/software/reftex-in-org-mode/
-
+;; [TODO] consult-reftex, see https://karthinks.com/software/reftex-in-org-mode/
 
 
 ;; Images and files
@@ -169,8 +175,13 @@ mylatexformat.ltx %f")
 (add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
 
 ;; Org fragments and overlays
-(setq org-image-max-width 420)
-(setq org-image-actual-width nil)
+;;
+;; Org images
+;;
+
+(setq org-image-max-width 420
+      org-image-align 'center
+      org-image-actual-width nil)
 
 ;; Org links
 (setq org-return-follows-link t)
@@ -212,20 +223,15 @@ mylatexformat.ltx %f")
   :straight t
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
-  (setq denote-known-keywords '("entry" ; Keyword for journal files
-
-                                ;; Try to perform the PARA method
-                                "project"
-                                "area"
-                                "resource"
-                                "archive"))
+  (setq denote-known-keywords '("dates" ; Keyword for journal files
+                                ))
   (setq denote-prompts '(title))
   (setq denote-save-buffer-after-creation t)
 
   ;; Denote for journaling
   (setq denote-journal-extras-directory
-        (expand-file-name "entry/" denote-directory)) ; Subdirectory for journal files
-  (setq denote-journal-extras-keyword "entry") ; Stages are journals
+        (expand-file-name "dates/" denote-directory)) ; Subdirectory for journal files
+  (setq denote-journal-extras-keyword "dates") ; Stages are journals
   (setq denote-journal-extras-title-format "%F") ; Use ISO 8601 for titles
 
   ;; Do not include date, tags and ids in note files
@@ -258,7 +264,7 @@ mylatexformat.ltx %f")
 ;;   :bind (:map org-mode-map
 ;;          ("C-c m" . list-denotes)))
 
-;; Custom functions for Denote
+;; Custom functions for Denote [TODO]
 (defun my/denote-insert-links-current-month ()
   (interactive)
   (denote-add-links (format-time-string "%B")))
@@ -308,7 +314,7 @@ mylatexformat.ltx %f")
                                (python . t)))
 
 
-;; Org-agenda
+;; Org-agenda [TODO]
 ;; (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
 (bind-keys :map global-map
            ("C-c a" . org-agenda))

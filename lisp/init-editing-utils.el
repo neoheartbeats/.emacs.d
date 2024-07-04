@@ -1,28 +1,31 @@
-;;; init-editing-utils.el --- Editing helpers -*- lexical-binding: t -*-
+;;; init-editing-utils.el --- Editing helpers -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
+;;
+;;
+;;
 ;;; Code:
 ;;
 
 ;; Highlight parenthesis matched off-screen
 (setq blink-matching-paren-highlight-offscreen t)
 
-;; Smart pairing parenthesis
-;; (use-package smartparens
-;;   :straight t
-;;   :diminish (smartparens-mode)
-;;   :config
-;;   (require 'smartparens-config)
-;;   (add-hook 'prog-mode-hook #'(lambda ()
-;;                                 (smartparens-mode 1)))
-;;   (add-hook 'org-mode-hook #'(lambda ()
-;;                                (smartparens-mode 1))))
+;; Automatic pair parenthesis
 (add-hook 'after-init-hook #'(lambda ()
                                (electric-pair-mode 1)))
+
+;; Inhibit paring these delimiters
+(add-hook 'after-init-hook #'(lambda ()
+                               (modify-syntax-entry ?< ".")))
+
+(use-package paren
+  :init (setq show-paren-delay 0.02
+              show-paren-highlight-openparen t
+              show-paren-when-point-inside-paren t))
 
 
 (use-package eldoc
@@ -30,9 +33,6 @@
   :init (setq eldoc-idle-delay 0))
 
 
-;; Misc settings
-(setq undo-limit (* 160000 500)) ; Raise undo-limit to 80 Mb
-
 ;; Delete selection if you insert
 (use-package delsel
   :init (add-hook 'after-init-hook #'(lambda ()
@@ -50,10 +50,6 @@
   :diminish (rainbow-delimiters-mode)
   :config (add-hook 'prog-mode-hook #'(lambda ()
                                         (rainbow-delimiters-mode 1))))
-
-;; Inhibit paring these delimiters
-(add-hook 'after-init-hook #'(lambda ()
-                               (modify-syntax-entry ?< ".")))
 
 ;; Fill columns
 ;;
@@ -121,12 +117,12 @@
 ;; Don't forget about your code comments!
 (use-package hl-todo
   :straight t
-  :init
-  ;; (modus-themes-with-colors
-  ;;   (setq hl-todo-keyword-faces '(("TODO"  . info)
-  ;;                                 ("FIXME" . "#ff5f59")
-  ;;                                 ("NOTE"  . "#efef80"))))
-
+  :init (add-hook 'after-init-hook #'(lambda ()
+                                       (modus-themes-with-colors
+                                         (setq hl-todo-keyword-faces
+                                               `(("TODO"  . ,prose-todo)
+                                                 ("FIXME" . ,err)
+                                                 ("NOTE"  . ,fg-changed))))))
   :config (global-hl-todo-mode 1))
 
 (provide 'init-editing-utils)

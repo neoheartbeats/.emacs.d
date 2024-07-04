@@ -1,4 +1,4 @@
-;;; init-comp.el --- Modern completion system -*- lexical-binding: t -*-
+;;; init-comp.el --- Modern completion system -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
@@ -18,6 +18,8 @@
   ;;; Completion basics. See also `orderless'
   ;;
   ;; TAB cycle if there are only few candidates
+  ;;
+
   (setq completion-cycle-threshold 3)
 
   ;; Only list the commands of the current modes
@@ -28,8 +30,8 @@
   ;; Emacs 30: `cape-dict' is used instead
   (setq text-mode-ispell-word-completion nil)
 
-  ;; Enable indentation+completion using the TAB key.
-  ;; `completion-at-point' is often bound to M-TAB.
+  ;; Enable indentation+completion using the TAB key
+  ;; `completion-at-point' is often bound to M-TAB
   (setq tab-always-indent 'complete))
 
 (use-package minibuffer
@@ -71,53 +73,20 @@
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
 
   ;; Prefix candidates
-  (defvar +vertico-current-arrow t)
+  (defvar my/vertico-using-prefix-symbol-p t)
 
   (cl-defmethod vertico--format-candidate :around
     (cand prefix suffix index start &context
-          ((and +vertico-current-arrow
+          ((and my/vertico-using-prefix-symbol-p
                 (not (bound-and-true-p vertico-flat-mode)))
            (eql t)))
     (setq cand (cl-call-next-method cand prefix suffix index start))
-    (if (= vertico--index index)
-        (concat #("◉ " 0 2 (face (:background "#2f3849" :inherit modus-themes-prompt)))
-                cand)
-      (concat #("○ " 0 2 (face (:inherit shadow))) cand)))
-
-  (use-package vertico-multiform
-    :init (vertico-multiform-mode 1)
-    :config
-    (defvar +vertico-transform-functions nil)
-
-    (cl-defmethod vertico--format-candidate :around
-      (cand prefix suffix index start &context ((not +vertico-transform-functions) null))
-      (dolist (fun (ensure-list +vertico-transform-functions))
-        (setq cand (funcall fun cand)))
-      (cl-call-next-method cand prefix suffix index start))
-
-    (defun sort-directories-first (files)
-
-      ;; Still sort by history position, length and alphabetically
-      (setq files (vertico-sort-history-length-alpha files))
-
-      ;; But then move directories first
-      (nconc (seq-filter (lambda (x) (string-suffix-p "/" x)) files)
-             (seq-remove (lambda (x) (string-suffix-p "/" x)) files)))
-
-    (defun +vertico-highlight-directory (file)
-      "If FILE ends with a slash, highlight it as a directory."
-      (if (string-suffix-p "/" file)
-          (propertize file 'face 'dired-directory)
-        file))
-
-    ;; add-to-list works if 'file isn't already in the alist
-    ;; setq can be used but will overwrite all existing values
-    (add-to-list 'vertico-multiform-categories
-                 '(file
-
-                   ;; this is also defined in the wiki, uncomment if used
-                   (vertico-sort-function . sort-directories-first)
-                   (+vertico-transform-functions . +vertico-highlight-directory))))
+    (modus-themes-with-colors
+      (if (= vertico--index index)
+          (concat (propertize "◉ " 'face
+                              `(:background ,bg-hl-line :inherit modus-themes-prompt))
+                  cand)
+        (concat (propertize "◉ " 'face `(:foreground ,fg-dim)) cand))))
 
   ;; Additions for moving up and down directories in `find-file'
   (use-package vertico-directory
@@ -131,12 +100,15 @@
 
     (advice-add 'vertico-insert :after #'vertico-insert-add-history)
 
-    ;; Pre-select previous directory when entering parent directory from within `find-file'
+    ;; Pre-select previous directory when entering parent directory from within
+    ;; `find-file'
     ;;
     ;; Advise `vertico-directory-up' to save the directory being exited
+    ;;
+
     (defvar previous-directory nil
-      "The directory that was just left. It is set when leaving a directory and
-    set back to nil once it is used in the parent directory.")
+      "The directory that was just left. It is set when leaving a directory and set back
+to nil once it is used in the parent directory.")
 
     (defun set-previous-directory ()
       "Set the directory that was just exited from within find-file."
@@ -148,7 +120,8 @@
             ;; Set parent directory
             (setq previous-directory (buffer-substring (1+ (point)) (point-max)))
 
-            ;; Set back to nil if not sorting by directories or what was deleted is not a directory
+            ;; Set back to nil if not sorting by directories or what was deleted is not
+            ;; a directory
             (when (not (string-suffix-p "/" previous-directory))
               (setq previous-directory nil))
             t))))
@@ -174,7 +147,8 @@
                ((> l w)))
           (setcar args (concat "…" (truncate-string-to-width arg l (- l w)))))
       args)
-    (advice-add #'vertico--format-candidate :filter-args #'my/vertico-truncate-candidates)
+    (advice-add #'vertico--format-candidate :filter-args
+                #'my/vertico-truncate-candidates)
 
     ;; Correct file path when changed (tidy shadowed file names)
     (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
@@ -187,11 +161,8 @@
   :bind ((:map vertico-map
                ("<tab>" . vertico-insert))))
 
-;; Support opening new minibuffers from inside existing minibuffers
-;; (setq enable-recursive-minibuffers t)
-
-;; Disable showing the *Completions* buffer that conflicts with vertico
-;; if using `ffap-menu'
+;; Disable showing the *Completions* buffer that conflicts with vertico if using
+;; `ffap-menu'
 (advice-add #'ffap-menu-ask :around
             (lambda (&rest args)
               (cl-letf (((symbol-function #'minibuffer-completion-help)
@@ -203,6 +174,7 @@
 ;;
 ;; [TODO] Propertize `marginalia'
 ;;
+
 (use-package marginalia
   :straight t
   :init (marginalia-mode 1))
@@ -239,9 +211,10 @@ DEFS is a plist associating completion categories to commands."
                 (list 'menu-item nil defs :filter
                       (lambda (d)
                         (plist-get d (completion-metadata-get
-                                      (completion-metadata (minibuffer-contents)
-                                                           minibuffer-completion-table
-                                                           minibuffer-completion-predicate)
+                                      (completion-metadata
+                                       (minibuffer-contents)
+                                       minibuffer-completion-table
+                                       minibuffer-completion-predicate)
                                       'category))))))
 
   (define-minibuffer-key "\C-s"
@@ -255,7 +228,7 @@ DEFS is a plist associating completion categories to commands."
               ("s-m" . consult-imenu)))
 
 
-;; Beframe (beframe.el): Isolate Emacs buffers per frame
+;; Beframe: Isolate Emacs buffers per frame
 (use-package beframe
   :straight t
   :config
@@ -314,12 +287,12 @@ With optional argument FRAME, return the list of buffers of FRAME."
   :config
   (setq cape-dabbrev-min-length 4)
 
-  (defun completion-at-point-functions-setup (capfs-map)
-    "Set up completion at point functions based on CAPFS-MAP.
+  (defun completion-at-point-functions-setup (capfs-map-alist)
+    "Set up completion at point functions based on CAPFS-MAP-ALIST.
 
-CAPFS-MAP is an association list where each key is a major mode symbol
+CAPFS-MAP-ALIST is an association list where each key is a major mode symbol
 and each value is a list of functions to add to `completion-at-point-functions'."
-    (dolist (mode-func-pair capfs-map)
+    (dolist (mode-func-pair capfs-map-alist)
       (let ((mode (car mode-func-pair))
             (functions (cdr mode-func-pair)))
 
@@ -329,19 +302,23 @@ and each value is a list of functions to add to `completion-at-point-functions'.
                     (dolist (func functions)
                       (add-to-list 'completion-at-point-functions func)))))))
 
-  (defvar my/capfs-map
+  (defvar my/capfs-map-alist
     '((prog-mode . (cape-dict
-                    cape-file))
+                    cape-file
+                    cape-dabbrev))
       (emacs-lisp-mode . (cape-dict
                           cape-file
+                          cape-dabbrev
                           cape-elisp-symbol))
       (org-mode . (cape-dict
                    cape-elisp-block
-                   cape-file)))
+                   cape-file
+                   cape-dabbrev)))
     "An alist of (mode . list-of-capfs) to append.
+
 The elements in list-of-capfs further down the list have deeper priority in completion.")
 
-  (completion-at-point-functions-setup my/capfs-map))
+  (completion-at-point-functions-setup my/capfs-map-alist))
 
 
 ;; The main completion frontend by Corfu
@@ -350,7 +327,7 @@ The elements in list-of-capfs further down the list have deeper priority in comp
   :init (global-corfu-mode 1)
   :config
   (setq corfu-auto t
-        corfu-auto-delay 0.02 ; Making this to 0 is too expensive
+        corfu-auto-delay 0.05 ; Making this to 0 is too expensive
         corfu-auto-prefix 2)
 
   (setq corfu-quit-at-boundary 'separator

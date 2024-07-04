@@ -1,4 +1,4 @@
-;;; init-system.e.el --- Configs specific to macOS -*- lexical-binding: t -*-
+;;; init-system.e.el --- Configs specific to macOS -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
@@ -98,6 +98,11 @@ Activate again to undo this. If the window changes before then, the undo expires
            ("C-<right>" . windmove-right))
 
 
+;; Resizing frames in a smooth way
+(setq window-resize-pixelwise t)
+(setq frame-resize-pixelwise t)
+
+
 ;; Increase how much is read from processes (default is 4kb)
 (setq read-process-output-max #x10000)
 
@@ -127,6 +132,16 @@ Activate again to undo this. If the window changes before then, the undo expires
       delete-old-versions t ; Automatically delete excess backups
       kept-new-versions 10 ; Newest versions to keep
       kept-old-versions 5)
+
+
+;; Keep track of recently opened files. Also feeds into the list of recent
+;; directories used by `consult-dir'
+(use-package recentf
+  :init (setq recentf-save-file (expand-file-name "recentf" user-cache-directory)
+              recentf-max-saved-items 200
+              recentf-auto-cleanup 300)
+  :config
+  (recentf-mode 1))
 
 
 ;; Misc options

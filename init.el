@@ -1,4 +1,4 @@
-;;; init.el --- Load the full configuration -*- lexical-binding: t -*-
+;;; init.el --- Load the full configuration -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
@@ -108,13 +108,13 @@
     `(setq ad-redefinition-action 'accept))
   (setq use-package-verbose nil
         use-package-compute-statistics nil
-        use-package-enable-imenu-support nil
+        use-package-enable-imenu-support t
         use-package-minimum-reported-time 0.1)
   (require 'cl-lib)
   (require 'use-package))
 
 
-;;; GCMH
+;; GCMH: the Garbage Collector Magic Hack
 (use-package gcmh
   :straight t
   :diminish (gcmh-mode)
@@ -139,20 +139,20 @@
   (require 'org-latex-preview))
 
 ;; From https://github.com/purcell/emacs.d/blob/master/lisp/init-site-lisp.el
-;; (defun add-subdirs-to-load-path (parent-dir)
-;;   "Add every non-hidden subdir of PARENT-DIR to `load-path'."
-;;   (let ((default-directory parent-dir))
-;;     (setq load-path
-;;           (append
-;;            (cl-remove-if-not
-;;             #'file-directory-p
-;;             (directory-files (expand-file-name parent-dir) t "^[^\\.]"))
-;;            load-path))))
+(defun add-subdirs-to-load-path (parent-dir)
+  "Add every non-hidden subdir of PARENT-DIR to `load-path'."
+  (let ((default-directory parent-dir))
+    (setq load-path
+          (append
+           (cl-remove-if-not
+            #'file-directory-p
+            (directory-files (expand-file-name parent-dir) t "^[^\\.]"))
+           load-path))))
 
 ;; Add both site-lisp and its immediate subdirs to `load-path'
-;; (let ((site-lisp-dir (expand-file-name "site-lisp/" user-emacs-directory)))
-;;   (push site-lisp-dir load-path)
-;;   (add-subdirs-to-load-path site-lisp-dir))
+(let ((site-lisp-dir (expand-file-name "site-lisp/" user-emacs-directory)))
+  (push site-lisp-dir load-path)
+  (add-subdirs-to-load-path site-lisp-dir))
 
 ;; Dir for init-* files
 (push (expand-file-name "lisp/" user-emacs-directory) load-path)
@@ -161,7 +161,20 @@
   "Location where files created by emacs are placed.")
 
 ;; Set path for custom-file
-(setq custom-file (locate-user-emacs-file "custom.el"))
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+
+
+(use-package explain-pause-mode
+  :straight (explain-pause-mode
+             :type git
+             :host github
+             :repo "lastquestion/explain-pause-mode")
+  :diminish (explain-pause-mode)
+  :config
+  (setq explain-pause-alert-style 'silent)
+  (explain-pause-mode 1)
+  :bind (:map global-map
+              ("<f3>" . explain-pause-top)))
 
 
 ;; Load init* files
@@ -174,6 +187,7 @@
 (require 'init-comp)
 (require 'init-eglot)
 
+(provide 'init)
 ;;;
 ;; coding: utf-8
 ;; no-byte-compile: t

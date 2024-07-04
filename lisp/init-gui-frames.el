@@ -1,4 +1,4 @@
-;;; init-gui-frames.el --- Behaviours of GUI frames -*- lexical-binding: t -*-
+;;; init-gui-frames.el --- Behaviours of GUI frames -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
@@ -25,7 +25,8 @@
   ;;
 
   (setq modus-vivendi-palette-user
-        '((sthenno-blueberry "#467fef")))
+        '((sthenno-blueberry "#467fef")
+          (sthenno-gorse     "#fcf050")))
 
   ;; Mapping colors
   (setq modus-vivendi-palette-overrides
@@ -161,33 +162,41 @@
 (use-package mlscroll
   :straight t
   :config
-  (setq mlscroll-width-chars 15
-        mlscroll-minimum-current-width 1)
-
   (modus-themes-with-colors
     (setq mlscroll-in-color bg-active
           mlscroll-out-color fg-dim))
 
   (mlscroll-mode 1))
 
-;;
+;; Add a menu for the mode line
+(use-package minions
+  :straight t
+  :config
+  (setq minions-mode-line-lighter "􀠩")
+
+  (minions-mode 1))
+
+;; Iconify mode line
 (use-package cyphejor
   :straight t
   :config
   (setq cyphejor-rules
         '(:upcase
-          ("buffer"      "β")
-          ("diff"        "Δ")
-          ("dired"       "􀩚")
-          ("emacs"       "E")
-          ("lisp"        "L" :postfix)
-          ("menu"        "􀓕" :postfix)
-          ("mode"        "")
-          ("shell"       "􀩼")
-          ("text"        "T")
-          ("org"         "􀐘")))
+          ("buffer" "β")
+          ("diff"   "Δ")
+          ("dired"  "􀩚")
+          ("emacs"  "E")
+          ("lisp"   "L" :postfix)
+          ("menu"   "􀓕" :postfix)
+          ("mode"   "")
+          ("shell"  "􀩼")
+          ("text"   "T")
+          ("org"    "􀐘")))
 
   (cyphejor-mode 1))
+
+(use-package uniquify
+  :init (setq uniquify-buffer-name-style 'forward))
 
 
 ;; Automatic adjusting for margins
@@ -195,18 +204,17 @@
   :straight t
   :config
   (setq spacious-padding-widths
-        '( :internal-border-width 15
+        '( :internal-border-width 14
            :header-line-width 0
-           :mode-line-width 4
-           :tab-width 4
+           :mode-line-width 2
            :right-divider-width 0
-           :scroll-bar-width 0
-           :fringe-width 10))
+           :scroll-bar-width 0))
 
   (spacious-padding-mode 1))
 
 
-;; Sthenno's version of https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
+;; Sthenno's customization of "doom-quit"
+;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 (defvar sthenno-quit-messages
   `(
     "Anyone else but you?"
@@ -226,10 +234,11 @@ are open."
 
 (defun sthenno-quit-fn (&rest _)
   (sthenno-quit-p
-   (format "%s  %s"
-           (propertize (nth (random (length sthenno-quit-messages))
-                            sthenno-quit-messages)
-                       'face '(default))
+   (format "Sthenno: %s 􀄫 %s"
+           (modus-themes-with-colors
+             (propertize (nth (random (length sthenno-quit-messages))
+                              sthenno-quit-messages)
+                         'face `(:foreground ,sthenno-gorse)))
            "Really quit Emacs?")))
 
 (setq confirm-kill-emacs #'sthenno-quit-fn)

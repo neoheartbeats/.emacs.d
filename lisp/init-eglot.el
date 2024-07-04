@@ -1,4 +1,4 @@
-;;; init-eglot.el --- LSP support by Eglot -*- lexical-binding: t -*-
+;;; init-eglot.el --- LSP support by Eglot -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
@@ -73,11 +73,10 @@
 ;; Reformat python buffers using the `black' formatter
 (use-package blacken
   :straight t
-  :config (add-hook 'python-ts-mode-hook #'(lambda ()
-                                             (blacken-mode 1)))
-  :bind
-  (:map python-ts-mode-map
-        ("s-i" . blacken-buffer)))
+  :init (add-hook 'python-ts-mode-hook #'(lambda ()
+                                           (blacken-mode 1)))
+  :bind (:map python-ts-mode-map
+              ("s-i" . blacken-buffer)))
 
 
 ;;; AI Integration
@@ -88,8 +87,7 @@
              :host github
              :repo "copilot-emacs/copilot.el"
              :files ("*.el"))
-  :config
-  (define-key global-map (kbd "s-.") #'copilot-accept-completion))
+  :config (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
 
 ;; Python API: sthenno-endpoints Client
