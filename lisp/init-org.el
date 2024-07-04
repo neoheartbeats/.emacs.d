@@ -123,20 +123,8 @@ mylatexformat.ltx %f")
 
 ;;; Modern Org Mode theme
 ;;
-;; - Prettify symbols
 ;; - org-modern
 ;;
-
-(defun my-org-prettify-symbols ()
-  (setq prettify-symbols-alist
-        (mapcan (lambda (x)
-                  (list x (cons (upcase (car x)) (cdr x))))
-                '(("#+title:"     . ?􀈣)
-                  ("#+results:"   . ?􀆀)
-                  ("#+attr_org:"  . ?􀏅))))
-  (prettify-symbols-mode 1))
-
-(add-hook 'org-mode-hook #'my-org-prettify-symbols)
 
 (use-package org-modern
   :straight t
@@ -148,11 +136,6 @@ mylatexformat.ltx %f")
   (setq org-modern-checkbox '((?X . "􀃰")
                               (?- . "􀃞")
                               (?\s . "􀂒")))
-
-  ;; Disable these features
-  (setq org-modern-keyword nil
-        org-modern-tag nil
-        org-modern-block-fringe nil)
 
   ;; From https://github.com/karthink/.emacs.d/blob/master/lisp/setup-org.el
   (defun my-org-modern-spacing ()

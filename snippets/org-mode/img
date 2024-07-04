@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: img
+# key: img
+# --
+#+attr_org: :width $1
+[[~/Developer/sthenno-notes/images/$2]]
+
+$0
