@@ -125,31 +125,38 @@
 
 ;;; Load path
 ;;
+;; Fix PATH for macOS
+;;
 
+(use-package exec-path-from-shell
+  :straight t
+  :config (exec-path-from-shell-initialize))
+
+;; Org mode
 (let ((org-lisp-dir (expand-file-name "site-lisp/org/lisp/" user-emacs-directory)))
   (add-to-list 'load-path org-lisp-dir)
-  (require 'org))
+  (require 'org)
+  (require 'org-latex-preview))
 
 ;; From https://github.com/purcell/emacs.d/blob/master/lisp/init-site-lisp.el
-(defun add-subdirs-to-load-path (parent-dir)
-  "Add every non-hidden subdir of PARENT-DIR to `load-path'."
-  (let ((default-directory parent-dir))
-    (setq load-path
-          (append
-           (cl-remove-if-not
-            #'file-directory-p
-            (directory-files (expand-file-name parent-dir) t "^[^\\.]"))
-           load-path))))
+;; (defun add-subdirs-to-load-path (parent-dir)
+;;   "Add every non-hidden subdir of PARENT-DIR to `load-path'."
+;;   (let ((default-directory parent-dir))
+;;     (setq load-path
+;;           (append
+;;            (cl-remove-if-not
+;;             #'file-directory-p
+;;             (directory-files (expand-file-name parent-dir) t "^[^\\.]"))
+;;            load-path))))
 
 ;; Add both site-lisp and its immediate subdirs to `load-path'
-(let ((site-lisp-dir (expand-file-name "site-lisp/" user-emacs-directory)))
-  (push site-lisp-dir load-path)
-  (add-subdirs-to-load-path site-lisp-dir))
+;; (let ((site-lisp-dir (expand-file-name "site-lisp/" user-emacs-directory)))
+;;   (push site-lisp-dir load-path)
+;;   (add-subdirs-to-load-path site-lisp-dir))
 
 ;; Dir for init-* files
-(push (expand-file-name "lisp/" user-emacs-directory) load-path) 
+(push (expand-file-name "lisp/" user-emacs-directory) load-path)
 
-;; [FIXME]
 (defvar user-cache-directory "~/.cache/emacs/"
   "Location where files created by emacs are placed.")
 
@@ -166,6 +173,7 @@
 (require 'init-temp)
 (require 'init-comp)
 (require 'init-eglot)
+
 ;;;
 ;; coding: utf-8
 ;; no-byte-compile: t

@@ -231,21 +231,21 @@
     "Define KEY conditionally in the minibuffer.
 DEFS is a plist associating completion categories to commands."
     (define-key minibuffer-local-map key
-		        (list 'menu-item nil defs :filter
-		              (lambda (d)
-			            (plist-get d (completion-metadata-get
-				                      (completion-metadata (minibuffer-contents)
-							                               minibuffer-completion-table
-							                               minibuffer-completion-predicate)
-				                      'category))))))
+                (list 'menu-item nil defs :filter
+                      (lambda (d)
+                        (plist-get d (completion-metadata-get
+                                      (completion-metadata (minibuffer-contents)
+                                                           minibuffer-completion-table
+                                                           minibuffer-completion-predicate)
+                                      'category))))))
 
   (define-minibuffer-key "\C-s"
-			             'consult-location #'previous-history-element
-			             'file #'consult-find-for-minibuffer)
+                         'consult-location #'previous-history-element
+                         'file #'consult-find-for-minibuffer)
 
   :bind (:map global-map
-	          ("C-s" . consult-line)
-	          ("M-s" . consult-ripgrep)
+              ("C-s" . consult-line)
+              ("M-s" . consult-ripgrep)
               ("C-v" . consult-yank-from-kill-ring)
               ("s-m" . consult-imenu)))
 
@@ -257,7 +257,7 @@ DEFS is a plist associating completion categories to commands."
   (setq beframe-global-buffers nil
         beframe-create-frame-scratch-buffer nil)
   (beframe-mode 1)
-  
+
   ;; Integration with `consult-buffer'
   (defvar consult-buffer-sources)
   (declare-function consult--buffer-state "consult")
@@ -291,9 +291,9 @@ With optional argument FRAME, return the list of buffers of FRAME."
 
   ;; Better letter casesx
   (setq dabbrev-case-distinction nil
-	    dabbrev-case-replace nil
-	    dabbrev-case-fold-search t
-	    dabbrev-upcase-means-case-search t)
+        dabbrev-case-replace nil
+        dabbrev-case-fold-search t
+        dabbrev-upcase-means-case-search t)
 
   ;; See https://github.com/minad/corfu
   (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
@@ -363,9 +363,9 @@ The elements in list-of-capfs further down the list have deeper priority in comp
 
   :bind (:map corfu-map
               ("<down>" . corfu-next)
-	          ("<tab>" . corfu-next)
+              ("<tab>" . corfu-next)
               ("<up>" . corfu-previous)
-	          ("s-<tab>" . corfu-previous)
+              ("s-<tab>" . corfu-previous)
               ("<escape>" . corfu-quit)))
 
 (provide 'init-comp)

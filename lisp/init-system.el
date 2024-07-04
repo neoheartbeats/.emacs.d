@@ -16,22 +16,21 @@
 (setq mac-command-modifier 'super)
 
 (bind-keys :map global-map
-	       ("s-a" . mark-whole-buffer)
-	       ("s-c" . kill-ring-save)
-	       ("s-i" . indent-current-buffer)
-	       ("s-l" . goto-line)
-	       ("s-q" . save-buffers-kill-emacs)
-	       ("s-s" . save-buffer)
-	       ("s-v" . yank)
-	       ("s-w" . kill-current-buffer)
-	       ("s-e" . delete-window)
-	       ("s-r" . restart-emacs)
-	       ("s-z" . undo)
-	       ("s-d" . find-file)
+           ("s-a" . mark-whole-buffer)
+           ("s-c" . kill-ring-save)
+           ("s-l" . goto-line)
+           ("s-q" . save-buffers-kill-emacs)
+           ("s-s" . save-buffer)
+           ("s-v" . yank)
+           ("s-w" . kill-current-buffer)
+           ("s-e" . delete-window)
+           ("s-r" . restart-emacs)
+           ("s-z" . undo)
+           ("s-d" . find-file)
            ("s-<backspace>" . kill-whole-line))
 
 (bind-keys :map emacs-lisp-mode-map
-	       ("C-c C-c". eval-buffer))
+           ("C-c C-c". eval-buffer))
 
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
@@ -84,9 +83,9 @@ Activate again to undo this. If the window changes before then, the undo expires
     (delete-other-windows)))
 
 (bind-keys :map global-map
-	       ("s-1" . delete-other-windows-reversible)
-	       ("s-2" . split-window-below-focus)
-	       ("s-3" . split-window-right-focus))
+           ("s-1" . delete-other-windows-reversible)
+           ("s-2" . split-window-below-focus)
+           ("s-3" . split-window-right-focus))
 
 ;; Move around windows
 (global-unset-key (kbd "C-x o")) ; `other-window', `C-o' is used instead
@@ -99,18 +98,13 @@ Activate again to undo this. If the window changes before then, the undo expires
            ("C-<right>" . windmove-right))
 
 
-;; Fix environment for macOS
-(use-package exec-path-from-shell
-  :straight t
-  :config (exec-path-from-shell-initialize))
-
-
 ;; Increase how much is read from processes (default is 4kb)
 (setq read-process-output-max #x10000)
 
 ;; Locate position history
 (use-package saveplace
-  :config (save-place-mode 1))
+  :config
+  (save-place-mode 1))
 
 (use-package savehist
   :init
@@ -161,7 +155,7 @@ Activate again to undo this. If the window changes before then, the undo expires
 (setq locate-command "mdfind")
 
 
-;; Global functions
+;;; Global functions
 (defun delete-current-file ()
   "Delete the current file, and kill the buffer."
   (interactive)
@@ -169,16 +163,37 @@ Activate again to undo this. If the window changes before then, the undo expires
     (error "No file is currently being edited"))
   (when (yes-or-no-p
          (format "Really delete '%s'?"
-		         (file-name-nondirectory buffer-file-name)))
+                 (file-name-nondirectory buffer-file-name)))
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
 
+;; Pretty print
 (defun indent-current-buffer ()
+  "Indent current buffer."
   (interactive)
   (save-excursion
-    (indent-region (point-min) (point-max) nil)
-    (save-buffer))
+    (indent-region (point-min) (point-max) nil))
   (run-hooks 'indent-current-buffer-hook))
+
+(defun untabify-current-buffer ()
+  "Convert all tabs to multiple spaces for current buffer."
+  (interactive)
+  (save-excursion
+    (untabify (point-min) (point-max)))
+  (run-hooks 'untabify-current-buffer-hook))
+
+(defun my/pretty-print-current-buffer ()
+  "Pretty print current buffer."
+  (interactive)
+  (save-excursion
+    (indent-current-buffer)
+    (untabify-current-buffer)
+    (delete-trailing-whitespace))
+  (run-hooks 'my/pretty-print-current-buffer-hook))
+
+(add-hook 'before-save-hook #'my/pretty-print-current-buffer)
+
+(global-set-key (kbd "s-p") #'my/pretty-print-current-buffer)
 
 ;; To access the `.emacs.d' root
 (defun open-emacs-config-dir ()
@@ -194,7 +209,7 @@ Activate again to undo this. If the window changes before then, the undo expires
   (let ((original-buffer (current-buffer)))
     (funcall cycle-func)
     (while (and (string-match-p "\\*.*\\*" (buffer-name))
-		        (not (eq original-buffer (current-buffer))))
+                (not (eq original-buffer (current-buffer))))
       (funcall cycle-func))))
 
 (defun my/cycle-to-next-buffer ()
@@ -208,8 +223,8 @@ Activate again to undo this. If the window changes before then, the undo expires
   (run-hooks 'my/cycle-to-previous-buffer-hook))
 
 (bind-keys :map global-map
-	       ("<s-right>" . my/cycle-to-next-buffer)
-	       ("<s-left>" . my/cycle-to-previous-buffer))
+           ("<s-right>" . my/cycle-to-next-buffer)
+           ("<s-left>" . my/cycle-to-previous-buffer))
 
 
 ;; Mouse and scroll settings
@@ -217,7 +232,7 @@ Activate again to undo this. If the window changes before then, the undo expires
       scroll-margin 0
       scroll-conservatively 105)
 (add-hook 'after-init-hook #'(lambda ()
-			                   (pixel-scroll-precision-mode 1)))
+                               (pixel-scroll-precision-mode 1)))
 
 
 ;; Disable auto copyings

@@ -14,7 +14,7 @@
 ;; Setup default directory
 (setq org-directory "~/Sthenno/")
 
-;; Org Mode buffer init behaviors
+;;; Org Mode buffer init behaviors
 (setq org-startup-with-inline-images t
       org-startup-with-latex-preview t)
 
@@ -23,8 +23,9 @@
 
 
 ;; Install AUCTeX
-(use-package tex
-  :straight auctex)
+;; (use-package tex
+;;   :straight auctex)
+(straight-use-package 'auctex)
 
 ;; Use CDLaTeX to improve editing experiences
 (use-package cdlatex
@@ -32,9 +33,10 @@
   :diminish (org-cdlatex-mode)
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
-;;; Experimental: `org-latex-preview'
-(require 'org-latex-preview)
+;; Default LaTeX preview image directory
+(setq org-preview-latex-image-directory (expand-file-name "/ltximg/" user-emacs-directory))
 
+;;; Experimental: `org-latex-preview'
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
 
@@ -99,15 +101,15 @@ mylatexformat.ltx %f")
          :transparent-image-converter ("dvipng --follow -D %D -T tight -bg Transparent
 --depth --height -o %B-%%09d.png %f"))
         (dvisvgm
-	     :programs ("latex" "dvisvgm")
-	     :description "dvi > svg"
-	     :message "you need to install the programs: latex and dvisvgm."
-	     :image-input-type "dvi"
-	     :image-output-type "svg"
-	     :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
-	     :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\"
+         :programs ("latex" "dvisvgm")
+         :description "dvi > svg"
+         :message "you need to install the programs: latex and dvisvgm."
+         :image-input-type "dvi"
+         :image-output-type "svg"
+         :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
+         :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\"
 mylatexformat.ltx %f")
-	     :image-converter ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts
+         :image-converter ("dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts
 --exact-bbox --bbox=preview
 --libgs=/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib
 -v4 -o %B-%%9p.svg %f"))))
@@ -127,8 +129,8 @@ mylatexformat.ltx %f")
   :straight t
   :config
   (setq org-modern-star 'fold
-	    org-modern-fold-stars '(("◉" . "○"))
-	    org-modern-hide-stars 'leading)
+        org-modern-fold-stars '(("◉" . "○"))
+        org-modern-hide-stars 'leading)
   (setq org-modern-keyword "◉ ")
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '((?X . "􀃰")
@@ -138,8 +140,8 @@ mylatexformat.ltx %f")
 
   ;; Disable these features
   (setq org-modern-todo nil
-	    org-modern-tag nil
-	    org-modern-block-fringe nil)
+        org-modern-tag nil
+        org-modern-block-fringe nil)
 
   (global-org-modern-mode 1))
 
@@ -212,17 +214,17 @@ mylatexformat.ltx %f")
   (setq denote-directory org-directory) ; Use `org-directory' as default
   (setq denote-known-keywords '("entry" ; Keyword for journal files
 
-				                ;; Try to perform the PARA method
-				                "project"
-				                "area"
-				                "resource"
-				                "archive"))
+                                ;; Try to perform the PARA method
+                                "project"
+                                "area"
+                                "resource"
+                                "archive"))
   (setq denote-prompts '(title))
   (setq denote-save-buffer-after-creation t)
 
   ;; Denote for journaling
   (setq denote-journal-extras-directory
-	    (expand-file-name "entry/" denote-directory)) ; Subdirectory for journal files
+        (expand-file-name "entry/" denote-directory)) ; Subdirectory for journal files
   (setq denote-journal-extras-keyword "entry") ; Stages are journals
   (setq denote-journal-extras-title-format "%F") ; Use ISO 8601 for titles
 
@@ -234,12 +236,12 @@ mylatexformat.ltx %f")
   :bind
   (:map global-map
 
-	    ;; Open today's note
-	    ("C-c d" . denote-journal-extras-new-or-existing-entry))
+        ;; Open today's note
+        ("C-c d" . denote-journal-extras-new-or-existing-entry))
   (:map org-mode-map
-	    ("C-c i" . denote-link-or-create)
-	    ("C-c b" . denote-backlinks)
-	    ("C-c e" . denote-org-extras-extract-org-subtree))
+        ("C-c i" . denote-link-or-create)
+        ("C-c b" . denote-backlinks)
+        ("C-c e" . denote-org-extras-extract-org-subtree))
   :hook (after-init . denote-journal-extras-new-or-existing-entry))
 
 ;; Extensions for Denote
@@ -250,11 +252,11 @@ mylatexformat.ltx %f")
 
 ;;   ;; Remove denote journal entries from the menu
 ;;   (setq denote-menu-initial-regex
-;; 	  (mapconcat (lambda (keyword)
+;;    (mapconcat (lambda (keyword)
 ;;                  (concat "_" keyword))
-;; 		  denote-known-keywords "\\|"))
+;;        denote-known-keywords "\\|"))
 ;;   :bind (:map org-mode-map
-;; 	        ("C-c m" . list-denotes)))
+;;          ("C-c m" . list-denotes)))
 
 ;; Custom functions for Denote
 (defun my/denote-insert-links-current-month ()
@@ -284,8 +286,8 @@ mylatexformat.ltx %f")
       (find-file (nth (1+ current-file-index) sorted-files)))))
 
 (bind-keys :map org-mode-map
-	       ("s-<up>" . my/denote-open-previous-file)
-	       ("s-<down>" . my/denote-open-next-file))
+           ("s-<up>" . my/denote-open-previous-file)
+           ("s-<down>" . my/denote-open-next-file))
 
 
 ;; Load languages for Org Babel
@@ -302,22 +304,22 @@ mylatexformat.ltx %f")
       org-src-tab-acts-natively t)
 
 (org-babel-do-load-languages 'org-babel-load-languages
-			                 '((emacs-lisp . t)
-			                   (python . t)))
+                             '((emacs-lisp . t)
+                               (python . t)))
 
 
 ;; Org-agenda
 ;; (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
 (bind-keys :map global-map
-	       ("C-c a" . org-agenda))
+           ("C-c a" . org-agenda))
 
 ;; Org-agenda settings related to `org-modern'
 (setq org-agenda-tags-column 0)
 (setq org-agenda-block-separator ?─)
 (setq org-agenda-time-grid
       '((daily today require-timed)
-	    (800 1000 1200 1400 1600 1800 2000)
-	    " ────── " "───────────────"))
+        (800 1000 1200 1400 1600 1800 2000)
+        " ────── " "───────────────"))
 (setq org-agenda-current-time-string
       "◀── now ─────────────────────────────────────────────────")
 
@@ -343,7 +345,7 @@ mylatexformat.ltx %f")
 ;;;; TODO
 ;;
 ;; Integrate with built-in Python API -> `init-eglot'
-;; 
+;;
 ;; TTS implementation using OpenAI's API
 ;; (defun my/content-by-key-from-file (filename key)
 ;;   "Get content string of KEY from FILENAME."
@@ -351,7 +353,7 @@ mylatexformat.ltx %f")
 ;;     (insert-file-contents filename)
 ;;     (goto-char (point-min))
 ;;     (if (re-search-forward (format "^%s=\"\\([^\"]+\\)\"" key) nil t)
-;; 	(match-string 1)
+;;  (match-string 1)
 ;;       (error "Key %s not found in file %s" key filename))))
 
 ;; (defun my/environ-from-user-emacs-dir (key)
@@ -396,20 +398,20 @@ mylatexformat.ltx %f")
 ;;   (interactive)
 ;;   (if (use-region-p)
 ;;       (let* ((start (region-beginning))
-;; 	     (end (region-end))
-;; 	     (input-string (buffer-substring-no-properties start end))
-;; 	     (filename (concat my/speach-files-dir
-;; 			       "speach-" (my/generate-timestamp) ".mp3"))
-;; 	     (button-string
-;; 	      (format "[[elisp:(emms-play-file \"%s\")][[􀊨]]]" filename)))
-;; 	(my/speech-from-str-to-file input-string filename)
-;; 	(goto-char end)
-;; 	(insert (concat " " button-string))
-;; 	(message (format "TTS finished to file %s" filename)))
+;;       (end (region-end))
+;;       (input-string (buffer-substring-no-properties start end))
+;;       (filename (concat my/speach-files-dir
+;;                 "speach-" (my/generate-timestamp) ".mp3"))
+;;       (button-string
+;;        (format "[[elisp:(emms-play-file \"%s\")][[􀊨]]]" filename)))
+;;  (my/speech-from-str-to-file input-string filename)
+;;  (goto-char end)
+;;  (insert (concat " " button-string))
+;;  (message (format "TTS finished to file %s" filename)))
 ;;     (message "No region selected")))
 
 ;; (bind-keys* :map org-mode-map
-;; 	    ("s-[ s" . my/speech-from-str-to-file-insert))
+;;      ("s-[ s" . my/speech-from-str-to-file-insert))
 
 ;; (defun my/play-speach-current-heading ()
 ;;   "Play the speach audio if there is exactly one in current heading."
@@ -417,8 +419,8 @@ mylatexformat.ltx %f")
 ;;   (save-excursion
 ;;     (org-back-to-heading t)
 ;;     (let ((heading-end (save-excursion
-;; 			 (outline-next-heading)
-;; 			 (point)))
+;;           (outline-next-heading)
+;;           (point)))
 ;;           (button-count 0)
 ;;           button-pos)
 
@@ -434,7 +436,7 @@ mylatexformat.ltx %f")
 ;;             (goto-char button-pos)
 ;;             (org-open-at-point))
 ;;         (message
-;; 	 "There must be exactly one \"[􀊨]\" button in current heading")))))
+;;   "There must be exactly one \"[􀊨]\" button in current heading")))))
 
 
 ;; Modules for language learning

@@ -27,7 +27,7 @@
 (use-package xref
   :init (setq xref-search-program 'ripgrep)
   :bind (:map global-map
-	          ("M-/" . xref-find-references)))
+              ("M-/" . xref-find-references)))
 
 ;; TAGS [FIXME]
 ;; (use-package etags

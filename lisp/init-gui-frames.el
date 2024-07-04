@@ -19,9 +19,9 @@
   :straight t
   :config
   (setq modus-themes-common-palette-overrides
-	    '((border bg-inactive)
+        '((border bg-inactive)
           (bg-hl-line border)
-          
+
           ;; Make the mode-line borderless and stand out less
           (bg-mode-line-active border)
           (fg-mode-line-active fg-main)
@@ -29,33 +29,33 @@
           (fg-mode-line-active fg-dim)
 
           ;; Make the mode line borderless
-	      (border-mode-line-active border)
-	      (border-mode-line-inactive bg-main)
+          (border-mode-line-active border)
+          (border-mode-line-inactive bg-main)
 
-	      ;; Set color faces for `display-line-numbers-mode'
-	      (fg-line-number-active fg-main)
+          ;; Set color faces for `display-line-numbers-mode'
+          (fg-line-number-active fg-main)
           (bg-line-number-active bg-hl-line)
           (fg-line-number-inactive fg-dim)
-	      (bg-line-number-inactive unspecified)
+          (bg-line-number-inactive unspecified)
 
-	      ;; Make the fringe invisible
-	      (fringe unspecified)
+          ;; Make the fringe invisible
+          (fringe unspecified)
 
-	      ;; Subtle underlines
-	      (underline-link border)
-	      (underline-link-visited border)
-	      (underline-link-symbolic border)
+          ;; Subtle underlines
+          (underline-link border)
+          (underline-link-visited border)
+          (underline-link-symbolic border)
 
-	      ;; Make links the same color as `fg-main'
-	      ;; This also affects `button' faces in Modus Themes
-	      (fg-link unspecified)
-	      (fg-link-visited unspecified)
+          ;; Make links the same color as `fg-main'
+          ;; This also affects `button' faces in Modus Themes
+          (fg-link unspecified)
+          (fg-link-visited unspecified)
 
-	      ;; Make DONE less intense
-	      (prose-done fg-dim)
+          ;; Make DONE less intense
+          (prose-done fg-dim)
 
-	      ;; Custom region colors
-	      (fg-region unspecified)
+          ;; Custom region colors
+          (fg-region unspecified)
           (bg-region bg-green-intense)
 
           ;; Make code blocks more minimal
@@ -70,7 +70,7 @@
 
   (setq modus-themes-bold-constructs t
         modus-themes-prompts '(bold)
-	    modus-themes-completions '((t . (bold))))
+        modus-themes-completions '((t . (bold))))
 
   ;; Enable and load the theme
   (modus-themes-load-theme 'modus-vivendi))
@@ -110,7 +110,7 @@
                (92 . ".\\(?:\\\\\\\\\\|[\\n]\\)"))) ; \\ \n
       (set-char-table-range composition-table (car char-regexp-replacement)
                             `([,(cdr char-regexp-replacement) 0 font-shape-gstring])))
-    
+
     (set-char-table-parent composition-table composition-function-table)
     (setq composition-function-table composition-table)))
 
@@ -148,7 +148,7 @@
 ;;  mode-line-format
 ;;  (cl-nsubst-if " " (lambda (x)
 ;;                      (and (stringp x) (string-blank-p x) (> (length x) 1)))
-;; 		       (remove 'mode-line-mule-info mode-line-format)))
+;;                 (remove 'mode-line-mule-info mode-line-format)))
 
 ;; (use-package cyphejor
 ;;   :straight t
@@ -180,7 +180,7 @@
            :right-divider-width 0
            :scroll-bar-width 0
            :fringe-width 10))
-  
+
   (spacious-padding-mode 1))
 
 
