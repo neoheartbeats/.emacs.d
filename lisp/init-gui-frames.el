@@ -70,9 +70,6 @@
 
           ;; Make code blocks more minimal
           (bg-prose-block-contents unspecified)
-          (bg-prose-block-delimiter unspeficied)
-          (fg-prose-block-delimiter fg-dim)
-
 
           ;; Completions (see also `init-comp')
           (bg-completion bg-hl-line)
@@ -105,7 +102,7 @@
 ;; Custom font
 (set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
 
-;; Define the ligation dictionary [FIXME]
+;; Define the ligation dictionary [TODO]
 (defun sthenno-mono-ligation-setup ()
   (let ((composition-table (make-char-table nil)))
     (dolist (char-regexp-replacement
@@ -145,36 +142,41 @@
 
 ;;; Mode Line settings
 ;;
-;; Do not display line numbers in mode line
+;; Format mode line buffer identification [TODO]
+;;
+;; * Add `project' integration
+;; * Customize a scrollbar
 ;;
 
-(setq line-number-mode nil)
+(defun my-modeline-buffer-identification-setup ()
+  (defun my-modeline--buffer-identification ()
+    "Return `buffer-name' as a string.
+If `buffer-file-name' is a `denote' file, return its corresponding title instead."
+    (let ((file (buffer-file-name)))
+      (if (denote-file-is-note-p file)
+          (format "Denote: %s" (denote-retrieve-filename-title (buffer-file-name)))
+        (buffer-name))))
 
-;; Removal of mule-info, and a trim of all double-spaces anywhere in the mode line
-;; format to a single space
-;; From https://github.com/jdtsmith/mlscroll
-(setq-default mode-line-format
-              (cl-nsubst-if " " (lambda (x)
-                                  (and (stringp x) (string-blank-p x) (> (length x) 1)))
-                            (remove 'mode-line-mule-info mode-line-format)))
+  (defvar-local my-modeline-buffer-identification
+      '(:eval
+        (when (mode-line-window-selected-p)
+          (propertize (my-modeline--buffer-identification) 'face 'mode-line-buffer-id)))
+    "Mode line construct to display the buffer identification.")
 
-;; MLScroll: A scrollbar for the Emacs mode line
-(use-package mlscroll
-  :straight t
-  :config
-  (modus-themes-with-colors
-    (setq mlscroll-in-color bg-active
-          mlscroll-out-color fg-dim))
+  (defvar-local my-modeline-prefix-symbol
+      (modus-themes-with-colors
+        (propertize "  Sthenno 􀋀" 'face
+                    `(:foreground ,sthenno-gorse :inherit mode-line-buffer-id))))
 
-  (mlscroll-mode 1))
+  (setq-default mode-line-format `(,my-modeline-prefix-symbol
+                                   "  "
+                                   ,my-modeline-buffer-identification
+                                   "  "
+                                   mode-line-modes
+                                   mode-line-misc-info
+                                   mode-line-end-spaces)))
 
-;; Add a menu for the mode line
-(use-package minions
-  :straight t
-  :config
-  (setq minions-mode-line-lighter "􀠩")
-
-  (minions-mode 1))
+(add-hook 'after-init-hook #'my-modeline-buffer-identification-setup)
 
 ;; Iconify mode line
 (use-package cyphejor
@@ -194,9 +196,6 @@
           ("org"    "􀐘")))
 
   (cyphejor-mode 1))
-
-(use-package uniquify
-  :init (setq uniquify-buffer-name-style 'forward))
 
 
 ;; Automatic adjusting for margins
