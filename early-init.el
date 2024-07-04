@@ -34,17 +34,17 @@
 (setq package-enable-at-startup nil)
 
 ;;; Perform darwing the frame when initialization
-;; (push '(menu-bar-lines . 0) default-frame-alist)
+(push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(horizontal-scroll-bars . nil) default-frame-alist)
 (push '(vertical-scroll-bars . nil) default-frame-alist)
+(push '(width . 120) default-frame-alist)
+(push '(height . 50) default-frame-alist)
 
-;; GUI
+;; NS
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
-(push '(alpha-background . 60) default-frame-alist)
-(push '(width . 110) default-frame-alist)
-(push '(height . 45) default-frame-alist)
+;; (push '(alpha-background . 80) default-frame-alist)
 
 ;;;
 ;; coding: utf-8
