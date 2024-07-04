@@ -18,19 +18,27 @@
 (use-package modus-themes
   :straight t
   :config
-  (setq modus-themes-common-palette-overrides
-        '((border bg-inactive)
-          (bg-hl-line border)
 
+  ;;; `modus-vivendi' customizations
+  ;;
+  ;; Define a user palette (for Sthenno)
+  ;;
+
+  (setq modus-vivendi-palette-user
+        '((sthenno-blueberry "#467fef")))
+
+  ;; Mapping colors
+  (setq modus-vivendi-palette-overrides
+        '(
           ;; Make the mode-line borderless and stand out less
-          (bg-mode-line-active border)
+          (bg-mode-line-active bg-active)
           (fg-mode-line-active fg-main)
           (bg-mode-line-inactive bg-main)
           (fg-mode-line-active fg-dim)
 
           ;; Make the mode line borderless
-          (border-mode-line-active border)
-          (border-mode-line-inactive bg-main)
+          (border-mode-line-active unspecified)
+          (border-mode-line-inactive unspecified)
 
           ;; Set color faces for `display-line-numbers-mode'
           (fg-line-number-active fg-main)
@@ -51,22 +59,24 @@
           (fg-link unspecified)
           (fg-link-visited unspecified)
 
-          ;; Make DONE less intense
+          ;; Prose colors
+          (prose-todo info)
           (prose-done fg-dim)
 
           ;; Custom region colors
           (fg-region unspecified)
-          (bg-region bg-green-intense)
+          (bg-region bg-paren-match)
 
           ;; Make code blocks more minimal
           (bg-prose-block-contents unspecified)
           (bg-prose-block-delimiter unspeficied)
           (fg-prose-block-delimiter fg-dim)
 
-          ;; Completions
+
+          ;; Completions (see also `init-comp')
           (bg-completion bg-hl-line)
 
-          (cursor bg-graph-green-0)))
+          (cursor sthenno-blueberry)))
 
   (setq modus-themes-bold-constructs t
         modus-themes-prompts '(bold)
@@ -88,10 +98,11 @@
 (setq blink-cursor-mode nil)
 
 ;; highlight current line
-(add-hook 'after-init-hook #'global-hl-line-mode)
+(add-hook 'after-init-hook #'(lambda ()
+                               (global-hl-line-mode 1)))
 
 ;; Custom font
-(set-face-attribute 'default nil :family "Sthenno Mono" :height 150)
+(set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
 
 ;; Define the ligation dictionary [FIXME]
 (defun sthenno-mono-ligation-setup ()
@@ -132,40 +143,51 @@
 
 
 ;;; Mode Line settings
-(setq mode-line-compact t)
-(setq line-number-mode nil)
+;;
+;; Do not display line numbers in mode line
+;;
 
-;; MLScroll
-(use-package mlscroll
-  :straight t
-  :config
-  (setq mlscroll-out-color "#989898") ; `fg-dim' of `modus-vivendi'
-  (mlscroll-mode 1))
+(setq line-number-mode nil)
 
 ;; Removal of mule-info, and a trim of all double-spaces anywhere in the mode line
 ;; format to a single space
-;; (setq-default
-;;  mode-line-format
-;;  (cl-nsubst-if " " (lambda (x)
-;;                      (and (stringp x) (string-blank-p x) (> (length x) 1)))
-;;                 (remove 'mode-line-mule-info mode-line-format)))
+;; From https://github.com/jdtsmith/mlscroll
+(setq-default mode-line-format
+              (cl-nsubst-if " " (lambda (x)
+                                  (and (stringp x) (string-blank-p x) (> (length x) 1)))
+                            (remove 'mode-line-mule-info mode-line-format)))
 
-;; (use-package cyphejor
-;;   :straight t
-;;   :config
-;;   (setq cyphejor-rules
-;;         '(:upcase
-;;           ("buffer"      "β")
-;;           ("diff"        "Δ")
-;;           ("dired"       "􀩚")
-;;           ("emacs"       "E")
-;;           ("lisp"        "L" :postfix)
-;;           ("menu"        "􀓕" :postfix)
-;;           ("mode"        "")
-;;           ("shell"       "􀩼")
-;;           ("text"        "T")
-;;           ("org"         "􀐘")))
-;;   (cyphejor-mode 1))
+;; MLScroll: A scrollbar for the Emacs mode line
+(use-package mlscroll
+  :straight t
+  :config
+  (setq mlscroll-width-chars 15
+        mlscroll-minimum-current-width 1)
+
+  (modus-themes-with-colors
+    (setq mlscroll-in-color bg-active
+          mlscroll-out-color fg-dim))
+
+  (mlscroll-mode 1))
+
+;;
+(use-package cyphejor
+  :straight t
+  :config
+  (setq cyphejor-rules
+        '(:upcase
+          ("buffer"      "β")
+          ("diff"        "Δ")
+          ("dired"       "􀩚")
+          ("emacs"       "E")
+          ("lisp"        "L" :postfix)
+          ("menu"        "􀓕" :postfix)
+          ("mode"        "")
+          ("shell"       "􀩼")
+          ("text"        "T")
+          ("org"         "􀐘")))
+
+  (cyphejor-mode 1))
 
 
 ;; Automatic adjusting for margins
