@@ -27,7 +27,7 @@ benefit from it.
 - [[https://github.com/protesilaos][@protesilaos]]: Thank you for your masterpiece-like technical work.
 - [[https://github.com/minad][@minad]]: I have extensively used your high-quality open-source work in my own projects.
 - [[https://github.com/d12frosted][@d12frosted]]: Thank you for the [[https://github.com/d12frosted/homebrew-emacs-plus][Emacs Plus]] build script.
-- [[https://github.com/be5invis][@be5invis]]: Thank you for developing the high-quality font [[https://github.com/be5invis/Iosevka][Iosevka]].
+- [[https://github.com/be5invis][@be5invis]]: Thank you for the high-quality font [[https://github.com/be5invis/Iosevka][Iosevka]].
 
 I cannot provide a complete list of acknowledgments—it includes too many
 people. Improvement of this project comes from your support and attention.
