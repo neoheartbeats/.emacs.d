@@ -1,10 +1,33 @@
-This is a simple setup for GNU Emacs focusing on scientific writing in Org Mode.
+This is a simple setup for GNU Emacs focusing on preparing technical documents using Org
+Mode.
 
 -----
 
 *** Screenshot
 
-[[./resources/demop.png]]
+[[./resources/demopp.png]]
 
 -----
 
+*** Features
+
+- [[https://github.com/tecosaur][TEC]]'s patched Org integration, optimizing on LaTeX edition ([[https://code.tecosaur.net/tec/org-mode][org-latex-preview]])
+- Exquisite UI design. Pursuit of excellence in performance
+- Simple, lightweight, and up-to-date configuration. Easy to customize
+
+This project is still being improved. An important feature I hope to integrate is the
+combination with the Python API to fully leverage the advantages of LLMs.
+
+I'll find time to complete the user manual for this project, and I really hope you can
+benefit from it.
+
+*** Credits
+
+- [[https://github.com/karthink][@karthink]]: Thank you for your patient guidance.
+- [[https://github.com/protesilaos][@protesilaos]]: Thank you for your masterpiece-like technical work.
+- [[https://github.com/minad][@minad]]: I have extensively used your high-quality open-source work in my own projects.
+- [[https://github.com/d12frosted][@d12frosted]]: Thank you for the [[https://github.com/d12frosted/homebrew-emacs-plus][Emacs Plus]] build script.
+- [[https://github.com/be5invis][@be5invis]]: Thank you for developing the high-quality font [[https://github.com/be5invis/Iosevka][Iosevka]].
+
+I cannot provide a complete list of acknowledgments—it includes too many
+people. Improvement of this project comes from your support and attention.
