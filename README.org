@@ -11,7 +11,7 @@ Mode.
 
 *** Features
 
-- [[https://github.com/tecosaur][TEC]]'s patched Org integration, optimizing on LaTeX edition ([[https://code.tecosaur.net/tec/org-mode][org-latex-preview]])
+- [[https://github.com/tecosaur][TEC]]'s patched Org integration, optimizing on LaTeX editing ([[https://code.tecosaur.net/tec/org-mode][org-latex-preview]])
 - Exquisite UI design. Pursuit of excellence in performance
 - Simple, lightweight, and up-to-date configuration. Easy to customize
 
