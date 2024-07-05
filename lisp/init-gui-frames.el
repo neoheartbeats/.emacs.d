@@ -34,7 +34,7 @@
           ;; Make the mode-line borderless and stand out less
           (bg-mode-line-active bg-active)
           (fg-mode-line-active fg-main)
-          (bg-mode-line-inactive bg-main)
+          (bg-mode-line-inactive bg-dim)
           (fg-mode-line-active fg-dim)
 
           ;; Make the mode line borderless
@@ -203,7 +203,7 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
   :straight t
   :config
   (setq spacious-padding-widths
-        '( :internal-border-width 14
+        '( :internal-border-width 10
            :header-line-width 0
            :mode-line-width 2
            :right-divider-width 0

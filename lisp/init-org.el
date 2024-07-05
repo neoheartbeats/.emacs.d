@@ -237,7 +237,7 @@ This is useful if using font Iosevka."
   (setq denote-journal-extras-title-format "%F") ; Use ISO 8601 for titles
 
   ;; Do not include date, tags and ids in note files
-  (setq denote-org-front-matter "#+title: %1$s. 􀙤\n\n")
+  (setq denote-org-front-matter "#+TITLE: %1$s. 􀙤\n\n")
 
   :bind
   (:map global-map

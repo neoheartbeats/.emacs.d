@@ -140,8 +140,7 @@ Activate again to undo this. If the window changes before then, the undo expires
   :init (setq recentf-save-file (expand-file-name "recentf" user-cache-directory)
               recentf-max-saved-items 200
               recentf-auto-cleanup 300)
-  :config
-  (recentf-mode 1))
+  :config (recentf-mode 1))
 
 
 ;; Misc options
@@ -182,7 +181,7 @@ Activate again to undo this. If the window changes before then, the undo expires
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
 
-;; Pretty print
+;; Pretty print [FIXME] Add adapters to Python mode
 (defun indent-current-buffer ()
   "Indent current buffer."
   (interactive)

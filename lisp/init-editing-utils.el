@@ -23,7 +23,7 @@
                                (modify-syntax-entry ?< ".")))
 
 (use-package paren
-  :init (setq show-paren-delay 0.02
+  :init (setq show-paren-delay 0.05
               show-paren-highlight-openparen t
               show-paren-when-point-inside-paren t))
 
@@ -96,7 +96,7 @@
              :type git
              :host github
              :repo "jdtsmith/indent-bars")
-  :config
+  :init
   (setq indent-bars-treesit-support t
         indent-bars-treesit-ignore-blank-lines-types '("module"))
 
@@ -110,8 +110,8 @@
         indent-bars-starting-column 0
         indent-bars-display-on-blank-lines t)
 
-  (add-hook 'python-ts-mode #'(lambda ()
-                                (indent-bars-ts-mode 1))))
+  (add-hook 'python-ts-mode-hook #'(lambda ()
+                                     (indent-bars-mode 1))))
 
 
 ;; Don't forget about your code comments!

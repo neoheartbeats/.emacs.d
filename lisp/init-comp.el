@@ -37,7 +37,7 @@
 (use-package minibuffer
   :init
   (setq minibuffer-default-prompt-format " [%s]")
-  (setq echo-keystrokes 0.02)
+  (setq echo-keystrokes 0.05)
 
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
@@ -225,7 +225,8 @@ DEFS is a plist associating completion categories to commands."
               ("C-s" . consult-line)
               ("M-s" . consult-ripgrep)
               ("C-v" . consult-yank-from-kill-ring)
-              ("s-m" . consult-imenu)))
+              ("s-m" . consult-imenu)
+              ("C-r" . consult-recent-file)))
 
 
 ;; Beframe: Isolate Emacs buffers per frame
