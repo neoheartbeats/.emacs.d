@@ -214,6 +214,8 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
 
 ;; Sthenno's customization of "doom-quit"
 ;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
+;;
+
 (defvar sthenno-quit-messages
   `(
     "Anyone else but you?"
@@ -225,7 +227,6 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
 
 (defun sthenno-quit-p (&optional prompt)
   "Prompt the user for confirmation when killing Emacs.
-
 Returns t if it is safe to kill this session. Does not prompt if no real buffers
 are open."
   (or (yes-or-no-p (format "%s" (or prompt "Really quit Emacs?")))

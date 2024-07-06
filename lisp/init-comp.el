@@ -86,7 +86,7 @@
           (concat (propertize "◉ " 'face
                               `(:background ,bg-hl-line :inherit modus-themes-prompt))
                   cand)
-        (concat (propertize "◉ " 'face `(:foreground ,fg-dim)) cand))))
+        (concat (propertize "○ " 'face `(:foreground ,fg-dim)) cand))))
 
   ;; Additions for moving up and down directories in `find-file'
   (use-package vertico-directory
@@ -304,25 +304,27 @@ and each value is a list of functions to add to `completion-at-point-functions'.
                       (add-to-list 'completion-at-point-functions func)))))))
 
   (defvar my/capfs-map-alist
-    '((prog-mode . (cape-dict
-                    cape-file
-                    cape-dabbrev))
+    '((prog-mode       . (cape-dict
+                          cape-file
+                          cape-dabbrev))
       (emacs-lisp-mode . (cape-dict
                           cape-file
                           cape-dabbrev
                           cape-elisp-symbol))
-      (org-mode . (cape-dict
-                   cape-elisp-block
-                   cape-file
-                   cape-dabbrev)))
+      (org-mode        . (cape-dict
+                          cape-elisp-block
+                          cape-file
+                          cape-dabbrev)))
     "An alist of (mode . list-of-capfs) to append.
-
-The elements in list-of-capfs further down the list have deeper priority in completion.")
+Elements in list-of-capfs further down the list have deeper priority in completion.")
 
   (completion-at-point-functions-setup my/capfs-map-alist))
 
 
+;;
 ;; The main completion frontend by Corfu
+;;
+
 (use-package corfu
   :straight (:files (:defaults "extensions/*"))
   :init (global-corfu-mode 1)
@@ -340,15 +342,17 @@ The elements in list-of-capfs further down the list have deeper priority in comp
 
   ;; Maintain a list of recently selected candidates
   ;; This requires `savehist-mode' is enabled
+  ;;
+
   (require 'corfu-history)
   (corfu-history-mode 1)
   (add-to-list 'savehist-additional-variables 'corfu-history)
 
   :bind (:map corfu-map
-              ("<down>" . corfu-next)
-              ("<tab>" . corfu-next)
-              ("<up>" . corfu-previous)
-              ("s-<tab>" . corfu-previous)
+              ("<down>"   . corfu-next)
+              ("<tab>"    . corfu-next)
+              ("<up>"     . corfu-previous)
+              ("s-<tab>"  . corfu-previous)
               ("<escape>" . corfu-quit)))
 
 (provide 'init-comp)

@@ -12,6 +12,8 @@
 ;;
 
 ;; macOS specified key mapping
+;;
+
 (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'super)
 
@@ -92,9 +94,9 @@ Activate again to undo this. If the window changes before then, the undo expires
 (global-set-key (kbd "C-o") #'other-window)
 
 (bind-keys :map global-map
-           ("C-<up>" . windmove-up)
-           ("C-<down>" . windmove-down)
-           ("C-<left>" . windmove-left)
+           ("C-<up>"    . windmove-up)
+           ("C-<down>"  . windmove-down)
+           ("C-<left>"  . windmove-left)
            ("C-<right>" . windmove-right))
 
 

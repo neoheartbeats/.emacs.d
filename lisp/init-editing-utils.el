@@ -30,7 +30,7 @@
 
 (use-package eldoc
   :diminish (eldoc-mode)
-  :init (setq eldoc-idle-delay 0))
+  :init (setq eldoc-idle-delay 0.05))
 
 
 ;; Delete selection if you insert
@@ -114,7 +114,10 @@
                                      (indent-bars-mode 1))))
 
 
-;; Don't forget about your code comments!
+;;
+;; Highlight these keywords in code comments
+;;
+
 (use-package hl-todo
   :straight t
   :init (add-hook 'after-init-hook #'(lambda ()

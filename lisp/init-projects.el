@@ -30,6 +30,10 @@
     (interactive)
     (magit-status-setup-buffer (project-root (project-current t))))
 
+  ;;
+  ;; [FIXME]
+  ;;
+  
   (defun my/project-remove-project ()
     "Remove project from `project--list' using completion."
     (interactive)

@@ -75,7 +75,7 @@
 
         ;; Load this after all math to give access to bold math
         ;; See https://ctan.math.illinois.edu/fonts/newtx/doc/newtxdoc.pdf
-        ("" "bm" t) ))
+        ("" "bm" t)))
 
 (setq org-latex-preview-preamble
       "\\documentclass{article}
@@ -92,7 +92,6 @@
 (plist-put org-latex-preview-appearance-options :zoom
            (- (/ (face-attribute 'default :height) 100.0) 0.025))
 
-;;;
 ;;
 (setq org-latex-preview-process-default 'dvisvgm)
 
@@ -321,12 +320,6 @@ This is useful if using font Iosevka."
 ;; Org indentation
 (setq-default org-list-indent-offset 2)
 
-;; Using hard indentation
-;; (setq
-;;  org-adapt-indentation t
-;;  org-hide-leading-stars t
-;;  org-odd-levels-only t)
-
 
 ;; Useful functions
 (defun my/org-mode-insert-get-button ()
@@ -336,7 +329,7 @@ This is useful if using font Iosevka."
     (insert (format "[[elisp:(kill-new \"%s\")][GET]]" content))))
 
 
-;;;; TODO
+;;; TODO
 ;;
 ;; Integrate with built-in Python API -> `init-eglot'
 ;;

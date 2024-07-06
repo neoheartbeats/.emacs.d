@@ -25,10 +25,15 @@
 
 ;; To enable the maximum fontifications. If this is set to default, there could be
 ;; syntax highlighting error found in Org Babel
+;;
+
 (setq treesit-font-lock-level 4)
 
 
+;;
 ;; Initialize `eglot'
+;;
+
 (use-package eglot
   :config
 
@@ -81,6 +86,8 @@
 ;;; AI Integration
 ;;
 ;; GitHub Copilot
+;;
+
 (use-package copilot
   :straight (
              :host github
@@ -89,12 +96,13 @@
   :config (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
 
-;; Python API: sthenno-endpoints Client
+;;; Python API: sthenno-endpoints Client
 ;;
-;; [TODO] Use the `plz' lib.
-;; https://github.com/alphapapa/plz.el
+;; [TODO]
+;; - https://github.com/alphapapa/plz.el
+;; - https://github.com/karthink/gptel
 ;;
-;; Translation
+
 (require 'url)
 (require 'json)
 
