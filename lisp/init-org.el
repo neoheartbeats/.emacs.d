@@ -68,7 +68,6 @@
       '(("T1" "fontenc" t)
         ("" "amsmath" t)
         ("" "amssymb" t)
-        ("" "amsthm" t)
         ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
@@ -251,19 +250,7 @@ This is useful if using font Iosevka."
         ("C-c k" . denote-rename-file-keywords))
   :hook (after-init . denote-journal-extras-new-or-existing-entry))
 
-;; Extensions for Denote
-;; (use-package denote-menu
-;;   :straight t
-;;   :config
-;;   (setq denote-menu-title-column-width 45)
-
-;;   ;; Remove denote journal entries from the menu
-;;   (setq denote-menu-initial-regex
-;;    (mapconcat (lambda (keyword)
-;;                  (concat "_" keyword))
-;;        denote-known-keywords "\\|"))
-;;   :bind (:map org-mode-map
-;;          ("C-c m" . list-denotes)))
+;; Extensions for Denote [TODO] Add `consult-denote' support
 
 ;; Custom functions for Denote [TODO]
 (defun my/denote-insert-links-current-month ()

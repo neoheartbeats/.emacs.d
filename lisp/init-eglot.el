@@ -45,8 +45,7 @@
   :bind (:map eglot-mode-map
               ("<f6>" . eglot-rename)))
 
-;; Note `project' is a dependency for `eglot' but not declared by `projectile'
-;; See https://github.com/radian-software/straight.el/issues/1146 [TODO]
+;; See https://github.com/radian-software/straight.el/issues/1146 [FIXME]
 
 ;; Speed up
 ;; (use-package eglot-booster

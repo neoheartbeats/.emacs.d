@@ -1,4 +1,4 @@
-;;; early-init.el --- Emacs 29+ pre-initialisation config -*- lexical-binding: t; -*-
+;;; early-init.el --- Pre-initialisation config -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
@@ -8,21 +8,37 @@
 ;;
 ;; Code loaded before the package system and GUI is initialized.
 ;;
+;; This file includes:
+;; - Init garbage-collection config
+;; - Native-Compilation specified config
+;; - Early file-loading behaviors
+;; - Init GUI frames config
+;;
 
 ;;; Code:
 ;;
 
-;; [FIXME]
+;; [FIXME] This code snippet here is used to correct PATH for homebrew-emacs-plus
+;; specifics
+;;
+;; Related issues:
+;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/687
+;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/492
+;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/542
+;;
 (setenv "LIBRARY_PATH" (concat "/opt/homebrew/opt/gcc/lib/gcc/14:"
-                               "/opt/homebrew/opt/libgccjit/lib/gcc/14:"
-                               "/opt/homebrew/opt/gcc/lib/gcc/14/gcc/aarch64-apple-darwin23/14"))
+                               "/opt/homebrew/opt/gcc/lib/gcc/14/gcc/aarch64-apple-darwin23/14:"
+                               "/opt/homebrew/opt/libgccjit/lib/gcc/14"))
 
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
 
-;; Customize Native-Compilation
+
+;;; Customize Native-Compilation
 ;;
 ;; To maximize the speed of native compilation
+;;
+
 (setq native-comp-speed 3)
 (setq native-comp-async-report-warnings-errors 'silent)
 
@@ -35,6 +51,7 @@
 
 (setq load-prefer-newer t)
 
+
 ;; From https://github.com/karthink/.emacs.d/blob/master/early-init.el
 (unless (or (daemonp) noninteractive)
   (let ((old-file-name-handler-alist file-name-handler-alist))
@@ -74,6 +91,7 @@
   (define-advice startup--load-user-init-file (:before (&rest _) nomessage-remove)
     (advice-remove #'load-file #'load-file@silence)))
 
+
 ;; Perform darwing the frame when initialization
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
@@ -86,6 +104,7 @@
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
 
+(provide 'early-init)
 ;;;
 ;; coding: utf-8
 ;; no-byte-compile: t

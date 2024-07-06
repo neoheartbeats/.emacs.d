@@ -205,7 +205,7 @@ Activate again to undo this. If the window changes before then, the undo expires
     (delete-trailing-whitespace))
   (run-hooks 'my/pretty-print-current-buffer-hook))
 
-(add-hook 'before-save-hook #'my/pretty-print-current-buffer)
+;; (add-hook 'before-save-hook #'my/pretty-print-current-buffer)
 
 (global-set-key (kbd "s-p") #'my/pretty-print-current-buffer)
 

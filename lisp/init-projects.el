@@ -62,12 +62,12 @@
               ("M-/" . xref-find-references)))
 
 ;; TAGS
-(use-package etags
-  :init
+;; (use-package etags
+;;   :init
 
-  ;; Automatically generate and update tags tables
-  (add-hook 'emacs-lisp-mode-hook #'(lambda ()
-                                      (etags-regen-mode 1))))
+;;   ;; Automatically generate and update tags tables
+;;   (add-hook 'emacs-lisp-mode-hook #'(lambda ()
+;;                                       (etags-regen-mode 1))))
 
 (provide 'init-projects)
 ;;;
