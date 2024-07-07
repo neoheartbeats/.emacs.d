@@ -66,7 +66,7 @@
   :straight t
   :config
   (setq orderless-component-separator " +\\|[-/]") ; Spaces, hyphen or slash
-  (setq completion-styles '(orderless flex basic)
+  (setq completion-styles '(orderless basic)
         completion-category-overrides '((file (styles . (partial-completion orderless)))
 
                                         ;; There is further configuration for better
@@ -175,33 +175,6 @@
   ;; Framework for mode-specific buffer indexes
   (global-set-key [remap imenu] 'consult-imenu)
 
-  :config
-
-  ;; Back to last visited by C-s C-s if using `consult-line'
-  (defvar my-consult-line-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map "\C-s" #'previous-history-element)
-      map))
-  (consult-customize consult-line :keymap my-consult-line-map)
-
-  ;; https://github.com/minad/consult/wiki#add-category-specific-minibuffer-keybindings
-  (defun define-minibuffer-key (key &rest defs)
-    "Define KEY conditionally in the minibuffer.
-DEFS is a plist associating completion categories to commands."
-    (define-key minibuffer-local-map key
-                (list 'menu-item nil defs :filter
-                      (lambda (d)
-                        (plist-get d (completion-metadata-get
-                                      (completion-metadata
-                                       (minibuffer-contents)
-                                       minibuffer-completion-table
-                                       minibuffer-completion-predicate)
-                                      'category))))))
-
-  (define-minibuffer-key "\C-s"
-                         'consult-location #'previous-history-element
-                         'file #'consult-find-for-minibuffer)
-
   :bind (:map global-map
               ("C-s" . consult-line)
               ("M-s" . consult-ripgrep)
@@ -218,7 +191,7 @@ DEFS is a plist associating completion categories to commands."
 (use-package beframe
   :straight t
   :after (consult)
-  :config
+  :init
   (setq beframe-global-buffers nil
         beframe-create-frame-scratch-buffer nil)
   (beframe-mode 1)

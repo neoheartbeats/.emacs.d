@@ -124,10 +124,10 @@
 ;;; Load path
 ;;
 ;; Fix PATH for macOS
-;;
-;; (use-package exec-path-from-shell
-;;   :straight t
-;;   :config (exec-path-from-shell-initialize))
+
+(use-package exec-path-from-shell
+  :straight t
+  :config (exec-path-from-shell-initialize))
 
 ;; Org mode
 (let ((org-lisp-dir (expand-file-name "site-lisp/org/lisp/" user-emacs-directory)))

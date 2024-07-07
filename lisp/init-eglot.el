@@ -35,6 +35,7 @@
 ;;
 
 (use-package eglot
+  :straight t
   :config
 
   ;; Use Pyright as the default language server
@@ -47,22 +48,23 @@
   ;; Enable cache busting, depending on if your server returns
   ;; sufficiently many candidates in the first place
   (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
+
   :bind (:map eglot-mode-map
               ("<f6>" . eglot-rename)))
 
 ;; See https://github.com/radian-software/straight.el/issues/1146 [FIXME]
 
 ;; Speed up
-;; (use-package eglot-booster
-;;   :straight (eglot-booster
-;;              :type git
-;;              :host github
-;;              :repo "jdtsmith/eglot-booster")
-;;   :init
-;;   (add-to-list 'exec-path (expand-file-name "bin/" user-emacs-directory))
-;;   :config
-;;   (setq eglot-booster-no-remote-boost t)
-;;   (eglot-booster-mode 1))
+(use-package eglot-booster
+  :after (eglot)
+  :straight (eglot-booster
+             :type git
+             :host github
+             :repo "jdtsmith/eglot-booster")
+  :init (add-to-list 'exec-path (expand-file-name "bin/" user-emacs-directory))
+  :config
+  (setq eglot-booster-no-remote-boost t)
+  (eglot-booster-mode 1))
 
 ;; Auto confirm `.dir-locals.el' files
 (setq-default enable-local-variables :safe)
@@ -70,7 +72,6 @@
 
 ;;; Python project management [TODO]
 (use-package python
-  :straight t
   :config
   (setq python-indent-offset 4))
 
@@ -88,12 +89,12 @@
 ;; GitHub Copilot
 ;;
 
-(use-package copilot
-  :straight (
-             :host github
-             :repo "copilot-emacs/copilot.el"
-             :files ("*.el"))
-  :config (define-key global-map (kbd "s-.") #'copilot-accept-completion))
+;; (use-package copilot
+;;   :straight (
+;;              :host github
+;;              :repo "copilot-emacs/copilot.el"
+;;              :files ("*.el"))
+;;   :config (define-key global-map (kbd "s-.") #'copilot-accept-completion))
 
 
 ;;; Python API: sthenno-endpoints Client
@@ -103,48 +104,48 @@
 ;; - https://github.com/karthink/gptel
 ;;
 
-(require 'url)
-(require 'json)
+;; (require 'url)
+;; (require 'json)
 
-(setq sthenno-endpoint-u "http://localhost:8000")
+;; (setq sthenno-endpoint-u "http://localhost:8000")
 
-(defun sthenno-post (endpoint content)
-  "Send a json formatted post request to the specified ENDPOINT using CONTENT."
-  (let* ((url-request-method "POST")
-         (url-request-extra-headers '(("Content-Type" . "application/json")))
-         (url-request-data (encode-coding-string
-                            (json-encode `(("content" . ,content))) 'utf-8))
-         (url (format "%s/%s/" sthenno-endpoint-u endpoint))
-         response)
-    (with-current-buffer (url-retrieve-synchronously url t) ; t means silent
-      (goto-char url-http-end-of-headers)
-      (setq response (buffer-substring-no-properties (point) (point-max)))
-      (kill-buffer (current-buffer)))
-    (json-read-from-string (decode-coding-string response 'utf-8))))
+;; (defun sthenno-post (endpoint content)
+;;   "Send a json formatted post request to the specified ENDPOINT using CONTENT."
+;;   (let* ((url-request-method "POST")
+;;          (url-request-extra-headers '(("Content-Type" . "application/json")))
+;;          (url-request-data (encode-coding-string
+;;                             (json-encode `(("content" . ,content))) 'utf-8))
+;;          (url (format "%s/%s/" sthenno-endpoint-u endpoint))
+;;          response)
+;;     (with-current-buffer (url-retrieve-synchronously url t) ; t means silent
+;;       (goto-char url-http-end-of-headers)
+;;       (setq response (buffer-substring-no-properties (point) (point-max)))
+;;       (kill-buffer (current-buffer)))
+;;     (json-read-from-string (decode-coding-string response 'utf-8))))
 
-(defun sthenno-trans-to-zh (content)
-  "Translate the CONTENT to Simplified Chinese.
-Return the translation."
-  (let* ((obj (sthenno-post "trans_to_zh" content))
-         (translation (cdr (assoc 'translation obj))))
-    translation))
+;; (defun sthenno-trans-to-zh (content)
+;;   "Translate the CONTENT to Simplified Chinese.
+;; Return the translation."
+;;   (let* ((obj (sthenno-post "trans_to_zh" content))
+;;          (translation (cdr (assoc 'translation obj))))
+;;     translation))
 
-(defun sthenno-trans-to-en (content)
-  "Translate the CONTENT to English.
-Return the translation."
-  (let* ((obj (sthenno-post "trans_to_en" content))
-         (translation (cdr (assoc 'translation obj))))
-    translation))
+;; (defun sthenno-trans-to-en (content)
+;;   "Translate the CONTENT to English.
+;; Return the translation."
+;;   (let* ((obj (sthenno-post "trans_to_en" content))
+;;          (translation (cdr (assoc 'translation obj))))
+;;     translation))
 
-(defun sthenno-trans-to-zh-target (target)
-  (let ((translation (sthenno-trans-to-zh target)))
-    (kill-new translation)
-    (message (format "Translation: %s" translation))))
+;; (defun sthenno-trans-to-zh-target (target)
+;;   (let ((translation (sthenno-trans-to-zh target)))
+;;     (kill-new translation)
+;;     (message (format "Translation: %s" translation))))
 
-(defun sthenno-trans-to-en-target (target)
-  (let ((translation (sthenno-trans-to-en target)))
-    (kill-new translation)
-    (message (format "Translation: %s" translation))))
+;; (defun sthenno-trans-to-en-target (target)
+;;   (let ((translation (sthenno-trans-to-en target)))
+;;     (kill-new translation)
+;;     (message (format "Translation: %s" translation))))
 
 ;; Binding keys (see also `init-comp') [TODO]
 ;; (use-package embark

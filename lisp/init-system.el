@@ -143,13 +143,8 @@ Activate again to undo this. If the window changes before then, the undo expires
 (setq make-backup-files nil)
 (setq mark-even-if-inactive nil)
 (setq ring-bell-function 'ignore)
-;; (setq truncate-lines nil)
-;; (setq truncate-partial-width-windows nil)
-(setq help-window-select t)
-(setq require-final-newline 'visit)
+(setq require-final-newline t)
 (setq vc-follow-symlinks t)
-
-(setq locate-command "mdfind")
 
 (setq-default fill-column 88)
 (setq-default tab-width 4)
@@ -160,21 +155,21 @@ Activate again to undo this. If the window changes before then, the undo expires
 (setq save-silently t)
 
 ;; Auto saving mechanism
-(setq auto-save-interval 2400
-      auto-save-timeout 300)
-(setq auto-save-list-file-prefix
-      (expand-file-name "auto-save-list/.saves-" user-cache-directory))
+;; (setq auto-save-interval 2400
+;;       auto-save-timeout 300)
+;; (setq auto-save-list-file-prefix
+;;       (expand-file-name "auto-save-list/.saves-" user-cache-directory))
 
-(setq backup-directory-alist
-      `(("." . ,(expand-file-name "backup" user-cache-directory)))
-      backup-by-copying t               ; Use copies
-      version-control t                 ; Use version numbers on backups
-      delete-old-versions t             ; Automatically delete excess backups
-      kept-new-versions 10              ; Newest versions to keep
-      kept-old-versions 5)
+;; (setq backup-directory-alist
+;;       `(("." . ,(expand-file-name "backup" user-cache-directory)))
+;;       backup-by-copying t               ; Use copies
+;;       version-control t                 ; Use version numbers on backups
+;;       delete-old-versions t             ; Automatically delete excess backups
+;;       kept-new-versions 10              ; Newest versions to keep
+;;       kept-old-versions 5)
 
 
-;;; Global functions for accessibility
+;;; global functions for accessibility
 ;;
 ;; To access the `.emacs.d' root
 (defun open-emacs-config-dir ()
@@ -226,10 +221,10 @@ Activate again to undo this. If the window changes before then, the undo expires
 (use-package dired
   :init
   (setq dired-auto-revert-buffer #'dired-directory-changed-p)
-  (setq dired-make-directory-clickable t)
   (setq dired-free-space nil)
-  (setq dired-mouse-drag-files t)
-  (setq dired-use-ls-dired nil)
+
+  ;; HACK: `gls' is preferred on macOS
+  (setq insert-directory-program "/opt/homebrew/bin/gls")
 
   (add-hook 'dired-mode-hook #'dired-hide-details-mode))
 
