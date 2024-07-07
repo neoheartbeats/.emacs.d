@@ -9,7 +9,7 @@
 ;; This config is currently for a patched version of Org that is under development.
 ;; See https://code.tecosaur.net/tec/org-mode for more details.
 ;;
-;; This file includes:
+;; TODO: This file includes:
 ;; - Org Mode basics
 ;; - TEC's `org-latex-preview' specific configurations
 ;; -
@@ -17,7 +17,6 @@
 
 ;;; Code:
 ;;
-
 ;; Setup default directory
 (setq org-directory "~/Developer/sthenno-notebook/")
 
@@ -48,18 +47,15 @@
 
 ;; Experimental: `org-latex-preview'
 ;;
+(add-hook 'org-latex-preview-auto-ignored-commands #'next-line)
+(add-hook 'org-latex-preview-auto-ignored-commands #'previous-line)
+(add-hook 'org-latex-preview-auto-ignored-commands #'scroll-up-command)
+(add-hook 'org-latex-preview-auto-ignored-commands #'scroll-down-command)
+(add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window)
+(add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window-down)
 
-(use-package org-latex-preview
-  :init
-  (add-hook 'org-latex-preview-auto-ignored-commands #'next-line)
-  (add-hook 'org-latex-preview-auto-ignored-commands #'previous-line)
-  (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-up-command)
-  (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-down-command)
-  (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window)
-  (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window-down)
-
-  :config (add-hook 'org-mode-hook #'(lambda ()
-                                       (org-latex-preview-auto-mode 1))))
+(add-hook 'org-mode-hook #'(lambda ()
+                             (org-latex-preview-auto-mode 1)))
 
 ;; Preview functions
 ;;
