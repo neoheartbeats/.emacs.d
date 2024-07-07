@@ -100,6 +100,7 @@
 
 (push '(width . 120) default-frame-alist)
 (push '(height . 50) default-frame-alist)
+(push '(alpha . (80 . 80)) default-frame-alist)
 
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)
