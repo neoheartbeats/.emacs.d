@@ -154,7 +154,7 @@
 If `buffer-file-name' is a `denote' file, return its corresponding title instead."
     (let ((file (buffer-file-name)))
       (if (denote-file-is-note-p file)
-          (format "Denote: %s" (denote-retrieve-filename-title (buffer-file-name)))
+          (format "[denote:%s]" (denote-retrieve-filename-title (buffer-file-name)))
         (buffer-name))))
 
   (defvar-local my-modeline-buffer-identification

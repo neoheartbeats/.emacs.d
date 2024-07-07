@@ -224,7 +224,8 @@ This is useful if using font Iosevka."
   :straight t
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
-  (setq denote-known-keywords '("dates"))
+  (setq denote-known-keywords '("dates"
+                                "blog"))
   (setq denote-prompts '(title))
   (setq denote-save-buffers t)
 
@@ -303,30 +304,26 @@ This is useful if using font Iosevka."
 
 ;; Org-agenda [TODO]
 ;; (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
-(bind-keys :map global-map
-           ("C-c a" . org-agenda))
+;; (bind-keys :map global-map
+;;            ("C-c a" . org-agenda))
 
 ;; Org-agenda settings related to `org-modern'
-(setq org-agenda-tags-column 0)
-(setq org-agenda-block-separator ?─)
-(setq org-agenda-time-grid
-      '((daily today require-timed)
-        (800 1000 1200 1400 1600 1800 2000)
-        " ────── " "───────────────"))
-(setq org-agenda-current-time-string
-      "◀── now ─────────────────────────────────────────────────")
-
-
-;; Org indentation
-(setq-default org-list-indent-offset 2)
+;; (setq org-agenda-tags-column 0)
+;; (setq org-agenda-block-separator ?─)
+;; (setq org-agenda-time-grid
+;;       '((daily today require-timed)
+;;         (800 1000 1200 1400 1600 1800 2000)
+;;         " ────── " "───────────────"))
+;; (setq org-agenda-current-time-string
+;;       "◀── now ─────────────────────────────────────────────────")
 
 
 ;; Useful functions
-(defun my/org-mode-insert-get-button ()
-  "Inserts a button that copies a user-defined string to clipboard."
-  (interactive)
-  (let ((content (read-string "Content: ")))
-    (insert (format "[[elisp:(kill-new \"%s\")][GET]]" content))))
+;; (defun my/org-mode-insert-get-button ()
+;;   "Inserts a button that copies a user-defined string to clipboard."
+;;   (interactive)
+;;   (let ((content (read-string "Content: ")))
+;;     (insert (format "[[elisp:(kill-new \"%s\")][GET]]" content))))
 
 
 ;;; TODO

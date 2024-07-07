@@ -6,10 +6,15 @@
 
 ;;; Commentary:
 ;;
+;; This file includes:
+;; - completion styles enhancement using `orderless'
+;; - minibuffer enhancement using `vertico' and `consult'
+;; - pop-up completions by `corfu' as frontend and `cape' as backend
 ;;
-;;
+;; NOTE: Package `embark' is not included in this config due to my personal preferences
+
 ;;; Code:
-;;
+s;;
 
 ;;; Build the completion framework
 (use-package emacs
