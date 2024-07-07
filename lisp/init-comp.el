@@ -14,7 +14,7 @@
 ;; NOTE: Package `embark' is not included in this config due to my personal preferences
 
 ;;; Code:
-s;;
+;;
 
 ;;; Build the completion framework
 (use-package emacs
