@@ -280,7 +280,7 @@ With optional argument FRAME, return the list of buffers of FRAME."
 (use-package cape
   :straight t
   :config
-  (setq cape-dabbrev-min-length 2)
+  (setq cape-dabbrev-min-length 4)
 
   (defun completion-at-point-functions-setup (capfs-map-alist)
     "Set up completion at point functions based on CAPFS-MAP-ALIST.

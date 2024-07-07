@@ -28,10 +28,10 @@
 ;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/542
 
 (setenv "LIBRARY_PATH"
-        (concat (getenv "LIBRARY_PATH") ":"
-                "/opt/homebrew/opt/gcc/lib/gcc/14:"
+        (concat "/opt/homebrew/opt/gcc/lib/gcc/14:"
                 "/opt/homebrew/opt/gcc/lib/gcc/14/gcc/aarch64-apple-darwin23/14:"
-                "/opt/homebrew/opt/libgccjit/lib/gcc/14"))
+                "/opt/homebrew/opt/libgccjit/lib/gcc/14:"
+                (getenv "LIBRARY_PATH")))
 
 (setq load-path (delete "/opt/homebrew/Cellar/emacs-plus@30/30.0.60/share/emacs/30.0.60/lisp/org"
                         load-path))
@@ -50,7 +50,7 @@
 
 ;; To ensure `.eln' files are created correctly
 (setq native-comp-async-query-on-exit t)
-;; (setq native-compile-prune-cache t)
+(setq native-compile-prune-cache t)
 
 ;; Do not enable packages during this early stage
 (setq package-enable-at-startup nil)

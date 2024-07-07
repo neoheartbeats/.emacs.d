@@ -224,7 +224,7 @@ Activate again to undo this. If the window changes before then, the undo expires
 
 
 (use-package dired
-  :config
+  :init
   (setq dired-auto-revert-buffer #'dired-directory-changed-p)
   (setq dired-make-directory-clickable t)
   (setq dired-free-space nil)
