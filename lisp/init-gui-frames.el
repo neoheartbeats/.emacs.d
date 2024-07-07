@@ -140,9 +140,30 @@
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
 
 
+;;
+;; Collect pop-up windows
+;;
+
+(use-package popper
+  :straight t
+  :init (setq popper-reference-buffers '(("\\*Messages\\*$" . hide)
+                                         ("\\*corfu\\*$"    . hide)
+                                         "^\\*eshell.*\\*$"
+                                         eshell-mode
+                                         help-mode))
+
+  ;; Disable the modeline for `popper' buffers
+  (setq popper-mode-line nil)
+  :config
+  (popper-mode 1)
+  (popper-echo-mode 1)
+  :bind (:map global-map
+              ("C-p" . popper-toggle)))
+
+
 ;;; Mode Line settings
 ;;
-;; Format mode line buffer identification [TODO]
+;; Format modeline buffer identification [TODO]
 ;;
 ;; - Add `project' integration
 ;; - Add `magit' integration
