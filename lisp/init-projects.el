@@ -33,7 +33,7 @@
   ;;
   ;; [FIXME]
   ;;
-  
+
   (defun my/project-remove-project ()
     "Remove project from `project--list' using completion."
     (interactive)

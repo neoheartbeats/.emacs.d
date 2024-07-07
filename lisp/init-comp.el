@@ -11,7 +11,9 @@
 ;; - minibuffer enhancement using `vertico' and `consult'
 ;; - pop-up completions by `corfu' as frontend and `cape' as backend
 ;;
-;; NOTE: Package `embark' is not included in this config due to my personal preferences
+;; NOTE: Package `embark' is not included in this config due to my personal preferences.
+;; XXX: Templating-related setups such as that for `abbrev' are placed separately in
+;; `init-temp' but `dabbrev' is configured in this file under current decision.
 
 ;;; Code:
 ;;
@@ -24,7 +26,7 @@
 (use-package emacs
   :init
 
-  ;;; Completion basics. See also `orderless'
+  ;; Completion basics. See also `orderless'
   ;;
   ;; TAB cycle if there are only few candidates
   ;;
@@ -48,7 +50,9 @@
 (use-package minibuffer
   :init
   (setq minibuffer-default-prompt-format " [%s]")
-  (setq echo-keystrokes 0.05) ; Display the key pressed immediately
+
+  (setq echo-keystrokes 0.05         ; Display the key pressed immediately
+        echo-keystrokes-help t)      ; Display help info for keystrokes in the echo area
 
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
@@ -118,7 +122,7 @@
                   cand)
         (concat (propertize "○ " 'face `(:foreground ,fg-dim)) cand))))
 
-  ;;; Additions for moving up and down directories in `find-file'
+  ;; Additions for moving up and down directories in `find-file'
   ;;
 
   (use-package vertico-directory
@@ -319,7 +323,7 @@ Elements in list-of-capfs further down the list have deeper priority in completi
   :init (global-corfu-mode 1)
   :config
   (setq corfu-auto t
-        corfu-auto-delay 0.05 ; Making this to 0 is too expensive
+        corfu-auto-delay 0.05           ; Making this to 0 is too expensive
         corfu-auto-prefix 2)
 
   (setq corfu-quit-at-boundary 'separator
@@ -327,7 +331,7 @@ Elements in list-of-capfs further down the list have deeper priority in completi
 
   (setq corfu-cycle t)
   (setq corfu-preview-current nil)
-  (setq corfu-preselect 'directory) ; Auto select the first except directories
+  (setq corfu-preselect 'directory)     ; Auto select the first except directories
 
   ;; Maintain a list of recently selected candidates
   ;; This requires `savehist-mode' is enabled

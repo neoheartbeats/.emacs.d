@@ -6,6 +6,13 @@
 
 ;;; Commentary:
 ;;
+;; This config is currently for a patched version of Org that is under development.
+;; See https://code.tecosaur.net/tec/org-mode for more details.
+;;
+;; This file includes:
+;; - Org Mode basics
+;; - TEC's `org-latex-preview' specific configurations
+;; -
 ;;
 
 ;;; Code:
@@ -34,8 +41,10 @@
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 ;; Default LaTeX preview image directory
-(setq org-preview-latex-image-directory
-      (expand-file-name "ltximg/" user-emacs-directory))
+;; (setq org-preview-latex-image-directory
+;;       (expand-file-name "ltximg/" user-cache-directory))
+
+(setq org-persist-directory (expand-file-name "org-persist" user-cache-directory))
 
 ;; Experimental: `org-latex-preview'
 ;;
@@ -48,9 +57,9 @@
   (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-down-command)
   (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window)
   (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window-down)
-  :config
-  (add-hook 'org-mode-hook #'(lambda ()
-                               (org-latex-preview-auto-mode 1))))
+
+  :config (add-hook 'org-mode-hook #'(lambda ()
+                                       (org-latex-preview-auto-mode 1))))
 
 ;; Preview functions
 ;;
@@ -68,7 +77,6 @@
       '(("T1" "fontenc" t)
         ("" "amsmath" t)
         ("" "amssymb" t)
-        ("" "mathtools" t)
         ("" "siunitx" t)
         ("" "physics2" t)
         ("libertinus" "newtx" t)
@@ -93,6 +101,9 @@
            (- (/ (face-attribute 'default :height) 100.0) 0.025))
 
 ;;
+;; The `org-latex-preview' process
+;;
+
 (setq org-latex-preview-process-default 'dvisvgm)
 
 (defvar my/libgs-dylib-path "/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib"
@@ -232,8 +243,8 @@ This is useful if using font Iosevka."
   ;; Denote for journaling
   (setq denote-journal-extras-directory
         (expand-file-name "dates/" denote-directory)) ; Subdirectory for journal files
-  (setq denote-journal-extras-keyword "dates") ; Stages are journals
-  (setq denote-journal-extras-title-format "%F") ; Use ISO 8601 for titles
+  (setq denote-journal-extras-keyword "dates")        ; Stages are journals
+  (setq denote-journal-extras-title-format "%F")      ; Use ISO 8601 for titles
 
   ;; Do not include date, tags and ids in note files
   (setq denote-org-front-matter "#+TITLE: %1$s. 􀙤\n\n")

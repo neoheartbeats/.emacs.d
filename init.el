@@ -50,7 +50,7 @@
 (setq bidi-inhibit-bpa t)
 
 ;; Emacs "updates" its ui more often than it needs to, so slow it down slightly
-(setq idle-update-delay 1.0) ; default is 0.5
+(setq idle-update-delay 1.0)
 
 ;;
 (setq inhibit-compacting-font-caches t)
@@ -118,9 +118,7 @@
 (use-package gcmh
   :straight t
   :diminish (gcmh-mode)
-  :config
-  (setq gcmh-high-cons-threshold (* 512 1024 1024))
-  (gcmh-mode 1))
+  :config (gcmh-mode 1))
 
 
 ;;; Load path
@@ -128,15 +126,14 @@
 ;; Fix PATH for macOS
 ;;
 
-(use-package exec-path-from-shell
-  :straight t
-  :config (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell
+;;   :straight t
+;;   :config (exec-path-from-shell-initialize))
 
 ;; Org mode
 (let ((org-lisp-dir (expand-file-name "site-lisp/org/lisp/" user-emacs-directory)))
   (add-to-list 'load-path org-lisp-dir)
-  (require 'org)
-  (require 'org-latex-preview))
+  (require 'org))
 
 ;; From https://github.com/purcell/emacs.d/blob/master/lisp/init-site-lisp.el
 (defun add-subdirs-to-load-path (parent-dir)
@@ -173,6 +170,7 @@
   :config
   (setq explain-pause-alert-style 'silent)
   (explain-pause-mode 1)
+
   :bind (:map global-map
               ("<f3>" . explain-pause-top)))
 

@@ -13,23 +13,26 @@
 ;; - Native-Compilation specified config
 ;; - Early file-loading behaviors
 ;; - Init GUI frames config
-;;
 
 ;;; Code:
 ;;
 
-;; [FIXME] This code snippet here is used to correct PATH for homebrew-emacs-plus
-;; specifics
+;;; XXX:
+;; Correct PATH to fix homebrew-emacs-plus native-compile specific issues. This is
+;; probably caused by the mismatching between version of `comp-libgccjit-version' and
+;; GCC that macOS provides.
 ;;
 ;; Related issues:
 ;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/687
 ;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/492
 ;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/542
-;;
-(setenv "LIBRARY_PATH" (concat "/opt/homebrew/opt/gcc/lib/gcc/14:"
-                               "/opt/homebrew/opt/gcc/lib/gcc/14/gcc/aarch64-apple-darwin23/14:"
-                               "/opt/homebrew/opt/libgccjit/lib/gcc/14"))
 
+(setenv "LIBRARY_PATH"
+        (concat "/opt/homebrew/opt/gcc/lib/gcc/14:"
+                "/opt/homebrew/opt/gcc/lib/gcc/14/gcc/aarch64-apple-darwin23/14:"
+                "/opt/homebrew/opt/libgccjit/lib/gcc/14"))
+
+
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
 
@@ -52,7 +55,14 @@
 (setq load-prefer-newer t)
 
 
-;; From https://github.com/karthink/.emacs.d/blob/master/early-init.el
+;;;
+;;
+;; HACK: Adjust display according to `file-name-handler-alist'. `eval-buffer' cannot run
+;; here due to this snippet.
+;;
+;; SEE: https://github.com/karthink/.emacs.d/blob/master/early-init.el
+;;
+
 (unless (or (daemonp) noninteractive)
   (let ((old-file-name-handler-alist file-name-handler-alist))
     ;; `file-name-handler-alist' is consulted on each `require', `load' and
@@ -93,6 +103,8 @@
 
 
 ;; Perform darwing the frame when initialization
+;;
+
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(horizontal-scroll-bars) default-frame-alist)
@@ -100,7 +112,11 @@
 
 (push '(width . 120) default-frame-alist)
 (push '(height . 50) default-frame-alist)
-(push '(alpha . (80 . 80)) default-frame-alist)
+
+;; XXX: Since feature `alpha-background' conflicts with Emacs overlay rendering for
+;; images such as svg files, `alpha' can be a replacement for a rough approach.
+;;
+;; (push '(alpha . (80 . 80)) default-frame-alist)
 
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark) default-frame-alist)

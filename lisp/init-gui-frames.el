@@ -14,12 +14,15 @@
 ;;; Code:
 ;;
 
+;;
 ;; Modus Themes
+;;
+
 (use-package modus-themes
   :straight t
   :config
 
-  ;;; `modus-vivendi' customizations
+  ;; `modus-vivendi' customizations
   ;;
   ;; Define a user palette (for Sthenno)
   ;;
@@ -106,17 +109,17 @@
 (defun sthenno-mono-ligation-setup ()
   (let ((composition-table (make-char-table nil)))
     (dolist (char-regexp-replacement
-             '((33 . ".\\(?:\\(==\\|!=\\)\\|[!=]\\)") ; != ==
-               (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)") ; ### ## #( #_
-               (45 . ".\\(?:->\\|--\\|[<>|~-]\\)") ; -> -- >>
-               (46 . ".\\(?:\\.[.<]\\|[.:<-]\\)") ; .. .< .:
-               (47 . ".\\(?:\\*/\\|//\\|[*/>]\\)") ; */ // /->
-               (58 . ".\\(?:::\\|[:=]\\)") ; :: :=
+             '((33 . ".\\(?:\\(==\\|!=\\)\\|[!=]\\)")              ; != ==
+               (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")          ; ### ## #( #_
+               (45 . ".\\(?:->\\|--\\|[<>|~-]\\)")                 ; -> -- >>
+               (46 . ".\\(?:\\.[.<]\\|[.:<-]\\)")                  ; .. .< .:
+               (47 . ".\\(?:\\*/\\|//\\|[*/>]\\)")                 ; */ // /->
+               (58 . ".\\(?:::\\|[:=]\\)")                         ; :: :=
                (60 . ".\\(?:!--\\|--\\|<[<=|-]\\|=[<=|-]\\|<=\\)") ; <!-- << <- <=
-               (61 . ".\\(?:\\|=[=>]\\|=>\\)") ; == =>
-               (62 . ".\\(?:>>\\|>[=>-]\\|>=\\)") ; >> >=
-               (63 . ".\\(?:\\?\\?\\|[:=?]\\)") ; ?? ?: ?
-               (92 . ".\\(?:\\\\\\\\\\|[\\n]\\)"))) ; \\ \n
+               (61 . ".\\(?:\\|=[=>]\\|=>\\)")                     ; == =>
+               (62 . ".\\(?:>>\\|>[=>-]\\|>=\\)")                  ; >> >=
+               (63 . ".\\(?:\\?\\?\\|[:=?]\\)")                    ; ?? ?: ?
+               (92 . ".\\(?:\\\\\\\\\\|[\\n]\\)")))                ; \\ \n
       (set-char-table-range composition-table (car char-regexp-replacement)
                             `([,(cdr char-regexp-replacement) 0 font-shape-gstring])))
 
@@ -146,17 +149,19 @@
 
 (use-package popper
   :straight t
-  :init (setq popper-reference-buffers '(("\\*Messages\\*$" . hide)
-                                         ("\\*corfu\\*$"    . hide)
-                                         "^\\*eshell.*\\*$"
-                                         eshell-mode
-                                         help-mode))
+  :init
+  (setq popper-reference-buffers '(("\\*Messages\\*$" . hide)
+                                   ("\\*corfu\\*$"    . hide)
+                                   "\\*ielm\\*$"
+                                   "\\*explain-pause-top\\*$"
+                                   help-mode))
 
   ;; Disable the modeline for `popper' buffers
   (setq popper-mode-line nil)
-  :config
+
   (popper-mode 1)
   (popper-echo-mode 1)
+
   :bind (:map global-map
               ("C-p" . popper-toggle)))
 
@@ -204,17 +209,17 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
   :straight t
   :config
   (setq cyphejor-rules
-        '(:upcase
-          ("buffer" "β")
-          ("diff"   "Δ")
-          ("dired"  "􀩚")
-          ("emacs"  "E")
-          ("lisp"   "L" :postfix)
-          ("menu"   "􀓕" :postfix)
-          ("mode"   "")
-          ("shell"  "􀩼")
-          ("text"   "T")
-          ("org"    "􀐘")))
+        '( :upcase
+           ("buffer" "β")
+           ("diff"   "Δ")
+           ("dired"  "􀩚")
+           ("emacs"  "E")
+           ("lisp"   "L" :postfix)
+           ("menu"   "􀓕" :postfix)
+           ("mode"   "")
+           ("shell"  "􀩼")
+           ("text"   "T")
+           ("org"    "􀐘")))
 
   (cyphejor-mode 1))
 
@@ -233,8 +238,9 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
   (spacious-padding-mode 1))
 
 
-;; Sthenno's customization of "doom-quit"
-;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
+;;; Sthenno's customization of "doom-quit"
+;;
+;; SEE: https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 ;;
 
 (defvar sthenno-quit-messages

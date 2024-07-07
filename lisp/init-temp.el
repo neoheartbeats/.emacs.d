@@ -5,9 +5,17 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
-;;; Code:
+;;
+;; This file includes:
+;; -
+;;
 
-;; Yasnippet
+;;; Code:
+;;
+
+;;; Yasnippet
+;;
+
 (use-package yasnippet
   :straight t
   :diminish (yas-minor-mode)
@@ -35,7 +43,7 @@
     (yas-expand-snippet snippet)))
 
 (bind-keys :map org-mode-map
-           ("s-[ m" . my/yas-insert-latex-matrix))
+           ("s-i m" . my/yas-insert-latex-matrix))
 
 (provide 'init-temp)
 ;;;
