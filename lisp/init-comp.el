@@ -17,6 +17,10 @@
 ;;
 
 ;;; Build the completion framework
+;;
+;; Completion and minibuffer basics
+;;
+
 (use-package emacs
   :init
 
@@ -37,12 +41,14 @@
 
   ;; Enable indentation+completion using the TAB key
   ;; `completion-at-point' is often bound to M-TAB
+  ;;
+
   (setq tab-always-indent 'complete))
 
 (use-package minibuffer
   :init
   (setq minibuffer-default-prompt-format " [%s]")
-  (setq echo-keystrokes 0.05)
+  (setq echo-keystrokes 0.05) ; Display the key pressed immediately
 
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
@@ -50,29 +56,48 @@
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
 
 ;; Use the `orderless' completion style
+;;
+
 (use-package orderless
   :straight t
   :config
   (setq orderless-component-separator " +\\|[-/]") ; Spaces, hyphen or slash
   (setq completion-styles '(orderless flex basic)
         completion-category-overrides '((file (styles . (partial-completion orderless)))
+
+                                        ;; There is further configuration for better
+                                        ;; `eglot' support. See `init-eglot'
                                         (eglot (styles . (orderless))))))
 
-;; Ignore cases
+;; Ignore cases for completions
 (setq completion-ignore-case t)
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t)
 
 
 ;;; Completion for minibuffers
+;;
+
 (use-package vertico
   :straight t
-  :init (vertico-mode 1)
+  :init
+
+  ;; Disable showing the *Completions* buffer that conflicts with `vertico' if using
+  ;; `ffap-menu'
+  (advice-add #'ffap-menu-ask :around
+              (lambda (&rest args)
+                (cl-letf (((symbol-function #'minibuffer-completion-help)
+                           #'ignore))
+                  (apply args))))
+
+  (vertico-mode 1)
   :config
   (setq vertico-count 10)
   (setq vertico-scroll-margin 4)
   (setq vertico-cycle t)
-  (setq vertico-count-format (cons "%-6s " "[%s/%s]"))
+
+  ;; Add some simple indicator symbols here to make things clear
+  (setq vertico-count-format (cons "%-6s " "◇ %s of %s ◆"))
 
   ;; Do not render italic fonts
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
@@ -93,7 +118,9 @@
                   cand)
         (concat (propertize "○ " 'face `(:foreground ,fg-dim)) cand))))
 
-  ;; Additions for moving up and down directories in `find-file'
+  ;;; Additions for moving up and down directories in `find-file'
+  ;;
+
   (use-package vertico-directory
     :config
 
@@ -104,56 +131,6 @@
         (add-to-history minibuffer-history-variable (minibuffer-contents))))
 
     (advice-add 'vertico-insert :after #'vertico-insert-add-history)
-
-    ;; Pre-select previous directory when entering parent directory from within
-    ;; `find-file'
-    ;;
-    ;; Advise `vertico-directory-up' to save the directory being exited
-    ;;
-
-    (defvar previous-directory nil
-      "The directory that was just left. It is set when leaving a directory and set back
-to nil once it is used in the parent directory.")
-
-    (defun set-previous-directory ()
-      "Set the directory that was just exited from within find-file."
-      (when (> (minibuffer-prompt-end) (point))
-        (save-excursion
-          (goto-char (1- (point)))
-          (when (search-backward "/" (minibuffer-prompt-end) t)
-
-            ;; Set parent directory
-            (setq previous-directory (buffer-substring (1+ (point)) (point-max)))
-
-            ;; Set back to nil if not sorting by directories or what was deleted is not
-            ;; a directory
-            (when (not (string-suffix-p "/" previous-directory))
-              (setq previous-directory nil))
-            t))))
-
-    (advice-add #'vertico-directory-up :before #'set-previous-directory)
-
-    ;; Advise `vertico--update' to select the previous directory
-    (define-advice vertico--update (:after (&rest _) choose-candidate)
-      "Pick the previous directory rather than the prompt after updating candidates."
-      (cond
-       (previous-directory ; select previous directory
-        (setq vertico--index (or (seq-position vertico--candidates previous-directory)
-                                 vertico--index))
-        (setq previous-directory nil))))
-
-    ;; Left-truncate `recentf' filename candidates
-    (defun my/vertico-truncate-candidates (args)
-      (if-let ((arg (car args))
-               (type (get-text-property 0 'multi-category arg))
-               ((eq (car-safe type) 'file))
-               (w (max 30 (- (window-width) 38)))
-               (l (length arg))
-               ((> l w)))
-          (setcar args (concat "…" (truncate-string-to-width arg l (- l w)))))
-      args)
-    (advice-add #'vertico--format-candidate :filter-args
-                #'my/vertico-truncate-candidates)
 
     ;; Correct file path when changed (tidy shadowed file names)
     (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
@@ -166,13 +143,6 @@ to nil once it is used in the parent directory.")
   :bind ((:map vertico-map
                ("<tab>" . vertico-insert))))
 
-;; Disable showing the *Completions* buffer that conflicts with vertico if using
-;; `ffap-menu'
-(advice-add #'ffap-menu-ask :around
-            (lambda (&rest args)
-              (cl-letf (((symbol-function #'minibuffer-completion-help)
-                         #'ignore))
-                (apply args))))
 
 
 ;; Rich annotations for minibuffer
@@ -185,7 +155,9 @@ to nil once it is used in the parent directory.")
   :init (marginalia-mode 1))
 
 
-;; Consult is useful previewing current content in buffer
+;;; Consult is useful previewing current content in buffer
+;;
+
 (use-package consult
   :straight t
   :init
@@ -234,9 +206,14 @@ DEFS is a plist associating completion categories to commands."
               ("C-r" . consult-recent-file)))
 
 
-;; Beframe: Isolate Emacs buffers per frame
+;;; Beframe: Isolate Emacs buffers per frame
+;;
+;; This package is simply used to filter and group minibuffer candidates
+;;
+
 (use-package beframe
   :straight t
+  :after (consult)
   :config
   (setq beframe-global-buffers nil
         beframe-create-frame-scratch-buffer nil)
@@ -246,56 +223,63 @@ DEFS is a plist associating completion categories to commands."
   (defvar consult-buffer-sources)
   (declare-function consult--buffer-state "consult")
 
-  (with-eval-after-load 'consult
-    (defface beframe-buffer
-      '((t :inherit font-lock-string-face))
-      "Face for `consult' framed buffers.")
 
-    (defun my-beframe-buffer-names-sorted (&optional frame)
-      "Return the list of buffers from `beframe-buffer-names' sorted by visibility.
+  (defface beframe-buffer
+    '((t :inherit font-lock-string-face))
+    "Face for `consult' framed buffers.")
+
+  (defun my-beframe-buffer-names-sorted (&optional frame)
+    "Return the list of buffers from `beframe-buffer-names' sorted by visibility.
 With optional argument FRAME, return the list of buffers of FRAME."
-      (beframe-buffer-names frame :sort #'beframe-buffer-sort-visibility))
+    (beframe-buffer-names frame :sort #'beframe-buffer-sort-visibility))
 
-    (defvar beframe-consult-source
-      `( :name     "Frame-specific buffers"
-         :narrow   ?F
-         :category buffer
-         :face     beframe-buffer
-         :history  beframe-history
-         :items    ,#'my-beframe-buffer-names-sorted
-         :action   ,#'switch-to-buffer
-         :state    ,#'consult--buffer-state))
+  (defvar beframe-consult-source
+    `( :name     "Frame-specific buffers"
+       :narrow   ?F
+       :category buffer
+       :face     beframe-buffer
+       :history  beframe-history
+       :items    ,#'my-beframe-buffer-names-sorted
+       :action   ,#'switch-to-buffer
+       :state    ,#'consult--buffer-state))
 
-    (add-to-list 'consult-buffer-sources 'beframe-consult-source)))
+  (add-to-list 'consult-buffer-sources 'beframe-consult-source))
 
 
+;;
 ;; Dabbrev settings
+;;
+
 (use-package dabbrev
   :config
 
-  ;; Better letter casesx
+  ;; Better letter cases
   (setq dabbrev-case-distinction nil
         dabbrev-case-replace nil
         dabbrev-case-fold-search t
         dabbrev-upcase-means-case-search t)
 
+  ;; Ignore these for `dabbrev'
   ;; See https://github.com/minad/corfu
+  ;;
+
   (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
 
-  ;; Since 29.1, use `dabbrev-ignored-buffer-regexps' on older.
   (add-to-list 'dabbrev-ignored-buffer-modes #'doc-view-mode)
   (add-to-list 'dabbrev-ignored-buffer-modes #'pdf-view-mode)
   (add-to-list 'dabbrev-ignored-buffer-modes #'tags-table-mode))
 
+;;
 ;; Add extensions for the completion backend
+;;
+
 (use-package cape
   :straight t
   :config
-  (setq cape-dabbrev-min-length 4)
+  (setq cape-dabbrev-min-length 2)
 
   (defun completion-at-point-functions-setup (capfs-map-alist)
     "Set up completion at point functions based on CAPFS-MAP-ALIST.
-
 CAPFS-MAP-ALIST is an association list where each key is a major mode symbol
 and each value is a list of functions to add to `completion-at-point-functions'."
     (dolist (mode-func-pair capfs-map-alist)
@@ -314,8 +298,8 @@ and each value is a list of functions to add to `completion-at-point-functions'.
                           cape-dabbrev))
       (emacs-lisp-mode . (cape-dict
                           cape-file
-                          cape-dabbrev
-                          cape-elisp-symbol))
+                          cape-elisp-symbol
+                          cape-dabbrev))
       (org-mode        . (cape-dict
                           cape-elisp-block
                           cape-file
