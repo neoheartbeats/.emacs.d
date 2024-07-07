@@ -129,8 +129,9 @@
 (add-hook 'after-init-hook #'sthenno-mono-ligation-setup)
 
 ;; Set up font for unicode fontset
-(set-fontset-font "fontset-default" 'unicode "SF Pro")
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
+
+(set-fontset-font t 'unicode (font-spec :family "SF Pro") nil 'prepend)
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji") nil 'prepend)
 
 ;; Note this make all italic font style disabled
