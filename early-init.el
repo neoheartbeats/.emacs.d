@@ -30,11 +30,11 @@
 (setenv "LIBRARY_PATH"
         (concat "/opt/homebrew/opt/gcc/lib/gcc/14:"
                 "/opt/homebrew/opt/gcc/lib/gcc/14/gcc/aarch64-apple-darwin23/14:"
-                "/opt/homebrew/opt/libgccjit/lib/gcc/14:"
-                (getenv "LIBRARY_PATH")))
+                "/opt/homebrew/opt/libgccjit/lib/gcc/14"))
 
-(setq load-path (delete "/opt/homebrew/Cellar/emacs-plus@30/30.0.60/share/emacs/30.0.60/lisp/org"
-                        load-path))
+(setq load-path
+      (delete "/opt/homebrew/Cellar/emacs-plus@30/30.0.60/share/emacs/30.0.60/lisp/org"
+              load-path))
 
 
 ;; Defer garbage collection further back in the startup process
@@ -54,7 +54,6 @@
 
 ;; Do not enable packages during this early stage
 (setq package-enable-at-startup nil)
-
 (setq load-prefer-newer t)
 
 
@@ -108,13 +107,13 @@
 ;; Perform darwing the frame when initialization
 ;;
 
-(push '(menu-bar-lines . 0) default-frame-alist)
-(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(menu-bar-lines . 0)     default-frame-alist)
+(push '(tool-bar-lines . 0)     default-frame-alist)
 (push '(horizontal-scroll-bars) default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
+(push '(vertical-scroll-bars)   default-frame-alist)
 
-(push '(width . 120) default-frame-alist)
-(push '(height . 50) default-frame-alist)
+(push '(width  . 120) default-frame-alist)
+(push '(height . 50)  default-frame-alist)
 
 ;; XXX: Since feature `alpha-background' conflicts with Emacs overlay rendering for
 ;; images such as svg files, `alpha' can be a replacement for a rough approach.
@@ -122,7 +121,7 @@
 ;; (push '(alpha . (80 . 80)) default-frame-alist)
 
 (push '(ns-transparent-titlebar . t) default-frame-alist)
-(push '(ns-appearance . dark) default-frame-alist)
+(push '(ns-appearance . dark)        default-frame-alist)
 
 (provide 'early-init)
 ;;;
