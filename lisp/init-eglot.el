@@ -52,8 +52,6 @@
   :bind (:map eglot-mode-map
               ("<f6>" . eglot-rename)))
 
-;; See https://github.com/radian-software/straight.el/issues/1146 [FIXME]
-
 ;; Speed up
 (use-package eglot-booster
   :after (eglot)
@@ -66,16 +64,16 @@
   (setq eglot-booster-no-remote-boost t)
   (eglot-booster-mode 1))
 
-;; Auto confirm `.dir-locals.el' files
+;; Automatically confirm .dir-locals.el files
 (setq-default enable-local-variables :safe)
 
 
-;;; Python project management [TODO]
+;; Python project management [TODO]
 (use-package python
-  :config
-  (setq python-indent-offset 4))
+  :config (setq python-indent-offset 4))
 
-;; Reformat python buffers using the `black' formatter
+;; Reformat Python buffers using the Black formatter
+;; TODO: See `init-editing-utils'
 (use-package blacken
   :straight t
   :init (add-hook 'python-ts-mode-hook #'(lambda ()

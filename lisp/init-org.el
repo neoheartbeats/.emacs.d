@@ -47,6 +47,8 @@
 
 ;; Experimental: `org-latex-preview'
 ;;
+(require 'org-latex-preview)
+
 (add-hook 'org-latex-preview-auto-ignored-commands #'next-line)
 (add-hook 'org-latex-preview-auto-ignored-commands #'previous-line)
 (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-up-command)
@@ -82,12 +84,10 @@
         ("" "bm" t)))
 
 (setq org-latex-preview-preamble
-      "\\documentclass{article}
-[DEFAULT-PACKAGES]
-[PACKAGES]
-\\usepackage{xcolor}
-\\usephysicsmodule{ab,ab.braket,diagmat,xmat}%
-")
+      (concat org-latex-preview-preamble
+
+              ;; The following is used by the physics2 package
+              "\n\\usephysicsmodule{ab,ab.braket,diagmat,xmat}%"))
 
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
@@ -108,7 +108,7 @@
 (setq dvisvgm-image-converter-command
       (list (concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts "
                     "--exact-bbox --bbox=preview "
-                    "--libgs=" my/libgs-dylib-path
+                    "--libgs=" my/libgs-dylib-path " "
                     "-v4 -o %B-%%9p.svg %f")))
 
 (setq org-latex-preview-process-alist
@@ -120,7 +120,7 @@
          :image-output-type "svg"
          :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
          :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\"
-mylatexformat.ltx %f")
+      mylatexformat.ltx %f")
          :image-converter ,dvisvgm-image-converter-command)))
 
 ;; [TODO] consult-reftex, see https://karthinks.com/software/reftex-in-org-mode/
@@ -137,15 +137,16 @@ mylatexformat.ltx %f")
   (setq org-modern-star 'fold
         org-modern-fold-stars '(("◉" . "○"))
         org-modern-hide-stars 'leading)
+
   (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X . "􀃰")
-                              (?- . "􀃞")
+  (setq org-modern-checkbox '((?X  . "􀃰")
+                              (?-  . "􀃞")
                               (?\s . "􀂒")))
 
   ;; From https://github.com/karthink/.emacs.d/blob/master/lisp/setup-org.el
   (defun my-org-modern-spacing ()
     "Adjust line-spacing for `org-modern' to correct svg display.
-This is useful if using font Iosevka."
+      This is useful if using font Iosevka."
     (setq-local line-spacing (if org-modern-mode
                                  0.1
                                0.0)))
@@ -167,9 +168,6 @@ This is useful if using font Iosevka."
 ;; Use this with `C-S-<return>'
 (setq org-treat-insert-todo-heading-as-state-change t)
 
-;; Prevent editing of text within folded subtree
-(setq org-catch-invisible-edits 'show-and-error)
-
 ;; Better experiences jumping through headlines
 (setq org-special-ctrl-a/e t)
 
@@ -186,8 +184,7 @@ This is useful if using font Iosevka."
       org-image-actual-width '(240))
 
 (setq org-yank-dnd-method 'file-link)
-(setq org-yank-image-save-method
-      (expand-file-name "images/" org-directory))
+(setq org-yank-image-save-method (expand-file-name "images/" org-directory))
 
 ;; Org links
 (setq org-return-follows-link t)
@@ -197,9 +194,6 @@ This is useful if using font Iosevka."
 
 ;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
-
-;; Speed keys
-(setq org-use-speed-commands t)
 
 ;; Org Refile
 ;;
@@ -211,8 +205,8 @@ This is useful if using font Iosevka."
       org-outline-path-complete-in-steps t)
 
 (advice-add #'org-olpath-completing-read :around #'my/enforce-basic-completion)
-(advice-add #'org-make-tags-matcher :around #'my/enforce-basic-completion)
-(advice-add #'org-agenda-filter :around #'my/enforce-basic-completion)
+(advice-add #'org-make-tags-matcher      :around #'my/enforce-basic-completion)
+(advice-add #'org-agenda-filter          :around #'my/enforce-basic-completion)
 
 (defun my/enforce-basic-completion (&rest args)
   (minibuffer-with-setup-hook
@@ -226,7 +220,9 @@ This is useful if using font Iosevka."
     (apply args)))
 
 
+;;
 ;; The Zettlekasten note-taking system by Denote
+;;
 (use-package denote
   :straight t
   :config
@@ -287,7 +283,7 @@ This is useful if using font Iosevka."
       (find-file (nth (1+ current-file-index) sorted-files)))))
 
 (bind-keys :map org-mode-map
-           ("s-<up>" . my/denote-open-previous-file)
+           ("s-<up>"   . my/denote-open-previous-file)
            ("s-<down>" . my/denote-open-next-file))
 
 
@@ -306,7 +302,7 @@ This is useful if using font Iosevka."
 
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
-                               (python . t)))
+                               (python     . t)))
 
 
 ;; Org-agenda [TODO]
