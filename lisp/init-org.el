@@ -435,8 +435,3 @@
 ;;   (add-hook 'org-drill-display-answer-hook #'my/play-speach-current-heading))
 
 (provide 'init-org)
-;;;
-;; coding: utf-8
-;; no-byte-compile: t
-;; End:
-;;

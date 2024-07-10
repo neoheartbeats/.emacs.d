@@ -164,8 +164,3 @@
 ;;              ("E" . sthenno-trans-to-en-target)))
 
 (provide 'init-eglot)
-;;;
-;; coding: utf-8
-;; no-byte-compile: t
-;; End:
-;;

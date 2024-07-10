@@ -74,8 +74,3 @@
 ;;                                       (etags-regen-mode 1))))
 
 (provide 'init-projects)
-;;;
-;; coding: utf-8
-;; no-byte-compile: t
-;; End:
-;;

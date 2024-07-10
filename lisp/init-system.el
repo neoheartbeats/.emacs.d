@@ -62,6 +62,7 @@
 (global-unset-key (kbd "C-<left>"))     ; `left-word', `M-<left>' is used instead
 (global-unset-key (kbd "C-<right>"))    ; `right-word', `M-<right>' is used instead
 
+
 ;; Split windows
 (defun split-window-below-focus ()
   "Like `split-window-below', but focus to the new window after execution."
@@ -102,19 +103,23 @@ Activate again to undo this. If the window changes before then, the undo expires
            ("C-<left>"  . windmove-left)
            ("C-<right>" . windmove-right))
 
-
+;; Remember changes on windows
+;; Use C-c <left> and C-c <right> to undo and redo changes on windows
+(use-package winner
+  :init
+
+  ;; Restore windows after finishing Ediff
+  (add-hook 'ediff-quit-hook #'winner-undo)
+  :config (winner-mode 1))
+
 ;; Resizing frames in a smooth way
 (setq window-resize-pixelwise t)
 (setq frame-resize-pixelwise t)
 
 
-;; Increase how much is read from processes (default is 4kb)
-(setq read-process-output-max #x10000)
-
 ;; Locate position history
 (use-package saveplace
-  :config
-  (save-place-mode 1))
+  :config (save-place-mode 1))
 
 (use-package savehist
   :init
@@ -132,6 +137,16 @@ Activate again to undo this. If the window changes before then, the undo expires
               recentf-max-saved-items 200
               recentf-auto-cleanup 300)
   :config (recentf-mode 1))
+
+
+;;; Encodings
+;;
+;; Contrary to what many Emacs users have in their configs, you don't need more
+;; than this to make UTF-8 the default coding system:
+(set-language-environment "UTF-8")
+;; ...but `set-language-environment' also sets `default-input-method', which is
+;; a step too opinionated.
+(setq default-input-method nil)
 
 
 ;; Misc options
@@ -229,8 +244,3 @@ Activate again to undo this. If the window changes before then, the undo expires
   (add-hook 'dired-mode-hook #'dired-hide-details-mode))
 
 (provide 'init-system)
-;;;
-;; coding: utf-8
-;; no-byte-compile: t
-;; End:
-;;

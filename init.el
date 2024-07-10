@@ -14,7 +14,6 @@
 ;;; Speed up startup
 ;;
 ;; Process performance tuning
-(setq-default read-process-output-max (* 4 1024 1024))
 (setq-default process-adaptive-read-buffering nil)
 
 ;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions
@@ -50,11 +49,16 @@
 (setq bidi-inhibit-bpa t)
 
 ;; Emacs "updates" its ui more often than it needs to, so slow it down slightly
-(setq idle-update-delay 1.0)
+(setq idle-update-delay 1.0)            ; default is 0.5
 
-;;
+;; Increase how much is read from processes in a single chunk (default is 4kb).
+(setq-default read-process-output-max (* 1024 1024)) ; 1024kb
+
+;; Font compacting can be terribly expensive, especially for rendering icon
+;; fonts on Windows. Whether disabling it has a notable affect on Linux and Mac
+;; hasn't been determined, but do it anyway, just in case. This increases memory
+;; usage.
 (setq inhibit-compacting-font-caches t)
-(setq jit-lock-defer-time 0)
 
 
 ;; Suppress GUI features
@@ -118,6 +122,16 @@
 (use-package gcmh
   :straight t
   :diminish (gcmh-mode)
+  :init
+
+  ;; The GC introduces annoying pauses and stuttering into our Emacs experience,
+  ;; so we use `gcmh' to stave off the GC while we're using Emacs, and provoke it
+  ;; when it's idle. However, if the idle delay is too long, we run the risk of
+  ;; runaway memory usage in busy sessions. If it's too low, then we may as well
+  ;; not be using gcmh at all.
+  (setq gcmh-idle-delay 'auto           ; default is 15s
+        gcmh-auto-idle-delay-factor 10
+        gcmh-high-cons-threshold (* 128 1024 1024)) ; 128mb
   :config (gcmh-mode 1))
 
 
@@ -160,21 +174,7 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
 
-(use-package explain-pause-mode
-  :straight (explain-pause-mode
-             :type git
-             :host github
-             :repo "lastquestion/explain-pause-mode")
-  :diminish (explain-pause-mode)
-  :config
-  (setq explain-pause-alert-style 'silent)
-  (explain-pause-mode 1)
-
-  :bind (:map global-map
-              ("<f3>" . explain-pause-top)))
-
-
-;; Load init* files
+;; Require init-* files
 (require 'init-system)
 (require 'init-gui-frames)
 (require 'init-editing-utils)
@@ -183,10 +183,3 @@
 (require 'init-temp)
 (require 'init-comp)
 (require 'init-eglot)
-
-(provide 'init)
-;;;
-;; coding: utf-8
-;; no-byte-compile: t
-;; End:
-;;

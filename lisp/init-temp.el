@@ -46,8 +46,3 @@
            ("s-i m" . my/yas-insert-latex-matrix))
 
 (provide 'init-temp)
-;;;
-;; coding: utf-8
-;; no-byte-compile: t
-;; End:
-;;

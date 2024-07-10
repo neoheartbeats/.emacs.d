@@ -112,8 +112,12 @@
 (push '(horizontal-scroll-bars) default-frame-alist)
 (push '(vertical-scroll-bars)   default-frame-alist)
 
-(push '(width  . 120) default-frame-alist)
-(push '(height . 50)  default-frame-alist)
+(setq menu-bar-mode nil
+      tool-bar-mode nil
+      scroll-bar-mode nil)
+
+(push '(width  . 120) initial-frame-alist)
+(push '(height . 50)  initial-frame-alist)
 
 ;; XXX: Since feature `alpha-background' conflicts with Emacs overlay rendering for
 ;; images such as svg files, `alpha' can be a replacement for a rough approach.
@@ -122,10 +126,3 @@
 
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark)        default-frame-alist)
-
-(provide 'early-init)
-;;;
-;; coding: utf-8
-;; no-byte-compile: t
-;; End:
-;;

@@ -322,8 +322,3 @@ Elements in list-of-capfs further down the list have deeper priority in completi
               ("<escape>" . corfu-quit)))
 
 (provide 'init-comp)
-;;;
-;; coding: utf-8
-;; no-byte-compile: t
-;; End:
-;;

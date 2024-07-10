@@ -147,14 +147,13 @@
 ;;
 ;; Collect pop-up windows
 ;;
-
 (use-package popper
   :straight t
   :init
   (setq popper-reference-buffers '(("\\*Messages\\*$" . hide)
                                    ("\\*corfu\\*$"    . hide)
                                    "\\*ielm\\*$"
-                                   "\\*explain-pause-top\\*$"
+                                   "\\*scratch\\*$"
                                    help-mode))
 
   ;; Disable the modeline for `popper' buffers
@@ -272,8 +271,3 @@ are open."
 (setq confirm-kill-emacs #'sthenno-quit-fn)
 
 (provide 'init-gui-frames)
-;;;
-;; coding: utf-8
-;; no-byte-compile: t
-;; End:
-;;

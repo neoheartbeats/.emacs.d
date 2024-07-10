@@ -247,8 +247,3 @@ If `major-mode' is `python-mode', abort."
   (global-hl-todo-mode 1))
 
 (provide 'init-editing-utils)
-;;;
-;; coding: utf-8
-;; no-byte-compile: t
-;; End:
-;;
