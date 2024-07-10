@@ -109,6 +109,51 @@ If `major-mode' is `python-mode', abort."
               ("C-z" . vundo)))
 
 
+;; Fold code lines
+(use-package hideshow
+  :config
+  (defun my-hs-set-up-overlay (ov)
+    (define-fringe-bitmap 'hs-marker [0 24 24 126 126 24 24 0]) ; A plus sign
+    (modus-themes-with-colors
+      (when (eq 'code (overlay-get ov 'hs))
+        (let* ((marker-string "*fringe-dummy*")
+               (marker-length (length marker-string))
+               (display-string " 􀄪 "))
+          (put-text-property 0 marker-length 'display
+                             (list 'left-fringe 'hs-marker 'fringe-face)
+                             marker-string)
+          (overlay-put ov 'before-string marker-string)
+          (put-text-property 1 (1- (length display-string))
+                             'face `(:foreground ,fg-changed :background ,bg-changed)
+                             display-string)
+          (overlay-put ov 'display display-string)))))
+
+  (setq hs-set-up-overlay #'my-hs-set-up-overlay)
+
+  (add-hook 'prog-mode-hook #'(lambda ()
+                                (hs-minor-mode 1)))
+  :bind (:map prog-mode-map
+              ("M-<tab>" . hs-toggle-hiding)
+              ("M--"     . hs-hide-all)
+              ("M-="     . hs-show-all)))
+
+
+;;; Incremental Search using `isearch'
+;;
+;; Also check `consult'
+;;
+(use-package isearch
+  :config (setq isearch-allow-scroll t)
+  :bind
+  (:map global-map
+        ("s-f" . isearch-forward))
+  (:map isearch-mode-map
+        ("<down>"   . isearch-repeat-forward)
+        ("<up>"     . isearch-repeat-backward)
+        ("<escape>" . isearch-exit)
+        ("<return>" . isearch-exit)))
+
+
 ;; HACK: Inhibit passing these delimiters
 ;;
 ;; (defun my-inhibit-specific-delimiters ()
@@ -182,23 +227,21 @@ If `major-mode' is `python-mode', abort."
   :config
   (setq pulsar-pulse t
         pulsar-delay 0.05
-        pulsar-iterations 15
-        pulsar-face 'pulsar-green
-        pulsar-highlight-face 'pulsar-green)
+        pulsar-iterations 15)
 
   ;; Hooks
   (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line-cyan)
   (add-hook 'indent-current-buffer-hook #'pulsar-pulse-line-cyan)
   (add-hook 'after-save-hook #'pulsar-pulse-line-green)
+
   (add-hook 'my/delete-current-line-hook #'pulsar-pulse-line-magenta)
   (add-hook 'my/cycle-to-next-buffer-hook #'pulsar-pulse-line-cyan)
   (add-hook 'my/cycle-to-previous-buffer-hook #'pulsar-pulse-line-cyan)
 
+  (add-hook 'isearch-mode-end-hook #'pulsar-highlight-line)
+
   (add-hook 'split-window-below-focus-hook #'pulsar-highlight-line)
   (add-hook 'split-window-right-focus-hook #'pulsar-highlight-line)
-
-  (require 'init-comp)
-  (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
 
   (pulsar-global-mode 1))
 
