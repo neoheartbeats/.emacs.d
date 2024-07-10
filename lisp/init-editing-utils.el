@@ -289,4 +289,86 @@ If `major-mode' is `python-mode', abort."
 
   (global-hl-todo-mode 1))
 
+
+;;; Spell checking using Jinx
+;;
+;; GNU Aspell is used as the backend by default.
+;; Enchant need to be installed first. Use "brew install enchant" on macOS.
+;; Personal dictionary is located at "~/.config/enchant/en_US.dic" on macOS.
+;;
+(use-package jinx
+  :straight t
+  :init
+  (setq jinx-languages "en_US"
+        jinx-menu-suggestions 5)
+
+  (setq jinx--save-keys
+        `((?= . ,#'jinx--save-personal)))
+
+  ;; Overwrite these functions
+  ;;
+  (cl-defun jinx--correct-overlay (overlay &key info initial)
+    "Correct word at OVERLAY.
+Optionally show prompt INFO and insert INITIAL input."
+    (catch 'jinx--goto
+      (let* ((word (buffer-substring-no-properties
+                    (overlay-start overlay) (overlay-end overlay)))
+             (choice
+              (jinx--correct-highlight overlay
+                (lambda ()
+                  (when (or (< (point) (window-start)) (> (point) (window-end nil t)))
+                    (recenter))
+                  (minibuffer-with-setup-hook
+                      #'jinx--correct-setup
+                    (or (completing-read
+                         (format "Correct '%s'%s: " word (or info ""))
+                         (jinx--correct-table
+                          (jinx--correct-suggestions word))
+                         nil nil initial t word)
+                        word)))))
+             (len (length choice)))
+        (pcase (and (> len 0) (assq (aref choice 0) jinx--save-keys))
+          (`(,key . ,fun)
+           (funcall fun 'save key
+                    (if (> len 1) (substring-no-properties choice 1) word))
+           (jinx--recheck-overlays))
+          ((guard (not (equal choice word)))
+           (jinx--correct-replace overlay choice)))
+        nil)))
+
+  (defun jinx--correct-suggestions (word)
+    "Retrieve suggestions for WORD from all dictionaries."
+    (let ((ht (make-hash-table :test #'equal))
+          (list nil))
+      (dolist (dict jinx--dicts)
+        (let* ((desc (jinx--mod-describe dict))
+               (group (format "Suggestions from dictionary '%s' - %s"
+                              (car desc) (cdr desc))))
+          (dolist (w (jinx--mod-suggest dict word))
+            (setq list (jinx--add-suggestion list ht w group)))))
+      (dolist (w (jinx--session-suggestions word))
+        (setq list (jinx--add-suggestion list ht w "Suggestions from session")))
+      (cl-loop for (key . fun) in jinx--save-keys
+               for actions = (funcall fun nil key word) do
+               (when (and actions (not (consp (car actions))))
+                 (setq actions (list actions)))
+               (cl-loop for (k w a) in actions do
+                        (push (propertize
+                               (concat (propertize (if (stringp k) k (char-to-string k))
+                                                   'face 'jinx-save 'rear-nonsticky t)
+                                       w)
+                               'jinx--group "Accept"
+                               'jinx--suffix
+                               (format #(" [%s]" 0 5 (face jinx-annotation)) a))
+                              list)))
+      (nreverse list)))
+
+  ;; Hooks
+  ;;
+  (add-hook 'org-mode-hook #'(lambda ()
+                               (jinx-mode 1)))
+
+  :bind (:map jinx-overlay-map
+              ("SPC" . jinx-correct)))
+
 (provide 'init-editing-utils)
