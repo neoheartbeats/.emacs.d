@@ -191,7 +191,7 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
 
   (defvar-local my-modeline-prefix-symbol
       (modus-themes-with-colors
-        (propertize "  Sthenno 􀋀" 'face
+        (propertize "  Sthenno ◈" 'face
                     `(:foreground ,sthenno-gorse :inherit mode-line-buffer-id))))
 
   (setq-default mode-line-format `(,my-modeline-prefix-symbol
