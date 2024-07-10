@@ -32,9 +32,9 @@
                 "/opt/homebrew/opt/gcc/lib/gcc/14/gcc/aarch64-apple-darwin23/14:"
                 "/opt/homebrew/opt/libgccjit/lib/gcc/14"))
 
-(setq load-path
-      (delete "/opt/homebrew/Cellar/emacs-plus@30/30.0.60/share/emacs/30.0.60/lisp/org"
-              load-path))
+;; (setq load-path
+;;       (delete "/opt/homebrew/Cellar/emacs-plus@30/30.0.60/share/emacs/30.0.60/lisp/org"
+;;               load-path))
 
 
 ;; Defer garbage collection further back in the startup process

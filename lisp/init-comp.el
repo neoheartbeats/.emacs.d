@@ -101,7 +101,7 @@
   (setq vertico-cycle t)
 
   ;; Add some simple indicator symbols here to make things clear
-  (setq vertico-count-format (cons "%-6s " "◇ %s of %s ◆"))
+  (setq vertico-count-format (cons "%-6s " "◇ %s of %s ◈"))
 
   ;; Do not render italic fonts
   (set-face-attribute 'vertico-group-title nil :slant 'normal)

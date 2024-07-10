@@ -9,15 +9,19 @@
 ;; This config is currently for a patched version of Org that is under development.
 ;; See https://code.tecosaur.net/tec/org-mode for more details.
 ;;
-;; TODO: This file includes:
+;; This file includes:
+;;
 ;; - Org Mode basics
 ;; - TEC's `org-latex-preview' specific configurations
-;; -
-;;
+;; - Modern Org Mode
+;; - Note-taking system using `denote'
 
 ;;; Code:
 ;;
+(require 'org)
+
 ;; Setup default directory
+;;
 (setq org-directory "~/Developer/sthenno-notebook/")
 
 ;;; Org Mode buffer init behaviors
@@ -31,13 +35,13 @@
 ;; Install AUCTeX
 ;; (use-package tex
 ;;   :straight auctex)
-(straight-use-package 'auctex)
+;; (straight-use-package 'auctex)
 
 ;; Use CDLaTeX to improve editing experiences
-(use-package cdlatex
-  :straight t
-  :diminish (org-cdlatex-mode)
-  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+;; (use-package cdlatex
+;;   :straight t
+;;   :diminish (org-cdlatex-mode)
+;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 ;; Default LaTeX preview image directory
 ;; (setq org-preview-latex-image-directory
@@ -47,90 +51,87 @@
 
 ;; Experimental: `org-latex-preview'
 ;;
-(require 'org-latex-preview)
+;; (require 'org-latex-preview)
 
-(add-hook 'org-latex-preview-auto-ignored-commands #'next-line)
-(add-hook 'org-latex-preview-auto-ignored-commands #'previous-line)
-(add-hook 'org-latex-preview-auto-ignored-commands #'scroll-up-command)
-(add-hook 'org-latex-preview-auto-ignored-commands #'scroll-down-command)
-(add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window)
-(add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window-down)
+;; (add-hook 'org-latex-preview-auto-ignored-commands #'next-line)
+;; (add-hook 'org-latex-preview-auto-ignored-commands #'previous-line)
+;; (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-up-command)
+;; (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-down-command)
+;; (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window)
+;; (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window-down)
 
-(add-hook 'org-mode-hook #'(lambda ()
-                             (org-latex-preview-auto-mode 1)))
+;; (add-hook 'org-mode-hook #'(lambda ()
+;;                              (org-latex-preview-auto-mode 1)))
 
 ;; Preview functions
 ;;
 
 (defun my-org-preview-fragments ()
   (interactive)
-  (call-interactively 'org-latex-preview-clear-cache)
-  (org-latex-preview 'buffer)
+  ;; (call-interactively 'org-latex-preview-clear-cache)
+  ;; (org-latex-preview 'buffer)
   (org-redisplay-inline-images))
 
 (bind-keys :map org-mode-map
            ("s-p" . my-org-preview-fragments))
 
-(setq org-latex-packages-alist
-      '(("T1" "fontenc" t)
-        ("" "amsmath" t)
-        ("" "amssymb" t)
-        ("" "siunitx" t)
-        ("" "physics2" t)
-        ("libertinus" "newtx" t)
+;; (setq org-latex-packages-alist
+;;       '(("T1" "fontenc" t)
+;;         ("" "amsmath" t)
+;;         ("" "amssymb" t)
+;;         ("" "siunitx" t)
+;;         ("" "physics2" t)
+;;         ("libertinus" "newtx" t)
 
-        ;; Load this after all math to give access to bold math
-        ;; See https://ctan.math.illinois.edu/fonts/newtx/doc/newtxdoc.pdf
-        ("" "bm" t)))
+;;         ;; Load this after all math to give access to bold math
+;;         ;; See https://ctan.math.illinois.edu/fonts/newtx/doc/newtxdoc.pdf
+;;         ("" "bm" t)))
 
-(setq org-latex-preview-preamble
-      (concat org-latex-preview-preamble
+;; (setq org-latex-preview-preamble
+;;       (concat org-latex-preview-preamble
 
-              ;; The following is used by the physics2 package
-              "\n\\usephysicsmodule{ab,ab.braket,diagmat,xmat}%"))
+;;               ;; The following is used by the physics2 package
+;;               "\n\\usephysicsmodule{ab,ab.braket,diagmat,xmat}%"))
 
-(setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
-(setq org-use-sub-superscripts '{})
+;; (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
+;; (setq org-use-sub-superscripts '{})
 
-(plist-put org-latex-preview-appearance-options :scale 1.0)
-(plist-put org-latex-preview-appearance-options :zoom
-           (- (/ (face-attribute 'default :height) 100.0) 0.025))
+;; (plist-put org-latex-preview-appearance-options :scale 1.0)
+;; (plist-put org-latex-preview-appearance-options :zoom
+;;            (- (/ (face-attribute 'default :height) 100.0) 0.025))
 
 ;;
 ;; The `org-latex-preview' process
 ;;
 
-(setq org-latex-preview-process-default 'dvisvgm)
+;; (setq org-latex-preview-process-default 'dvisvgm)
 
-(defvar my/libgs-dylib-path "/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib"
-  "Path to Ghostscript shared library.")
+;; (defvar my/libgs-dylib-path "/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib"
+;;   "Path to Ghostscript shared library.")
 
-(setq dvisvgm-image-converter-command
-      (list (concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts "
-                    "--exact-bbox --bbox=preview "
-                    "--libgs=" my/libgs-dylib-path " "
-                    "-v4 -o %B-%%9p.svg %f")))
+;; (setq dvisvgm-image-converter-command
+;;       (list (concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts "
+;;                     "--exact-bbox --bbox=preview "
+;;                     "--libgs=" my/libgs-dylib-path " "
+;;                     "-v4 -o %B-%%9p.svg %f")))
 
-(setq org-latex-preview-process-alist
-      `((dvisvgm
-         :programs ("latex" "dvisvgm")
-         :description "dvi > svg"
-         :message "you need to install the programs: latex and dvisvgm."
-         :image-input-type "dvi"
-         :image-output-type "svg"
-         :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
-         :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\"
-      mylatexformat.ltx %f")
-         :image-converter ,dvisvgm-image-converter-command)))
+;; (setq org-latex-preview-process-alist
+;;       `((dvisvgm
+;;          :programs ("latex" "dvisvgm")
+;;          :description "dvi > svg"
+;;          :message "you need to install the programs: latex and dvisvgm."
+;;          :image-input-type "dvi"
+;;          :image-output-type "svg"
+;;          :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
+;;          :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\"
+;;       mylatexformat.ltx %f")
+;;          :image-converter ,dvisvgm-image-converter-command)))
 
 ;; [TODO] consult-reftex, see https://karthinks.com/software/reftex-in-org-mode/
 
 
 ;;; Modern Org Mode theme
 ;;
-;; - org-modern
-;;
-
 (use-package org-modern
   :straight t
   :config
@@ -142,6 +143,8 @@
   (setq org-modern-checkbox '((?X  . "􀃰")
                               (?-  . "􀃞")
                               (?\s . "􀂒")))
+
+  (setq org-modern-block-name '(("src" . ("􀃤" "􀃤"))))
 
   ;; From https://github.com/karthink/.emacs.d/blob/master/lisp/setup-org.el
   (defun my-org-modern-spacing ()
@@ -194,30 +197,6 @@
 
 ;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
-
-;; Org Refile
-;;
-;; Check https://github.com/minad/vertico
-;; Check `init-comp'
-;;
-
-(setq org-refile-use-outline-path 'file
-      org-outline-path-complete-in-steps t)
-
-(advice-add #'org-olpath-completing-read :around #'my/enforce-basic-completion)
-(advice-add #'org-make-tags-matcher      :around #'my/enforce-basic-completion)
-(advice-add #'org-agenda-filter          :around #'my/enforce-basic-completion)
-
-(defun my/enforce-basic-completion (&rest args)
-  (minibuffer-with-setup-hook
-      (:append
-       (lambda ()
-         (let ((map (make-sparse-keymap)))
-           (define-key map [tab] #'minibuffer-complete)
-           (use-local-map (make-composed-keymap (list map) (current-local-map))))
-         (setq-local completion-styles (cons 'basic completion-styles)
-                     vertico-preselect 'prompt)))
-    (apply args)))
 
 
 ;;

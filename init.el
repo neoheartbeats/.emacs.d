@@ -138,15 +138,14 @@
 ;;; Load path
 ;;
 ;; Fix PATH for macOS
-
 (use-package exec-path-from-shell
   :straight t
   :config (exec-path-from-shell-initialize))
 
 ;; Org mode
-(let ((org-lisp-dir (expand-file-name "site-lisp/org/lisp/" user-emacs-directory)))
-  (add-to-list 'load-path org-lisp-dir)
-  (require 'org))
+;; (let ((org-lisp-dir (expand-file-name "site-lisp/org/lisp/" user-emacs-directory)))
+;;   (add-to-list 'load-path org-lisp-dir)
+;;   (require 'org))
 
 ;; From https://github.com/purcell/emacs.d/blob/master/lisp/init-site-lisp.el
 ;; (defun add-subdirs-to-load-path (parent-dir)
