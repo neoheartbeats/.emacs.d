@@ -149,13 +149,16 @@ Activate again to undo this. If the window changes before then, the undo expires
 (setq default-input-method nil)
 
 
+;; Special treatment for large files
+(use-package so-long
+  :config (global-so-long-mode 1))
+
+
 ;; Misc options
 (setq use-short-answers t)
 
 (setq delete-by-moving-to-trash t)
 (setq auto-hscroll-mode 'current-line)
-(setq create-lockfiles nil)
-(setq make-backup-files nil)
 (setq mark-even-if-inactive nil)
 (setq ring-bell-function 'ignore)
 (setq require-final-newline t)
@@ -168,6 +171,9 @@ Activate again to undo this. If the window changes before then, the undo expires
 ;; XXX: Still need time to figure out if this has any side-effects
 (setq auto-save-default nil)
 (setq save-silently t)
+
+(setq create-lockfiles nil)
+(setq make-backup-files nil)
 
 ;; Auto saving mechanism
 ;; (setq auto-save-interval 2400

@@ -204,32 +204,13 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
 
 (add-hook 'after-init-hook #'my-modeline-buffer-identification-setup)
 
-;; Iconify mode line
-(use-package cyphejor
-  :straight t
-  :config
-  (setq cyphejor-rules
-        '( :upcase
-           ("buffer" "β")
-           ("diff"   "Δ")
-           ("dired"  "􀩚")
-           ("emacs"  "E")
-           ("lisp"   "L" :postfix)
-           ("menu"   "􀓕" :postfix)
-           ("mode"   "")
-           ("shell"  "􀩼")
-           ("text"   "T")
-           ("org"    "􀐘")))
-
-  (cyphejor-mode 1))
-
 
 ;; Automatic adjusting for margins
 (use-package spacious-padding
   :straight t
   :config
   (setq spacious-padding-widths
-        '( :internal-border-width 10
+        '( :internal-border-width 15
            :header-line-width 0
            :mode-line-width 2
            :right-divider-width 0

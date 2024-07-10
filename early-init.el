@@ -106,14 +106,22 @@
 
 ;; Perform darwing the frame when initialization
 ;;
+;; NOTE: `menu-bar-lines' is forced to redrawn under macOS GUI, therefore it is helpless
+;; by inhibiting it in the early stage. However, since I dont't use the `menu-bar' under
+;; macOS, `menu-bar-mode' is disabled later.
 
-(push '(menu-bar-lines . 0)     default-frame-alist)
+;;
+;; (push '(menu-bar-lines . 0)     default-frame-alist)
+;;
+(add-hook 'after-init-hook #'(lambda ()
+                               (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+                               (menu-bar-mode -1)))
+
 (push '(tool-bar-lines . 0)     default-frame-alist)
 (push '(horizontal-scroll-bars) default-frame-alist)
 (push '(vertical-scroll-bars)   default-frame-alist)
 
-(setq menu-bar-mode nil
-      tool-bar-mode nil
+(setq tool-bar-mode nil
       scroll-bar-mode nil)
 
 (push '(width  . 120) initial-frame-alist)
