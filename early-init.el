@@ -130,7 +130,6 @@
 ;; XXX: Since feature `alpha-background' conflicts with Emacs overlay rendering for
 ;; images such as svg files, `alpha' can be a replacement for a rough approach.
 ;;
-;; (push '(alpha . (80 . 80)) default-frame-alist)
-
+(push '(alpha . (85 . 85))           default-frame-alist)
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark)        default-frame-alist)

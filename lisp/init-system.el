@@ -20,7 +20,6 @@
 (bind-keys :map global-map
            ("s-a" . mark-whole-buffer)
            ("s-c" . kill-ring-save)
-           ("s-l" . goto-line)
            ("s-q" . save-buffers-kill-emacs)
            ("s-s" . save-buffer)
            ("s-v" . yank)
@@ -242,6 +241,7 @@ Activate again to undo this. If the window changes before then, the undo expires
 (use-package dired
   :init
   (setq dired-auto-revert-buffer #'dired-directory-changed-p)
+  (setq dired-kill-when-opening-new-dired-buffer t)
   (setq dired-free-space nil)
 
   ;; HACK: `gls' is preferred on macOS
