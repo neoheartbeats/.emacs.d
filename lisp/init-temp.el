@@ -6,14 +6,25 @@
 
 ;;; Commentary:
 ;;
-;; This file includes:
+;; TODO: This file includes:
 ;; -
 ;;
 
 ;;; Code:
 ;;
 
-;;; Yasnippet
+
+;; TODO: Abbrevs
+;;
+(use-package abbrev
+  :config
+  (define-abbrev-table 'global-abbrev-table
+    '(("ciallo" "Ciallo～(∠・ω< )⌒☆" nil :count 1)))
+
+  (abbrev-mode 1))
+
+
+;; Yasnippet
 ;;
 
 (use-package yasnippet
