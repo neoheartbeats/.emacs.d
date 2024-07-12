@@ -215,8 +215,7 @@ waiting for the response."
       (gptel buff)
 
       ;; TODO: Add repeat keys to jump back
-      (switch-to-buffer buff)
-      (message "Ciallo～(∠・ω< )⌒☆")))
+      (switch-to-buffer buff)))
 
   (global-set-key (kbd "s-l") #'my-gptel-to-buffer)
 

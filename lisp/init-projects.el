@@ -54,13 +54,14 @@
   (setq magit-diff-refine-hunk t)
   :bind ("C-x g" . magit-status))
 
+;; FIXME:
 ;; Display entries from source code comments and Org files in the Magit status buffer.
 ;; See also `hl-todo'
 ;;
-(use-package magit-todos
-  :straight t
-  :after (magit)
-  :config (magit-todos-mode 1))
+;; (use-package magit-todos
+;;   :straight t
+;;   :after (magit)
+;;   :config (magit-todos-mode 1))
 
 
 ;;; Xref
