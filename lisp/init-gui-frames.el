@@ -160,8 +160,6 @@
   (setq popper-mode-line nil)
 
   (popper-mode 1)
-  (popper-echo-mode 1)
-
   :bind (:map global-map
               ("C-p" . popper-toggle)))
 
@@ -203,6 +201,12 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
                                    mode-line-end-spaces)))
 
 (add-hook 'after-init-hook #'my-modeline-buffer-identification-setup)
+
+;; TODO
+;; (use-package minions
+;;   :straight t
+;;   :init (setq minions-mode-line-lighter "􀠩")
+;;   :config (minions-mode 1))
 
 
 ;; Automatic adjusting for margins

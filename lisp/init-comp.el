@@ -140,8 +140,8 @@
     (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
 
     :bind (:map vertico-map
-                ("<return>" . vertico-directory-enter)
-                ("<backspace>" . vertico-directory-delete-char)
+                ("<return>"      . vertico-directory-enter)
+                ("<backspace>"   . vertico-directory-delete-char)
                 ("M-<backspace>" . vertico-directory-delete-word)))
 
   :bind ((:map vertico-map
