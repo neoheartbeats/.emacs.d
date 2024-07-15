@@ -135,6 +135,20 @@
   :config (gcmh-mode 1))
 
 
+;; XXX: benchmark-init
+;;
+(use-package benchmark-init
+  :straight t
+  :config
+
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook #'benchmark-init/deactivate)
+
+  ;; To present results
+  (global-set-key (kbd "<f2>") #'benchmark-init/show-durations-tree)
+  (global-set-key (kbd "<f3>") #'benchmark-init/show-durations-tabulated))2
+
+
 ;;; Load path
 ;;
 ;; Fix PATH for macOS

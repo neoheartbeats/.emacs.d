@@ -35,18 +35,18 @@
   (setq modus-vivendi-palette-overrides
         '(
           ;; Make the mode-line borderless and stand out less
-          (bg-mode-line-active bg-active)
-          (fg-mode-line-active fg-main)
+          (bg-mode-line-active   bg-active)
+          (fg-mode-line-active   fg-main)
           (bg-mode-line-inactive bg-dim)
-          (fg-mode-line-active fg-dim)
+          (fg-mode-line-inactive fg-dim)
 
           ;; Make the mode line borderless
-          (border-mode-line-active unspecified)
+          (border-mode-line-active   unspecified)
           (border-mode-line-inactive unspecified)
 
           ;; Set color faces for `display-line-numbers-mode'
-          (fg-line-number-active fg-main)
-          (bg-line-number-active bg-hl-line)
+          (fg-line-number-active   fg-main)
+          (bg-line-number-active   bg-hl-line)
           (fg-line-number-inactive fg-dim)
           (bg-line-number-inactive unspecified)
 
@@ -54,13 +54,13 @@
           (fringe unspecified)
 
           ;; Subtle underlines
-          (underline-link border)
-          (underline-link-visited border)
+          (underline-link          border)
+          (underline-link-visited  border)
           (underline-link-symbolic border)
 
           ;; Make links the same color as `fg-main'
           ;; This also affects `button' faces in Modus Themes
-          (fg-link unspecified)
+          (fg-link         unspecified)
           (fg-link-visited unspecified)
 
           ;; Prose colors

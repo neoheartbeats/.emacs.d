@@ -163,17 +163,27 @@ If `major-mode' is `python-mode', abort."
 ;;   (modify-syntax-entry ?> "." (syntax-table)))
 
 ;; Automatic pair parenthesis
-(use-package elec-pair
-  :init
+;;
+;; `python-mode' disables `electric-indent-mode' by default since Python does not
+;; lend itself to fully automatic indentation. Org Mode should disable this for the
+;; same reason.
+;; XXX: Side-effects come to `org-babel' is under discovering.
+(add-hook 'org-mode-hook #'(lambda ()
+                             (setq electric-indent-inhibit t)))
 
-  ;; `python-mode' disables `electric-indent-mode' by default since Python does not
-  ;; lend itself to fully automatic indentation. Org Mode should disable this for the
-  ;; same reason.
-  ;; XXX: Side-effects come to `org-babel' is under discovering.
-  (add-hook 'org-mode-hook #'(lambda ()
-                               (setq electric-indent-inhibit t)))
+(electric-pair-mode 1)
 
-  :config (electric-pair-mode 1))
+;; (use-package elec-pair
+;;   :init
+
+;;   ;; `python-mode' disables `electric-indent-mode' by default since Python does not
+;;   ;; lend itself to fully automatic indentation. Org Mode should disable this for the
+;;   ;; same reason.
+;;   ;; XXX: Side-effects come to `org-babel' is under discovering.
+;;   (add-hook 'org-mode-hook #'(lambda ()
+;;                                (setq electric-indent-inhibit t)))
+
+;;   :config (electric-pair-mode 1))
 
 (use-package paren
   :init (setq show-paren-delay 0.05

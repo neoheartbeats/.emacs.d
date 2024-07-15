@@ -26,7 +26,6 @@
 ;; To enable the maximum fontifications. If this is set to default, there could be
 ;; syntax highlighting error found in Org Babel
 ;;
-
 (setq treesit-font-lock-level 4)
 
 
@@ -79,7 +78,7 @@
   :init (add-hook 'python-ts-mode-hook #'(lambda ()
                                            (blacken-mode 1)))
   :bind (:map python-ts-mode-map
-              ("s-i" . blacken-buffer)))
+              ("s-p" . blacken-buffer)))
 
 
 ;;; AI Integration
@@ -131,6 +130,19 @@
   (add-hook 'gptel-post-response-functions #'gptel-end-of-response)
 
   :config
+  (setq my-gptel-input-count 0)
+
+  (defun my-gptel-prefix ()
+    (setq my-gptel-input-count (1+ my-gptel-input-count))
+    (let* ((cnt my-gptel-input-count)
+           (prefix-in  (format "_In[%s]:=_ " cnt))
+           (prefix-out (format "_Out[%s]=_ " (1- cnt))))
+      (setq gptel-prompt-prefix-alist   `((org-mode . ,prefix-in))
+            gptel-response-prefix-alist `((org-mode . ,prefix-out)))))
+
+  (add-hook 'gptel-mode-hook         #'my-gptel-prefix)
+  (add-hook 'gptel-pre-response-hook #'my-gptel-prefix)
+
   ;; HACK
   ;;
   (defvar loading-animation-chars '("." ".." "..." "...." ".....")
@@ -220,11 +232,11 @@ waiting for the response."
   (global-set-key (kbd "s-l") #'my-gptel-to-buffer)
 
   :bind (:map gptel-mode-map
-              ("s-<return>" . gptel-send)))
+              ("S-<return>" . gptel-send)))
 
+
 ;; GitHub Copilot
 ;;
-
 ;; (use-package copilot
 ;;   :straight (
 ;;              :host github

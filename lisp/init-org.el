@@ -165,6 +165,16 @@
 (setq org-tags-column 0)
 (setq org-fontify-whole-heading-line t)
 
+;; Custom faces for Org emphasis
+;;
+(defface sthenno-org-emphasis-prefix '((t (:foreground "#00bcff" :height 0.8)))
+  "Sthenno's prefix emphasis for Org.")
+
+(setq org-emphasis-alist '(("*" bold)
+                           ("_" sthenno-org-emphasis-prefix)
+                           ("=" org-verbatim verbatim)
+                           ("+" (:strike-through t))))
+
 ;; Use this with `C-<return>'
 (setq org-insert-heading-respect-content t)
 
