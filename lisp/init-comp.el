@@ -277,6 +277,8 @@ and each value is a list of functions to add to `completion-at-point-functions'.
                           cape-file
                           cape-elisp-symbol
                           cape-dabbrev))
+      (text-mode       . (cape-dict
+                          cape-dabbrev))
       (org-mode        . (cape-dict
                           cape-elisp-block
                           cape-file
