@@ -46,7 +46,10 @@
 ;; To maximize the speed of native compilation
 ;;
 (setq native-comp-speed 3)
-(setq native-comp-async-report-warnings-errors 'silent)
+
+;; By default any warnings encountered during async native compilation pops up. As this
+;; tends to happen rather frequently with a lot of packages, it can get annoying.
+(setq native-comp-async-report-warnings-errors nil)
 
 ;; To ensure `.eln' files are created correctly
 (setq native-comp-async-query-on-exit t)
@@ -65,43 +68,43 @@
 ;; SEE: https://github.com/karthink/.emacs.d/blob/master/early-init.el
 ;;
 
-(unless (or (daemonp) noninteractive)
-  (let ((old-file-name-handler-alist file-name-handler-alist))
-    ;; `file-name-handler-alist' is consulted on each `require', `load' and
-    ;; various path/io functions. You get a minor speed up by unsetting this.
-    ;; Some warning, however: this could cause problems on builds of Emacs where
-    ;; its site lisp files aren't byte-compiled and we're forced to load the
-    ;; *.el.gz files (e.g. on Alpine).
-    (setq-default file-name-handler-alist nil)
-    ;; ...but restore `file-name-handler-alist' later, because it is needed for
-    ;; handling encrypted or compressed files, among other things.
-    (defun my/reset-file-handler-alist ()
-      (setq file-name-handler-alist
-            ;; Merge instead of overwrite because there may have bene changes to
-            ;; `file-name-handler-alist' since startup we want to preserve.
-            (delete-dups (append file-name-handler-alist
-                                 old-file-name-handler-alist))))
-    (add-hook 'emacs-startup-hook #'my/reset-file-handler-alist 101))
+;; (unless (or (daemonp) noninteractive)
+;;   (let ((old-file-name-handler-alist file-name-handler-alist))
+;;     ;; `file-name-handler-alist' is consulted on each `require', `load' and
+;;     ;; various path/io functions. You get a minor speed up by unsetting this.
+;;     ;; Some warning, however: this could cause problems on builds of Emacs where
+;;     ;; its site lisp files aren't byte-compiled and we're forced to load the
+;;     ;; *.el.gz files (e.g. on Alpine).
+;;     (setq-default file-name-handler-alist nil)
+;;     ;; ...but restore `file-name-handler-alist' later, because it is needed for
+;;     ;; handling encrypted or compressed files, among other things.
+;;     (defun my/reset-file-handler-alist ()
+;;       (setq file-name-handler-alist
+;;             ;; Merge instead of overwrite because there may have bene changes to
+;;             ;; `file-name-handler-alist' since startup we want to preserve.
+;;             (delete-dups (append file-name-handler-alist
+;;                                  old-file-name-handler-alist))))
+;;     (add-hook 'emacs-startup-hook #'my/reset-file-handler-alist 101))
 
-  (setq-default inhibit-redisplay t
-                inhibit-message t)
-  (add-hook 'window-setup-hook
-            (lambda ()
-              (setq-default inhibit-redisplay nil
-                            inhibit-message nil)
-              (redisplay)))
+;;   (setq-default inhibit-redisplay t
+;;                 inhibit-message t)
+;;   (add-hook 'window-setup-hook
+;;             (lambda ()
+;;               (setq-default inhibit-redisplay nil
+;;                             inhibit-message nil)
+;;               (redisplay)))
 
-  ;; Site files tend to use `load-file', which emits "Loading X..." messages in
-  ;; the echo area, which in turn triggers a redisplay. Redisplays can have a
-  ;; substantial effect on startup times and in this case happens so early that
-  ;; Emacs may flash white while starting up.
-  (define-advice load-file (:override (file) silence)
-    (load file nil 'nomessage))
+;;   ;; Site files tend to use `load-file', which emits "Loading X..." messages in
+;;   ;; the echo area, which in turn triggers a redisplay. Redisplays can have a
+;;   ;; substantial effect on startup times and in this case happens so early that
+;;   ;; Emacs may flash white while starting up.
+;;   (define-advice load-file (:override (file) silence)
+;;     (load file nil 'nomessage))
 
-  ;; Undo our `load-file' advice above, to limit the scope of any edge cases it
-  ;; may introduce down the road.
-  (define-advice startup--load-user-init-file (:before (&rest _) nomessage-remove)
-    (advice-remove #'load-file #'load-file@silence)))
+;;   ;; Undo our `load-file' advice above, to limit the scope of any edge cases it
+;;   ;; may introduce down the road.
+;;   (define-advice startup--load-user-init-file (:before (&rest _) nomessage-remove)
+;;     (advice-remove #'load-file #'load-file@silence)))
 
 
 ;; Perform darwing the frame when initialization
@@ -113,9 +116,9 @@
 ;;
 ;; (push '(menu-bar-lines . 0)     default-frame-alist)
 ;;
-(add-hook 'after-init-hook #'(lambda ()
-                               (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
-                               (menu-bar-mode -1)))
+;; (add-hook 'after-init-hook #'(lambda ()
+;;                                (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+;;                                (menu-bar-mode -1)))
 
 (push '(tool-bar-lines . 0)     default-frame-alist)
 (push '(horizontal-scroll-bars) default-frame-alist)
@@ -127,9 +130,9 @@
 (push '(width  . 120) initial-frame-alist)
 (push '(height . 50)  initial-frame-alist)
 
-;; XXX: Since feature `alpha-background' conflicts with Emacs overlay rendering for
+;; NOTE: Since feature `alpha-background' conflicts with Emacs overlay rendering for
 ;; images such as svg files, `alpha' can be a replacement for a rough approach.
 ;;
-(push '(alpha . (85 . 85))           default-frame-alist)
+(push '(alpha . (90 . 90))           default-frame-alist)
 (push '(ns-transparent-titlebar . t) default-frame-alist)
 (push '(ns-appearance . dark)        default-frame-alist)
