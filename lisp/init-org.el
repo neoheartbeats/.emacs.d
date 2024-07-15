@@ -66,14 +66,14 @@
 ;; Preview functions
 ;;
 
-(defun my-org-preview-fragments ()
+(defun sthenno/org-preview-fragments ()
   (interactive)
   ;; (call-interactively 'org-latex-preview-clear-cache)
   ;; (org-latex-preview 'buffer)
   (org-redisplay-inline-images))
 
 (bind-keys :map org-mode-map
-           ("s-p" . my-org-preview-fragments))
+           ("s-p" . sthenno/org-preview-fragments))
 
 ;; (setq org-latex-packages-alist
 ;;       '(("T1" "fontenc" t)
@@ -106,13 +106,13 @@
 
 ;; (setq org-latex-preview-process-default 'dvisvgm)
 
-;; (defvar my/libgs-dylib-path "/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib"
+;; (defvar sthenno/libgs-dylib-path "/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib"
 ;;   "Path to Ghostscript shared library.")
 
 ;; (setq dvisvgm-image-converter-command
 ;;       (list (concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts "
 ;;                     "--exact-bbox --bbox=preview "
-;;                     "--libgs=" my/libgs-dylib-path " "
+;;                     "--libgs=" sthenno/libgs-dylib-path " "
 ;;                     "-v4 -o %B-%%9p.svg %f")))
 
 ;; (setq org-latex-preview-process-alist
@@ -147,14 +147,14 @@
   (setq org-modern-block-name '(("src" . ("􀃤" "􀃤"))))
 
   ;; From https://github.com/karthink/.emacs.d/blob/master/lisp/setup-org.el
-  (defun my-org-modern-spacing ()
+  (defun sthenno/org-modern-spacing ()
     "Adjust line-spacing for `org-modern' to correct svg display.
       This is useful if using font Iosevka."
     (setq-local line-spacing (if org-modern-mode
                                  0.1
                                0.0)))
 
-  (add-hook 'org-modern-mode-hook #'my-org-modern-spacing)
+  (add-hook 'org-modern-mode-hook #'sthenno/org-modern-spacing)
 
   (global-org-modern-mode 1))
 
@@ -245,11 +245,11 @@
 ;; Extensions for Denote [TODO] Add `consult-denote' support
 
 ;; Custom functions for Denote [TODO]
-(defun my/denote-insert-links-current-month ()
+(defun sthenno/denote-insert-links-current-month ()
   (interactive)
   (denote-add-links (format-time-string "%B")))
 
-(defun my/denote-open-previous-file ()
+(defun sthenno/denote-open-previous-file ()
   (interactive)
   (let* ((current-file (buffer-file-name))
          (directory (file-name-directory current-file))
@@ -260,7 +260,7 @@
     (when (and current-file-index (> current-file-index 0))
       (find-file (nth (1- current-file-index) sorted-files)))))
 
-(defun my/denote-open-next-file ()
+(defun sthenno/denote-open-next-file ()
   (interactive)
   (let* ((current-file (buffer-file-name))
          (directory (file-name-directory current-file))
@@ -272,8 +272,8 @@
       (find-file (nth (1+ current-file-index) sorted-files)))))
 
 (bind-keys :map org-mode-map
-           ("s-<up>"   . my/denote-open-previous-file)
-           ("s-<down>" . my/denote-open-next-file))
+           ("s-<up>"   . sthenno/denote-open-previous-file)
+           ("s-<down>" . sthenno/denote-open-next-file))
 
 
 ;; Load languages for Org Babel
@@ -311,7 +311,7 @@
 
 
 ;; Useful functions
-;; (defun my/org-mode-insert-get-button ()
+;; (defun sthenno/org-mode-insert-get-button ()
 ;;   "Inserts a button that copies a user-defined string to clipboard."
 ;;   (interactive)
 ;;   (let ((content (read-string "Content: ")))
@@ -323,7 +323,7 @@
 ;; Integrate with built-in Python API -> `init-eglot'
 ;;
 ;; TTS implementation using OpenAI's API
-;; (defun my/content-by-key-from-file (filename key)
+;; (defun sthenno/content-by-key-from-file (filename key)
 ;;   "Get content string of KEY from FILENAME."
 ;;   (with-temp-buffer
 ;;     (insert-file-contents filename)
@@ -332,23 +332,23 @@
 ;;  (match-string 1)
 ;;       (error "Key %s not found in file %s" key filename))))
 
-;; (defun my/environ-from-user-emacs-dir (key)
+;; (defun sthenno/environ-from-user-emacs-dir (key)
 ;;   "Get environ content by KEY from .env file in `user-emacs-directory'."
 ;;   (let ((filename (concat user-emacs-directory ".env")))
-;;     (my/content-by-key-from-file filename key)))
+;;     (sthenno/content-by-key-from-file filename key)))
 
-;; (setq my/openai-api-key
-;;       (my/environ-from-user-emacs-dir "OPENAI_API_KEY"))
+;; (setq sthenno/openai-api-key
+;;       (sthenno/environ-from-user-emacs-dir "OPENAI_API_KEY"))
 
 ;; (require 'json)
 
-;; (defun my/speech-from-str-to-file (input-string output-file)
+;; (defun sthenno/speech-from-str-to-file (input-string output-file)
 ;;   "Send a text-to-speech request to the OpenAI API and save the
 ;; result to OUTPUT-FILE."
 ;;   (let* ((url "https://api.openai.com/v1/audio/speech")
 ;;          (url-request-method "POST")
 ;;          (url-request-extra-headers
-;;           `(("Authorization" . ,(concat "Bearer " my/openai-api-key))
+;;           `(("Authorization" . ,(concat "Bearer " sthenno/openai-api-key))
 ;;             ("Content-Type" . "application/json")))
 ;;          (url-request-data
 ;;           (json-encode `(("model" . "tts-1")
@@ -362,13 +362,13 @@
 ;;         (write-region (point) (point-max) output-file))
 ;;       (kill-buffer buffer))))
 
-;; (defun my/generate-timestamp ()
+;; (defun sthenno/generate-timestamp ()
 ;;   "Generate a timestamp in the format YYYYMMDDTHHMMSS."
 ;;   (format-time-string "%Y%m%dT%H%M%S"))
 
-;; (setq my/speach-files-dir (concat org-directory "medi/"))
+;; (setq sthenno/speach-files-dir (concat org-directory "medi/"))
 
-;; (defun my/speech-from-str-to-file-insert ()
+;; (defun sthenno/speech-from-str-to-file-insert ()
 ;;   "Send the selected text to the OpenAI API and insert the result at
 ;; the point."
 ;;   (interactive)
@@ -376,20 +376,20 @@
 ;;       (let* ((start (region-beginning))
 ;;       (end (region-end))
 ;;       (input-string (buffer-substring-no-properties start end))
-;;       (filename (concat my/speach-files-dir
-;;                 "speach-" (my/generate-timestamp) ".mp3"))
+;;       (filename (concat sthenno/speach-files-dir
+;;                 "speach-" (sthenno/generate-timestamp) ".mp3"))
 ;;       (button-string
 ;;        (format "[[elisp:(emms-play-file \"%s\")][[􀊨]]]" filename)))
-;;  (my/speech-from-str-to-file input-string filename)
+;;  (sthenno/speech-from-str-to-file input-string filename)
 ;;  (goto-char end)
 ;;  (insert (concat " " button-string))
 ;;  (message (format "TTS finished to file %s" filename)))
 ;;     (message "No region selected")))
 
 ;; (bind-keys* :map org-mode-map
-;;      ("s-[ s" . my/speech-from-str-to-file-insert))
+;;      ("s-[ s" . sthenno/speech-from-str-to-file-insert))
 
-;; (defun my/play-speach-current-heading ()
+;; (defun sthenno/play-speach-current-heading ()
 ;;   "Play the speach audio if there is exactly one in current heading."
 ;;   (interactive)
 ;;   (save-excursion
@@ -421,6 +421,6 @@
 ;;   :config
 ;;   (setq org-drill-learn-fraction 0.5)
 ;;   (setq org-drill-maximum-items-per-session 20)
-;;   (add-hook 'org-drill-display-answer-hook #'my/play-speach-current-heading))
+;;   (add-hook 'org-drill-display-answer-hook #'sthenno/play-speach-current-heading))
 
 (provide 'init-org)

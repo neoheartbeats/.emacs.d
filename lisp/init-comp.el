@@ -107,11 +107,11 @@
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
 
   ;; Prefix candidates
-  (defvar my/vertico-using-prefix-symbol-p t)
+  (defvar sthenno/vertico-using-prefix-symbol-p t)
 
   (cl-defmethod vertico--format-candidate :around
     (cand prefix suffix index start &context
-          ((and my/vertico-using-prefix-symbol-p
+          ((and sthenno/vertico-using-prefix-symbol-p
                 (not (bound-and-true-p vertico-flat-mode)))
            (eql t)))
     (setq cand (cl-call-next-method cand prefix suffix index start))
@@ -205,7 +205,7 @@
     '((t :inherit font-lock-string-face))
     "Face for `consult' framed buffers.")
 
-  (defun my-beframe-buffer-names-sorted (&optional frame)
+  (defun sthenno/beframe-buffer-names-sorted (&optional frame)
     "Return the list of buffers from `beframe-buffer-names' sorted by visibility.
 With optional argument FRAME, return the list of buffers of FRAME."
     (beframe-buffer-names frame :sort #'beframe-buffer-sort-visibility))
@@ -216,7 +216,7 @@ With optional argument FRAME, return the list of buffers of FRAME."
        :category buffer
        :face     beframe-buffer
        :history  beframe-history
-       :items    ,#'my-beframe-buffer-names-sorted
+       :items    ,#'sthenno/beframe-buffer-names-sorted
        :action   ,#'switch-to-buffer
        :state    ,#'consult--buffer-state))
 
@@ -269,7 +269,7 @@ and each value is a list of functions to add to `completion-at-point-functions'.
                     (dolist (func functions)
                       (add-to-list 'completion-at-point-functions func)))))))
 
-  (defvar my/capfs-map-alist
+  (defvar sthenno/capfs-map-alist
     '((prog-mode       . (cape-dict
                           cape-file
                           cape-dabbrev))
@@ -286,7 +286,7 @@ and each value is a list of functions to add to `completion-at-point-functions'.
     "An alist of (mode . list-of-capfs) to append.
 Elements in list-of-capfs further down the list have deeper priority in completion.")
 
-  (completion-at-point-functions-setup my/capfs-map-alist))
+  (completion-at-point-functions-setup sthenno/capfs-map-alist))
 
 
 ;;

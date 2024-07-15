@@ -16,27 +16,27 @@
 ;; Global functions for editing enhancement
 ;;
 
-(defun my/delete-current-line ()
+(defun sthenno/delete-current-line ()
   "Delete the current line."
   (interactive)
   (delete-region (line-beginning-position) (line-beginning-position 2))
-  (run-hooks 'my/delete-current-line-hook))
+  (run-hooks 'sthenno/delete-current-line-hook))
 
-(defun my/delete-to-beginning-of-line ()
+(defun sthenno/delete-to-beginning-of-line ()
   "Delete from the current position to the beginning of the line."
   (interactive)
   (delete-region (line-beginning-position) (point)))
 
-(global-set-key (kbd "s-<backspace>") #'my/delete-current-line)
-(global-set-key (kbd "C-<backspace>") #'my/delete-to-beginning-of-line)
+(global-set-key (kbd "s-<backspace>") #'sthenno/delete-current-line)
+(global-set-key (kbd "C-<backspace>") #'sthenno/delete-to-beginning-of-line)
 
-(defun my/open-newline-below ()
+(defun sthenno/open-newline-below ()
   "Open a new line below the current one and move the cursor to it."
   (interactive)
   (end-of-line)
   (newline-and-indent))
 
-(global-set-key (kbd "s-<return>") #'my/open-newline-below)
+(global-set-key (kbd "s-<return>") #'sthenno/open-newline-below)
 
 ;; Pretty-print
 ;;
@@ -44,8 +44,8 @@
 ;; language. For example, formatters like Black are preferred over `indent-region' and
 ;; `untabify' for formatting Python code since a formatter usually provides a full
 ;; combination of executions that covers the basic functions that Emacs provides. Thus,
-;; behaviors of `my/pretty-print-current-buffer' should be considered separately for
-;; each particular case especially when `my/enable-pretty-print-on-save' is demanded.
+;; behaviors of `sthenno/pretty-print-current-buffer' should be considered separately for
+;; each particular case especially when `sthenno/enable-pretty-print-on-save' is demanded.
 ;;
 ;; NOTE: I did not intentionally distinguish between Indent, Pretty-print, and Format,
 ;; although there are minor differences in their applicable scenarios. Any
@@ -82,7 +82,7 @@ If `major-mode' is `python-mode', abort."
     (untabify (point-min) (point-max)))
   (run-hooks 'untabify-current-buffer-hook))
 
-(defun my/pretty-print-current-buffer ()
+(defun sthenno/pretty-print-current-buffer ()
   "Pretty print current buffer."
   (interactive)
   (save-excursion
@@ -90,15 +90,15 @@ If `major-mode' is `python-mode', abort."
     (indent-current-comment-buffer)
     (untabify-current-buffer)
     (delete-trailing-whitespace))
-  (run-hooks 'my/pretty-print-current-buffer-hook))
+  (run-hooks 'sthenno/pretty-print-current-buffer-hook))
 
-(defun my/enable-pretty-print-on-save ()
+(defun sthenno/enable-pretty-print-on-save ()
   "Enable pretty print before save in `emacs-lisp-mode'."
-  (add-hook 'before-save-hook #'my/pretty-print-current-buffer nil t))
+  (add-hook 'before-save-hook #'sthenno/pretty-print-current-buffer nil t))
 
-(add-hook 'emacs-lisp-mode-hook #'my/enable-pretty-print-on-save)
+(add-hook 'emacs-lisp-mode-hook #'sthenno/enable-pretty-print-on-save)
 
-(global-set-key (kbd "s-p") #'my/pretty-print-current-buffer)
+(global-set-key (kbd "s-p") #'sthenno/pretty-print-current-buffer)
 
 
 ;; TODO: Vundo
@@ -112,7 +112,7 @@ If `major-mode' is `python-mode', abort."
 ;; Fold code lines
 (use-package hideshow
   :config
-  (defun my-hs-set-up-overlay (ov)
+  (defun sthenno/hs-set-up-overlay (ov)
     (define-fringe-bitmap 'hs-marker [0 24 24 126 126 24 24 0]) ; A plus sign
     (modus-themes-with-colors
       (when (eq 'code (overlay-get ov 'hs))
@@ -128,7 +128,7 @@ If `major-mode' is `python-mode', abort."
                              display-string)
           (overlay-put ov 'display display-string)))))
 
-  (setq hs-set-up-overlay #'my-hs-set-up-overlay)
+  (setq hs-set-up-overlay #'sthenno/hs-set-up-overlay)
 
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (hs-minor-mode 1)))
@@ -156,7 +156,7 @@ If `major-mode' is `python-mode', abort."
 
 ;; HACK: Inhibit passing these delimiters
 ;;
-;; (defun my-inhibit-specific-delimiters ()
+;; (defun sthenno/inhibit-specific-delimiters ()
 ;;   "Remove the following from current `syntax-table'. This disables syntax highlighting
 ;; and auto-paring for such entries."
 ;;   (modify-syntax-entry ?< "." (syntax-table))
@@ -244,9 +244,9 @@ If `major-mode' is `python-mode', abort."
   (add-hook 'indent-current-buffer-hook #'pulsar-pulse-line-cyan)
   (add-hook 'after-save-hook #'pulsar-pulse-line-green)
 
-  (add-hook 'my/delete-current-line-hook #'pulsar-pulse-line-magenta)
-  (add-hook 'my/cycle-to-next-buffer-hook #'pulsar-pulse-line-cyan)
-  (add-hook 'my/cycle-to-previous-buffer-hook #'pulsar-pulse-line-cyan)
+  (add-hook 'sthenno/delete-current-line-hook #'pulsar-pulse-line-magenta)
+  (add-hook 'sthenno/cycle-to-next-buffer-hook #'pulsar-pulse-line-cyan)
+  (add-hook 'sthenno/cycle-to-previous-buffer-hook #'pulsar-pulse-line-cyan)
 
   (add-hook 'isearch-mode-end-hook #'pulsar-highlight-line)
 
@@ -286,7 +286,7 @@ If `major-mode' is `python-mode', abort."
 (use-package hl-todo
   :straight t
   :init
-  (defun my-hl-todo-faces-setup ()
+  (defun sthenno/hl-todo-faces-setup ()
     (modus-themes-with-colors
       (setq hl-todo-keyword-faces
             `(("TODO"  . ,prose-todo)
@@ -295,7 +295,7 @@ If `major-mode' is `python-mode', abort."
               ("NOTE"  . ,fg-changed)
               ("HACK"  . ,fg-changed)))))
 
-  (add-hook 'after-init-hook #'my-hl-todo-faces-setup)
+  (add-hook 'after-init-hook #'sthenno/hl-todo-faces-setup)
 
   (global-hl-todo-mode 1))
 

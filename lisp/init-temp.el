@@ -36,7 +36,7 @@
   (yas-global-mode 1))
 
 ;; YASnippet functions
-(defun my/yas-insert-latex-matrix ()
+(defun sthenno/yas-insert-latex-matrix ()
   "Insert a LaTeX matrix at the current cursor position."
   (interactive)
   (let* ((rows (read-number "# Rows: "))
@@ -54,6 +54,6 @@
     (yas-expand-snippet snippet)))
 
 (bind-keys :map org-mode-map
-           ("s-i m" . my/yas-insert-latex-matrix))
+           ("s-i m" . sthenno/yas-insert-latex-matrix))
 
 (provide 'init-temp)

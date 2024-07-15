@@ -78,13 +78,13 @@
 ;;     (setq-default file-name-handler-alist nil)
 ;;     ;; ...but restore `file-name-handler-alist' later, because it is needed for
 ;;     ;; handling encrypted or compressed files, among other things.
-;;     (defun my/reset-file-handler-alist ()
+;;     (defun sthenno/reset-file-handler-alist ()
 ;;       (setq file-name-handler-alist
 ;;             ;; Merge instead of overwrite because there may have bene changes to
 ;;             ;; `file-name-handler-alist' since startup we want to preserve.
 ;;             (delete-dups (append file-name-handler-alist
 ;;                                  old-file-name-handler-alist))))
-;;     (add-hook 'emacs-startup-hook #'my/reset-file-handler-alist 101))
+;;     (add-hook 'emacs-startup-hook #'sthenno/reset-file-handler-alist 101))
 
 ;;   (setq-default inhibit-redisplay t
 ;;                 inhibit-message t)

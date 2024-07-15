@@ -103,7 +103,7 @@
 
   ;; Use Ollama as the default backend
   ;;
-  (defun my-gptel-ollama-backend--host (host)
+  (defun sthenno/gptel-ollama-backend--host (host)
     "Make a function to initialize an Ollama backend using the given HOST."
     `(lambda (model)
        (gptel-make-ollama model
@@ -111,13 +111,13 @@
          :stream t
          :models `(,model))))
 
-  (defun my-gptel-ollama-backend--localhost (model)
+  (defun sthenno/gptel-ollama-backend--localhost (model)
     "Initialize an Ollama backend using localhost and the given MODEL."
-    (funcall (my-gptel-ollama-backend--host "localhost:11434") model))
+    (funcall (sthenno/gptel-ollama-backend--host "localhost:11434") model))
 
   ;; Setup the model
   (let* ((model "phi3")
-         (backend (my-gptel-ollama-backend--localhost model)))
+         (backend (sthenno/gptel-ollama-backend--localhost model)))
     (setq gptel-model model
           gptel-backend backend))
 
@@ -130,18 +130,18 @@
   (add-hook 'gptel-post-response-functions #'gptel-end-of-response)
 
   :config
-  (setq my-gptel-input-count 0)
+  (setq sthenno/gptel-input-count 0)
 
-  (defun my-gptel-prefix ()
-    (setq my-gptel-input-count (1+ my-gptel-input-count))
-    (let* ((cnt my-gptel-input-count)
+  (defun sthenno/gptel-prefix ()
+    (setq sthenno/gptel-input-count (1+ sthenno/gptel-input-count))
+    (let* ((cnt sthenno/gptel-input-count)
            (prefix-in  (format "_In[%s]:=_ " cnt))
            (prefix-out (format "_Out[%s]=_ " (1- cnt))))
       (setq gptel-prompt-prefix-alist   `((org-mode . ,prefix-in))
             gptel-response-prefix-alist `((org-mode . ,prefix-out)))))
 
-  (add-hook 'gptel-mode-hook         #'my-gptel-prefix)
-  (add-hook 'gptel-pre-response-hook #'my-gptel-prefix)
+  (add-hook 'gptel-mode-hook         #'sthenno/gptel-prefix)
+  (add-hook 'gptel-pre-response-hook #'sthenno/gptel-prefix)
 
   ;; HACK
   ;;
@@ -171,27 +171,27 @@
 
   ;; Add loading message to `gptel-send'
   ;;
-  (defun my-gptel--loading-msg (loading-msg)
+  (defun sthenno/gptel--loading-msg (loading-msg)
     "Propertize LOADING-MSG using specified `text-properties'."
     (modus-themes-with-colors
       (let ((msg (propertize loading-msg
                              'face `(:foreground ,magenta-intense :inherit 'bold))))
         msg)))
 
-  (defun my-gptel-send-querying-loading ()
+  (defun sthenno/gptel-send-querying-loading ()
     "Now-loading behavior of `gptel-send' during querying."
-    (let ((msg (my-gptel--loading-msg
+    (let ((msg (sthenno/gptel--loading-msg
                 (format "✿ 少女祈祷中 􀍠 [%s]"
                         (gptel-backend-name gptel-backend)))))
       (start-loading-animation msg)))
 
-  (defun my-gptel-send-insert-loading ()
+  (defun sthenno/gptel-send-insert-loading ()
     "Now-loading behavior of `gptel-send' during inserting."
-    (let ((msg (my-gptel--loading-msg "􁄤 少女响应中 􀍠")))
+    (let ((msg (sthenno/gptel--loading-msg "􁄤 少女响应中 􀍠")))
       (stop-loading-animation)
       (message msg)))
 
-  (add-hook 'gptel-pre-response-hook #'my-gptel-send-insert-loading)
+  (add-hook 'gptel-pre-response-hook #'sthenno/gptel-send-insert-loading)
 
   ;; HACK
   (defun gptel-send (&optional arg)
@@ -211,7 +211,7 @@ waiting for the response."
     (interactive "P")
     (if (and arg (require 'gptel-transient nil t))
         (call-interactively #'gptel-menu)
-      (my-gptel-send-querying-loading)
+      (sthenno/gptel-send-querying-loading)
       (gptel--sanitize-model)
       (gptel-request nil :stream gptel-stream)
       (gptel--update-status " Waiting..." 'warning)))
@@ -220,7 +220,7 @@ waiting for the response."
   ;;
   (add-hook 'gptel-mode-hook #'turn-on-visual-line-mode)
 
-  (defun my-gptel-to-buffer ()
+  (defun sthenno/gptel-to-buffer ()
     "Open the gptel buffer."
     (interactive)
     (let ((buff "*Φ*"))
@@ -229,7 +229,7 @@ waiting for the response."
       ;; TODO: Add repeat keys to jump back
       (switch-to-buffer buff)))
 
-  (global-set-key (kbd "s-l") #'my-gptel-to-buffer)
+  (global-set-key (kbd "s-l") #'sthenno/gptel-to-buffer)
 
   :bind (:map gptel-mode-map
               ("S-<return>" . gptel-send)))
