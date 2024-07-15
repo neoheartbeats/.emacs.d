@@ -201,26 +201,26 @@ Activate again to undo this. If the window changes before then, the undo expires
 (global-set-key (kbd "<f12>") 'open-emacs-config-dir)
 
 ;; Ignore temporary buffers
-(defun my/filtered-cycle-buffer (cycle-func)
+(defun sthenno/filtered-cycle-buffer (cycle-func)
   (let ((original-buffer (current-buffer)))
     (funcall cycle-func)
     (while (and (string-match-p "\\*.*\\*" (buffer-name))
                 (not (eq original-buffer (current-buffer))))
       (funcall cycle-func))))
 
-(defun my/cycle-to-next-buffer ()
+(defun sthenno/cycle-to-next-buffer ()
   (interactive)
-  (my/filtered-cycle-buffer 'next-buffer)
-  (run-hooks 'my/cycle-to-next-buffer-hook))
+  (sthenno/filtered-cycle-buffer 'next-buffer)
+  (run-hooks 'sthenno/cycle-to-next-buffer-hook))
 
-(defun my/cycle-to-previous-buffer ()
+(defun sthenno/cycle-to-previous-buffer ()
   (interactive)
-  (my/filtered-cycle-buffer 'previous-buffer)
-  (run-hooks 'my/cycle-to-previous-buffer-hook))
+  (sthenno/filtered-cycle-buffer 'previous-buffer)
+  (run-hooks 'sthenno/cycle-to-previous-buffer-hook))
 
 (bind-keys :map global-map
-           ("<s-right>" . my/cycle-to-next-buffer)
-           ("<s-left>" . my/cycle-to-previous-buffer))
+           ("<s-right>" . sthenno/cycle-to-next-buffer)
+           ("<s-left>" . sthenno/cycle-to-previous-buffer))
 
 
 ;; Mouse and scroll settings

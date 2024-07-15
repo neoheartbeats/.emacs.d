@@ -172,8 +172,8 @@
 ;; - Add `magit' integration
 ;;
 
-(defun my-modeline-buffer-identification-setup ()
-  (defun my-modeline--buffer-identification ()
+(defun sthenno/modeline-buffer-identification-setup ()
+  (defun sthenno/modeline--buffer-identification ()
     "Return `buffer-name' as a string.
 If `buffer-file-name' is a `denote' file, return its corresponding title instead."
     (let ((file (buffer-file-name)))
@@ -181,26 +181,26 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
           (format "[denote:%s]" (denote-retrieve-filename-title (buffer-file-name)))
         (buffer-name))))
 
-  (defvar-local my-modeline-buffer-identification
+  (defvar-local sthenno/modeline-buffer-identification
       '(:eval
         (when (mode-line-window-selected-p)
-          (propertize (my-modeline--buffer-identification) 'face 'mode-line-buffer-id)))
+          (propertize (sthenno/modeline--buffer-identification) 'face 'mode-line-buffer-id)))
     "Mode line construct to display the buffer identification.")
 
-  (defvar-local my-modeline-prefix-symbol
+  (defvar-local sthenno/modeline-prefix-symbol
       (modus-themes-with-colors
         (propertize "  Sthenno ◈" 'face
                     `(:foreground ,sthenno-gorse :inherit mode-line-buffer-id))))
 
-  (setq-default mode-line-format `(,my-modeline-prefix-symbol
+  (setq-default mode-line-format `(,sthenno/modeline-prefix-symbol
                                    "  "
-                                   ,my-modeline-buffer-identification
+                                   ,sthenno/modeline-buffer-identification
                                    "  "
                                    mode-line-modes
                                    mode-line-misc-info
                                    mode-line-end-spaces)))
 
-(add-hook 'after-init-hook #'my-modeline-buffer-identification-setup)
+(add-hook 'after-init-hook #'sthenno/modeline-buffer-identification-setup)
 
 ;; TODO
 ;; (use-package minions

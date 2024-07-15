@@ -34,7 +34,7 @@
   ;; [FIXME]
   ;;
 
-  (defun my/project-remove-project ()
+  (defun sthenno/project-remove-project ()
     "Remove project from `project--list' using completion."
     (interactive)
     (project--ensure-read-project-list)
@@ -43,7 +43,7 @@
       (setq project--list (delete (assoc dir projects) projects))))
 
   :bind (:map global-map
-              ("C-x p <backspace>" . my/project-remove-project)))
+              ("C-x p <backspace>" . sthenno/project-remove-project)))
 
 
 ;; Git client using Magit
