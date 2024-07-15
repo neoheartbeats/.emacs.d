@@ -16,9 +16,9 @@
 ;;
 ;; Command `treesit-auto-install-all' is required if the tree-sitter grammar
 ;; libs have not been configured already
-(use-package treesit-auto
-  :straight t
-  :config (global-treesit-auto-mode 1))
+;; (use-package treesit-auto
+;;   :straight t
+;;   :config (global-treesit-auto-mode 1))
 
 ;; Remap `python-mode' to `python-ts-mode'
 (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
@@ -35,6 +35,7 @@
 
 (use-package eglot
   :straight t
+  :defer t
   :config
 
   ;; Use Pyright as the default language server
@@ -58,6 +59,7 @@
              :type git
              :host github
              :repo "jdtsmith/eglot-booster")
+  :defer t
   :init (add-to-list 'exec-path (expand-file-name "bin/" user-emacs-directory))
   :config
   (setq eglot-booster-no-remote-boost t)
@@ -75,6 +77,7 @@
 ;; TODO: See `init-editing-utils'
 (use-package blacken
   :straight t
+  :defer t
   :init (add-hook 'python-ts-mode-hook #'(lambda ()
                                            (blacken-mode 1)))
   :bind (:map python-ts-mode-map
@@ -87,6 +90,7 @@
 ;;
 (use-package gptel
   :straight t
+  :defer t
   :init
   (setq gptel-default-mode #'org-mode)
 
@@ -95,8 +99,8 @@
         '((default . "You are a helpful assistant living in Emacs.")))
 
   ;; Generation options
-  (setq gptel-max-tokens 240
-        gptel-temperature 0.5)
+  (setq gptel-max-tokens 512
+        gptel-temperature 0.4)
 
   ;; Use the mode-line to display status info
   (setq gptel-use-header-line nil)

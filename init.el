@@ -137,24 +137,24 @@
 
 ;; XXX: benchmark-init
 ;;
-(use-package benchmark-init
-  :straight t
-  :config
+;; (use-package benchmark-init
+;;   :straight t
+;;   :config
 
-  ;; To disable collection of benchmark data after init is done.
-  (add-hook 'after-init-hook #'benchmark-init/deactivate)
+;;   ;; To disable collection of benchmark data after init is done.
+;;   (add-hook 'after-init-hook #'benchmark-init/deactivate)
 
-  ;; To present results
-  (global-set-key (kbd "<f2>") #'benchmark-init/show-durations-tree)
-  (global-set-key (kbd "<f3>") #'benchmark-init/show-durations-tabulated))2
+;;   ;; To present results
+;;   (global-set-key (kbd "<f2>") #'benchmark-init/show-durations-tree)
+;;   (global-set-key (kbd "<f3>") #'benchmark-init/show-durations-tabulated))
 
 
 ;;; Load path
 ;;
 ;; Fix PATH for macOS
-(use-package exec-path-from-shell
-  :straight t
-  :config (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell
+;;   :straight t
+;;   :config (exec-path-from-shell-initialize))
 
 ;; Org mode
 ;; (let ((org-lisp-dir (expand-file-name "site-lisp/org/lisp/" user-emacs-directory)))

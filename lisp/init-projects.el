@@ -49,6 +49,7 @@
 ;; Git client using Magit
 (use-package magit
   :straight t
+  :defer t
   :config
   (setq magit-section-visibility-indicator '(" 􀰌"))
   (setq magit-diff-refine-hunk t)
@@ -68,7 +69,6 @@
 ;;
 ;; For further backends support, see also `etags', `init-eglot'
 ;;
-
 (use-package xref
   :init (setq xref-search-program 'ripgrep)
   :bind (:map global-map
