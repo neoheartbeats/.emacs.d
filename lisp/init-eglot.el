@@ -16,9 +16,9 @@
 ;;
 ;; Command `treesit-auto-install-all' is required if the tree-sitter grammar
 ;; libs have not been configured already
-;; (use-package treesit-auto
-;;   :straight t
-;;   :config (global-treesit-auto-mode 1))
+(use-package treesit-auto
+  :straight t
+  :config (global-treesit-auto-mode 1))
 
 ;; Remap `python-mode' to `python-ts-mode'
 (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))

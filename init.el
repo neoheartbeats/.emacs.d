@@ -131,7 +131,7 @@
   ;; not be using gcmh at all.
   (setq gcmh-idle-delay 'auto           ; default is 15s
         gcmh-auto-idle-delay-factor 10
-        gcmh-high-cons-threshold (* 128 1024 1024)) ; 128mb
+        gcmh-high-cons-threshold (* 512 1024 1024)) ; 512mb
   :config (gcmh-mode 1))
 
 
