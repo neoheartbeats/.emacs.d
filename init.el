@@ -41,7 +41,7 @@
 (setq auto-mode-case-fold nil)
 
 ;; Disable bidirectional text scanning for a modest performance boost
-(setq-default bidi-display-reordering 'left-to-right
+(setq-default bidi-display-reordering  'left-to-right
               bidi-paragraph-direction 'left-to-right)
 
 ;; Disabling BPA makes re-display faster, but might produce incorrect
@@ -62,7 +62,7 @@
 
 
 ;; Suppress GUI features
-(setq use-dialog-box nil
+(setq use-dialog-box  nil
       use-file-dialog nil)
 
 (setq inhibit-splash-screen t
@@ -72,13 +72,12 @@
 
 ;; Default startup message
 (defun display-startup-echo-area-message ()
-  (let
-      ((text "There's nothing more to Show"))
+  (let ((text "There's nothing more to Show"))
     (message "􀪾 %s" text)))
 
 
 ;; User information
-(setq user-full-name "Sthenno"
+(setq user-full-name    "Sthenno"
       user-mail-address "sthenno@sthenno.com")
 
 
@@ -121,6 +120,7 @@
 ;; GCMH: the Garbage Collector Magic Hack
 (use-package gcmh
   :straight t
+  :defer 2
   :diminish (gcmh-mode)
   :init
 
@@ -152,9 +152,9 @@
 ;;; Load path
 ;;
 ;; Fix PATH for macOS
-;; (use-package exec-path-from-shell
-;;   :straight t
-;;   :config (exec-path-from-shell-initialize))
+(use-package exec-path-from-shell
+  :straight t
+  :config (exec-path-from-shell-initialize))
 
 ;; Org mode
 ;; (let ((org-lisp-dir (expand-file-name "site-lisp/org/lisp/" user-emacs-directory)))

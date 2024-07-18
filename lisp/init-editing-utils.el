@@ -103,15 +103,20 @@ If `major-mode' is `python-mode', abort."
 
 ;; Visualize undo
 ;;
-(use-package vundo
-  :straight t
-  :bind (:map global-map
-              ("C-z" . vundo)))
+;; (use-package vundo
+;;   :straight t
+;;   :bind (:map global-map
+;;               ("C-z" . vundo)))
 
 
 ;; Fold code lines
 ;;
 (use-package hideshow
+  :init
+
+  ;; Hooks
+  (add-hook 'prog-mode-hook #'(lambda ()
+                                (hs-minor-mode 1)))
   :config
   (defun sthenno/hs-set-up-overlay (ov)
     (define-fringe-bitmap 'hs-marker [0 24 24 126 126 24 24 0]) ; A plus sign
@@ -131,9 +136,6 @@ If `major-mode' is `python-mode', abort."
 
   (setq hs-set-up-overlay #'sthenno/hs-set-up-overlay)
 
-  ;; Hooks
-  (add-hook 'prog-mode-hook #'(lambda ()
-                                (hs-minor-mode 1)))
   :bind (:map prog-mode-map
               ("M-<tab>" . hs-toggle-hiding)
               ("M--"     . hs-hide-all)
@@ -255,28 +257,29 @@ If `major-mode' is `python-mode', abort."
   (pulsar-global-mode 1))
 
 
-;; (use-package indent-bars
-;;   :straight (indent-bars
-;;              :type git
-;;              :host github
-;;              :repo "jdtsmith/indent-bars")
-;;   :init
-;;   (setq indent-bars-treesit-support t
-;;         indent-bars-treesit-ignore-blank-lines-types '("module"))
+(use-package indent-bars
+  :straight (indent-bars
+             :type git
+             :host github
+             :repo "jdtsmith/indent-bars")
+  :defer t
+  :init
+  (setq indent-bars-treesit-support t
+        indent-bars-treesit-ignore-blank-lines-types '("module"))
 
-;;   ;; Stipple-based pixel-toggling is not supported by NS built Emacs
-;;   (setq indent-bars-prefer-character t)
+  ;; Stipple-based pixel-toggling is not supported by NS built Emacs
+  (setq indent-bars-prefer-character t)
 
-;;   :config
-;;   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
-;;         indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-;;         indent-bars-highlight-current-depth '(:blend 0.8)
-;;         indent-bars-starting-column 0
-;;         indent-bars-display-on-blank-lines t)
+  :config
+  (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
+        indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+        indent-bars-highlight-current-depth '(:blend 0.8)
+        indent-bars-starting-column 0
+        indent-bars-display-on-blank-lines t)
 
-;;   ;; Hooks
-;;   (add-hook 'python-ts-mode-hook #'(lambda ()
-;;                                      (indent-bars-mode 1))))
+  ;; Hooks
+  (add-hook 'python-ts-mode-hook #'(lambda ()
+                                     (indent-bars-mode 1))))
 
 
 ;; Highlight these keywords in code comments
@@ -303,79 +306,79 @@ If `major-mode' is `python-mode', abort."
 ;; GNU Aspell is used as the backend by default.
 ;; Enchant need to be installed first. Use "brew install enchant" on macOS.
 ;; Personal dictionary is located at "~/.config/enchant/en_US.dic" on macOS.
-;;
-(use-package jinx
-  :straight t
-  :init
-  (setq jinx-languages "en_US"
-        jinx-menu-suggestions 5)
 
-  (setq jinx--save-keys
-        `((?= . ,#'jinx--save-personal)))
+;; (use-package jinx
+;;   :straight t
+;;   :init
+;;   (setq jinx-languages "en_US"
+;;         jinx-menu-suggestions 5)
 
-  ;; HACK
-  ;;
-  (cl-defun jinx--correct-overlay (overlay &key info initial)
-    "Correct word at OVERLAY.
-Optionally show prompt INFO and insert INITIAL input."
-    (catch 'jinx--goto
-      (let* ((word (buffer-substring-no-properties
-                    (overlay-start overlay) (overlay-end overlay)))
-             (choice
-              (jinx--correct-highlight overlay
-                (lambda ()
-                  (when (or (< (point) (window-start)) (> (point) (window-end nil t)))
-                    (recenter))
-                  (minibuffer-with-setup-hook
-                      #'jinx--correct-setup
-                    (or (completing-read
-                         (format "Correct '%s'%s: " word (or info ""))
-                         (jinx--correct-table
-                          (jinx--correct-suggestions word))
-                         nil nil initial t word)
-                        word)))))
-             (len (length choice)))
-        (pcase (and (> len 0) (assq (aref choice 0) jinx--save-keys))
-          (`(,key . ,fun)
-           (funcall fun 'save key
-                    (if (> len 1) (substring-no-properties choice 1) word))
-           (jinx--recheck-overlays))
-          ((guard (not (equal choice word)))
-           (jinx--correct-replace overlay choice)))
-        nil)))
+;;   (setq jinx--save-keys
+;;         `((?= . ,#'jinx--save-personal)))
 
-  (defun jinx--correct-suggestions (word)
-    "Retrieve suggestions for WORD from all dictionaries."
-    (let ((ht (make-hash-table :test #'equal))
-          (list nil))
-      (dolist (dict jinx--dicts)
-        (let* ((desc (jinx--mod-describe dict))
-               (group (format "Suggestions from dictionary '%s' - %s"
-                              (car desc) (cdr desc))))
-          (dolist (w (jinx--mod-suggest dict word))
-            (setq list (jinx--add-suggestion list ht w group)))))
-      (dolist (w (jinx--session-suggestions word))
-        (setq list (jinx--add-suggestion list ht w "Suggestions from session")))
-      (cl-loop for (key . fun) in jinx--save-keys
-               for actions = (funcall fun nil key word) do
-               (when (and actions (not (consp (car actions))))
-                 (setq actions (list actions)))
-               (cl-loop for (k w a) in actions do
-                        (push (propertize
-                               (concat (propertize (if (stringp k) k (char-to-string k))
-                                                   'face 'jinx-save 'rear-nonsticky t)
-                                       w)
-                               'jinx--group "Accept"
-                               'jinx--suffix
-                               (format #(" [%s]" 0 5 (face jinx-annotation)) a))
-                              list)))
-      (nreverse list)))
+;;   ;; HACK
+;;   ;;
+;;   (cl-defun jinx--correct-overlay (overlay &key info initial)
+;;     "Correct word at OVERLAY.
+;; Optionally show prompt INFO and insert INITIAL input."
+;;     (catch 'jinx--goto
+;;       (let* ((word (buffer-substring-no-properties
+;;                     (overlay-start overlay) (overlay-end overlay)))
+;;              (choice
+;;               (jinx--correct-highlight overlay
+;;                                        (lambda ()
+;;                                          (when (or (< (point) (window-start)) (> (point) (window-end nil t)))
+;;                                            (recenter))
+;;                                          (minibuffer-with-setup-hook
+;;                                              #'jinx--correct-setup
+;;                                            (or (completing-read
+;;                                                 (format "Correct '%s'%s: " word (or info ""))
+;;                                                 (jinx--correct-table
+;;                                                  (jinx--correct-suggestions word))
+;;                                                 nil nil initial t word)
+;;                                                word)))))
+;;              (len (length choice)))
+;;         (pcase (and (> len 0) (assq (aref choice 0) jinx--save-keys))
+;;           (`(,key . ,fun)
+;;            (funcall fun 'save key
+;;                     (if (> len 1) (substring-no-properties choice 1) word))
+;;            (jinx--recheck-overlays))
+;;           ((guard (not (equal choice word)))
+;;            (jinx--correct-replace overlay choice)))
+;;         nil)))
 
-  ;; Hooks
-  (add-hook 'emacs-startup-hook #'(lambda ()
-                                    (global-jinx-mode 1)))
+;;   (defun jinx--correct-suggestions (word)
+;;     "Retrieve suggestions for WORD from all dictionaries."
+;;     (let ((ht (make-hash-table :test #'equal))
+;;           (list nil))
+;;       (dolist (dict jinx--dicts)
+;;         (let* ((desc (jinx--mod-describe dict))
+;;                (group (format "Suggestions from dictionary '%s' - %s"
+;;                               (car desc) (cdr desc))))
+;;           (dolist (w (jinx--mod-suggest dict word))
+;;             (setq list (jinx--add-suggestion list ht w group)))))
+;;       (dolist (w (jinx--session-suggestions word))
+;;         (setq list (jinx--add-suggestion list ht w "Suggestions from session")))
+;;       (cl-loop for (key . fun) in jinx--save-keys
+;;                for actions = (funcall fun nil key word) do
+;;                (when (and actions (not (consp (car actions))))
+;;                  (setq actions (list actions)))
+;;                (cl-loop for (k w a) in actions do
+;;                         (push (propertize
+;;                                (concat (propertize (if (stringp k) k (char-to-string k))
+;;                                                    'face 'jinx-save 'rear-nonsticky t)
+;;                                        w)
+;;                                'jinx--group "Accept"
+;;                                'jinx--suffix
+;;                                (format #(" [%s]" 0 5 (face jinx-annotation)) a))
+;;                               list)))
+;;       (nreverse list)))
 
-  :bind (:map jinx-overlay-map
-              ("C-SPC" . jinx-correct)))
+;;   ;; Hooks
+;;   (add-hook 'emacs-startup-hook #'(lambda ()
+;;                                     (global-jinx-mode 1)))
+
+;;   :bind (:map jinx-overlay-map
+;;               ("C-SPC" . jinx-correct)))
 
 (provide 'init-editing-utils)

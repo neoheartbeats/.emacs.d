@@ -17,6 +17,20 @@
 ;;; Code:
 ;;
 
+;; XXX: Correct PATH to fix homebrew-emacs-plus native-compile specific issues. This is
+;; probably caused by the mismatching between version of `comp-libgccjit-version' and
+;; GCC that macOS provides.
+;;
+;; Related issues:
+;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/687
+;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/492
+;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/542
+
+(setenv "LIBRARY_PATH"
+        (concat "/opt/homebrew/opt/gcc/lib/gcc/14:"
+                "/opt/homebrew/opt/gcc/lib/gcc/14/gcc/aarch64-apple-darwin23/14:"
+                "/opt/homebrew/opt/libgccjit/lib/gcc/14"))
+
 ;; (setq load-path
 ;;       (delete "/opt/homebrew/Cellar/emacs-plus@30/30.0.60/share/emacs/30.0.60/lisp/org"
 ;;               load-path))

@@ -69,12 +69,11 @@
 (setq-default enable-local-variables :safe)
 
 
-;; Python project management [TODO]
+;; Python project management
 (use-package python
-  :config (setq python-indent-offset 4))
+  :init (setq python-indent-offset 4))
 
 ;; Reformat Python buffers using the Black formatter
-;; TODO: See `init-editing-utils'
 (use-package blacken
   :straight t
   :defer t
@@ -169,15 +168,44 @@
 
 ;; GitHub Copilot
 ;;
-;; (use-package copilot
-;;   :straight (
-;;              :host github
-;;              :repo "copilot-emacs/copilot.el"
-;;              :files ("*.el"))
-;;   :config (define-key global-map (kbd "s-.") #'copilot-accept-completion))
+(use-package copilot
+  :straight (copilot
+             :host github
+             :repo "copilot-emacs/copilot.el"
+             :files ("*.el"))
+  :defer t
+  :init
+  (setq copilot-node-executable "/opt/homebrew/bin/node")
+  (setq copilot-idle-delay 0.05)
+  (setq copilot-max-char (* 500 1000))  ; Default is 100,000
+
+  ;; Toggling `copilot-mode'
+  (defun sthenno/turn-on-copilot ()
+    (interactive)
+    (copilot-mode 1))
+
+  (defun sthenno/turn-off-copilot ()
+    (interactive)
+    (copilot-mode -1))
+
+  :config
+  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
+  (add-to-list 'copilot-major-mode-alist  '("python-ts" . "python"))
+
+  ;; Hooks
+  (add-hook 'python-ts-mode-hook #'sthenno/turn-on-copilot)
+
+  :bind ((:map prog-mode-map
+               ("C-x c" . sthenno/turn-on-copilot)
+               ("C-x C" . sthenno/turn-off-copilot))
+         (:map copilot-completion-map
+               ("<tab>"   . copilot-accept-completion)
+               ("<right>" . copilot-accept-completion-by-line)
+               ("<left>"  . copilot-clear-overlay)
+               ("RET"     . copilot-clear-overlay))))
 
 
-;;; Python API: sthenno-endpoints Client
+;; Python API: sthenno-endpoints Client
 ;;
 ;; [TODO]
 ;; - https://github.com/alphapapa/plz.el
