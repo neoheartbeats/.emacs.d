@@ -151,9 +151,6 @@
 
 ;; Rich annotations for minibuffer
 ;;
-;; [TODO] Propertize `marginalia'
-;;
-
 (use-package marginalia
   :straight t
   :init (marginalia-mode 1))
@@ -161,33 +158,53 @@
 
 ;;; Consult is useful previewing current content in buffer
 ;;
-
+;; See also `beframe', `consult-denote'.
+;;
 (use-package consult
   :straight t
+  :after (xref org)
   :init
-  (global-set-key (kbd "s-b") 'switch-to-buffer)
-  (global-set-key [remap switch-to-buffer] 'consult-buffer)
-  (global-set-key
-   [remap switch-to-buffer-other-window] 'consult-buffer-other-window)
-  (global-set-key
-   [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame)
+  (setq register-preview-delay 0.05
+        register-preview-function #'consult-register-format)
 
-  ;; Framework for mode-specific buffer indexes
-  (global-set-key [remap imenu] 'consult-imenu)
+  (setq xref-show-xrefs-function       #'consult-xref
+        xref-show-definitions-function #'consult-xref)
 
-  :bind (:map global-map
-              ("C-s" . consult-line)
-              ("M-s" . consult-ripgrep)
-              ("C-v" . consult-yank-from-kill-ring)
-              ("s-m" . consult-imenu)
-              ("C-r" . consult-recent-file)))
+  ;; HACK
+  (declare-function consult-buffer "consult")
 
-
-;;; Beframe: Isolate Emacs buffers per frame
+  (defun sthenno/consult-buffer (&optional sources)
+    "Like `consult-buffer', but use a different `:prompt' string."
+    (interactive)
+    (let ((selected (consult--multi (or sources consult-buffer-sources)
+                                    :require-match
+                                    (confirm-nonexistent-file-or-buffer)
+                                    :prompt "Buffer → "
+                                    :history 'consult--buffer-history
+                                    :sort nil)))
+
+      ;; For non-matching candidates, fall back to buffer creation
+      (unless (plist-get (cdr selected) :match)
+        (consult--buffer-action (car selected)))))
+
+  (advice-add #'sthenno/consult-buffer :override #'consult-buffer)
+
+  :bind ((:map global-map
+               ("C-d" . consult-buffer)
+               ("C-s" . consult-line)
+               ("C-f" . consult-line-multi)
+               ("C-v" . consult-yank-pop)
+               ("s-m" . consult-imenu-multi)
+               ("s-n" . consult-recent-file)
+               ("M-i" . consult-info))
+         (:map org-mode-map
+               ("s-m" . consult-org-heading)
+               ("M-a" . consult-org-agenda))))
+
+;; Beframe: Isolate Emacs buffers per frame
 ;;
 ;; This package is simply used to filter and group minibuffer candidates
 ;;
-
 (use-package beframe
   :straight t
   :after (consult)
@@ -198,7 +215,8 @@
 
   ;; Integration with `consult-buffer'
   (defvar consult-buffer-sources)
-  (declare-function consult--buffer-state "consult")
+  (declare-function consult--buffer-state   "consult")
+  (declare-function consult--buffer-display "consult")
 
   (defface beframe-buffer
     '((t :inherit font-lock-string-face))
@@ -206,17 +224,17 @@
 
   (defun sthenno/beframe-buffer-names-sorted (&optional frame)
     "Return the list of buffers from `beframe-buffer-names' sorted by visibility.
-With optional argument FRAME, return the list of buffers of FRAME."
+Optional argument FRAME, return the list of buffers of FRAME."
     (beframe-buffer-names frame :sort #'beframe-buffer-sort-visibility))
 
   (defvar beframe-consult-source
     `( :name     "Frame-specific buffers"
-       :narrow   ?F
+       :narrow   ?s
        :category buffer
        :face     beframe-buffer
        :history  beframe-history
        :items    ,#'sthenno/beframe-buffer-names-sorted
-       :action   ,#'switch-to-buffer
+       :action   ,#'consult--buffer-display
        :state    ,#'consult--buffer-state))
 
   (add-to-list 'consult-buffer-sources 'beframe-consult-source))
@@ -325,6 +343,7 @@ Elements in list-of-capfs further down the list have deeper priority in completi
               ("<tab>"    . corfu-next)
               ("<up>"     . corfu-previous)
               ("s-<tab>"  . corfu-previous)
+              ("<space>"  . corfu-quit)
               ("<escape>" . corfu-quit)))
 
 (provide 'init-comp)
