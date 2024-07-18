@@ -17,11 +17,20 @@
 ;; TODO: Abbrevs
 ;;
 (use-package abbrev
-  :config
-  (define-abbrev-table 'global-abbrev-table
-    '(("ciallo" "Ciallo～(∠・ω< )⌒☆" nil :count 1)))
+  :init
+  (setq abbrev-file-name (expand-file-name "abbrev-defs.el" user-emacs-directory))
 
-  (abbrev-mode 1))
+  ;; Do not ask before saving abbrevs
+  (setq save-abbrevs 'silently)
+
+  ;; Hooks
+  (add-hook 'text-mode-hook #'(lambda ()
+                                (abbrev-mode 1)))
+  (add-hook 'prog-mode-hook #'(lambda ()
+                                (abbrev-mode 1)))
+  :bind (:map global-map
+              ("C-x a e" . edit-abbrevs)
+              ("C-x a a" . add-global-abbrev)))
 
 
 ;; Yasnippet
@@ -29,7 +38,6 @@
 
 (use-package yasnippet
   :straight t
-  :defer t
   :diminish (yas-minor-mode)
   :config
   (setq yas-triggers-in-field t)

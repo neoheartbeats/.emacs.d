@@ -238,15 +238,13 @@ Activate again to undo this. If the window changes before then, the undo expires
 (setq search-default-mode 'char-fold-to-regexp)
 
 
-(use-package dired
-  :init
-  (setq dired-auto-revert-buffer #'dired-directory-changed-p)
-  (setq dired-kill-when-opening-new-dired-buffer t)
-  (setq dired-free-space nil)
+(setq dired-auto-revert-buffer #'dired-directory-changed-p)
+(setq dired-kill-when-opening-new-dired-buffer t)
+(setq dired-free-space nil)
 
-  ;; HACK: `gls' is preferred on macOS
-  (setq insert-directory-program "/opt/homebrew/bin/gls")
+;; `gls' is preferred on macOS
+(setq insert-directory-program "/opt/homebrew/bin/gls")
 
-  (add-hook 'dired-mode-hook #'dired-hide-details-mode))
+(add-hook 'dired-mode-hook #'dired-hide-details-mode)
 
 (provide 'init-system)

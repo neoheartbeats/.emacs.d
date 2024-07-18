@@ -12,7 +12,7 @@
 ;; - pop-up completions by `corfu' as frontend and `cape' as backend
 ;;
 ;; NOTE: Package `embark' is not included in this config due to my personal preferences.
-;; XXX: Templating-related setups such as that for `abbrev' are placed separately in
+;; XXX: Template's setups such as that for `abbrev' are placed separately in
 ;; `init-temp' but `dabbrev' is configured in this file under current decision.
 
 ;;; Code:
@@ -67,11 +67,11 @@
   :config
   (setq orderless-component-separator " +\\|[-/]") ; Spaces, hyphen or slash
   (setq completion-styles '(orderless basic)
-        completion-category-overrides '((file (styles . (partial-completion orderless)))
+        completion-category-overrides '((file (styles partial-completion))
 
                                         ;; There is further configuration for better
                                         ;; `eglot' support. See `init-eglot'
-                                        (eglot (styles . (orderless))))))
+                                        (eglot (styles orderless)))))
 
 ;; Ignore cases for completions
 (setq completion-ignore-case t)
@@ -79,9 +79,8 @@
       read-buffer-completion-ignore-case t)
 
 
-;;; Completion for minibuffers
+;; Completions in minibuffers
 ;;
-
 (use-package vertico
   :straight t
   :init
@@ -95,6 +94,7 @@
                   (apply args))))
 
   (vertico-mode 1)
+
   :config
   (setq vertico-count 10)
   (setq vertico-scroll-margin 4)
@@ -200,7 +200,6 @@
   (defvar consult-buffer-sources)
   (declare-function consult--buffer-state "consult")
 
-
   (defface beframe-buffer
     '((t :inherit font-lock-string-face))
     "Face for `consult' framed buffers.")
@@ -223,37 +222,42 @@ With optional argument FRAME, return the list of buffers of FRAME."
   (add-to-list 'consult-buffer-sources 'beframe-consult-source))
 
 
-;;
 ;; Dabbrev settings
 ;;
-
 (use-package dabbrev
   :config
 
   ;; Better letter cases
-  (setq dabbrev-case-distinction nil
-        dabbrev-case-replace nil
+  (setq dabbrev-case-distinction t
+        dabbrev-case-replace t
         dabbrev-case-fold-search t
         dabbrev-upcase-means-case-search t)
 
   ;; Ignore these for `dabbrev'
   ;; See https://github.com/minad/corfu
   ;;
-
   (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
 
   (add-to-list 'dabbrev-ignored-buffer-modes #'doc-view-mode)
   (add-to-list 'dabbrev-ignored-buffer-modes #'pdf-view-mode)
   (add-to-list 'dabbrev-ignored-buffer-modes #'tags-table-mode))
 
-;;
 ;; Add extensions for the completion backend
 ;;
-
 (use-package cape
   :straight t
   :config
-  (setq cape-dabbrev-min-length 4)
+  (setq cape-dabbrev-min-length 2)
+
+  ;; Dict
+  ;;
+  (setq cape-dict-case-fold t
+        cape-dict-case-replace t)
+
+  (setq cape-dict-limit 40
+
+        ;; cape-dict-file ""
+        )
 
   (defun completion-at-point-functions-setup (capfs-map-alist)
     "Set up completion at point functions based on CAPFS-MAP-ALIST.
@@ -272,16 +276,19 @@ and each value is a list of functions to add to `completion-at-point-functions'.
   (defvar sthenno/capfs-map-alist
     '((prog-mode       . (cape-dict
                           cape-file
+                          cape-abbrev
                           cape-dabbrev))
       (emacs-lisp-mode . (cape-dict
                           cape-file
                           cape-elisp-symbol
+                          cape-abbrev
                           cape-dabbrev))
       (text-mode       . (cape-dict
+                          cape-abbrev
                           cape-dabbrev))
       (org-mode        . (cape-dict
-                          cape-elisp-block
                           cape-file
+                          cape-abbrev
                           cape-dabbrev)))
     "An alist of (mode . list-of-capfs) to append.
 Elements in list-of-capfs further down the list have deeper priority in completion.")
@@ -289,10 +296,8 @@ Elements in list-of-capfs further down the list have deeper priority in completi
   (completion-at-point-functions-setup sthenno/capfs-map-alist))
 
 
-;;
 ;; The main completion frontend by Corfu
 ;;
-
 (use-package corfu
   :straight (:files (:defaults "extensions/*"))
   :init (global-corfu-mode 1)
@@ -301,17 +306,16 @@ Elements in list-of-capfs further down the list have deeper priority in completi
         corfu-auto-delay 0.05           ; Making this to 0 is too expensive
         corfu-auto-prefix 2)
 
-  (setq corfu-quit-at-boundary 'separator
+  (setq corfu-quit-at-boundary t        ; Automatically quit at completion boundary
         corfu-quit-no-match t)
 
   (setq corfu-cycle t)
-  (setq corfu-preview-current nil)
   (setq corfu-preselect 'directory)     ; Auto select the first except directories
+  (setq corfu-on-exact-match 'quit)     ; Quit completion on a single exact match
 
   ;; Maintain a list of recently selected candidates
   ;; This requires `savehist-mode' is enabled
   ;;
-
   (require 'corfu-history)
   (corfu-history-mode 1)
   (add-to-list 'savehist-additional-variables 'corfu-history)

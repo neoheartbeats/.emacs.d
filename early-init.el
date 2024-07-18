@@ -17,21 +17,6 @@
 ;;; Code:
 ;;
 
-;;; XXX:
-;; Correct PATH to fix homebrew-emacs-plus native-compile specific issues. This is
-;; probably caused by the mismatching between version of `comp-libgccjit-version' and
-;; GCC that macOS provides.
-;;
-;; Related issues:
-;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/687
-;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/492
-;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/542
-
-(setenv "LIBRARY_PATH"
-        (concat "/opt/homebrew/opt/gcc/lib/gcc/14:"
-                "/opt/homebrew/opt/gcc/lib/gcc/14/gcc/aarch64-apple-darwin23/14:"
-                "/opt/homebrew/opt/libgccjit/lib/gcc/14"))
-
 ;; (setq load-path
 ;;       (delete "/opt/homebrew/Cellar/emacs-plus@30/30.0.60/share/emacs/30.0.60/lisp/org"
 ;;               load-path))
@@ -71,7 +56,7 @@
 (unless (or (daemonp) noninteractive)
   (let ((old-file-name-handler-alist file-name-handler-alist))
     ;; `file-name-handler-alist' is consulted on each `require', `load' and
-    ;; various path/io functions. You get a minor speed up by unsetting this.
+    ;; various path/io functions. You get a minor speed up by insetting this.
     ;; Some warning, however: this could cause problems on builds of Emacs where
     ;; its site lisp files aren't byte-compiled and we're forced to load the
     ;; *.el.gz files (e.g. on Alpine).
@@ -95,7 +80,7 @@
               (redisplay)))
 
   ;; Site files tend to use `load-file', which emits "Loading X..." messages in
-  ;; the echo area, which in turn triggers a redisplay. Redisplays can have a
+  ;; the echo area, which in turn triggers a re-display. Re-displays can have a
   ;; substantial effect on startup times and in this case happens so early that
   ;; Emacs may flash white while starting up.
   (define-advice load-file (:override (file) silence)
@@ -107,10 +92,10 @@
     (advice-remove #'load-file #'load-file@silence)))
 
 
-;; Perform darwing the frame when initialization
+;; Perform drawing the frame when initialization
 ;;
 ;; NOTE: `menu-bar-lines' is forced to redrawn under macOS GUI, therefore it is helpless
-;; by inhibiting it in the early stage. However, since I dont't use the `menu-bar' under
+;; by inhibiting it in the early stage. However, since I don't use the `menu-bar' under
 ;; macOS, `menu-bar-mode' is disabled later.
 
 ;;
@@ -131,7 +116,7 @@
 (push '(height . 50)  initial-frame-alist)
 
 ;; NOTE: Since feature `alpha-background' conflicts with Emacs overlay rendering for
-;; images such as svg files, `alpha' can be a replacement for a rough approach.
+;; images such as SVG files, `alpha' can be a replacement for a rough approach.
 ;;
 ;; (push '(alpha . (90 . 90))           default-frame-alist)
 (push '(ns-transparent-titlebar . t) default-frame-alist)

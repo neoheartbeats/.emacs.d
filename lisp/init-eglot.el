@@ -92,6 +92,7 @@
   :straight t
   :defer t
   :init
+  (setq gptel-use-curl t)
   (setq gptel-default-mode #'org-mode)
 
   ;; System messages
@@ -146,79 +147,6 @@
 
   (add-hook 'gptel-mode-hook         #'sthenno/gptel-prefix)
   (add-hook 'gptel-pre-response-hook #'sthenno/gptel-prefix)
-
-  ;; HACK
-  ;;
-  (defvar loading-animation-chars '("." ".." "..." "...." ".....")
-    "Characters used for loading animation.")
-
-  (defvar loading-animation-timer nil
-    "Timer object for loading animation.")
-
-  (defun start-loading-animation (text)
-    "Start the loading animation and TEXT in the echo area."
-    (let ((i 0))
-      (setq loading-animation-timer
-            (run-at-time 0 0.2
-                         (lambda ()
-                           (let* ((char (nth (mod i (length loading-animation-chars))
-                                             loading-animation-chars))
-                                  (msg (format "%s %s" text char)))
-                             (message msg)
-                             (setq i (1+ i))))))))
-
-  (defun stop-loading-animation ()
-    "Stop the loading animation."
-    (when loading-animation-timer
-      (cancel-timer loading-animation-timer)
-      (setq loading-animation-timer nil)))
-
-  ;; Add loading message to `gptel-send'
-  ;;
-  (defun sthenno/gptel--loading-msg (loading-msg)
-    "Propertize LOADING-MSG using specified `text-properties'."
-    (modus-themes-with-colors
-      (let ((msg (propertize loading-msg
-                             'face `(:foreground ,magenta-intense :inherit 'bold))))
-        msg)))
-
-  (defun sthenno/gptel-send-querying-loading ()
-    "Now-loading behavior of `gptel-send' during querying."
-    (let ((msg (sthenno/gptel--loading-msg
-                (format "✿ 少女祈祷中 􀍠 [%s]"
-                        (gptel-backend-name gptel-backend)))))
-      (start-loading-animation msg)))
-
-  (defun sthenno/gptel-send-insert-loading ()
-    "Now-loading behavior of `gptel-send' during inserting."
-    (let ((msg (sthenno/gptel--loading-msg "􁄤 少女响应中 􀍠")))
-      (stop-loading-animation)
-      (message msg)))
-
-  (add-hook 'gptel-pre-response-hook #'sthenno/gptel-send-insert-loading)
-
-  ;; HACK
-  (defun gptel-send (&optional arg)
-    "Submit this prompt to the current LLM backend.
-
-By default, the contents of the buffer up to the cursor position
-are sent.  If the region is active, its contents are sent
-instead.
-
-The response from the LLM is inserted below the cursor position
-at the time of sending.  To change this behavior or model
-parameters, use prefix arg ARG activate a transient menu with
-more options instead.
-
-This command is asynchronous, you can continue to use Emacs while
-waiting for the response."
-    (interactive "P")
-    (if (and arg (require 'gptel-transient nil t))
-        (call-interactively #'gptel-menu)
-      (sthenno/gptel-send-querying-loading)
-      (gptel--sanitize-model)
-      (gptel-request nil :stream gptel-stream)
-      (gptel--update-status " Waiting..." 'warning)))
 
   ;; Functions of the `gptel' buffer
   ;;

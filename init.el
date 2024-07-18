@@ -21,7 +21,7 @@
 (setq-default cursor-in-non-selected-windows nil)
 (setq highlight-nonselected-windows nil)
 
-;; More performant rapid scrolling over unfontified regions. May cause brief
+;; More preferment rapid scrolling over unfontified regions. May cause brief
 ;; spells of inaccurate fontification immediately after scrolling
 (setq fast-but-imprecise-scrolling t)
 
@@ -44,11 +44,11 @@
 (setq-default bidi-display-reordering 'left-to-right
               bidi-paragraph-direction 'left-to-right)
 
-;; Disabling BPA makes redisplay faster, but might produce incorrect
+;; Disabling BPA makes re-display faster, but might produce incorrect
 ;; reordering of bidirectional text with embedded parentheses
 (setq bidi-inhibit-bpa t)
 
-;; Emacs "updates" its ui more often than it needs to, so slow it down slightly
+;; Emacs "updates" its UI more often than it needs to, so slow it down slightly
 (setq idle-update-delay 1.0)            ; default is 0.5
 
 ;; Increase how much is read from processes in a single chunk (default is 4kb).
@@ -181,7 +181,7 @@
 (push (expand-file-name "lisp/" user-emacs-directory) load-path)
 
 (defvar user-cache-directory "~/.cache/emacs/"
-  "Location where files created by emacs are placed.")
+  "Location where files created by Emacs are placed.")
 
 ;; Set path for custom-file
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))

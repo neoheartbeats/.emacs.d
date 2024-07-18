@@ -12,7 +12,6 @@
 ;;
 
 
-;;
 ;; Global functions for editing enhancement
 ;;
 
@@ -38,14 +37,16 @@
 
 (global-set-key (kbd "s-<return>") #'sthenno/open-newline-below)
 
-;; Pretty-print
+
+;;; Pretty-print
 ;;
 ;; XXX: Pretty-print comes from various mechanisms respecting to the current programming
 ;; language. For example, formatters like Black are preferred over `indent-region' and
 ;; `untabify' for formatting Python code since a formatter usually provides a full
 ;; combination of executions that covers the basic functions that Emacs provides. Thus,
-;; behaviors of `sthenno/pretty-print-current-buffer' should be considered separately for
-;; each particular case especially when `sthenno/enable-pretty-print-on-save' is demanded.
+;; behaviors of `sthenno/pretty-print-current-buffer' should be considered separately
+;; for each particular case especially when `sthenno/enable-pretty-print-on-save' is
+;; demanded.
 ;;
 ;; NOTE: I did not intentionally distinguish between Indent, Pretty-print, and Format,
 ;; although there are minor differences in their applicable scenarios. Any
@@ -59,10 +60,9 @@ If `major-mode' is `python-mode', abort."
   (if (derived-mode-p 'python-mode)
       (message "Indentation does not support for Python.")
     (save-excursion
-      (indent-region (point-min) (point-max) nil))
-    (run-hooks 'indent-current-buffer-hook)))
+      (indent-region (point-min) (point-max) nil))))
 
-(defun indent-current-comment-buffer ()
+(defun indent-current-buffer-comment ()
   "Indent comment for current buffer."
   (interactive)
   (let ((lo (point-min))
@@ -79,29 +79,29 @@ If `major-mode' is `python-mode', abort."
   "Convert all tabs to multiple spaces for current buffer."
   (interactive)
   (save-excursion
-    (untabify (point-min) (point-max)))
-  (run-hooks 'untabify-current-buffer-hook))
+    (untabify (point-min) (point-max))))
 
 (defun sthenno/pretty-print-current-buffer ()
-  "Pretty print current buffer."
+  "Pretty-print current buffer."
   (interactive)
   (save-excursion
     (indent-current-buffer)
-    (indent-current-comment-buffer)
+    (indent-current-buffer-comment)
     (untabify-current-buffer)
     (delete-trailing-whitespace))
   (run-hooks 'sthenno/pretty-print-current-buffer-hook))
 
-(defun sthenno/enable-pretty-print-on-save ()
-  "Enable pretty print before save in `emacs-lisp-mode'."
-  (add-hook 'before-save-hook #'sthenno/pretty-print-current-buffer nil t))
-
-(add-hook 'emacs-lisp-mode-hook #'sthenno/enable-pretty-print-on-save)
-
 (global-set-key (kbd "s-p") #'sthenno/pretty-print-current-buffer)
 
+
+(defun sthenno/enable-pretty-print-auto ()
+  "Enable pretty-print before saving in `emacs-lisp-mode'."
+  (add-hook 'before-save-hook #'sthenno/pretty-print-current-buffer nil t))
+
+(add-hook 'emacs-lisp-mode-hook #'sthenno/enable-pretty-print-auto)
+
 
-;; TODO: Vundo
+;; Visualize undo
 ;;
 (use-package vundo
   :straight t
@@ -110,6 +110,7 @@ If `major-mode' is `python-mode', abort."
 
 
 ;; Fold code lines
+;;
 (use-package hideshow
   :config
   (defun sthenno/hs-set-up-overlay (ov)
@@ -130,6 +131,7 @@ If `major-mode' is `python-mode', abort."
 
   (setq hs-set-up-overlay #'sthenno/hs-set-up-overlay)
 
+  ;; Hooks
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (hs-minor-mode 1)))
   :bind (:map prog-mode-map
@@ -140,18 +142,19 @@ If `major-mode' is `python-mode', abort."
 
 ;;; Incremental Search using `isearch'
 ;;
-;; Also check `consult'
+;; See also `consult'
 ;;
-(use-package isearch
-  :config (setq isearch-allow-scroll t)
-  :bind
-  (:map global-map
-        ("s-f" . isearch-forward))
-  (:map isearch-mode-map
-        ("<down>"   . isearch-repeat-forward)
-        ("<up>"     . isearch-repeat-backward)
-        ("<escape>" . isearch-exit)
-        ("<return>" . isearch-exit)))
+
+;; (use-package isearch
+;;   :config (setq isearch-allow-scroll t)
+;;   :bind
+;;   (:map global-map
+;;         ("s-f" . isearch-forward))
+;;   (:map isearch-mode-map
+;;         ("<down>"   . isearch-repeat-forward)
+;;         ("<up>"     . isearch-repeat-backward)
+;;         ("<escape>" . isearch-exit)
+;;         ("<return>" . isearch-exit)))
 
 
 ;; HACK: Inhibit passing these delimiters
@@ -168,29 +171,22 @@ If `major-mode' is `python-mode', abort."
 ;; lend itself to fully automatic indentation. Org Mode should disable this for the
 ;; same reason.
 ;; XXX: Side-effects come to `org-babel' is under discovering.
+;;
 (add-hook 'org-mode-hook #'(lambda ()
                              (setq electric-indent-inhibit t)))
 
-(electric-pair-mode 1)
+;; Hooks
+(add-hook 'after-init-hook #'(lambda ()
+                               (electric-pair-mode 1)))
 
-;; (use-package elec-pair
-;;   :init
-
-;;   ;; `python-mode' disables `electric-indent-mode' by default since Python does not
-;;   ;; lend itself to fully automatic indentation. Org Mode should disable this for the
-;;   ;; same reason.
-;;   ;; XXX: Side-effects come to `org-babel' is under discovering.
-;;   (add-hook 'org-mode-hook #'(lambda ()
-;;                                (setq electric-indent-inhibit t)))
-
-;;   :config (electric-pair-mode 1))
-
+;; Show parenthesis
 (use-package paren
   :init (setq show-paren-delay 0.05
               show-paren-highlight-openparen t
               show-paren-style 'mixed   ; Highlight parenthesis matched off-screen
               show-paren-when-point-inside-paren t))
 
+
 ;; Using rainbow delimiters
 (use-package rainbow-delimiters
   :straight t
@@ -198,11 +194,13 @@ If `major-mode' is `python-mode', abort."
   :config (add-hook 'prog-mode-hook #'(lambda ()
                                         (rainbow-delimiters-mode 1))))
 
-;; Show docstring in echo area
+
+;; Show doc-string in echo area
 (use-package eldoc
   :diminish (eldoc-mode)
   :init (setq eldoc-idle-delay 0.05))
 
+
 ;;; Deletions
 ;;
 ;; Delete selection if you insert
@@ -211,6 +209,7 @@ If `major-mode' is `python-mode', abort."
   :init (add-hook 'after-init-hook #'(lambda ()
                                        (delete-selection-mode 1))))
 
+;; Delete all tabs and spaces
 (setq backward-delete-char-untabify-method 'hungry)
 
 ;; Automatically reload files was modified by external program
@@ -219,6 +218,7 @@ If `major-mode' is `python-mode', abort."
   :init (add-hook 'after-init-hook #'(lambda ()
                                        (global-auto-revert-mode 1))))
 
+
 ;;; Fill columns
 ;;
 ;; Face `fill-column-indicator' is set in `init-gui-frames'
@@ -240,49 +240,47 @@ If `major-mode' is `python-mode', abort."
         pulsar-iterations 15)
 
   ;; Hooks
-  (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line-cyan)
-  (add-hook 'indent-current-buffer-hook #'pulsar-pulse-line-cyan)
+  ;;
+  ;; Pulsing
   (add-hook 'after-save-hook #'pulsar-pulse-line-green)
 
   (add-hook 'sthenno/delete-current-line-hook #'pulsar-pulse-line-magenta)
   (add-hook 'sthenno/cycle-to-next-buffer-hook #'pulsar-pulse-line-cyan)
   (add-hook 'sthenno/cycle-to-previous-buffer-hook #'pulsar-pulse-line-cyan)
 
-  (add-hook 'isearch-mode-end-hook #'pulsar-highlight-line)
-
+  ;; Highlighting
   (add-hook 'split-window-below-focus-hook #'pulsar-highlight-line)
   (add-hook 'split-window-right-focus-hook #'pulsar-highlight-line)
 
   (pulsar-global-mode 1))
 
 
-(use-package indent-bars
-  :straight (indent-bars
-             :type git
-             :host github
-             :repo "jdtsmith/indent-bars")
-  :init
-  (setq indent-bars-treesit-support t
-        indent-bars-treesit-ignore-blank-lines-types '("module"))
+;; (use-package indent-bars
+;;   :straight (indent-bars
+;;              :type git
+;;              :host github
+;;              :repo "jdtsmith/indent-bars")
+;;   :init
+;;   (setq indent-bars-treesit-support t
+;;         indent-bars-treesit-ignore-blank-lines-types '("module"))
 
-  ;; Stipple-based pixle-toggling is not supported by NS built Emacs
-  (setq indent-bars-prefer-character t)
+;;   ;; Stipple-based pixel-toggling is not supported by NS built Emacs
+;;   (setq indent-bars-prefer-character t)
 
-  :config
-  (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
-        indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-        indent-bars-highlight-current-depth '(:blend 0.8)
-        indent-bars-starting-column 0
-        indent-bars-display-on-blank-lines t)
+;;   :config
+;;   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
+;;         indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+;;         indent-bars-highlight-current-depth '(:blend 0.8)
+;;         indent-bars-starting-column 0
+;;         indent-bars-display-on-blank-lines t)
 
-  (add-hook 'python-ts-mode-hook #'(lambda ()
-                                     (indent-bars-mode 1))))
+;;   ;; Hooks
+;;   (add-hook 'python-ts-mode-hook #'(lambda ()
+;;                                      (indent-bars-mode 1))))
 
 
-;;
 ;; Highlight these keywords in code comments
 ;;
-
 (use-package hl-todo
   :straight t
   :init
@@ -315,7 +313,7 @@ If `major-mode' is `python-mode', abort."
   (setq jinx--save-keys
         `((?= . ,#'jinx--save-personal)))
 
-  ;; Overwrite these functions
+  ;; HACK
   ;;
   (cl-defun jinx--correct-overlay (overlay &key info initial)
     "Correct word at OVERLAY.
@@ -374,11 +372,10 @@ Optionally show prompt INFO and insert INITIAL input."
       (nreverse list)))
 
   ;; Hooks
-  ;;
-  (add-hook 'org-mode-hook #'(lambda ()
-                               (jinx-mode 1)))
+  (add-hook 'emacs-startup-hook #'(lambda ()
+                                    (global-jinx-mode 1)))
 
   :bind (:map jinx-overlay-map
-              ("SPC" . jinx-correct)))
+              ("C-SPC" . jinx-correct)))
 
 (provide 'init-editing-utils)

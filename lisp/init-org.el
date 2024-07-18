@@ -25,8 +25,7 @@
 (setq org-directory "~/Developer/sthenno-notebook/")
 
 ;;; Org Mode buffer init behaviors
-(setq org-startup-with-inline-images t
-      org-startup-with-latex-preview t)
+(setq org-startup-with-inline-images t)
 
 ;; Fold titles by default
 ;; (setq org-startup-folded 'content)
@@ -35,6 +34,7 @@
 ;; Install AUCTeX
 ;; (use-package tex
 ;;   :straight auctex)
+
 ;; (straight-use-package 'auctex)
 
 ;; Use CDLaTeX to improve editing experiences
@@ -47,7 +47,7 @@
 ;; (setq org-preview-latex-image-directory
 ;;       (expand-file-name "ltximg/" user-cache-directory))
 
-(setq org-persist-directory (expand-file-name "org-persist" user-cache-directory))
+;; (setq org-persist-directory (expand-file-name "org-persist" user-cache-directory))
 
 ;; Experimental: `org-latex-preview'
 ;;
@@ -65,23 +65,25 @@
 
 ;; Preview functions
 ;;
-
 (defun sthenno/org-preview-fragments ()
   (interactive)
-  ;; (call-interactively 'org-latex-preview-clear-cache)
+  (call-interactively 'org-latex-preview-clear-cache)
   ;; (org-latex-preview 'buffer)
   (org-redisplay-inline-images))
 
 (bind-keys :map org-mode-map
            ("s-p" . sthenno/org-preview-fragments))
 
+;;
 ;; (setq org-latex-packages-alist
 ;;       '(("T1" "fontenc" t)
-;;         ("" "amsmath" t)
-;;         ("" "amssymb" t)
-;;         ("" "siunitx" t)
-;;         ("" "physics2" t)
-;;         ("libertinus" "newtx" t)
+;;         ("" "amsmath"   t)
+;;         ("" "amssymb"   t)
+;;         ("" "siunitx"   t)
+;;         ("" "physics2"  t)
+
+;;         ;; ("" "mlmodern" t)
+;;         ("etbb" "newtx" t)
 
 ;;         ;; Load this after all math to give access to bold math
 ;;         ;; See https://ctan.math.illinois.edu/fonts/newtx/doc/newtxdoc.pdf
@@ -98,7 +100,7 @@
 
 ;; (plist-put org-latex-preview-appearance-options :scale 1.0)
 ;; (plist-put org-latex-preview-appearance-options :zoom
-;;            (- (/ (face-attribute 'default :height) 100.0) 0.025))
+;;            (- (/ (face-attribute 'default :height) 110.0) 0.025))
 
 ;;
 ;; The `org-latex-preview' process
@@ -106,13 +108,14 @@
 
 ;; (setq org-latex-preview-process-default 'dvisvgm)
 
-;; (defvar sthenno/libgs-dylib-path "/opt/homebrew/opt/ghostscript/lib/libgs.10.03.dylib"
+;; (defvar sthenno/libgs-dylib-path "/opt/homebrew/opt/ghostscript/lib/libgs.dylib"
 ;;   "Path to Ghostscript shared library.")
 
 ;; (setq dvisvgm-image-converter-command
-;;       (list (concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts "
-;;                     "--exact-bbox --bbox=preview "
+;;       (list (concat "dvisvgm --page=1- --optimize --clipjoin -R --no-font "
+;;                     "--bbox=preview --exact-bbox "
 ;;                     "--libgs=" sthenno/libgs-dylib-path " "
+;;                     "--progress=0 "
 ;;                     "-v4 -o %B-%%9p.svg %f")))
 
 ;; (setq org-latex-preview-process-alist
@@ -221,9 +224,9 @@
   (setq denote-prompts '(title))
   (setq denote-save-buffers t)
 
-  ;; Denote for journaling
+  ;; Denote for journals
   (setq denote-journal-extras-directory
-        (expand-file-name "dates/" denote-directory)) ; Subdirectory for journal files
+        (expand-file-name "dates/" denote-directory)) ; Sub-directory for journal files
   (setq denote-journal-extras-keyword "dates")        ; Stages are journals
   (setq denote-journal-extras-title-format "%F")      ; Use ISO 8601 for titles
 
