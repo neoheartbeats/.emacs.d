@@ -20,6 +20,7 @@
 
 (use-package modus-themes
   :straight t
+  :demand t
   :config
 
   ;; `modus-vivendi' customizations
@@ -67,9 +68,13 @@
           (prose-todo info)
           (prose-done fg-dim)
 
+          ;; Matching parenthesis
+          (fg-paren-match fg-main)
+          (bg-paren-match bg-green-intense)
+
           ;; Custom region colors
           (fg-region unspecified)
-          (bg-region bg-paren-match)
+          (bg-region bg-cyan-subtle)
 
           ;; Make code blocks more minimal
           (bg-prose-block-contents unspecified)
