@@ -131,7 +131,7 @@
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
 
-(set-fontset-font t 'unicode (font-spec :family "SF Pro"))
+(set-fontset-font t 'unicode (font-spec :family "SF Pro Display")  nil 'prepend)
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji") nil 'prepend)
 
 ;; Note this make all italic font style disabled
@@ -143,8 +143,10 @@
 ;; Stop showing fringe bitmaps
 (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
 
+;; Ellipsis symbol
+(setq truncate-string-ellipsis " 􀍠")
+
 
-;;
 ;; Collect pop-up windows
 ;;
 (use-package popper
@@ -157,9 +159,10 @@
                                    help-mode))
 
   ;; Disable the modeline for `popper' buffers
-  (setq popper-mode-line nil)
+  ;; (setq popper-mode-line nil)
 
   (popper-mode 1)
+
   :bind (:map global-map
               ("C-p" . popper-toggle)))
 
@@ -227,7 +230,6 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
 ;;
 ;; SEE: https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 ;;
-
 (defvar sthenno-quit-messages
   `(
     "Anyone else but you?"

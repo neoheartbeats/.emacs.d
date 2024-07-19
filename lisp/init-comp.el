@@ -359,7 +359,7 @@ and each value is a list of functions to add to `completion-at-point-functions'.
         corfu-quit-no-match t
         corfu-on-exact-match 'quit)
 
-  (setq corfu-preview-current nil)
+  (setq corfu-preview-current 'insert)
 
   (setq corfu-cycle t)
   (setq corfu-preselect 'prompt)
@@ -386,6 +386,17 @@ and each value is a list of functions to add to `completion-at-point-functions'.
                                            (interactive)
                                            (corfu-insert)
                                            (insert ,(cdr c)))))
+
+  ;; Use RET to insert the first
+  (defun sthenno/corfu-insert-first ()
+    "Insert first candidate in the list.
+Quit if the list is empty."
+    (interactive)
+    (if (>= corfu--total 1)
+        (corfu--insert 'finished)
+      (corfu-quit)))
+
+  (keymap-set corfu-map "RET" #'sthenno/corfu-insert-first)
 
   ;; Maintain a list of recently selected candidates
   ;;
