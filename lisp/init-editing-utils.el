@@ -87,12 +87,10 @@ If `major-mode' is `python-mode', abort."
   (save-excursion
     (indent-current-buffer)
     (indent-current-buffer-comment)
-    (untabify-current-buffer)
-    (delete-trailing-whitespace))
+    (untabify-current-buffer))
   (run-hooks 'sthenno/pretty-print-current-buffer-hook))
 
 (global-set-key (kbd "s-p") #'sthenno/pretty-print-current-buffer)
-
 
 (defun sthenno/enable-pretty-print-auto ()
   "Enable pretty-print before saving in `emacs-lisp-mode'."
