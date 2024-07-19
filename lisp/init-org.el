@@ -67,7 +67,7 @@
 ;;
 (defun sthenno/org-preview-fragments ()
   (interactive)
-  (call-interactively 'org-latex-preview-clear-cache)
+  ;; (call-interactively 'org-latex-preview-clear-cache)
   ;; (org-latex-preview 'buffer)
   (org-redisplay-inline-images))
 
