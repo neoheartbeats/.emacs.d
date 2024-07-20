@@ -18,8 +18,8 @@
 
 ;;; Code:
 ;;
-(require 'org)
 (setq org-modules nil)
+(require 'org)
 
 ;; Setup default directory
 ;;
@@ -69,8 +69,8 @@
   ;; (org-latex-preview 'buffer)
   (org-redisplay-inline-images))
 
-(bind-keys :map org-mode-map
-           ("s-p" . sthenno/org-preview-fragments))
+;; (bind-keys :map org-mode-map
+;;            ("s-p" . sthenno/org-preview-fragments))
 
 ;;
 ;; (setq org-latex-packages-alist
@@ -205,7 +205,7 @@
 (setq org-return-follows-link t)
 
 ;; Open file links in current window
-(setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
+;; (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 
 ;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
@@ -217,6 +217,11 @@
 (use-package denote
   :ensure t
   :after (org)
+  :init
+  
+  ;; Hooks
+  (add-hook 'emacs-startup-hook #'denote-journal-extras-new-or-existing-entry)
+
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
   (setq denote-known-keywords '("dates"
@@ -233,17 +238,15 @@
   ;; Do not include date, tags and ids in note files
   (setq denote-org-front-matter "#+title: %1$s. 􀙤\n\n")
 
-  :bind
-  (:map global-map
+  :bind ((:map global-map
 
-        ;; Open today's note
-        ("C-c d" . denote-journal-extras-new-or-existing-entry))
-  (:map org-mode-map
-        ("C-c i" . denote-link-or-create)
-        ("C-c b" . denote-backlinks)
-        ("C-c e" . denote-org-extras-extract-org-subtree)
-        ("C-c k" . denote-rename-file-keywords))
-  :hook (after-init . denote-journal-extras-new-or-existing-entry))
+               ;; Open today's note
+               ("C-c d" . denote-journal-extras-new-or-existing-entry))
+         (:map org-mode-map
+               ("C-c i" . denote-link-or-create)
+               ("C-c b" . denote-backlinks)
+               ("C-c e" . denote-org-extras-extract-org-subtree)
+               ("C-c k" . denote-rename-file-keywords))))
 
 ;; Extensions for Denote [TODO] Add `consult-denote' support
 
@@ -292,9 +295,7 @@
       org-src-fontify-natively t
       org-src-tab-acts-natively t)
 
-(org-babel-do-load-languages 'org-babel-load-languages
-                             '((emacs-lisp . t)
-                               (python     . t)))
+(add-to-list 'org-babel-load-languages '(python . t))
 
 
 ;; Org-agenda [TODO]

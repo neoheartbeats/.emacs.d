@@ -29,11 +29,6 @@
 ;; receiving input, which should help a little with scrolling performance
 (setq redisplay-skip-fontification-on-input t)
 
-;; Resizing the Emacs frame can be a terribly expensive part of changing the
-;; font. By inhibiting this, we halve startup times, particularly when we use
-;; fonts that are larger than the system default (which would resize the frame)
-(setq frame-inhibit-implied-resize t)
-
 ;; Don't ping things that look like domain names
 (setq ffap-machine-p-known 'reject)
 
@@ -61,49 +56,75 @@
 (setq inhibit-compacting-font-caches t)
 
 
+(setq tool-bar-mode   nil
+      menu-bar-mode   nil
+      scroll-bar-mode nil)
+
+(push '(width  . 120) default-frame-alist)
+(push '(height . 50)  default-frame-alist)
+
+;; NOTE: Since feature `alpha-background' conflicts with Emacs overlay rendering for
+;; images such as SVG files, `alpha' can be a replacement for a rough approach.
+;;
+;; (push '(alpha . (90 . 90))           default-frame-alist)
+
+(push '(ns-transparent-titlebar . t) default-frame-alist)
+(push '(ns-appearance . dark)        default-frame-alist)
+
 ;; Suppress GUI features
 (setq use-dialog-box  nil
       use-file-dialog nil)
 
-(setq inhibit-splash-screen t
+(setq inhibit-default-init t
+      inhibit-splash-screen t
       inhibit-startup-buffer-menu t)
 
-(setq initial-scratch-message "")
+(setq initial-scratch-message nil)
 
 ;; Default startup message
 (defun display-startup-echo-area-message ()
   (let ((text "There's nothing more to Show"))
     (message "􀪾 %s" text)))
 
-
 ;; User information
 (setq user-full-name    "Sthenno"
       user-mail-address "sthenno@sthenno.com")
 
+;; Caching
+(defvar user-cache-directory "~/.cache/emacs/"
+  "Location where files created by Emacs are placed.")
+
+;; Set path for custom-file
+(setq custom-file (expand-file-name "custom.el" user-cache-directory))
+(cond ((file-exists-p custom-file)
+       (load custom-file)))
+
 
 ;; Emacs packages
 ;;
-(require 'package)
-(add-to-list 'package-archives '("melpa"     . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("gnu-devel" . "https://elpa.gnu.org/devel/") t)
+(setq package-archives '(("gnu"       . "https://elpa.gnu.org/packages/")
+                         ("nongnu"    . "https://elpa.nongnu.org/nongnu/")
+                         ("melpa"     . "https://melpa.org/packages/")
+                         ("gnu-devel" . "https://elpa.gnu.org/devel/")))
 
 ;; Highest number gets priority
 (setq package-archive-priorities '(("gnu-devel" . 4)
-                                   ("gnu-elpa"  . 3)
+                                   ("gnu"       . 3)
                                    ("melpa"     . 2)
                                    ("nongnu"    . 1)))
 
 ;; Ensure to native-compile packages
 (setq package-native-compile t)
+(setq package-quickstart t)
 
 ;; The `use-package' macro
-(setq use-package-expand-minimally t
-      use-package-enable-imenu-support t)
+(setq use-package-enable-imenu-support t)
 
 
 ;; GCMH: the Garbage Collector Magic Hack
 (use-package gcmh
   :ensure t
+  :defer 2
   :init
 
   ;; The GC introduces annoying pauses and stuttering into our Emacs experience,
@@ -121,18 +142,12 @@
 ;;
 
 ;; Fix PATH for macOS
-(use-package exec-path-from-shell
-  :ensure t
-  :config (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell
+;;   :ensure t
+;;   :config (exec-path-from-shell-initialize))
 
 ;; Dir for init-* files
 (push (expand-file-name "lisp/" user-emacs-directory) load-path)
-
-(defvar user-cache-directory "~/.cache/emacs/"
-  "Location where files created by Emacs are placed.")
-
-;; Set path for custom-file
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
 
 ;; Require init-* files

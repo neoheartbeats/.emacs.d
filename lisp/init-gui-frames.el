@@ -20,7 +20,6 @@
 
 (use-package modus-themes
   :ensure t
-  :demand t
   :config
 
   ;; `modus-vivendi' customizations
@@ -162,6 +161,7 @@
 ;;
 (use-package popper
   :ensure t
+  :defer t
   :init
   (setq popper-reference-buffers '("\\*ielm\\*$"
                                    "\\*Messages\\*$"
@@ -171,8 +171,10 @@
   ;; Disable the modeline for `popper' buffers
   ;; (setq popper-mode-line nil)
 
-  (popper-mode 1)
-
+  ;; Hooks
+  (add-hook 'after-init-hook #'(lambda ()
+                                 (popper-mode 1)))
+  
   :bind (:map global-map
               ("C-p" . popper-toggle)))
 
@@ -181,36 +183,36 @@
 ;;
 ;; Format modeline buffer identification
 ;;
-(defun sthenno/modeline-buffer-identification-setup ()
-  (defun sthenno/modeline--buffer-identification ()
-    "Return `buffer-name' as a string.
-If `buffer-file-name' is a `denote' file, return its corresponding title instead."
-    (let ((file (buffer-file-name)))
-      (if (denote-file-is-note-p file)
-          (format "[denote:%s]" (denote-retrieve-filename-title (buffer-file-name)))
-        (buffer-name))))
+;; (defun sthenno/modeline-buffer-identification-setup ()
+;;   (defun sthenno/modeline--buffer-identification ()
+;;     "Return `buffer-name' as a string.
+;; If `buffer-file-name' is a `denote' file, return its corresponding title instead."
+;;     (let ((file (buffer-file-name)))
+;;       (if (denote-file-is-note-p file)
+;;           (format "[denote:%s]" (denote-retrieve-filename-title (buffer-file-name)))
+;;         (buffer-name))))
 
-  (defvar-local sthenno/modeline-buffer-identification
-      '(:eval
-        (when (mode-line-window-selected-p)
-          (propertize (sthenno/modeline--buffer-identification)
-                      'face 'mode-line-buffer-id)))
-    "Mode line construct to display the buffer identification.")
+;;   (defvar-local sthenno/modeline-buffer-identification
+;;       '(:eval
+;;         (when (mode-line-window-selected-p)
+;;           (propertize (sthenno/modeline--buffer-identification)
+;;                       'face 'mode-line-buffer-id)))
+;;     "Mode line construct to display the buffer identification.")
 
-  (defvar-local sthenno/modeline-prefix-symbol
-      (modus-themes-with-colors
-        (propertize "  Sthenno ◈" 'face
-                    `(:foreground ,sthenno-gorse :inherit mode-line-buffer-id))))
+;;   (defvar-local sthenno/modeline-prefix-symbol
+;;       (modus-themes-with-colors
+;;         (propertize "  Sthenno ◈" 'face
+;;                     `(:foreground ,sthenno-gorse :inherit mode-line-buffer-id))))
 
-  (setq-default mode-line-format `(,sthenno/modeline-prefix-symbol
-                                   "  "
-                                   ,sthenno/modeline-buffer-identification
-                                   "  "
-                                   mode-line-modes
-                                   mode-line-misc-info
-                                   mode-line-end-spaces)))
+;;   (setq-default mode-line-format `(,sthenno/modeline-prefix-symbol
+;;                                    "  "
+;;                                    ,sthenno/modeline-buffer-identification
+;;                                    "  "
+;;                                    mode-line-modes
+;;                                    mode-line-misc-info
+;;                                    mode-line-end-spaces)))
 
-(add-hook 'after-init-hook #'sthenno/modeline-buffer-identification-setup)
+;; (add-hook 'after-init-hook #'sthenno/modeline-buffer-identification-setup)
 
 ;; TODO
 ;; (use-package minions

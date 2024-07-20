@@ -140,23 +140,6 @@ If `major-mode' is `python-mode', abort."
               ("M-="     . hs-show-all)))
 
 
-;;; Incremental Search using `isearch'
-;;
-;; See also `consult'
-;;
-
-;; (use-package isearch
-;;   :config (setq isearch-allow-scroll t)
-;;   :bind
-;;   (:map global-map
-;;         ("s-f" . isearch-forward))
-;;   (:map isearch-mode-map
-;;         ("<down>"   . isearch-repeat-forward)
-;;         ("<up>"     . isearch-repeat-backward)
-;;         ("<escape>" . isearch-exit)
-;;         ("<return>" . isearch-exit)))
-
-
 ;; HACK: Inhibit passing these delimiters
 ;;
 ;; (defun sthenno/inhibit-specific-delimiters ()
@@ -172,8 +155,8 @@ If `major-mode' is `python-mode', abort."
 ;; same reason.
 ;; XXX: Side-effects come to `org-babel' is under discovering.
 ;;
-(add-hook 'org-mode-hook #'(lambda ()
-                             (setq electric-indent-inhibit t)))
+;; (add-hook 'org-mode-hook #'(lambda ()
+;;                              (setq electric-indent-inhibit t)))
 
 ;; Hooks
 (add-hook 'after-init-hook #'(lambda ()
@@ -190,8 +173,9 @@ If `major-mode' is `python-mode', abort."
 ;; Using rainbow delimiters
 (use-package rainbow-delimiters
   :ensure t
-  :config (add-hook 'prog-mode-hook #'(lambda ()
-                                        (rainbow-delimiters-mode 1))))
+  :defer t
+  :init (add-hook 'prog-mode-hook #'(lambda ()
+                                      (rainbow-delimiters-mode 1))))
 
 
 ;; Show doc-string in echo area
@@ -231,6 +215,7 @@ If `major-mode' is `python-mode', abort."
 
 (use-package pulsar
   :ensure t
+  :defer t
   :config
   (setq pulsar-pulse t
         pulsar-delay 0.05
@@ -249,7 +234,8 @@ If `major-mode' is `python-mode', abort."
   (add-hook 'split-window-below-focus-hook #'pulsar-highlight-line)
   (add-hook 'split-window-right-focus-hook #'pulsar-highlight-line)
 
-  (pulsar-global-mode 1))
+  (add-hook 'after-init-hook #'(lambda ()
+                                 (pulsar-global-mode 1))))
 
 
 ;; (use-package indent-bars
@@ -289,11 +275,11 @@ If `major-mode' is `python-mode', abort."
               ("FIXME" . ,err)
               ("XXXX*" . ,err)
               ("NOTE"  . ,fg-changed)
-              ("HACK"  . ,fg-changed)))))
+              ("HACK"  . ,fg-changed))))
+    
+    (global-hl-todo-mode 1))
 
-  (add-hook 'after-init-hook #'sthenno/hl-todo-faces-setup)
-
-  (global-hl-todo-mode 1))
+  (add-hook 'prog-mode-hook #'sthenno/hl-todo-faces-setup))
 
 
 ;;; Spell checking using Jinx

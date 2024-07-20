@@ -32,7 +32,7 @@
 ;; Initialize `eglot'
 ;;
 (use-package eglot
-  :after (project)
+  :defer t
   :init
   
   ;; Config `corfu' for `eglot', see also `init-comp'
@@ -77,12 +77,12 @@
 
 (use-package conda
   :ensure t
-  :after (python))
+  :defer t)
 
 ;; Reformat Python buffers using the Black formatter
 (use-package blacken
   :ensure t
-  :after (python)
+  :defer t
   :init (add-hook 'python-ts-mode-hook #'(lambda ()
                                            (blacken-mode 1)))
   :bind (:map python-ts-mode-map
@@ -93,83 +93,83 @@
 ;;
 ;; LLM client
 ;;
-(use-package gptel
-  :ensure t
-  :defer t
-  :init
-  (setq gptel-use-curl t)
-  (setq gptel-default-mode #'org-mode)
+;; (use-package gptel
+;;   :ensure t
+;;   :defer t
+;;   :init
+;;   (setq gptel-use-curl t)
+;;   (setq gptel-default-mode #'org-mode)
 
-  ;; System messages
-  (setq gptel-directives
-        '((default . "You are a helpful assistant living in Emacs.")))
+;;   ;; System messages
+;;   (setq gptel-directives
+;;         '((default . "You are a helpful assistant living in Emacs.")))
 
-  ;; Generation options
-  (setq gptel-max-tokens 512
-        gptel-temperature 0.4)
+;;   ;; Generation options
+;;   (setq gptel-max-tokens 512
+;;         gptel-temperature 0.4)
 
-  ;; Use the mode-line to display status info
-  (setq gptel-use-header-line nil)
+;;   ;; Use the mode-line to display status info
+;;   (setq gptel-use-header-line nil)
 
-  ;; Use Ollama as the default backend
-  ;;
-  (defun sthenno/gptel-ollama-backend--host (host)
-    "Make a function to initialize an Ollama backend using the given HOST."
-    `(lambda (model)
-       (gptel-make-ollama model
-         :host ,host
-         :stream t
-         :models `(,model))))
+;;   ;; Use Ollama as the default backend
+;;   ;;
+;;   (defun sthenno/gptel-ollama-backend--host (host)
+;;     "Make a function to initialize an Ollama backend using the given HOST."
+;;     `(lambda (model)
+;;        (gptel-make-ollama model
+;;          :host ,host
+;;          :stream t
+;;          :models `(,model))))
 
-  (defun sthenno/gptel-ollama-backend--localhost (model)
-    "Initialize an Ollama backend using localhost and the given MODEL."
-    (funcall (sthenno/gptel-ollama-backend--host "localhost:11434") model))
+;;   (defun sthenno/gptel-ollama-backend--localhost (model)
+;;     "Initialize an Ollama backend using localhost and the given MODEL."
+;;     (funcall (sthenno/gptel-ollama-backend--host "localhost:11434") model))
 
-  ;; Setup the model
-  (let* ((model "phi3")
-         (backend (sthenno/gptel-ollama-backend--localhost model)))
-    (setq gptel-model model
-          gptel-backend backend))
+;;   ;; Setup the model
+;;   (let* ((model "phi3")
+;;          (backend (sthenno/gptel-ollama-backend--localhost model)))
+;;     (setq gptel-model model
+;;           gptel-backend backend))
 
-  ;; UI
-  ;;
-  ;; Scroll automatically as the response is inserted
-  (add-hook 'gptel-post-stream-hook #'gptel-auto-scroll)
+;;   ;; UI
+;;   ;;
+;;   ;; Scroll automatically as the response is inserted
+;;   (add-hook 'gptel-post-stream-hook #'gptel-auto-scroll)
 
-  ;; Move to the next prompt after the response is inserted
-  (add-hook 'gptel-post-response-functions #'gptel-end-of-response)
+;;   ;; Move to the next prompt after the response is inserted
+;;   (add-hook 'gptel-post-response-functions #'gptel-end-of-response)
 
-  :config
-  (setq sthenno/gptel-input-count 0)
+;;   :config
+;;   (setq sthenno/gptel-input-count 0)
 
-  (defun sthenno/gptel-prefix ()
-    (setq sthenno/gptel-input-count (1+ sthenno/gptel-input-count))
-    (let* ((cnt sthenno/gptel-input-count)
-           (prefix-in  (format "_In[%s]:=_ " cnt))
-           (prefix-out (format "_Out[%s]=_ " (1- cnt))))
-      (setq gptel-prompt-prefix-alist   `((org-mode . ,prefix-in))
-            gptel-response-prefix-alist `((org-mode . ,prefix-out)))))
+;;   (defun sthenno/gptel-prefix ()
+;;     (setq sthenno/gptel-input-count (1+ sthenno/gptel-input-count))
+;;     (let* ((cnt sthenno/gptel-input-count)
+;;            (prefix-in  (format "_In[%s]:=_ " cnt))
+;;            (prefix-out (format "_Out[%s]=_ " (1- cnt))))
+;;       (setq gptel-prompt-prefix-alist   `((org-mode . ,prefix-in))
+;;             gptel-response-prefix-alist `((org-mode . ,prefix-out)))))
 
-  (add-hook 'gptel-mode-hook         #'sthenno/gptel-prefix)
-  (add-hook 'gptel-pre-response-hook #'sthenno/gptel-prefix)
+;;   (add-hook 'gptel-mode-hook         #'sthenno/gptel-prefix)
+;;   (add-hook 'gptel-pre-response-hook #'sthenno/gptel-prefix)
 
-  ;; Functions of the `gptel' buffer
-  ;;
-  (add-hook 'gptel-mode-hook #'turn-on-visual-line-mode)
+;;   ;; Functions of the `gptel' buffer
+;;   ;;
+;;   (add-hook 'gptel-mode-hook #'turn-on-visual-line-mode)
 
-  (defun sthenno/gptel-to-buffer ()
-    "Open the gptel buffer."
-    (interactive)
-    (let ((buff "*Φ*"))
-      (gptel buff)
+;;   (defun sthenno/gptel-to-buffer ()
+;;     "Open the gptel buffer."
+;;     (interactive)
+;;     (let ((buff "*Φ*"))
+;;       (gptel buff)
 
-      ;; TODO: Add repeat keys to jump back
-      (switch-to-buffer buff)))
+;;       ;; TODO: Add repeat keys to jump back
+;;       (switch-to-buffer buff)))
 
-  (global-set-key (kbd "s-l") #'sthenno/gptel-to-buffer)
+;;   (global-set-key (kbd "s-l") #'sthenno/gptel-to-buffer)
 
-  :bind (:map gptel-mode-map
-              ("S-<return>" . gptel-send)))
+;;   :bind (:map gptel-mode-map
+;;               ("S-<return>" . gptel-send)))
 
 
 ;; GitHub Copilot
