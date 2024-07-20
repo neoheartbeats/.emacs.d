@@ -81,47 +81,29 @@
       user-mail-address "sthenno@sthenno.com")
 
 
-;; Package management via `straight.el'
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        (or (bound-and-true-p straight-base-dir)
-            user-emacs-directory)))
-      (bootstrap-version 7))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
+;; Emacs packages
+;;
+(require 'package)
+(add-to-list 'package-archives '("melpa"     . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("gnu-devel" . "https://elpa.gnu.org/devel/") t)
 
-(defun straight-use-packages (packages)
-  "Install multiple PACKAGES using `straight-use-package'."
-  (dolist (pkg packages)
-    (straight-use-package pkg)))
+;; Highest number gets priority
+(setq package-archive-priorities '(("gnu-devel" . 4)
+                                   ("gnu-elpa"  . 3)
+                                   ("melpa"     . 2)
+                                   ("nongnu"    . 1)))
+
+;; Ensure to native-compile packages
+(setq package-native-compile t)
 
 ;; The `use-package' macro
-(straight-use-packages '(use-package bind-key diminish))
-
-(eval-when-compile
-  (eval-after-load 'advice
-    `(setq ad-redefinition-action 'accept))
-  (setq use-package-verbose nil
-        use-package-compute-statistics nil
-        use-package-enable-imenu-support t
-        use-package-minimum-reported-time 0.1)
-  (require 'cl-lib)
-  (require 'use-package))
+(setq use-package-expand-minimally t
+      use-package-enable-imenu-support t)
 
 
 ;; GCMH: the Garbage Collector Magic Hack
 (use-package gcmh
-  :straight t
-  :defer 2
-  :diminish (gcmh-mode)
+  :ensure t
   :init
 
   ;; The GC introduces annoying pauses and stuttering into our Emacs experience,
@@ -135,47 +117,13 @@
   :config (gcmh-mode 1))
 
 
-;; XXX: benchmark-init
+;; Load path
 ;;
-;; (use-package benchmark-init
-;;   :straight t
-;;   :config
 
-;;   ;; To disable collection of benchmark data after init is done.
-;;   (add-hook 'after-init-hook #'benchmark-init/deactivate)
-
-;;   ;; To present results
-;;   (global-set-key (kbd "<f2>") #'benchmark-init/show-durations-tree)
-;;   (global-set-key (kbd "<f3>") #'benchmark-init/show-durations-tabulated))
-
-
-;;; Load path
-;;
 ;; Fix PATH for macOS
 (use-package exec-path-from-shell
-  :straight t
+  :ensure t
   :config (exec-path-from-shell-initialize))
-
-;; Org mode
-;; (let ((org-lisp-dir (expand-file-name "site-lisp/org/lisp/" user-emacs-directory)))
-;;   (add-to-list 'load-path org-lisp-dir)
-;;   (require 'org))
-
-;; From https://github.com/purcell/emacs.d/blob/master/lisp/init-site-lisp.el
-;; (defun add-subdirs-to-load-path (parent-dir)
-;;   "Add every non-hidden subdir of PARENT-DIR to `load-path'."
-;;   (let ((default-directory parent-dir))
-;;     (setq load-path
-;;           (append
-;;            (cl-remove-if-not
-;;             #'file-directory-p
-;;             (directory-files (expand-file-name parent-dir) t "^[^\\.]"))
-;;            load-path))))
-
-;; ;; Add both site-lisp and its immediate subdirs to `load-path'
-;; (let ((site-lisp-dir (expand-file-name "site-lisp/" user-emacs-directory)))
-;;   (push site-lisp-dir load-path)
-;;   (add-subdirs-to-load-path site-lisp-dir))
 
 ;; Dir for init-* files
 (push (expand-file-name "lisp/" user-emacs-directory) load-path)

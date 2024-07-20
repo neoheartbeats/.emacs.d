@@ -10,7 +10,6 @@
 ;;
 
 (use-package project
-  :demand t
   :init
   (setq project-prompter #'project-prompt-project-name)
 
@@ -25,7 +24,7 @@
 
 ;; Git client using Magit
 (use-package magit
-  :straight t
+  :ensure t
   :defer t
   :config
   (setq magit-section-visibility-indicator '(" 􀰌"))
@@ -38,7 +37,6 @@
 ;; For further backends support, see also `etags', `init-eglot'
 ;;
 (use-package xref
-  :demand t
   :init (setq xref-search-program 'ripgrep)
   :bind (:map global-map
               ("M-/" . xref-find-references)))

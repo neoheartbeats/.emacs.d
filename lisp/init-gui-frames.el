@@ -19,7 +19,7 @@
 ;;
 
 (use-package modus-themes
-  :straight t
+  :ensure t
   :demand t
   :config
 
@@ -155,7 +155,7 @@
 ;; Collect pop-up windows
 ;;
 (use-package popper
-  :straight t
+  :ensure t
   :init
   (setq popper-reference-buffers '(("\\*Messages\\*$" . hide)
                                    ("\\*corfu\\*$"    . hide)
@@ -212,14 +212,14 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
 
 ;; TODO
 ;; (use-package minions
-;;   :straight t
+;;   :ensure t
 ;;   :init (setq minions-mode-line-lighter "􀠩")
 ;;   :config (minions-mode 1))
 
 
 ;; Automatic adjusting for margins
 (use-package spacious-padding
-  :straight t
+  :ensure t
   :config
   (setq spacious-padding-widths
         '( :internal-border-width 15
