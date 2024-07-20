@@ -138,8 +138,8 @@
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
 
   :bind ((:map vertico-map
-               ("<tab>"     . vertico-insert)
-               ("s-<right>" . vertico-insert)
+               ("<tab>"       . vertico-insert)
+               ("s-<right>"   . vertico-insert)
                ("<return>"    . vertico-directory-enter)
                ("s-<down>"    . vertico-directory-enter)
                ("s-<left>"    . vertico-directory-up)
@@ -164,7 +164,7 @@
 ;;
 (use-package consult
   :ensure t
-  :after (project xref org)
+  :after (org)
   :init
   (setq register-preview-delay 0.05
         register-preview-function #'consult-register-format)
@@ -396,15 +396,11 @@ Quit if the list is empty."
 
   ;; Maintain a list of recently selected candidates
   ;;
-  ;; (require 'corfu-history)
-
   (corfu-history-mode 1)
   (add-to-list 'savehist-additional-variables 'corfu-history)
 
   ;; Popup candidates info
   ;;
-  ;; (require 'corfu-popupinfo)
-
   (setq corfu-popupinfo-delay '(0.25 . 0.05))
   (setq corfu-popupinfo-hide nil)
 

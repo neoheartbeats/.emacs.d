@@ -35,9 +35,9 @@
 
 ;; Yasnippet
 ;;
-
 (use-package yasnippet
   :ensure t
+  :defer 2
   :config
   (setq yas-triggers-in-field t)
   (setq yas-visit-from-menu t)

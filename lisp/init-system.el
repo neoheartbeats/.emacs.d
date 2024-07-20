@@ -37,12 +37,11 @@
 (bind-keys :map emacs-lisp-mode-map
            ("C-c C-c". load-current-lisp-file))
 
-(global-set-key (kbd "<escape>") #'keyboard-escape-quit)
+;; Open the *ielm* buffer
+(keymap-global-set "<f2>" #'ielm)
 
-;; "C-i" is treated as the same of "TAB" by default.
-;; It is better distinguish it. Note this just makes "C-i" bacome undefined
-;; and it still cannot be used as any effective keys [FIXME]
-(define-key input-decode-map "\C-i" [C-i])
+;;
+(global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
 ;; Disable these keys
 (global-unset-key (kbd "<pinch>"))
@@ -210,7 +209,7 @@ Activate again to undo this. If the window changes before then, the undo expires
 
 ;; Mouse and scroll settings
 (setq scroll-preserve-screen-position t
-      scroll-margin 5
+      scroll-margin 0
       scroll-conservatively 105)
 (add-hook 'after-init-hook #'(lambda ()
                                (pixel-scroll-precision-mode 1)))
@@ -228,7 +227,5 @@ Activate again to undo this. If the window changes before then, the undo expires
 
 ;; `gls' is preferred on macOS
 (setq insert-directory-program "/opt/homebrew/bin/gls")
-
-(add-hook 'dired-mode-hook #'dired-hide-details-mode)
 
 (provide 'init-system)

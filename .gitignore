@@ -27,3 +27,5 @@ recentf
 /var/
 /TAGS
 /transient/
+/package-quickstart.el
+/package-quickstart.elc

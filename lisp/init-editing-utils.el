@@ -99,14 +99,6 @@ If `major-mode' is `python-mode', abort."
 (add-hook 'emacs-lisp-mode-hook #'sthenno/enable-pretty-print-auto)
 
 
-;; Visualize undo
-;;
-;; (use-package vundo
-;;   :ensure t
-;;   :bind (:map global-map
-;;               ("C-z" . vundo)))
-
-
 ;; Fold code lines
 ;;
 (use-package hideshow

@@ -231,8 +231,7 @@
                                    :right-divider-width 0
                                    :scroll-bar-width 0))
   
-  :config
-  (spacious-padding-mode 1))
+  :config (spacious-padding-mode 1))
 
 
 ;;; Sthenno's customization of "doom-quit"

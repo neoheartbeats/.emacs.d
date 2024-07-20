@@ -6,22 +6,13 @@
 
 ;;; Commentary:
 ;;
+;;
+
 ;;; Code:
 ;;
 
-(use-package project
-  :init
-  (setq project-prompter #'project-prompt-project-name)
+(setq project-prompter #'project-prompt-project-name)
 
-  (defun project-magit-status ()
-    "Run magit-status in the current project's root."
-    (interactive)
-    (magit-status-setup-buffer (project-root (project-current t))))
-
-  :bind (:map global-map
-              ("C-x p <backspace>" . sthenno/project-remove-project)))
-
-
 ;; Git client using Magit
 (use-package magit
   :ensure t

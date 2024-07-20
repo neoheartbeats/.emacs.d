@@ -81,11 +81,6 @@
 
 (setq initial-scratch-message nil)
 
-;; Default startup message
-(defun display-startup-echo-area-message ()
-  (let ((text "There's nothing more to Show"))
-    (message "􀪾 %s" text)))
-
 ;; User information
 (setq user-full-name    "Sthenno"
       user-mail-address "sthenno@sthenno.com")
@@ -149,7 +144,6 @@
 ;; Dir for init-* files
 (push (expand-file-name "lisp/" user-emacs-directory) load-path)
 
-
 ;; Require init-* files
 (require 'init-system)
 (require 'init-gui-frames)
