@@ -6,41 +6,18 @@
 
 ;;; Commentary:
 ;;
-;; [TODO]
-;;
 ;;; Code:
 ;;
 
 (use-package project
+  :demand t
   :init
   (setq project-prompter #'project-prompt-project-name)
-
-  ;; From https://github.com/karthink/.emacs.d/blob/master/lisp/setup-project.el
-  (setq project-switch-commands
-        '((?f "Find file" project-find-file)
-          (?d "Dired" project-dired)
-          (?b "Buffer" project-switch-to-buffer)
-          (?q "Query replace" project-query-replace-regexp)
-          (?m "magit" project-magit-status)
-          (?k "Kill buffers" project-kill-buffers)
-          (?e "Eshell" project-eshell)))
 
   (defun project-magit-status ()
     "Run magit-status in the current project's root."
     (interactive)
     (magit-status-setup-buffer (project-root (project-current t))))
-
-  ;;
-  ;; [FIXME]
-  ;;
-
-  (defun sthenno/project-remove-project ()
-    "Remove project from `project--list' using completion."
-    (interactive)
-    (project--ensure-read-project-list)
-    (let* ((projects project--list)
-           (dir (completing-read "REMOVE project from list: " projects nil t)))
-      (setq project--list (delete (assoc dir projects) projects))))
 
   :bind (:map global-map
               ("C-x p <backspace>" . sthenno/project-remove-project)))
@@ -55,21 +32,13 @@
   (setq magit-diff-refine-hunk t)
   :bind ("C-x g" . magit-status))
 
-;; FIXME:
-;; Display entries from source code comments and Org files in the Magit status buffer.
-;; See also `hl-todo'
-;;
-;; (use-package magit-todos
-;;   :straight t
-;;   :after (magit)
-;;   :config (magit-todos-mode 1))
-
 
 ;;; Xref
 ;;
 ;; For further backends support, see also `etags', `init-eglot'
 ;;
 (use-package xref
+  :demand t
   :init (setq xref-search-program 'ripgrep)
   :bind (:map global-map
               ("M-/" . xref-find-references)))

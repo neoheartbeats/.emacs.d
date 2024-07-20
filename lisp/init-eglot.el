@@ -29,37 +29,39 @@
 (setq treesit-font-lock-level 4)
 
 
-;;
 ;; Initialize `eglot'
 ;;
-
 (use-package eglot
-  :straight t
-  :defer t
-  :config
-
-  ;; Use Pyright as the default language server
-  (add-to-list 'eglot-server-programs
-               '(python-ts-mode . ("pyright-langserver" "--stdio")))
-  (add-hook 'python-ts-mode #'eglot-ensure)
-
+  :after (project)
+  :init
+  
   ;; Config `corfu' for `eglot', see also `init-comp'
   ;; Continuously update the candidates
   ;; Enable cache busting, depending on if your server returns
   ;; sufficiently many candidates in the first place
   (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
 
+  :config
+
+  ;; Python
+  ;; Use Pyright as the default language server
+  ;;
+  (add-to-list 'eglot-server-programs
+               '(python-ts-mode . ("pyright-langserver" "--stdio")))
+
+  ;; Hooks
+  (add-hook 'python-ts-mode #'eglot-ensure)
+
   :bind (:map eglot-mode-map
               ("<f6>" . eglot-rename)))
 
 ;; Speed up
 (use-package eglot-booster
-  :after (eglot)
   :straight (eglot-booster
              :type git
              :host github
              :repo "jdtsmith/eglot-booster")
-  :defer t
+  :after (eglot)
   :init (add-to-list 'exec-path (expand-file-name "bin/" user-emacs-directory))
   :config
   (setq eglot-booster-no-remote-boost t)
@@ -70,13 +72,17 @@
 
 
 ;; Python project management
-(use-package python
-  :init (setq python-indent-offset 4))
+;;
+(setq python-indent-offset 4)
+
+(use-package conda
+  :straight t
+  :after (python))
 
 ;; Reformat Python buffers using the Black formatter
 (use-package blacken
   :straight t
-  :defer t
+  :after (python)
   :init (add-hook 'python-ts-mode-hook #'(lambda ()
                                            (blacken-mode 1)))
   :bind (:map python-ts-mode-map
