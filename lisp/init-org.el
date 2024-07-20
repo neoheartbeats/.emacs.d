@@ -32,22 +32,19 @@
 
 
 ;; Install AUCTeX
-;; (use-package tex
-;;   :straight auctex)
-
-;; (straight-use-package 'auctex)
+(use-package tex
+  :ensure auctex)
 
 ;; Use CDLaTeX to improve editing experiences
 ;; (use-package cdlatex
-;;   :straight t
-;;   :diminish (org-cdlatex-mode)
+;;   :ensure t
 ;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 ;; Default LaTeX preview image directory
 ;; (setq org-preview-latex-image-directory
 ;;       (expand-file-name "ltximg/" user-cache-directory))
 
-;; (setq org-persist-directory (expand-file-name "org-persist" user-cache-directory))
+(setq org-persist-directory (expand-file-name "org-persist" user-cache-directory))
 
 ;; Experimental: `org-latex-preview'
 ;;
@@ -136,7 +133,8 @@
 ;;; Modern Org Mode theme
 ;;
 (use-package org-modern
-  :straight t
+  :ensure t
+  :after (org)
   :config
   (setq org-modern-star 'fold
         org-modern-fold-stars '(("◉" . "○"))
@@ -216,7 +214,8 @@
 ;; The Zettlekasten note-taking system by Denote
 ;;
 (use-package denote
-  :straight t
+  :ensure t
+  :after (org)
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
   (setq denote-known-keywords '("dates"
@@ -420,7 +419,7 @@
 
 ;; Modules for language learning
 ;; (use-package org-drill
-;;   :straight t
+;;   :ensure t
 ;;   :config
 ;;   (setq org-drill-learn-fraction 0.5)
 ;;   (setq org-drill-maximum-items-per-session 20)

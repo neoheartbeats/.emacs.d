@@ -57,7 +57,7 @@
 ;; Use the `orderless' completion style
 ;;
 (use-package orderless
-  :straight t
+  :ensure t
   :config
 
   ;; The basic completion style is specified as fallback in addition to orderless in
@@ -81,7 +81,7 @@
 ;; Completions in minibuffers
 ;;
 (use-package vertico
-  :straight t
+  :ensure t
   :init
   (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
 
@@ -125,35 +125,31 @@
 
   ;; Additions for moving up and down directories in `find-file'
   ;;
-  (use-package vertico-directory
-    :config
 
-    ;; Update minibuffer history with candidate insertions
-    (defun vertico-insert-add-history ()
-      "Make `vertico-insert' add to the minibuffer history."
-      (unless (eq minibuffer-history-variable t)
-        (add-to-history minibuffer-history-variable (minibuffer-contents))))
+  ;; Update minibuffer history with candidate insertions
+  (defun vertico-insert-add-history ()
+    "Make `vertico-insert' add to the minibuffer history."
+    (unless (eq minibuffer-history-variable t)
+      (add-to-history minibuffer-history-variable (minibuffer-contents))))
 
-    (advice-add 'vertico-insert :after #'vertico-insert-add-history)
+  (advice-add 'vertico-insert :after #'vertico-insert-add-history)
 
-    ;; Correct file path when changed (tidy shadowed file names)
-    (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
-
-    :bind (:map vertico-map
-                ("<return>"    . vertico-directory-enter)
-                ("s-<down>"    . vertico-directory-enter)
-                ("s-<left>"    . vertico-directory-up)
-                ("<backspace>" . vertico-directory-delete-char)))
+  ;; Correct file path when changed (tidy shadowed file names)
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
 
   :bind ((:map vertico-map
                ("<tab>"     . vertico-insert)
-               ("s-<right>" . vertico-insert))))
+               ("s-<right>" . vertico-insert)
+               ("<return>"    . vertico-directory-enter)
+               ("s-<down>"    . vertico-directory-enter)
+               ("s-<left>"    . vertico-directory-up)
+               ("<backspace>" . vertico-directory-delete-char))))
 
 
 ;; Rich annotations for minibuffer
 ;;
 (use-package marginalia
-  :straight t
+  :ensure t
   :init
   (setq marginalia-field-width 88)
   (setq marginalia-separator (propertize " :  " 'face '(:inherit shadow)))
@@ -167,7 +163,7 @@
 ;; See also `beframe', `consult-denote'.
 ;;
 (use-package consult
-  :straight t
+  :ensure t
   :after (project xref org)
   :init
   (setq register-preview-delay 0.05
@@ -237,7 +233,7 @@
 ;; This package is simply used to filter and group minibuffer candidates
 ;;
 (use-package beframe
-  :straight t
+  :ensure t
   :after (consult)
   :init
   (setq beframe-global-buffers nil
@@ -294,7 +290,7 @@ Optional argument FRAME, return the list of buffers of FRAME."
 ;; Add extensions for the completion backend
 ;;
 (use-package cape
-  :straight t
+  :ensure t
   :config
   (setq cape-dabbrev-min-length 2)
 
@@ -342,7 +338,7 @@ and each value is a list of functions to add to `completion-at-point-functions'.
 ;; The main completion frontend by Corfu
 ;;
 (use-package corfu
-  :straight (:files (:defaults "extensions/*"))
+  :ensure t
   :init (global-corfu-mode 1)
   :config
   (setq corfu-auto t
@@ -400,14 +396,14 @@ Quit if the list is empty."
 
   ;; Maintain a list of recently selected candidates
   ;;
-  (require 'corfu-history)
+  ;; (require 'corfu-history)
 
   (corfu-history-mode 1)
   (add-to-list 'savehist-additional-variables 'corfu-history)
 
   ;; Popup candidates info
   ;;
-  (require 'corfu-popupinfo)
+  ;; (require 'corfu-popupinfo)
 
   (setq corfu-popupinfo-delay '(0.25 . 0.05))
   (setq corfu-popupinfo-hide nil)

@@ -102,7 +102,7 @@ If `major-mode' is `python-mode', abort."
 ;; Visualize undo
 ;;
 ;; (use-package vundo
-;;   :straight t
+;;   :ensure t
 ;;   :bind (:map global-map
 ;;               ("C-z" . vundo)))
 
@@ -189,15 +189,13 @@ If `major-mode' is `python-mode', abort."
 
 ;; Using rainbow delimiters
 (use-package rainbow-delimiters
-  :straight t
-  :diminish (rainbow-delimiters-mode)
+  :ensure t
   :config (add-hook 'prog-mode-hook #'(lambda ()
                                         (rainbow-delimiters-mode 1))))
 
 
 ;; Show doc-string in echo area
 (use-package eldoc
-  :diminish (eldoc-mode)
   :init (setq eldoc-idle-delay 0.05))
 
 
@@ -214,7 +212,6 @@ If `major-mode' is `python-mode', abort."
 
 ;; Automatically reload files was modified by external program
 (use-package autorevert
-  :diminish (auto-revert-mode)
   :init (add-hook 'after-init-hook #'(lambda ()
                                        (global-auto-revert-mode 1))))
 
@@ -233,7 +230,7 @@ If `major-mode' is `python-mode', abort."
 
 
 (use-package pulsar
-  :straight t
+  :ensure t
   :config
   (setq pulsar-pulse t
         pulsar-delay 0.05
@@ -255,35 +252,35 @@ If `major-mode' is `python-mode', abort."
   (pulsar-global-mode 1))
 
 
-(use-package indent-bars
-  :straight (indent-bars
-             :type git
-             :host github
-             :repo "jdtsmith/indent-bars")
-  :defer t
-  :init
-  (setq indent-bars-treesit-support t
-        indent-bars-treesit-ignore-blank-lines-types '("module"))
+;; (use-package indent-bars
+;;   :straight (indent-bars
+;;              :type git
+;;              :host github
+;;              :repo "jdtsmith/indent-bars")
+;;   :defer t
+;;   :init
+;;   (setq indent-bars-treesit-support t
+;;         indent-bars-treesit-ignore-blank-lines-types '("module"))
 
-  ;; Stipple-based pixel-toggling is not supported by NS built Emacs
-  (setq indent-bars-prefer-character t)
+;;   ;; Stipple-based pixel-toggling is not supported by NS built Emacs
+;;   (setq indent-bars-prefer-character t)
 
-  :config
-  (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
-        indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-        indent-bars-highlight-current-depth '(:blend 0.8)
-        indent-bars-starting-column 0
-        indent-bars-display-on-blank-lines t)
+;;   :config
+;;   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
+;;         indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+;;         indent-bars-highlight-current-depth '(:blend 0.8)
+;;         indent-bars-starting-column 0
+;;         indent-bars-display-on-blank-lines t)
 
-  ;; Hooks
-  (add-hook 'python-ts-mode-hook #'(lambda ()
-                                     (indent-bars-mode 1))))
+;;   ;; Hooks
+;;   (add-hook 'python-ts-mode-hook #'(lambda ()
+;;                                      (indent-bars-mode 1))))
 
 
 ;; Highlight these keywords in code comments
 ;;
 (use-package hl-todo
-  :straight t
+  :ensure t
   :init
   (defun sthenno/hl-todo-faces-setup ()
     (modus-themes-with-colors
@@ -306,7 +303,7 @@ If `major-mode' is `python-mode', abort."
 ;; Personal dictionary is located at "~/.config/enchant/en_US.dic" on macOS.
 
 ;; (use-package jinx
-;;   :straight t
+;;   :ensure t
 ;;   :init
 ;;   (setq jinx-languages "en_US"
 ;;         jinx-menu-suggestions 5)

@@ -37,8 +37,7 @@
 ;;
 
 (use-package yasnippet
-  :straight t
-  :diminish (yas-minor-mode)
+  :ensure t
   :config
   (setq yas-triggers-in-field t)
   (setq yas-visit-from-menu t)

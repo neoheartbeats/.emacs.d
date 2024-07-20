@@ -17,7 +17,7 @@
 ;; Command `treesit-auto-install-all' is required if the tree-sitter grammar
 ;; libs have not been configured already
 ;; (use-package treesit-auto
-;;   :straight t
+;;   :ensure t
 ;;   :config (global-treesit-auto-mode 1))
 
 ;; Remap `python-mode' to `python-ts-mode'
@@ -56,16 +56,16 @@
               ("<f6>" . eglot-rename)))
 
 ;; Speed up
-(use-package eglot-booster
-  :straight (eglot-booster
-             :type git
-             :host github
-             :repo "jdtsmith/eglot-booster")
-  :after (eglot)
-  :init (add-to-list 'exec-path (expand-file-name "bin/" user-emacs-directory))
-  :config
-  (setq eglot-booster-no-remote-boost t)
-  (eglot-booster-mode 1))
+;; (use-package eglot-booster
+;;   :straight (eglot-booster
+;;              :type git
+;;              :host github
+;;              :repo "jdtsmith/eglot-booster")
+;;   :after (eglot)
+;;   :init (add-to-list 'exec-path (expand-file-name "bin/" user-emacs-directory))
+;;   :config
+;;   (setq eglot-booster-no-remote-boost t)
+;;   (eglot-booster-mode 1))
 
 ;; Automatically confirm .dir-locals.el files
 (setq-default enable-local-variables :safe)
@@ -76,12 +76,12 @@
 (setq python-indent-offset 4)
 
 (use-package conda
-  :straight t
+  :ensure t
   :after (python))
 
 ;; Reformat Python buffers using the Black formatter
 (use-package blacken
-  :straight t
+  :ensure t
   :after (python)
   :init (add-hook 'python-ts-mode-hook #'(lambda ()
                                            (blacken-mode 1)))
@@ -94,7 +94,7 @@
 ;; LLM client
 ;;
 (use-package gptel
-  :straight t
+  :ensure t
   :defer t
   :init
   (setq gptel-use-curl t)
@@ -174,43 +174,43 @@
 
 ;; GitHub Copilot
 ;;
-(use-package copilot
-  :straight (copilot
-             :host github
-             :repo "copilot-emacs/copilot.el"
-             :files ("*.el"))
-  :defer t
-  :init
-  (setq copilot-node-executable "/opt/homebrew/bin/node")
-  (setq copilot-idle-delay 0.05)
-  (setq copilot-max-char (* 500 1000))  ; Default is 100,000
+;; (use-package copilot
+;;   :straight (copilot
+;;              :host github
+;;              :repo "copilot-emacs/copilot.el"
+;;              :files ("*.el"))
+;;   :defer t
+;;   :init
+;;   (setq copilot-node-executable "/opt/homebrew/bin/node")
+;;   (setq copilot-idle-delay 0.05)
+;;   (setq copilot-max-char (* 500 1000))  ; Default is 100,000
 
-  ;; Toggling `copilot-mode'
-  (defun sthenno/turn-on-copilot ()
-    (interactive)
-    (copilot-mode 1))
+;;   ;; Toggling `copilot-mode'
+;;   (defun sthenno/turn-on-copilot ()
+;;     (interactive)
+;;     (copilot-mode 1))
 
-  (defun sthenno/turn-off-copilot ()
-    (interactive)
-    (copilot-mode -1))
+;;   (defun sthenno/turn-off-copilot ()
+;;     (interactive)
+;;     (copilot-mode -1))
 
-  :config
-  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
-  (add-to-list 'copilot-major-mode-alist  '("python-ts" . "python"))
+;;   :config
+;;   (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
+;;   (add-to-list 'copilot-major-mode-alist  '("python-ts" . "python"))
 
-  ;; Hooks
-  (add-hook 'python-ts-mode-hook #'sthenno/turn-on-copilot)
+;;   ;; Hooks
+;;   (add-hook 'python-ts-mode-hook #'sthenno/turn-on-copilot)
 
-  :bind ((:map prog-mode-map
-               ("C-x c" . sthenno/turn-on-copilot)
-               ("C-x C" . sthenno/turn-off-copilot))
-         (:map copilot-completion-map
-               ("<tab>"   . copilot-accept-completion)
-               ("<right>" . copilot-accept-completion-by-line)
-               ("<left>"  . copilot-clear-overlay)
-               ("RET"     . copilot-clear-overlay))))
+;;   :bind ((:map prog-mode-map
+;;                ("C-x c" . sthenno/turn-on-copilot)
+;;                ("C-x C" . sthenno/turn-off-copilot))
+;;          (:map copilot-completion-map
+;;                ("<tab>"   . copilot-accept-completion)
+;;                ("<right>" . copilot-accept-completion-by-line)
+;;                ("<left>"  . copilot-clear-overlay)
+;;                ("RET"     . copilot-clear-overlay))))
 
-
+;; 
 ;; Python API: sthenno-endpoints Client
 ;;
 ;; [TODO]
