@@ -150,13 +150,12 @@ Activate again to undo this. If the window changes before then, the undo expires
 
 ;; Special treatment for large files
 (use-package so-long
-  :config (global-so-long-mode 1))
+  :init (global-so-long-mode 1))
 
 
 ;; Misc options
 (setq use-short-answers t)
 
-(setq delete-by-moving-to-trash t)
 (setq auto-hscroll-mode 'current-line)
 (setq mark-even-if-inactive nil)
 (setq ring-bell-function 'ignore)
@@ -173,20 +172,6 @@ Activate again to undo this. If the window changes before then, the undo expires
 
 (setq create-lockfiles nil)
 (setq make-backup-files nil)
-
-;; Auto saving mechanism
-;; (setq auto-save-interval 2400
-;;       auto-save-timeout 300)
-;; (setq auto-save-list-file-prefix
-;;       (expand-file-name "auto-save-list/.saves-" user-cache-directory))
-
-;; (setq backup-directory-alist
-;;       `(("." . ,(expand-file-name "backup" user-cache-directory)))
-;;       backup-by-copying t               ; Use copies
-;;       version-control t                 ; Use version numbers on backups
-;;       delete-old-versions t             ; Automatically delete excess backups
-;;       kept-new-versions 10              ; Newest versions to keep
-;;       kept-old-versions 5)
 
 
 ;;; global functions for accessibility
@@ -220,12 +205,12 @@ Activate again to undo this. If the window changes before then, the undo expires
 
 (bind-keys :map global-map
            ("<s-right>" . sthenno/cycle-to-next-buffer)
-           ("<s-left>" . sthenno/cycle-to-previous-buffer))
+           ("<s-left>"  . sthenno/cycle-to-previous-buffer))
 
 
 ;; Mouse and scroll settings
 (setq scroll-preserve-screen-position t
-      scroll-margin 0
+      scroll-margin 5
       scroll-conservatively 105)
 (add-hook 'after-init-hook #'(lambda ()
                                (pixel-scroll-precision-mode 1)))
@@ -235,7 +220,6 @@ Activate again to undo this. If the window changes before then, the undo expires
 (setq mouse-drag-copy-region nil)
 (setq select-enable-primary nil)
 (setq select-enable-clipboard t)
-(setq search-default-mode 'char-fold-to-regexp)
 
 
 (setq dired-auto-revert-buffer #'dired-directory-changed-p)

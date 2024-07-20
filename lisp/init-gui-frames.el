@@ -30,11 +30,14 @@
 
   (setq modus-vivendi-palette-user
         '((sthenno-blueberry "#467fef")
-          (sthenno-gorse     "#fcf050")))
+          (sthenno-gorse     "#fcf251")))
 
   ;; Mapping colors
+  ;;
   (setq modus-vivendi-palette-overrides
-        '(
+        `((bg-main "#0e1116")
+          (fg-main "#e7edf2")
+          
           ;; Make the mode-line borderless and stand out less
           (bg-mode-line-active   bg-active)
           (fg-mode-line-active   fg-main)
@@ -82,7 +85,9 @@
           ;; Completions (see also `init-comp')
           (bg-completion bg-hl-line)
 
-          (cursor sthenno-blueberry)))
+          (cursor sthenno-blueberry)
+
+          ,@modus-themes-preset-overrides-warmer))
 
   (setq modus-themes-bold-constructs t
         modus-themes-prompts '(bold)
@@ -108,9 +113,10 @@
                                (global-hl-line-mode 1)))
 
 ;; Custom font
-(set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
+(set-face-attribute 'default     nil :family "Sthenno Mono" :height 140)
+(set-face-attribute 'fixed-pitch nil :family "Sthenno Mono" :height 140)
 
-;; Define the ligation dictionary [TODO]
+;; Define the ligation dictionary
 (defun sthenno-mono-ligation-setup ()
   (let ((composition-table (make-char-table nil)))
     (dolist (char-regexp-replacement
@@ -157,9 +163,8 @@
 (use-package popper
   :ensure t
   :init
-  (setq popper-reference-buffers '(("\\*Messages\\*$" . hide)
-                                   ("\\*corfu\\*$"    . hide)
-                                   "\\*ielm\\*$"
+  (setq popper-reference-buffers '("\\*ielm\\*$"
+                                   "\\*Messages\\*$"
                                    "\\*scratch\\*$"
                                    help-mode))
 
@@ -174,12 +179,8 @@
 
 ;;; Mode Line settings
 ;;
-;; Format modeline buffer identification [TODO]
+;; Format modeline buffer identification
 ;;
-;; - Add `project' integration
-;; - Add `magit' integration
-;;
-
 (defun sthenno/modeline-buffer-identification-setup ()
   (defun sthenno/modeline--buffer-identification ()
     "Return `buffer-name' as a string.
@@ -192,7 +193,8 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
   (defvar-local sthenno/modeline-buffer-identification
       '(:eval
         (when (mode-line-window-selected-p)
-          (propertize (sthenno/modeline--buffer-identification) 'face 'mode-line-buffer-id)))
+          (propertize (sthenno/modeline--buffer-identification)
+                      'face 'mode-line-buffer-id)))
     "Mode line construct to display the buffer identification.")
 
   (defvar-local sthenno/modeline-prefix-symbol
@@ -220,14 +222,14 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
 ;; Automatic adjusting for margins
 (use-package spacious-padding
   :ensure t
+  :init
+  (setq spacious-padding-widths '( :internal-border-width 15
+                                   :header-line-width 0
+                                   :mode-line-width 2
+                                   :right-divider-width 0
+                                   :scroll-bar-width 0))
+  
   :config
-  (setq spacious-padding-widths
-        '( :internal-border-width 15
-           :header-line-width 0
-           :mode-line-width 2
-           :right-divider-width 0
-           :scroll-bar-width 0))
-
   (spacious-padding-mode 1))
 
 
@@ -235,13 +237,11 @@ If `buffer-file-name' is a `denote' file, return its corresponding title instead
 ;;
 ;; SEE: https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 ;;
-(defvar sthenno-quit-messages
-  `(
-    "Anyone else but you?"
-    "She depends on you."
-    "Please take care of Sthenno."
-    "It's not like I'll miss you or anything, b-baka!"
-    "Please don't go!")
+(defvar sthenno-quit-messages  `("Anyone else but you?"
+                                 "She depends on you."
+                                 "Please take care of Sthenno."
+                                 "It's not like I'll miss you or anything, b-baka!"
+                                 "Please don't go!")
   "A list of quit messages, picked randomly by `sthenno-quit'.")
 
 (defun sthenno-quit-p (&optional prompt)

@@ -19,6 +19,7 @@
 ;;; Code:
 ;;
 (require 'org)
+(setq org-modules nil)
 
 ;; Setup default directory
 ;;
@@ -32,8 +33,8 @@
 
 
 ;; Install AUCTeX
-(use-package tex
-  :ensure auctex)
+;; (use-package tex
+;;   :ensure auctex)
 
 ;; Use CDLaTeX to improve editing experiences
 ;; (use-package cdlatex
@@ -230,7 +231,7 @@
   (setq denote-journal-extras-title-format "%F")      ; Use ISO 8601 for titles
 
   ;; Do not include date, tags and ids in note files
-  (setq denote-org-front-matter "#+TITLE: %1$s. 􀙤\n\n")
+  (setq denote-org-front-matter "#+title: %1$s. 􀙤\n\n")
 
   :bind
   (:map global-map
