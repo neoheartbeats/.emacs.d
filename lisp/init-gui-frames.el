@@ -144,6 +144,9 @@
 (set-fontset-font t 'unicode (font-spec :family "SF Pro Display")  nil 'prepend)
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji") nil 'prepend)
 
+;; Math fonts
+
+
 ;; Note this make all italic font style disabled
 (set-face-attribute 'italic nil :slant 'normal)
 
@@ -166,10 +169,13 @@
   (setq popper-reference-buffers '("\\*ielm\\*$"
                                    "\\*Messages\\*$"
                                    "\\*scratch\\*$"
+
+                                   ;; Modes
+                                   snippet-mode
                                    help-mode))
 
   ;; Disable the modeline for `popper' buffers
-  ;; (setq popper-mode-line nil)
+  (setq popper-mode-line '(:eval '(propertize " 􁐈" 'face 'mode-line-emphasis)))
 
   ;; Hooks
   (add-hook 'after-init-hook #'(lambda ()

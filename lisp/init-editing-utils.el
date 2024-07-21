@@ -134,11 +134,13 @@ If `major-mode' is `python-mode', abort."
 
 ;; HACK: Inhibit passing these delimiters
 ;;
-;; (defun sthenno/inhibit-specific-delimiters ()
-;;   "Remove the following from current `syntax-table'. This disables syntax highlighting
-;; and auto-paring for such entries."
-;;   (modify-syntax-entry ?< "." (syntax-table))
-;;   (modify-syntax-entry ?> "." (syntax-table)))
+(defun sthenno/inhibit-specific-delimiters ()
+  "Remove the following from current `syntax-table'. This disables syntax highlighting
+and auto-paring for such entries."
+  (modify-syntax-entry ?< "." (syntax-table))
+  (modify-syntax-entry ?> "." (syntax-table)))
+
+(add-hook 'after-init-hook #'sthenno/inhibit-specific-delimiters)
 
 ;; Automatic pair parenthesis
 ;;
@@ -268,7 +270,7 @@ If `major-mode' is `python-mode', abort."
               ("XXXX*" . ,err)
               ("NOTE"  . ,fg-changed)
               ("HACK"  . ,fg-changed))))
-    
+
     (global-hl-todo-mode 1))
 
   (add-hook 'prog-mode-hook #'sthenno/hl-todo-faces-setup))

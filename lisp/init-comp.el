@@ -345,8 +345,8 @@ and each value is a list of functions to add to `completion-at-point-functions'.
         corfu-auto-delay 0.05           ; Making this to 0 is too expensive
         corfu-auto-prefix 2)
 
-  (setq corfu-count 5
-        corfu-scroll-margin 2)
+  (setq corfu-count 8
+        corfu-scroll-margin 4)
 
   (setq corfu-min-width 5
         corfu-max-width 40)
@@ -355,44 +355,62 @@ and each value is a list of functions to add to `completion-at-point-functions'.
         corfu-quit-no-match t
         corfu-on-exact-match 'quit)
 
-  (setq corfu-preview-current 'insert)
+  (setq corfu-preview-current nil)
 
-  (setq corfu-cycle t)
-  (setq corfu-preselect 'prompt)
+  (setq corfu-cycle nil)
 
   ;; Performance optimization
   ;;
   (defun sthenno/corfu-eshell-setup ()
     (setq-local corfu-auto nil)
     (corfu-mode 1)
-    (keymap-set corfu-map "<return>" #'corfu-send))
+    (keymap-set corfu-map "RET" #'corfu-send))
 
   (add-hook 'eshell-mode-hook #'sthenno/corfu-eshell-setup)
 
   ;; Use special key to insert
   ;;
-  (dolist (c (list (cons "SPC" " ")
-                   (cons "."   ".")
-                   (cons ","   ",")
-                   (cons ":"   ":")
-                   (cons ")"   ")")
-                   (cons "}"   "}")
-                   (cons "]"   "]")))
-    (define-key corfu-map (kbd (car c)) `(lambda ()
-                                           (interactive)
-                                           (corfu-insert)
-                                           (insert ,(cdr c)))))
+  ;; Like first, but select the prompt if it is a directory
+  (setq corfu-preselect 'directory)
 
-  ;; Use RET to insert the first
-  (defun sthenno/corfu-insert-first ()
-    "Insert first candidate in the list.
-Quit if the list is empty."
-    (interactive)
-    (if (>= corfu--total 1)
-        (corfu--insert 'finished)
-      (corfu-quit)))
+  ;; Use convenient keys to insert candidates of `corfu--candidates'. Since the first
+  ;; candidate is usually pre-selected, it is better to trigger `corfu--insert'
+  ;; depending on different conditions.
+  ;;
+  (defun sthenno/corfu-insert-key (key)
+    "Insert selected candidate in `corfu--candidates' and KEY.
 
-  (keymap-set corfu-map "RET" #'sthenno/corfu-insert-first)
+Do not `corfu--insert' if
+  - `corfu--candidates' is empty |
+  - `corfu--preselect'  is the prompt |
+  - `corfu--index'      is the first candidate in `corfu--candidates'.
+
+Do not insert KEY if `char-after' point is not empty."
+
+    ;; Check if `corfu--insert'
+    (let ((c (cond ((equal key "SPC") ?\s)
+                   (t (aref key 0)))))
+      (if (> corfu--index 0)
+          (progn
+            (corfu--insert 'finished)
+
+            ;; Check if insert key
+            (let ((p (or (not (char-after))
+                         (= (char-after) ?\s)
+                         (= (char-after) ?\n))))
+              (if p (insert c)
+                (corfu-quit)))
+            (corfu-quit))
+        (progn
+          (corfu-quit)
+          (insert c)))))
+
+  (dolist (k '("SPC" "." "," ":" ")" "}" "]" "'"))
+    (keymap-set corfu-map k #'(lambda ()
+                                (interactive)
+                                (sthenno/corfu-insert-key k))))
+
+  (keymap-set corfu-map "RET" #'corfu-insert)
 
   ;; Maintain a list of recently selected candidates
   ;;

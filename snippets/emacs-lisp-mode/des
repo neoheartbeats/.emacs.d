@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: defun-sthenno
+# key: des
+# --
+(defun sthenno/$1 (${2:""})
+  $0)
