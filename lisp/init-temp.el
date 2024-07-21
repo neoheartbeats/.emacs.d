@@ -6,16 +6,13 @@
 
 ;;; Commentary:
 ;;
-;; TODO: This file includes:
-;; -
 ;;
 
 ;;; Code:
 ;;
 
 
-;; TODO: Abbrevs
-;;
+;; Abbrevs
 (use-package abbrev
   :init
   (setq abbrev-file-name (expand-file-name "abbrev-defs.el" user-emacs-directory))
@@ -34,20 +31,19 @@
 
 
 ;; Yasnippet
-;;
 (use-package yasnippet
   :ensure t
   :after (abbrev corfu)
   :init
 
-  (defun sthenno/yas-expand ()
-    "Expand snippet at point. "
-    )
+  ;; TODO: Integrate keys with corfu
+  ;;
+  ;; (defun sthenno/yas-expand ()
+  ;;   "Expand snippet at point. "
+  ;;   )
   :config
   (setq yas-triggers-in-field t)
   (setq yas-visit-from-menu t)
-  (yas-global-mode 1)
-
-  :bind )
+  (yas-global-mode 1))
 
 (provide 'init-temp)
