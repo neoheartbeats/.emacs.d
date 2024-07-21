@@ -12,8 +12,8 @@
 ;; - pop-up completions by `corfu' as frontend and `cape' as backend
 ;;
 ;; NOTE: Package `embark' is not included in this config due to my personal preferences.
-;; XXX: Template's setups such as that for `abbrev' are placed separately in
-;; `init-temp' but `dabbrev' is configured in this file under current decision.
+;; Template's setups such as that for `abbrev' are placed separately in `init-temp' but
+;; `dabbrev' is configured in this file under current decision.
 
 ;;; Code:
 ;;
@@ -24,9 +24,10 @@
 ;;
 
 ;; Completion basics. See also `orderless'
-;; TAB cycle if there are only few candidates
 ;;
-(setq completion-cycle-threshold nil)
+
+;; TAB cycle if there are only few candidates
+(setq completion-cycle-threshold 5)
 
 ;; Emacs 30: `cape-dict' is used instead.
 ;; NOTE: `setopt' is necessary.
@@ -52,10 +53,10 @@
 ;; Do not allow the cursor in the minibuffer prompt
 (setq minibuffer-prompt-properties
       '(read-only t cursor-intangible t face minibuffer-prompt))
-(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+(add-hook 'minibuffer-setup-hook #'(lambda ()
+                                     (cursor-intangible-mode 1)))
 
 ;; Use the `orderless' completion style
-;;
 (use-package orderless
   :ensure t
   :config
@@ -69,17 +70,19 @@
 
                                         ;; There is further configuration for better
                                         ;; `eglot' support. See also `init-eglot'
-                                        (eglot      (styles basic orderless))
-                                        (eglot-capf (styles basic orderless)))))
+                                        (eglot      (styles orderless))
+                                        (eglot-capf (styles orderless)))))
 
 ;; Ignore cases for completions
 (setq completion-ignore-case t)
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t)
 
+;; Minibuffer faces
+(setq text-quoting-style 'straight)
+
 
 ;; Completions in minibuffers
-;;
 (use-package vertico
   :ensure t
   :init
@@ -93,12 +96,28 @@
                            #'ignore))
                   (apply args))))
 
-  (vertico-mode 1)
+  ;; Use `consult-completion-in-region' if `vertico' is enabled.
+  (setq completion-in-region-function (lambda (&rest args)
+                                        (apply (if vertico-mode
+                                                   #'consult-completion-in-region
+                                                 #'completion--in-region)
+                                               args)))
+
+  ;; Hooks
+  (defun sthenno/vertico-on ()
+    (interactive)
+    (vertico-mode 1))
+
+  (defun sthenno/vertico-off ()
+    (interactive)
+    (vertico-mode -1))
+
+  (add-hook 'after-init-hook #'sthenno/vertico-on)
 
   :config
   (setq vertico-count 8)
   (setq vertico-scroll-margin 4)
-  (setq vertico-cycle t)
+  (setq vertico-cycle nil)
 
   ;; Add some simple indicator symbols here to make things clear
   (setq vertico-count-format (cons "◇ %-6s ◈ " "%s of %s"))
@@ -123,16 +142,81 @@
         (concat (propertize "○ " 'face `(:foreground ,fg-dim))
                 cand))))
 
+  ;; Candidate display transformations
+  ;;
+  (defvar sthenno/vertico-transform-functions nil)
+
+  (cl-defmethod vertico--format-candidate :around
+    (cand prefix suffix index start &context
+          ((not sthenno/vertico-transform-functions) null))
+    (dolist (fun (ensure-list sthenno/vertico-transform-functions))
+      (setq cand (funcall fun cand)))
+    (cl-call-next-method cand prefix suffix index start))
+
+  (defun sthenno/vertico-highlight-directory (file)
+    "If FILE ends with a slash, highlight it as a directory."
+    (if (string-suffix-p "/" file)
+        (propertize file 'face 'marginalia-file-priv-dir)
+      file))
+
+
+  ;; Multiform
+  ;;
+  (defun sthenno/vertico-muiltiform-on ()
+    (interactive)
+    (vertico-multiform-mode 1))
+
+  (defun sthenno/vertico-muiltiform-off ()
+    (interactive)
+    (vertico-multiform-mode -1))
+
+  (sthenno/vertico-muiltiform-on)
+
+  (add-to-list
+   'vertico-multiform-categories
+   '(file (sthenno/vertico-transform-functions . sthenno/vertico-highlight-directory)
+          (vertico-cycle . t)))
+
+  (add-to-list 'vertico-multiform-categories '(buffer (vertico-cycle . t)))
+
   ;; Additions for moving up and down directories in `find-file'
   ;;
 
   ;; Update minibuffer history with candidate insertions
-  (defun vertico-insert-add-history ()
-    "Make `vertico-insert' add to the minibuffer history."
+  (defadvice vertico-insert
+      (after vertico-insert-add-history activate)
+    "Make vertico-insert add to the minibuffer history."
     (unless (eq minibuffer-history-variable t)
       (add-to-history minibuffer-history-variable (minibuffer-contents))))
 
-  (advice-add 'vertico-insert :after #'vertico-insert-add-history)
+  ;; Pre-select previous directory when entering parent directory from `find-file'
+  ;;
+
+  (defvar previous-directory nil
+    "The directory that was just left. It is set when leaving a directory and
+    set back to nil once it is used in the parent directory.")
+
+  (defun set-previous-directory ()
+    "Set the directory that was just exited from within find-file."
+    (when (> (minibuffer-prompt-end) (point))
+      (save-excursion
+        (goto-char (1- (point)))
+        (when (search-backward "/" (minibuffer-prompt-end) t)
+          (setq previous-directory (buffer-substring (1+ (point)) (point-max)))
+          (when (not (string-suffix-p "/" previous-directory))
+            (setq previous-directory nil))
+          t))))
+
+  (advice-add #'vertico-directory-up :before #'set-previous-directory)
+
+  ;; Advise `vertico--update' to select the previous directory
+  (define-advice vertico--update (:after (&rest _) choose-candidate)
+    "Pick the previous directory rather than the prompt after updating candidates."
+    (cond
+     (previous-directory                ; select previous directory
+      (setq vertico--index (or (seq-position vertico--candidates previous-directory)
+                               vertico--index))
+      (setq previous-directory nil))))
 
   ;; Correct file path when changed (tidy shadowed file names)
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
@@ -147,74 +231,64 @@
 
 
 ;; Rich annotations for minibuffer
-;;
 (use-package marginalia
   :ensure t
   :init
-  (setq marginalia-field-width 88)
-  (setq marginalia-separator (propertize " :  " 'face '(:inherit shadow)))
+  (setq marginalia-field-width 45)
+  (setq marginalia-separator " ")
   (setq marginalia-align 'left)
   (setq marginalia-align-offset 4)
   (marginalia-mode 1))
 
 
-;;; Consult is useful previewing current content in buffer
-;;
-;; See also `beframe', `consult-denote'.
-;;
+;; Consult is useful previewing current content in buffer
 (use-package consult
   :ensure t
-  :after (org)
   :init
   (setq register-preview-delay 0.05
         register-preview-function #'consult-register-format)
 
-  (setq xref-show-xrefs-function       #'consult-xref
+  (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
-
-  ;; Customize `consult' minibuffer prompts
-  (declare-function consult-buffer "consult")
-
-  (defun sthenno/consult-buffer (&optional sources)
-    "Like `consult-buffer', but use a different `:prompt' string."
-    (interactive)
-    (let ((selected (consult--multi (or sources consult-buffer-sources)
-                                    :require-match
-                                    (confirm-nonexistent-file-or-buffer)
-                                    :prompt "Buffer → "
-                                    :history 'consult--buffer-history
-                                    :sort nil)))
-
-      ;; For non-matching candidates, fall back to buffer creation
-      (unless (plist-get (cdr selected) :match)
-        (consult--buffer-action (car selected)))))
-
-  (advice-add #'sthenno/consult-buffer :override #'consult-buffer)
 
   :config
 
-  ;; Previewing files in find-file
-  ;;
-  (setq read-file-name-function #'consult-find-file-with-preview)
-
-  (defun consult-find-file-with-preview (prompt &optional
-                                                dir default mustmatch initial pred)
-    (interactive)
-    (let ((default-directory (or dir default-directory))
-          (minibuffer-completing-file-name t))
-      (consult--read #'read-file-name-internal :state (consult--file-preview)
-                     :prompt prompt
-                     :initial initial
-                     :require-match mustmatch
-                     :predicate pred)))
-
   ;; Use `consult-ripgrep' instead of `project-find-regexp' in `project'
-  ;;
   (keymap-substitute project-prefix-map #'project-find-regexp #'consult-ripgrep)
   (cl-nsubstitute-if '(consult-ripgrep "Find regexp")
                      (pcase-lambda (`(,cmd _))
                        (eq cmd #'project-find-regexp))
                      project-switch-commands)
+
+  ;; Customize `consult' minibuffer prompts
+  (setq consult-buffer-sources '(consult--source-modified-buffer
+                                 consult--source-buffer
+                                 consult--source-recent-file
+                                 consult--source-project-buffer-hidden))
+
+  (consult-customize consult-buffer
+                     :prompt "Buffer → ")
+
+  (consult-customize consult-line
+                     :add-history (seq-some #'thing-at-point '(region symbol))
+                     :initial (thing-at-point 'symbol))
+
+  ;; Shorten recent files in `consult-buffer'
+  (defun sthenno/consult--source-recentf-items ()
+    (let ((ht (consult--buffer-file-hash))
+          file-name-handler-alist
+          items)
+      (dolist (file recentf-list (nreverse items))
+        (unless (eq (aref file 0) ?/)
+          (setq file (expand-file-name file)))
+        (unless (gethash file ht)
+          (push (propertize
+                 (file-name-nondirectory file)
+                 'multi-category `(file . ,file))
+                items)))))
+
+  (plist-put consult--source-recent-file
+             :items #'sthenno/consult--source-recentf-items)
 
   :bind ((:map global-map
                ("C-d" . consult-buffer)
@@ -228,44 +302,6 @@
                ("s-m" . consult-org-heading)
                ("M-a" . consult-org-agenda))))
 
-;; Beframe: Isolate Emacs buffers per frame
-;;
-;; This package is simply used to filter and group minibuffer candidates
-;;
-(use-package beframe
-  :ensure t
-  :after (consult)
-  :init
-  (setq beframe-global-buffers nil
-        beframe-create-frame-scratch-buffer nil)
-  (beframe-mode 1)
-
-  ;; Integration with `consult-buffer'
-  (defvar consult-buffer-sources)
-  (declare-function consult--buffer-state   "consult")
-  (declare-function consult--buffer-display "consult")
-
-  (defface beframe-buffer
-    '((t :inherit font-lock-string-face))
-    "Face for `consult' framed buffers.")
-
-  (defun sthenno/beframe-buffer-names-sorted (&optional frame)
-    "Return the list of buffers from `beframe-buffer-names' sorted by visibility.
-Optional argument FRAME, return the list of buffers of FRAME."
-    (beframe-buffer-names frame :sort #'beframe-buffer-sort-visibility))
-
-  (defvar beframe-consult-source
-    `( :name     "Frame-specific buffers"
-       :narrow   ?s
-       :category buffer
-       :face     beframe-buffer
-       :history  beframe-history
-       :items    ,#'sthenno/beframe-buffer-names-sorted
-       :action   ,#'consult--buffer-display
-       :state    ,#'consult--buffer-state))
-
-  (add-to-list 'consult-buffer-sources 'beframe-consult-source))
-
 
 ;; Dabbrev settings
 ;;
@@ -274,12 +310,11 @@ Optional argument FRAME, return the list of buffers of FRAME."
 
   ;; Better letter cases
   (setq dabbrev-case-distinction t
-        dabbrev-case-replace nil
+        dabbrev-case-replace t
         dabbrev-case-fold-search t
         dabbrev-upcase-means-case-search t)
 
   ;; Ignore these for `dabbrev'
-  ;; See https://github.com/minad/corfu
   ;;
   (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
 
@@ -288,58 +323,57 @@ Optional argument FRAME, return the list of buffers of FRAME."
   (add-to-list 'dabbrev-ignored-buffer-modes #'tags-table-mode))
 
 ;; Add extensions for the completion backend
-;;
 (use-package cape
   :ensure t
-  :config
-  (setq cape-dabbrev-min-length 2)
+  :init
 
   ;; Dict
-  ;;
   (setq cape-dict-case-fold t
-        cape-dict-case-replace nil)
+        cape-dict-case-replace t)
   (setq cape-dict-limit 40)
 
-  (defun completion-at-point-functions-setup (capfs-map-alist)
-    "Set up completion at point functions based on CAPFS-MAP-ALIST.
-CAPFS-MAP-ALIST is an association list where each key is a major mode symbol
-and each value is a list of functions to add to `completion-at-point-functions'."
-    (dolist (mode-func-pair capfs-map-alist)
-      (let ((mode (car mode-func-pair))
-            (functions (cdr mode-func-pair)))
+  ;; Setup Capfs
+  (defun sthenno/capf-eglot ()
+    (setq-local completion-at-point-functions
+                `(,(cape-capf-super (cape-capf-predicate
+                                     #'eglot-completion-at-point)
+                                    #'cape-dabbrev
+                                    #'cape-abbrev)
+                  cape-file)
+                cape-dabbrev-min-length 4))
+  (add-hook 'eglot-managed-mode-hook #'sthenno/capf-eglot)
 
-        ;; Add functions to specific major mode
-        (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
-                  (lambda ()
-                    (dolist (func functions)
-                      (add-to-list 'completion-at-point-functions func)))))))
+  (defun sthenno/capf-elisp ()
+    (setq-local completion-at-point-functions
+                `(,(cape-capf-super
+                    (cape-capf-predicate
+                     #'elisp-completion-at-point
+                     #'(lambda (cand)
+                         (or (not (keywordp cand))
+                             (eq (char-after (car completion-in-region--data)) ?:))))
+                    (cape-capf-inside-comment
+                     #'cape-dict)
+                    #'cape-dabbrev
+                    #'cape-abbrev)
+                  cape-file)
+                cape-dabbrev-min-length 4))
+  (add-hook 'emacs-lisp-mode-hook #'sthenno/capf-elisp)
 
-  (defvar sthenno/capfs-map-alist '((prog       . (cape-dict
-                                                   cape-file
-                                                   cape-abbrev
-                                                   cape-dabbrev))
-                                    (emacs-lisp . (cape-dict
-                                                   cape-file
-                                                   cape-elisp-symbol
-                                                   cape-abbrev
-                                                   cape-dabbrev))
-                                    (text       . (cape-dict
-                                                   cape-abbrev
-                                                   cape-dabbrev))
-                                    (org        . (cape-dict
-                                                   cape-file
-                                                   cape-abbrev
-                                                   cape-dabbrev)))
-    "An alist of (MODE-NAME . CAPFS) to append.")
-
-  (completion-at-point-functions-setup sthenno/capfs-map-alist))
+  (defun sthenno/capf-text ()
+    (setq-local completion-at-point-functions
+                `(,(cape-capf-super #'cape-dict
+                                    #'cape-dabbrev
+                                    #'cape-abbrev)
+                  cape-file)
+                cape-dabbrev-min-length 2))
+  (add-hook 'text-mode-hook #'sthenno/capf-text))
 
 
 ;; The main completion frontend by Corfu
-;;
 (use-package corfu
   :ensure t
-  :init (global-corfu-mode 1)
+  :init (add-hook 'after-init-hook #'(lambda ()
+                                       (global-corfu-mode 1)))
   :config
   (setq corfu-auto t
         corfu-auto-delay 0.05           ; Making this to 0 is too expensive
@@ -356,7 +390,6 @@ and each value is a list of functions to add to `completion-at-point-functions'.
         corfu-on-exact-match 'quit)
 
   (setq corfu-preview-current nil)
-
   (setq corfu-cycle nil)
 
   ;; Performance optimization
@@ -411,6 +444,19 @@ Do not insert KEY if `char-after' point is not empty."
                                 (sthenno/corfu-insert-key k))))
 
   (keymap-set corfu-map "RET" #'corfu-insert)
+
+  ;; Combined sorting
+  (defun sthenno/corfu-combined-sort (candidates)
+    "Sort CANDIDATES using both display-sort-function and corfu-sort-function."
+    (let ((candidates
+           (let ((display-sort-func (corfu--metadata-get 'display-sort-function)))
+             (if display-sort-func
+                 (funcall display-sort-func candidates)
+               candidates))))
+      (if corfu-sort-function
+          (funcall corfu-sort-function candidates)
+        candidates)))
+  (setq corfu-sort-override-function #'sthenno/corfu-combined-sort)
 
   ;; Maintain a list of recently selected candidates
   ;;
