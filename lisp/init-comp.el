@@ -384,33 +384,6 @@
                                        :company-kind (lambda (_) 'text)
                                        :exclusive 'no)))
 
-;; :config
-
-;; Customize
-;; (defun sthenno/cape--symbol-annotation (sym)
-;;   "Return kind of SYM."
-;;   (setq sym (intern-soft sym))
-;;   (cond
-;;    ((special-form-p sym) " Special")
-;;    ((macrop sym) " Macro")
-;;    ((commandp sym) " Command")
-;;    ((fboundp sym) " Function")
-;;    ((custom-variable-p sym) " Custom")
-;;    ((boundp sym) " <v>")
-;;    ((featurep sym) " Feature")
-;;    ((facep sym) " Face")
-;;    (t " Symbol")))
-
-;; (defun my-advice-cape--symbol-annotation (orig-fun sym)
-;;   "Advice to modify the return value of `cape--symbol-annotation` for boundp symbols."
-;;   (let ((result (funcall orig-fun sym)))
-;;     (if (and (string= result " Variable") (boundp (intern-soft sym)))
-;;         " foo"
-;;       result)))
-
-;; (advice-add 'cape--symbol-annotation :around #'my-advice-cape--symbol-annotation)
-;; (advice-add 'cape--symbol-annotation :override #'sthenno/cape--symbol-annotation))
-
 
 ;; The main completion frontend by Corfu
 (use-package corfu
