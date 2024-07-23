@@ -75,14 +75,14 @@
 ;;
 (setq python-indent-offset 4)
 
-(use-package conda
-  :ensure t
-  :defer t)
+;; (use-package conda
+;;   :ensure t
+;;   :defer t)
 
 ;; Reformat Python buffers using the Black formatter
 (use-package blacken
   :ensure t
-  :defer t
+  :after (python eglot)
   :init (add-hook 'python-ts-mode-hook #'(lambda ()
                                            (blacken-mode 1)))
   :bind (:map python-ts-mode-map

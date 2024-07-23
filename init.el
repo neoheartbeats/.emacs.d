@@ -121,22 +121,22 @@
 ;; also be in normalized form (which is sometimes *not* what one
 ;; would normally write in a 'use-package' declaration, so use
 ;; caution).
-(setopt use-package-defaults
-        '((:config '(t) t)
-          (:init nil t)
-          (:catch t (lambda (name args) (not use-package-expand-minimally)))
-          (:defer use-package-always-defer
-                  (lambda (name args)
-                    (and use-package-always-defer (not (plist-member args :defer))
-                         (not (plist-member args :demand)))))
-          (:demand use-package-always-demand
-                   (lambda (name args)
-                     (and use-package-always-demand (not (plist-member args :defer))
-                          (not (plist-member args :demand)))))
-          (:ensure (list use-package-always-ensure)
-                   (lambda (name args)
-                     (and use-package-always-ensure (not (plist-member args :load-path)))))
-          (:pin use-package-always-pin use-package-always-pin)))
+;; (setopt use-package-defaults
+;;         '((:config '(t) t)
+;;           (:init nil t)
+;;           (:catch t (lambda (name args) (not use-package-expand-minimally)))
+;;           (:defer use-package-always-defer
+;;                   (lambda (name args)
+;;                     (and use-package-always-defer (not (plist-member args :defer))
+;;                          (not (plist-member args :demand)))))
+;;           (:demand use-package-always-demand
+;;                    (lambda (name args)
+;;                      (and use-package-always-demand (not (plist-member args :defer))
+;;                           (not (plist-member args :demand)))))
+;;           (:ensure (list use-package-always-ensure)
+;;                    (lambda (name args)
+;;                      (and use-package-always-ensure (not (plist-member args :load-path)))))
+;;           (:pin use-package-always-pin use-package-always-pin)))
 
 
 ;; GCMH: the Garbage Collector Magic Hack
