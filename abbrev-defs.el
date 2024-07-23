@@ -5,6 +5,7 @@
     ("arrl" "←" nil :count 0)
     ("arrr" "→" nil :count 11)
     ("arru" "↑" nil :count 0)
+    ("ddd" "􀍠" nil :count 1)
     ("lora" "LoRA" nil :count 4)
    ))
 

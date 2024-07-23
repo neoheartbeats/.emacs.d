@@ -263,8 +263,7 @@
   ;; Customize `consult' minibuffer prompts
   (setq consult-buffer-sources '(consult--source-modified-buffer
                                  consult--source-buffer
-                                 consult--source-recent-file
-                                 consult--source-project-buffer-hidden))
+                                 consult--source-recent-file))
 
   (consult-customize consult-buffer
                      :prompt "Buffer → ")
