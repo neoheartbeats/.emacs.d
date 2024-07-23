@@ -1,6 +1,7 @@
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'global-abbrev-table
   '(
+    (".darrr" "⇒" nil :count 0)
     ("arrd" "↓" nil :count 0)
     ("arrl" "←" nil :count 0)
     ("arrr" "→" nil :count 11)

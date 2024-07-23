@@ -27,20 +27,17 @@
 ;;
 
 ;; TAB cycle if there are only few candidates
-(setq completion-cycle-threshold 5)
+(setq completion-cycle-threshold nil)
 
 ;; Emacs 30: `cape-dict' is used instead.
 ;; NOTE: `setopt' is necessary.
 (setopt text-mode-ispell-word-completion nil)
 
-;; Enable indentation+completion using the TAB key `completion-at-point' is often
-;; bound to M-TAB
-(setq tab-always-indent 'complete)
+;; Do not use the TAB key for `completion-at-point'.
+(setq tab-always-indent t)
+(setq tab-first-completion nil)
 
 ;; minibuffer
-;;
-;; (setq minibuffer-default-prompt-format " [%s]")
-
 (setq echo-keystrokes 0.05           ; Display the key pressed immediately
       echo-keystrokes-help t)        ; Display help info for keystrokes in the echo area
 
@@ -183,8 +180,7 @@
   ;;
 
   ;; Update minibuffer history with candidate insertions
-  (defadvice vertico-insert
-      (after vertico-insert-add-history activate)
+  (define-advice vertico-insert (:after (&rest _) vertico-insert-add-history)
     "Make vertico-insert add to the minibuffer history."
     (unless (eq minibuffer-history-variable t)
       (add-to-history minibuffer-history-variable (minibuffer-contents))))
@@ -206,7 +202,6 @@
           (when (not (string-suffix-p "/" previous-directory))
             (setq previous-directory nil))
           t))))
-
   (advice-add #'vertico-directory-up :before #'set-previous-directory)
 
   ;; Advise `vertico--update' to select the previous directory
@@ -303,19 +298,22 @@
 
 
 ;; Dabbrev settings
-;;
 (use-package dabbrev
   :config
 
   ;; Better letter cases
   (setq dabbrev-case-distinction t
-        dabbrev-case-replace t
-        dabbrev-case-fold-search t
         dabbrev-upcase-means-case-search t)
+
+  (defun sthenno/dabbrev-elisp ()
+    "Setup `dabbrev' for `emacs-lisp-mode'."
+    (setq-local dabbrev-case-fold-search nil)
+    (setq-local dabbrev-case-replace nil))
+  (add-hook 'emacs-lisp-mode-hook #'sthenno/dabbrev-elisp)
 
   ;; Ignore these for `dabbrev'
   ;;
-  (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
+  ;; (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
 
   (add-to-list 'dabbrev-ignored-buffer-modes #'doc-view-mode)
   (add-to-list 'dabbrev-ignored-buffer-modes #'pdf-view-mode)
@@ -334,10 +332,9 @@
   ;; Setup Capfs
   (defun sthenno/capf-eglot ()
     (setq-local completion-at-point-functions
-                `(,(cape-capf-super (cape-capf-predicate
+                `(,(cape-capf-super (cape-capf-buster
                                      #'eglot-completion-at-point)
-                                    #'cape-dabbrev
-                                    #'cape-abbrev)
+                                    #'cape-dabbrev)
                   cape-file)
                 cape-dabbrev-min-length 4))
   (add-hook 'eglot-managed-mode-hook #'sthenno/capf-eglot)
@@ -346,14 +343,11 @@
     (setq-local completion-at-point-functions
                 `(,(cape-capf-super
                     (cape-capf-predicate
-                     #'elisp-completion-at-point
+                     #'cape-elisp-symbol
                      #'(lambda (cand)
                          (or (not (keywordp cand))
                              (eq (char-after (car completion-in-region--data)) ?:))))
-                    (cape-capf-inside-comment
-                     #'cape-dict)
-                    #'cape-dabbrev
-                    #'cape-abbrev)
+                    #'cape-dabbrev)
                   cape-file)
                 cape-dabbrev-min-length 4))
   (add-hook 'emacs-lisp-mode-hook #'sthenno/capf-elisp)
@@ -361,11 +355,61 @@
   (defun sthenno/capf-text ()
     (setq-local completion-at-point-functions
                 `(,(cape-capf-super #'cape-dict
-                                    #'cape-dabbrev
-                                    #'cape-abbrev)
-                  cape-file)
+                                    #'cape-dabbrev)
+                  ,(cape-capf-inside-code #'cape-elisp-symbol)
+                  cape-file
+                  cape-elisp-block)
                 cape-dabbrev-min-length 2))
-  (add-hook 'text-mode-hook #'sthenno/capf-text))
+  (add-hook 'text-mode-hook #'sthenno/capf-text)
+
+  :config
+  (defun sthenno/cape--symbol-annotation (sym)
+    "Return kind of SYM with customized annotations."
+    (setq sym (intern-soft sym))
+    (cond ((special-form-p sym)    " <s>")
+          ((macrop sym)            " <macro>")
+          ((commandp sym)          " <cmd>")
+          ((fboundp sym)           " <func>")
+          ((custom-variable-p sym) " <custom>")
+          ((boundp sym)            " <v>")
+          ((featurep sym)          " <feat>")
+          ((facep sym)             " <face>")
+          (t " <sym>")))
+  (define-advice cape--symbol-annotation (:override (sym)
+                                                    sthenno/cape--symbol-annotation)
+    "Modify the annotation for boundp symbols."
+    (sthenno/cape--symbol-annotation sym))
+
+  (setq cape--dabbrev-properties (list :annotation-function (lambda (_) " <dab>")
+                                       :company-kind (lambda (_) 'text)
+                                       :exclusive 'no)))
+
+;; :config
+
+;; Customize
+;; (defun sthenno/cape--symbol-annotation (sym)
+;;   "Return kind of SYM."
+;;   (setq sym (intern-soft sym))
+;;   (cond
+;;    ((special-form-p sym) " Special")
+;;    ((macrop sym) " Macro")
+;;    ((commandp sym) " Command")
+;;    ((fboundp sym) " Function")
+;;    ((custom-variable-p sym) " Custom")
+;;    ((boundp sym) " <v>")
+;;    ((featurep sym) " Feature")
+;;    ((facep sym) " Face")
+;;    (t " Symbol")))
+
+;; (defun my-advice-cape--symbol-annotation (orig-fun sym)
+;;   "Advice to modify the return value of `cape--symbol-annotation` for boundp symbols."
+;;   (let ((result (funcall orig-fun sym)))
+;;     (if (and (string= result " Variable") (boundp (intern-soft sym)))
+;;         " foo"
+;;       result)))
+
+;; (advice-add 'cape--symbol-annotation :around #'my-advice-cape--symbol-annotation)
+;; (advice-add 'cape--symbol-annotation :override #'sthenno/cape--symbol-annotation))
 
 
 ;; The main completion frontend by Corfu
