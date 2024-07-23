@@ -172,10 +172,13 @@
 (defface sthenno-org-emphasis-prefix '((t (:foreground "#00bcff" :height 0.8)))
   "Sthenno's prefix emphasis for Org.")
 
-(setq org-emphasis-alist '(("*" bold)
+(defface sthenno-org-emphasis-on '((t (:underline t :inherit bold)))
+  "Sthenno's emphasized emphasis for Org.")
+
+(setq org-emphasis-alist '(("*" sthenno-org-emphasis-on)
                            ("_" sthenno-org-emphasis-prefix)
-                           ("=" org-verbatim verbatim)
-                           ("+" (:strike-through t))))
+                           ("+" (:strike-through t :inherit shadow))
+                           ("=" org-code)))
 
 ;; Use this with `C-<return>'
 (setq org-insert-heading-respect-content t)
@@ -218,7 +221,7 @@
   :ensure t
   :after (org)
   :init
-  
+
   ;; Hooks
   (add-hook 'emacs-startup-hook #'denote-journal-extras-new-or-existing-entry)
 
