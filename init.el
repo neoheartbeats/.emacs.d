@@ -97,23 +97,46 @@
 
 ;; Emacs packages
 ;;
-(setq package-archives '(("gnu"       . "https://elpa.gnu.org/packages/")
-                         ("nongnu"    . "https://elpa.nongnu.org/nongnu/")
-                         ("melpa"     . "https://melpa.org/packages/")
-                         ("gnu-devel" . "https://elpa.gnu.org/devel/")))
+(setopt package-install-upgrade-built-in t)
+(setopt package-archives '(("gnu"       . "https://elpa.gnu.org/packages/")
+                           ("nongnu"    . "https://elpa.nongnu.org/nongnu/")
+                           ("melpa"     . "https://melpa.org/packages/")
+                           ("gnu-devel" . "https://elpa.gnu.org/devel/")))
 
 ;; Highest number gets priority
-(setq package-archive-priorities '(("gnu-devel" . 4)
-                                   ("gnu"       . 3)
-                                   ("melpa"     . 2)
-                                   ("nongnu"    . 1)))
+(setopt package-archive-priorities '(("gnu-devel" . 4)
+                                     ("gnu"       . 3)
+                                     ("melpa"     . 2)
+                                     ("nongnu"    . 1)))
 
 ;; Ensure to native-compile packages
-(setq package-native-compile t)
-(setq package-quickstart t)
+(setopt package-native-compile t)
+(setopt package-quickstart t)
 
 ;; The `use-package' macro
-(setq use-package-enable-imenu-support t)
+;; (setopt use-package-enable-imenu-support t)
+;;  It can also be a function that will receive the name of
+;; the 'use-package' declaration and the keyword plist given to
+;; 'use-package', in normalized form.  The value it returns should
+;; also be in normalized form (which is sometimes *not* what one
+;; would normally write in a 'use-package' declaration, so use
+;; caution).
+(setopt use-package-defaults
+        '((:config '(t) t)
+          (:init nil t)
+          (:catch t (lambda (name args) (not use-package-expand-minimally)))
+          (:defer use-package-always-defer
+                  (lambda (name args)
+                    (and use-package-always-defer (not (plist-member args :defer))
+                         (not (plist-member args :demand)))))
+          (:demand use-package-always-demand
+                   (lambda (name args)
+                     (and use-package-always-demand (not (plist-member args :defer))
+                          (not (plist-member args :demand)))))
+          (:ensure (list use-package-always-ensure)
+                   (lambda (name args)
+                     (and use-package-always-ensure (not (plist-member args :load-path)))))
+          (:pin use-package-always-pin use-package-always-pin)))
 
 
 ;; GCMH: the Garbage Collector Magic Hack

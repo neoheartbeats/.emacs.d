@@ -33,16 +33,16 @@
 ;; Yasnippet
 (use-package yasnippet
   :ensure t
-  :after (abbrev corfu)
+  :defer 2
   :init
-
+  (setopt yas-triggers-in-field t)
   ;; TODO: Integrate keys with corfu
   ;;
   ;; (defun sthenno/yas-expand ()
   ;;   "Expand snippet at point. "
   ;;   )
   :config
-  (setq yas-triggers-in-field t)
+  ;;  (setq yas-triggers-in-field t)
   (setq yas-visit-from-menu t)
   (yas-global-mode 1))
 
