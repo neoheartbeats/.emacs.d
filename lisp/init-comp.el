@@ -75,6 +75,9 @@
                                         (eglot      (styles orderless))
                                         (eglot-capf (styles orderless)))))
 
+;; Sort candidates by `minibuffer-sort-by-history'
+(setopt completions-sort 'historical)
+
 ;; Ignore cases for completions
 (setq completion-ignore-case t)
 (setq read-file-name-completion-ignore-case t
@@ -223,10 +226,7 @@
 
   :bind ((:map vertico-map
                ("<tab>"       . vertico-insert)
-               ("s-<right>"   . vertico-insert)
                ("<return>"    . vertico-directory-enter)
-               ("s-<down>"    . vertico-directory-enter)
-               ("s-<left>"    . vertico-directory-up)
                ("<backspace>" . vertico-directory-delete-char))))
 
 
@@ -317,8 +317,7 @@
   (add-hook 'emacs-lisp-mode-hook #'sthenno/dabbrev-elisp)
 
   ;; Ignore these for `dabbrev'
-  ;;
-  ;; (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
+  (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
 
   (add-to-list 'dabbrev-ignored-buffer-modes #'doc-view-mode)
   (add-to-list 'dabbrev-ignored-buffer-modes #'pdf-view-mode)
@@ -359,10 +358,11 @@
 
   (defun sthenno/capf-text ()
     (setq-local completion-at-point-functions
-                `(,(cape-capf-super #'cape-dict
+                `(,(cape-capf-super (cape-capf-prefix-length
+                                     #'cape-dict 4)
+                                    #'cape-elisp-block
                                     #'cape-dabbrev)
-                  cape-file
-                  cape-elisp-block)
+                  cape-file)
                 cape-dabbrev-min-length 4))
   (add-hook 'text-mode-hook #'sthenno/capf-text)
 
