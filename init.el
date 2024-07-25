@@ -56,8 +56,8 @@
 (setq inhibit-compacting-font-caches t)
 
 
-(setq tool-bar-mode   nil
-      menu-bar-mode   nil
+(setq tool-bar-mode nil
+      menu-bar-mode nil
       scroll-bar-mode nil)
 
 (push '(width  . 120) default-frame-alist)
@@ -69,10 +69,10 @@
 ;; (push '(alpha . (90 . 90))           default-frame-alist)
 
 (push '(ns-transparent-titlebar . t) default-frame-alist)
-(push '(ns-appearance . dark)        default-frame-alist)
+(push '(ns-appearance . dark) default-frame-alist)
 
 ;; Suppress GUI features
-(setq use-dialog-box  nil
+(setq use-dialog-box nil
       use-file-dialog nil)
 
 (setq inhibit-default-init t
@@ -82,7 +82,7 @@
 (setq initial-scratch-message nil)
 
 ;; User information
-(setq user-full-name    "Sthenno"
+(setq user-full-name "Sthenno"
       user-mail-address "sthenno@sthenno.com")
 
 ;; Caching
@@ -97,7 +97,7 @@
 
 ;; Emacs packages
 ;;
-(setopt package-install-upgrade-built-in t)
+;; (setopt package-install-upgrade-built-in t)
 (setopt package-archives '(("gnu"       . "https://elpa.gnu.org/packages/")
                            ("nongnu"    . "https://elpa.nongnu.org/nongnu/")
                            ("melpa"     . "https://melpa.org/packages/")

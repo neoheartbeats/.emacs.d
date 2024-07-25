@@ -99,39 +99,6 @@ If `major-mode' is `python-mode', abort."
 (add-hook 'emacs-lisp-mode-hook #'sthenno/enable-pretty-print-auto)
 
 
-;; Fold code lines
-;;
-(use-package hideshow
-  :init
-
-  ;; Hooks
-  (add-hook 'prog-mode-hook #'(lambda ()
-                                (hs-minor-mode 1)))
-  :config
-  (defun sthenno/hs-set-up-overlay (ov)
-    (define-fringe-bitmap 'hs-marker [0 24 24 126 126 24 24 0]) ; A plus sign
-    (modus-themes-with-colors
-      (when (eq 'code (overlay-get ov 'hs))
-        (let* ((marker-string "*fringe-dummy*")
-               (marker-length (length marker-string))
-               (display-string " 􀄪 "))
-          (put-text-property 0 marker-length 'display
-                             (list 'left-fringe 'hs-marker 'fringe-face)
-                             marker-string)
-          (overlay-put ov 'before-string marker-string)
-          (put-text-property 1 (1- (length display-string))
-                             'face `(:foreground ,fg-changed :background ,bg-changed)
-                             display-string)
-          (overlay-put ov 'display display-string)))))
-
-  (setq hs-set-up-overlay #'sthenno/hs-set-up-overlay)
-
-  :bind (:map prog-mode-map
-              ("M-<tab>" . hs-toggle-hiding)
-              ("M--"     . hs-hide-all)
-              ("M-="     . hs-show-all)))
-
-
 ;; HACK: Inhibit passing these delimiters
 ;;
 (defun sthenno/inhibit-specific-delimiters ()
