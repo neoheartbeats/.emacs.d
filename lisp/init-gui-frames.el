@@ -28,8 +28,7 @@
   ;;
 
   (setq modus-vivendi-palette-user
-        '((sthenno-blueberry "#467fef")
-          (sthenno-gorse     "#fcf251")))
+        '((sthenno-blueberry "#467fef")))
 
   ;; Mapping colors
   ;;
@@ -181,9 +180,6 @@
                                    snippet-mode
                                    help-mode))
 
-  ;; Disable the modeline for `popper' buffers
-  (setq popper-mode-line '(:eval (propertize " 􁐈 " 'face 'mode-line-emphasis)))
-
   ;; Hooks
   (add-hook 'after-init-hook #'(lambda ()
                                  (popper-mode 1)))
@@ -192,47 +188,13 @@
               ("C-p" . popper-toggle)))
 
 
-;;; Mode Line settings
-;;
-;; Format modeline buffer identification
-;;
-;; (defun sthenno/modeline-buffer-identification-setup ()
-;;   (defun sthenno/modeline--buffer-identification ()
-;;     "Return `buffer-name' as a string.
-;; If `buffer-file-name' is a `denote' file, return its corresponding title instead."
-;;     (let ((file (buffer-file-name)))
-;;       (if (denote-file-is-note-p file)
-;;           (format "[denote:%s]" (denote-retrieve-filename-title (buffer-file-name)))
-;;         (buffer-name))))
-
-;;   (defvar-local sthenno/modeline-buffer-identification
-;;       '(:eval
-;;         (when (mode-line-window-selected-p)
-;;           (propertize (sthenno/modeline--buffer-identification)
-;;                       'face 'mode-line-buffer-id)))
-;;     "Mode line construct to display the buffer identification.")
-
-;;   (defvar-local sthenno/modeline-prefix-symbol
-;;       (modus-themes-with-colors
-;;         (propertize "  Sthenno ◈" 'face
-;;                     `(:foreground ,sthenno-gorse :inherit mode-line-buffer-id))))
-
-;;   (setq-default mode-line-format `(,sthenno/modeline-prefix-symbol
-;;                                    "  "
-;;                                    ,sthenno/modeline-buffer-identification
-;;                                    "  "
-;;                                    mode-line-modes
-;;                                    mode-line-misc-info
-;;                                    mode-line-end-spaces)))
-
-;; (add-hook 'after-init-hook #'sthenno/modeline-buffer-identification-setup)
+;; Mode Line settings
 (setq mode-line-compact t)
 
-;; TODO
-;; (use-package minions
-;;   :ensure t
-;;   :init (setq minions-mode-line-lighter "􀠩")
-;;   :config (minions-mode 1))
+(use-package minions
+  :ensure t
+  :init (setq minions-mode-line-lighter "􀠩")
+  :config (minions-mode 1))
 
 
 ;; Automatic adjusting for margins
@@ -241,14 +203,14 @@
   :init
   (setq spacious-padding-widths '( :internal-border-width 15
                                    :header-line-width 0
-                                   :mode-line-width 4
+                                   :mode-line-width 2
                                    :right-divider-width 0
                                    :scroll-bar-width 0))
   
   :config (spacious-padding-mode 1))
 
 
-;;; Sthenno's customization of "doom-quit"
+;; Sthenno's customization of "doom-quit"
 ;;
 ;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 ;;

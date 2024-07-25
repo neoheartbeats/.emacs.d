@@ -173,12 +173,12 @@
 (defface sthenno-org-emphasis-prefix '((t (:foreground "#00bcff" :height 0.8)))
   "Sthenno's prefix emphasis for Org.")
 
-(defface sthenno-org-emphasis-on '((t (:underline t :inherit bold)))
+(defface sthenno-org-emphasis-on '((t (:underline t)))
   "Sthenno's emphasized emphasis for Org.")
 
 (setq org-emphasis-alist '(("*" sthenno-org-emphasis-on)
                            ("_" sthenno-org-emphasis-prefix)
-                           ("+" (:strike-through t :inherit shadow))
+                           ("+" (:foreground "#ff5f5f"))
                            ("=" org-code)))
 
 ;; Use this with `C-<return>'
@@ -411,119 +411,5 @@
 ;;         " ────── " "───────────────"))
 ;; (setq org-agenda-current-time-string
 ;;       "◀── now ─────────────────────────────────────────────────")
-
-
-;; Useful functions
-;; (defun sthenno/org-mode-insert-get-button ()
-;;   "Inserts a button that copies a user-defined string to clipboard."
-;;   (interactive)
-;;   (let ((content (read-string "Content: ")))
-;;     (insert (format "[[elisp:(kill-new \"%s\")][GET]]" content))))
-
-
-;;; TODO
-;;
-;; Integrate with built-in Python API -> `init-eglot'
-;;
-;; TTS implementation using OpenAI's API
-;; (defun sthenno/content-by-key-from-file (filename key)
-;;   "Get content string of KEY from FILENAME."
-;;   (with-temp-buffer
-;;     (insert-file-contents filename)
-;;     (goto-char (point-min))
-;;     (if (re-search-forward (format "^%s=\"\\([^\"]+\\)\"" key) nil t)
-;;  (match-string 1)
-;;       (error "Key %s not found in file %s" key filename))))
-
-;; (defun sthenno/environ-from-user-emacs-dir (key)
-;;   "Get environ content by KEY from .env file in `user-emacs-directory'."
-;;   (let ((filename (concat user-emacs-directory ".env")))
-;;     (sthenno/content-by-key-from-file filename key)))
-
-;; (setq sthenno/openai-api-key
-;;       (sthenno/environ-from-user-emacs-dir "OPENAI_API_KEY"))
-
-;; (require 'json)
-
-;; (defun sthenno/speech-from-str-to-file (input-string output-file)
-;;   "Send a text-to-speech request to the OpenAI API and save the
-;; result to OUTPUT-FILE."
-;;   (let* ((url "https://api.openai.com/v1/audio/speech")
-;;          (url-request-method "POST")
-;;          (url-request-extra-headers
-;;           `(("Authorization" . ,(concat "Bearer " sthenno/openai-api-key))
-;;             ("Content-Type" . "application/json")))
-;;          (url-request-data
-;;           (json-encode `(("model" . "tts-1")
-;;                          ("input" . ,input-string)
-;;                          ("voice" . "echo"))))
-;;          (buffer (url-retrieve-synchronously url)))
-;;     (when buffer
-;;       (with-current-buffer buffer
-;;         (goto-char (point-min))
-;;         (re-search-forward "\n\n")
-;;         (write-region (point) (point-max) output-file))
-;;       (kill-buffer buffer))))
-
-;; (defun sthenno/generate-timestamp ()
-;;   "Generate a timestamp in the format YYYYMMDDTHHMMSS."
-;;   (format-time-string "%Y%m%dT%H%M%S"))
-
-;; (setq sthenno/speach-files-dir (concat org-directory "medi/"))
-
-;; (defun sthenno/speech-from-str-to-file-insert ()
-;;   "Send the selected text to the OpenAI API and insert the result at
-;; the point."
-;;   (interactive)
-;;   (if (use-region-p)
-;;       (let* ((start (region-beginning))
-;;       (end (region-end))
-;;       (input-string (buffer-substring-no-properties start end))
-;;       (filename (concat sthenno/speach-files-dir
-;;                 "speach-" (sthenno/generate-timestamp) ".mp3"))
-;;       (button-string
-;;        (format "[[elisp:(emms-play-file \"%s\")][[􀊨]]]" filename)))
-;;  (sthenno/speech-from-str-to-file input-string filename)
-;;  (goto-char end)
-;;  (insert (concat " " button-string))
-;;  (message (format "TTS finished to file %s" filename)))
-;;     (message "No region selected")))
-
-;; (bind-keys* :map org-mode-map
-;;      ("s-[ s" . sthenno/speech-from-str-to-file-insert))
-
-;; (defun sthenno/play-speach-current-heading ()
-;;   "Play the speach audio if there is exactly one in current heading."
-;;   (interactive)
-;;   (save-excursion
-;;     (org-back-to-heading t)
-;;     (let ((heading-end (save-excursion
-;;           (outline-next-heading)
-;;           (point)))
-;;           (button-count 0)
-;;           button-pos)
-
-;;       ;; Count the number of "[􀊨]" buttons and record the position
-;;       ;; of the button
-;;       (while (re-search-forward "\\[􀊨\\]" heading-end t)
-;;         (setq button-count (1+ button-count))
-;;         (setq button-pos (match-beginning 0)))
-
-;;       ;; Check if there is exactly one button
-;;       (if (= button-count 1)
-;;           (progn
-;;             (goto-char button-pos)
-;;             (org-open-at-point))
-;;         (message
-;;   "There must be exactly one \"[􀊨]\" button in current heading")))))
-
-
-;; Modules for language learning
-;; (use-package org-drill
-;;   :ensure t
-;;   :config
-;;   (setq org-drill-learn-fraction 0.5)
-;;   (setq org-drill-maximum-items-per-session 20)
-;;   (add-hook 'org-drill-display-answer-hook #'sthenno/play-speach-current-heading))
 
 (provide 'init-org)
