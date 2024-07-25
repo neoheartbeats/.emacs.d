@@ -39,21 +39,16 @@
 ;; To maximize the speed of native compilation
 ;;
 (setq native-comp-speed 3)
-(setq native-comp-jit-compilation t)
 
 ;; By default any warnings encountered during async native compilation pops up. As this
 ;; tends to happen rather frequently with a lot of packages, it can get annoying.
 (setq native-comp-async-report-warnings-errors 'silent)
 
-
-;;;
-;;
 ;; HACK: Adjust display according to `file-name-handler-alist'. `eval-buffer' cannot run
 ;; here due to this snippet.
 ;;
-;; SEE: https://github.com/karthink/.emacs.d/blob/master/early-init.el
+;; See: https://github.com/karthink/.emacs.d/blob/master/early-init.el
 ;;
-
 (let ((old-file-name-handler-alist file-name-handler-alist))
   ;; `file-name-handler-alist' is consulted on each `require', `load' and
   ;; various path/io functions. You get a minor speed up by insetting this.
@@ -91,19 +86,11 @@
 (define-advice startup--load-user-init-file (:before (&rest _) nomessage-remove)
   (advice-remove #'load-file #'load-file@silence))
 
-
 ;; Perform drawing the frame when initialization
 ;;
 ;; NOTE: `menu-bar-lines' is forced to redrawn under macOS GUI, therefore it is helpless
 ;; by inhibiting it in the early stage. However, since I don't use the `menu-bar' under
 ;; macOS, `menu-bar-mode' is disabled later.
-
-;;
-;; (push '(menu-bar-lines . 0)     default-frame-alist)
-;;
-;; (add-hook 'after-init-hook #'(lambda ()
-;;                                (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
-;;                                (menu-bar-mode -1)))
 
 (push '(tool-bar-lines . 0)     default-frame-alist)
 (push '(horizontal-scroll-bars) default-frame-alist)

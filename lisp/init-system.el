@@ -5,9 +5,9 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
-;;
+
 ;; This file provides macOS specific settings.
-;;
+
 ;;; Code:
 ;;
 
@@ -137,7 +137,7 @@ Activate again to undo this. If the window changes before then, the undo expires
   :config (recentf-mode 1))
 
 
-;;; Encodings
+;; Encodings
 ;;
 ;; Contrary to what many Emacs users have in their configs, you don't need more
 ;; than this to make UTF-8 the default coding system:
@@ -149,6 +149,7 @@ Activate again to undo this. If the window changes before then, the undo expires
 
 ;; Special treatment for large files
 (use-package so-long
+  :defer t
   :init (global-so-long-mode 1))
 
 
@@ -169,11 +170,15 @@ Activate again to undo this. If the window changes before then, the undo expires
 (setq auto-save-default nil)
 (setq save-silently t)
 
+;; files
 (setq create-lockfiles nil)
 (setq make-backup-files nil)
 
+;; Emacs source files
+(setq find-function-C-source-directory "/Users/sthenno/Developer/emacs/src/")
+
 
-;;; global functions for accessibility
+;; global functions for accessibility
 ;;
 ;; To access the `.emacs.d' root
 (defun open-emacs-config-dir ()

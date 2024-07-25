@@ -43,12 +43,6 @@
 ;; reordering of bidirectional text with embedded parentheses
 (setq bidi-inhibit-bpa t)
 
-;; Emacs "updates" its UI more often than it needs to, so slow it down slightly
-(setq idle-update-delay 1.0)            ; default is 0.5
-
-;; Increase how much is read from processes in a single chunk (default is 4kb).
-(setq-default read-process-output-max (* 1024 1024)) ; 1024kb
-
 ;; Font compacting can be terribly expensive, especially for rendering icon
 ;; fonts on Windows. Whether disabling it has a notable affect on Linux and Mac
 ;; hasn't been determined, but do it anyway, just in case. This increases memory
@@ -56,9 +50,8 @@
 (setq inhibit-compacting-font-caches t)
 
 
-(setq tool-bar-mode nil
-      menu-bar-mode nil
-      scroll-bar-mode nil)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
 
 (push '(width  . 120) default-frame-alist)
 (push '(height . 50)  default-frame-alist)
@@ -66,17 +59,13 @@
 ;; NOTE: Since feature `alpha-background' conflicts with Emacs overlay rendering for
 ;; images such as SVG files, `alpha' can be a replacement for a rough approach.
 ;;
-;; (push '(alpha . (90 . 90))           default-frame-alist)
-
-(push '(ns-transparent-titlebar . t) default-frame-alist)
-(push '(ns-appearance . dark) default-frame-alist)
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 
 ;; Suppress GUI features
 (setq use-dialog-box nil
       use-file-dialog nil)
 
-(setq inhibit-default-init t
-      inhibit-splash-screen t
+(setq inhibit-splash-screen t
       inhibit-startup-buffer-menu t)
 
 (setq initial-scratch-message nil)
@@ -85,58 +74,30 @@
 (setq user-full-name "Sthenno"
       user-mail-address "sthenno@sthenno.com")
 
-;; Caching
-(defvar user-cache-directory "~/.cache/emacs/"
-  "Location where files created by Emacs are placed.")
-
 ;; Set path for custom-file
-(setq custom-file (expand-file-name "custom.el" user-cache-directory))
-(cond ((file-exists-p custom-file)
-       (load custom-file)))
+(setopt custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load-file custom-file))
 
 
 ;; Emacs packages
 ;;
-;; (setopt package-install-upgrade-built-in t)
-(setopt package-archives '(("gnu"       . "https://elpa.gnu.org/packages/")
-                           ("nongnu"    . "https://elpa.nongnu.org/nongnu/")
-                           ("melpa"     . "https://melpa.org/packages/")
-                           ("gnu-devel" . "https://elpa.gnu.org/devel/")))
+(eval-when-compile
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+  (add-to-list 'package-archives '("devel" . "https://elpa.gnu.org/devel/"))
 
-;; Highest number gets priority
-(setopt package-archive-priorities '(("gnu-devel" . 4)
-                                     ("gnu"       . 3)
-                                     ("melpa"     . 2)
-                                     ("nongnu"    . 1)))
+  (setopt package-install-upgrade-built-in t)
 
-;; Ensure to native-compile packages
-(setopt package-native-compile t)
-(setopt package-quickstart t)
+  ;; Ensure to native-compile packages
+  (setopt package-native-compile t)
+  (setopt package-quickstart t)
 
-;; The `use-package' macro
-;; (setopt use-package-enable-imenu-support t)
-;;  It can also be a function that will receive the name of
-;; the 'use-package' declaration and the keyword plist given to
-;; 'use-package', in normalized form.  The value it returns should
-;; also be in normalized form (which is sometimes *not* what one
-;; would normally write in a 'use-package' declaration, so use
-;; caution).
-;; (setopt use-package-defaults
-;;         '((:config '(t) t)
-;;           (:init nil t)
-;;           (:catch t (lambda (name args) (not use-package-expand-minimally)))
-;;           (:defer use-package-always-defer
-;;                   (lambda (name args)
-;;                     (and use-package-always-defer (not (plist-member args :defer))
-;;                          (not (plist-member args :demand)))))
-;;           (:demand use-package-always-demand
-;;                    (lambda (name args)
-;;                      (and use-package-always-demand (not (plist-member args :defer))
-;;                           (not (plist-member args :demand)))))
-;;           (:ensure (list use-package-always-ensure)
-;;                    (lambda (name args)
-;;                      (and use-package-always-ensure (not (plist-member args :load-path)))))
-;;           (:pin use-package-always-pin use-package-always-pin)))
+  (require 'use-package)
+  (setopt use-package-expand-minimally t
+          use-package-enable-imenu-support t
+          use-package-compute-statistics t
+          use-package-vc-prefer-newest t))
 
 
 ;; GCMH: the Garbage Collector Magic Hack
@@ -157,7 +118,10 @@
 
 
 ;; Load path
-;;
+
+;; Caching
+(defvar user-cache-directory "~/.cache/emacs/"
+  "Location where files created by Emacs are placed.")
 
 ;; Fix PATH for macOS
 ;; (use-package exec-path-from-shell
@@ -165,7 +129,7 @@
 ;;   :config (exec-path-from-shell-initialize))
 
 ;; Dir for init-* files
-(push (expand-file-name "lisp/" user-emacs-directory) load-path)
+(add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
 
 ;; Require init-* files
 (require 'init-system)

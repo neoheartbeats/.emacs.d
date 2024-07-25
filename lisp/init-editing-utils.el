@@ -37,6 +37,12 @@
 
 (global-set-key (kbd "s-<return>") #'sthenno/open-newline-below)
 
+;; Repeating C-SPC after popping mark pops it again
+(setq set-mark-command-repeat-pop t)
+
+;; up/down moving based on logical lines
+(setq line-move-visual nil)
+
 
 ;;; Pretty-print
 ;;
@@ -144,7 +150,7 @@ and auto-paring for such entries."
   :init (setq eldoc-idle-delay 0.05))
 
 
-;;; Deletions
+;; Deletions
 ;;
 ;; Delete selection if you insert
 ;;
@@ -161,7 +167,7 @@ and auto-paring for such entries."
                                        (global-auto-revert-mode 1))))
 
 
-;;; Fill columns
+;; Fill columns
 ;;
 ;; Face `fill-column-indicator' is set in `init-gui-frames'
 ;;
@@ -228,7 +234,7 @@ and auto-paring for such entries."
 ;;
 (use-package hl-todo
   :ensure t
-  :init
+  :config
   (defun sthenno/hl-todo-faces-setup ()
     (modus-themes-with-colors
       (setq hl-todo-keyword-faces

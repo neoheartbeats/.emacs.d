@@ -5,7 +5,7 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
-;;
+
 ;; This config is currently for a patched version of Org that is under development.
 ;; See https://code.tecosaur.net/tec/org-mode for more details.
 ;;
@@ -18,8 +18,10 @@
 
 ;;; Code:
 ;;
-(setq org-modules nil)
-(require 'org)
+
+(use-package org
+  :ensure t
+  :demand t)
 
 ;; Setup default directory
 ;;
@@ -69,8 +71,8 @@
   ;; (org-latex-preview 'buffer)
   (org-redisplay-inline-images))
 
-;; (bind-keys :map org-mode-map
-;;            ("s-p" . sthenno/org-preview-fragments))
+(bind-keys :map org-mode-map
+           ("s-p" . sthenno/org-preview-fragments))
 
 ;;
 ;; (setq org-latex-packages-alist
@@ -131,8 +133,7 @@
 ;; [TODO] consult-reftex, see https://karthinks.com/software/reftex-in-org-mode/
 
 
-;;; Modern Org Mode theme
-;;
+;; Modern Org Mode theme
 (use-package org-modern
   :ensure t
   :after (org)
@@ -190,16 +191,113 @@
 (setq org-special-ctrl-a/e t)
 
 ;; Fold drawers by default
-(setq org-cycle-hide-drawer-startup t)
-(add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
+;; (setq org-cycle-hide-drawer-startup t)
+;; (add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
 
 ;; Org fragments and overlays
 ;;
 ;; Org images
 ;;
 
-(setq org-image-align 'left
-      org-image-actual-width '(240))
+(setopt org-image-align 'center
+        org-image-actual-width t
+        org-image-max-width 0.4
+        org-display-remote-inline-images 'cache)
+
+(defun sthenno/org-display-inline-images (&optional include-linked refresh beg end)
+  (interactive "P")
+  (when (display-graphic-p)
+    (when refresh
+      (org-remove-inline-images beg end)
+      (when (fboundp 'clear-image-cache) (clear-image-cache)))
+    (let ((end (or end (point-max))))
+      (org-with-point-at (or beg (point-min))
+        (let* ((case-fold-search t)
+               (file-extension-re (image-file-name-regexp))
+               (link-abbrevs (mapcar #'car
+                                     (append org-link-abbrev-alist-local
+                                             org-link-abbrev-alist)))
+               (file-types-re
+                (format "\\[\\[\\(?:file%s:\\|attachment:\\|[./~]\\)\\|\\]\\[\\(<?\\(?:file\\|attachment\\):\\)"
+                        (if (not link-abbrevs) ""
+                          (concat "\\|" (regexp-opt link-abbrevs))))))
+          (while (re-search-forward file-types-re end t)
+            (let* ((link (org-element-lineage
+                          (save-match-data (org-element-context))
+                          'link t))
+                   (linktype (org-element-property :type link))
+                   (inner-start (match-beginning 1))
+                   (path
+                    (cond
+                     ((not link) nil)
+                     ((or (not (org-element-contents-begin link))
+                          include-linked)
+                      (and (or (equal "file" linktype)
+                               (equal "attachment" linktype))
+                           (org-element-property :path link)))
+                     ((not inner-start) nil)
+                     (t
+                      (org-with-point-at inner-start
+                        (and (looking-at
+                              (if (char-equal ?< (char-after inner-start))
+                                  org-link-angle-re
+                                org-link-plain-re))
+                             (= (org-element-contents-end link)
+                                (match-end 0))
+                             (progn
+                               (setq linktype (match-string 1))
+                               (match-string 2))))))))
+              (when (and path (string-match-p file-extension-re path))
+                (let ((file (if (equal "attachment" linktype)
+                                (progn
+                                  (require 'org-attach)
+                                  (ignore-errors (org-attach-expand path)))
+                              (expand-file-name path))))
+                  (when file (setq file (substitute-in-file-name file)))
+                  (when (and file (file-exists-p file))
+                    (let ((width (org-display-inline-image--width link))
+                          (align (org-image--align link))
+                          (old (get-char-property-and-overlay
+                                (org-element-begin link)
+                                'org-image-overlay)))
+                      (if (and (car-safe old) refresh)
+                          (image-flush (overlay-get (cdr old) 'display))
+                        (let ((image (org--create-inline-image file width)))
+                          (when image
+                            (let ((ov (make-overlay
+                                       (org-element-begin link)
+                                       (progn
+                                         (goto-char
+                                          (org-element-end link))
+                                         (unless (eolp) (skip-chars-backward " \t"))
+                                         (point)))))
+                              (image-flush image)
+                              (overlay-put ov 'display image)
+                              (overlay-put ov 'face 'default)
+                              (overlay-put ov 'org-image-overlay t)
+                              (overlay-put
+                               ov 'modification-hooks
+                               (list 'org-display-inline-remove-overlay))
+                              (when (boundp 'image-map)
+                                (overlay-put ov 'keymap image-map))
+                              (when align
+
+                                ;; Use fill-column to indicate the left-edge to display
+                                (let ((edge fill-column))
+                                  (overlay-put
+                                   ov 'before-string
+                                   (propertize
+                                    " " 'face 'default
+                                    'display
+                                    (pcase align
+
+                                      ;; Apply the edge for alignments
+                                      ("center" `(space :align-to (- (0.5 . ,edge)
+                                                                     (0.5 . ,image))))
+                                      ("right"  `(space :align-to (- ,edge
+                                                                     ,image))))))))
+                              (push ov org-inline-image-overlays))))))))))))))))
+(advice-add #'org-display-inline-images :override #'sthenno/org-display-inline-images)
 
 (setq org-yank-dnd-method 'file-link)
 (setq org-yank-image-save-method (expand-file-name "images/" org-directory))
@@ -214,9 +312,7 @@
 (setq org-support-shift-select t)
 
 
-;;
 ;; The Zettlekasten note-taking system by Denote
-;;
 (use-package denote
   :ensure t
   :after (org)

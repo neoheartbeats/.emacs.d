@@ -1,4 +1,4 @@
-;;; init-comp.el --- Modern completion system -*- lexical-binding: t; -*-
+;;; init-comp.el --- Modern completion system  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
 
@@ -23,6 +23,9 @@
 ;; Completion and minibuffer basics
 ;;
 
+;; Prevent auto-composition of characters around point
+(setq composition-break-at-point t)
+
 ;; Completion basics. See also `orderless'
 ;;
 
@@ -41,6 +44,8 @@
 (setq echo-keystrokes 0.05           ; Display the key pressed immediately
       echo-keystrokes-help t)        ; Display help info for keystrokes in the echo area
 
+(tooltip-mode -1)                       ; Display help info in minibuffer
+
 ;; Support opening new minibuffers from inside existing minibuffers
 (setq enable-recursive-minibuffers t)
 
@@ -48,8 +53,8 @@
 (setq read-extended-command-predicate #'command-completion-default-include-p)
 
 ;; Do not allow the cursor in the minibuffer prompt
-(setq minibuffer-prompt-properties
-      '(read-only t cursor-intangible t face minibuffer-prompt))
+(setopt minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
 (add-hook 'minibuffer-setup-hook #'(lambda ()
                                      (cursor-intangible-mode 1)))
 
@@ -76,7 +81,7 @@
       read-buffer-completion-ignore-case t)
 
 ;; Minibuffer faces
-(setq text-quoting-style 'straight)
+(setq text-quoting-style 'grave)
 
 
 ;; Completions in minibuffers
@@ -356,10 +361,9 @@
     (setq-local completion-at-point-functions
                 `(,(cape-capf-super #'cape-dict
                                     #'cape-dabbrev)
-                  ,(cape-capf-inside-code #'cape-elisp-symbol)
                   cape-file
                   cape-elisp-block)
-                cape-dabbrev-min-length 2))
+                cape-dabbrev-min-length 4))
   (add-hook 'text-mode-hook #'sthenno/capf-text)
 
   :config

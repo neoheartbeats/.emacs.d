@@ -88,10 +88,6 @@
 
           ,@modus-themes-preset-overrides-warmer))
 
-  (setq modus-themes-bold-constructs t
-        modus-themes-prompts '(bold)
-        modus-themes-completions '((t . (bold))))
-
   ;; Enable and load the theme
   (modus-themes-load-theme 'modus-vivendi))
 
@@ -103,9 +99,20 @@
 (setq-default frame-title-format nil)
 (setq-default ns-use-proxy-icon nil)
 
+(progn
+
+  ;; No need to echo
+  (put 'narrow-to-region 'disabled nil)
+  (put 'narrow-to-page 'disabled nil)
+  (put 'upcase-region 'disabled nil)
+  (put 'downcase-region 'disabled nil)
+  (put 'erase-buffer 'disabled nil)
+  (put 'scroll-left 'disabled nil))
+
 ;; Cursor faces
 (setq-default cursor-type '(bar . 1))
-(setq blink-cursor-mode nil)
+(blink-cursor-mode -1)
+(setq mouse-highlight nil)
 
 ;; highlight current line
 (add-hook 'after-init-hook #'(lambda ()
@@ -144,9 +151,6 @@
 (set-fontset-font t 'unicode (font-spec :family "SF Pro Display")  nil 'prepend)
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji") nil 'prepend)
 
-;; Math fonts
-
-
 ;; Note this make all italic font style disabled
 (set-face-attribute 'italic nil :slant 'normal)
 
@@ -154,10 +158,13 @@
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
 
 ;; Stop showing fringe bitmaps
-(setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
+;; (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
 
 ;; Ellipsis symbol
 (setq truncate-string-ellipsis " 􀍠")
+
+;; TODO:
+(add-hook 'help-fns-describe-function-functions #'shortdoc-help-fns-examples-function)
 
 
 ;; Collect pop-up windows
@@ -175,7 +182,7 @@
                                    help-mode))
 
   ;; Disable the modeline for `popper' buffers
-  (setq popper-mode-line '(:eval '(propertize " 􁐈" 'face 'mode-line-emphasis)))
+  (setq popper-mode-line '(:eval (propertize " 􁐈 " 'face 'mode-line-emphasis)))
 
   ;; Hooks
   (add-hook 'after-init-hook #'(lambda ()
@@ -219,6 +226,7 @@
 ;;                                    mode-line-end-spaces)))
 
 ;; (add-hook 'after-init-hook #'sthenno/modeline-buffer-identification-setup)
+(setq mode-line-compact t)
 
 ;; TODO
 ;; (use-package minions
@@ -233,7 +241,7 @@
   :init
   (setq spacious-padding-widths '( :internal-border-width 15
                                    :header-line-width 0
-                                   :mode-line-width 2
+                                   :mode-line-width 4
                                    :right-divider-width 0
                                    :scroll-bar-width 0))
   
@@ -242,7 +250,7 @@
 
 ;;; Sthenno's customization of "doom-quit"
 ;;
-;; SEE: https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
+;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 ;;
 (defvar sthenno-quit-messages  `("Anyone else but you?"
                                  "She depends on you."
@@ -261,10 +269,9 @@ are open."
 (defun sthenno-quit-fn (&rest _)
   (sthenno-quit-p
    (format "Sthenno: %s 􀄫 %s"
-           (modus-themes-with-colors
-             (propertize (nth (random (length sthenno-quit-messages))
-                              sthenno-quit-messages)
-                         'face `(:foreground ,sthenno-gorse)))
+           (propertize (nth (random (length sthenno-quit-messages))
+                            sthenno-quit-messages)
+                       'face 'modus-themes-prompt)
            "Really quit Emacs?")))
 
 (setq confirm-kill-emacs #'sthenno-quit-fn)
