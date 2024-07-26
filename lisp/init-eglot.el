@@ -30,11 +30,10 @@
 
 
 ;; Initialize `eglot'
-;;
 (use-package eglot
   :ensure t
   :init
-  
+
   ;; Config `corfu' for `eglot', see also `init-comp'
   ;; Continuously update the candidates
   ;; Enable cache busting, depending on if your server returns
@@ -49,7 +48,7 @@
 
   (add-hook 'eglot-managed-mode-hook #'(lambda ()
                                          (add-hook 'before-save-hook #'eglot-format-buffer)
-                                         (eglot-inlay-hints-mode 1)))
+                                         (eglot-inlay-hints-mode 'toggle)))
   :bind (:map eglot-mode-map
               ("<f6>" . eglot-rename)
               ("s-p"  . eglot-format-buffer)))
@@ -59,8 +58,7 @@
 
 
 ;; Python project management
-;;
-(setq python-indent-offset 4)
+(setopt python-indent-offset 4)
 
 ;; Reformat Python buffers using the Black formatter
 (use-package blacken
@@ -74,7 +72,7 @@
 
 ;; GitHub Copilot
 (use-package copilot
-  :init 
+  :init
   :vc (copilot
        :url "https://github.com/copilot-emacs/copilot.el")
   :defer t

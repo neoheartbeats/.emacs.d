@@ -76,7 +76,7 @@
       user-mail-address "sthenno@sthenno.com")
 
 ;; Set path for custom-file
-(setopt custom-file (expand-file-name "custom.el"))
+(setopt custom-file (expand-file-name "custom.el" user-emacs-directory))
 (if (file-exists-p custom-file)
     (load-file 'custom-file) nil)
 
