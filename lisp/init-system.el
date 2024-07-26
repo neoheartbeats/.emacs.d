@@ -148,9 +148,9 @@ Activate again to undo this. If the window changes before then, the undo expires
 
 
 ;; Special treatment for large files
-(use-package so-long
-  :defer t
-  :init (global-so-long-mode 1))
+;; (use-package so-long
+;;   :defer t
+;;   :init (global-so-long-mode 1))
 
 
 ;; Misc options
@@ -166,8 +166,8 @@ Activate again to undo this. If the window changes before then, the undo expires
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
 
-;; XXX: Still need time to figure out if this has any side-effects
-(setq auto-save-default nil)
+;; Still need time to figure out if this has any side-effects
+(setq auto-save-default t)
 (setq save-silently t)
 
 ;; files

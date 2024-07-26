@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: source-black
-# key: <s
+# key: src
 # --
-#+begin_src ${1:$$(yas-auto-next (yas-completing-read "Language: " (mapcar 'car org-babel-load-languages))) }
+#+begin_src $1
 $0
 #+end_src

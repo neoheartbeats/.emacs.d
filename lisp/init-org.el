@@ -17,11 +17,6 @@
 ;; - Note-taking system using `denote'
 
 ;;; Code:
-;;
-
-(use-package org
-  :ensure t
-  :demand t)
 
 ;; Setup default directory
 ;;

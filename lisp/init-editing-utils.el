@@ -101,19 +101,15 @@ If `major-mode' is `python-mode', abort."
 (defun sthenno/enable-pretty-print-auto ()
   "Enable pretty-print before saving in `emacs-lisp-mode'."
   (add-hook 'before-save-hook #'sthenno/pretty-print-current-buffer nil t))
-
 (add-hook 'emacs-lisp-mode-hook #'sthenno/enable-pretty-print-auto)
 
-
-;; HACK: Inhibit passing these delimiters
-;;
+;; Inhibit passing these delimiters
 (defun sthenno/inhibit-specific-delimiters ()
   "Remove the following from current `syntax-table'. This disables syntax highlighting
 and auto-paring for such entries."
-  (modify-syntax-entry ?< "." (syntax-table))
-  (modify-syntax-entry ?> "." (syntax-table)))
-
-(add-hook 'after-init-hook #'sthenno/inhibit-specific-delimiters)
+  (modify-syntax-entry ?< "." org-mode-syntax-table)
+  (modify-syntax-entry ?> "." org-mode-syntax-table))
+(add-hook 'org-mode-hook #'sthenno/inhibit-specific-delimiters)
 
 ;; Automatic pair parenthesis
 ;;

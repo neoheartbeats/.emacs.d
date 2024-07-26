@@ -5,7 +5,7 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
-;;
+
 ;; This file includes:
 ;; - completion styles enhancement using `orderless'
 ;; - minibuffer enhancement using `vertico' and `consult'
@@ -16,7 +16,6 @@
 ;; `dabbrev' is configured in this file under current decision.
 
 ;;; Code:
-;;
 
 ;;; Build the completion framework
 ;;
@@ -43,8 +42,6 @@
 ;; minibuffer
 (setq echo-keystrokes 0.05           ; Display the key pressed immediately
       echo-keystrokes-help t)        ; Display help info for keystrokes in the echo area
-
-(tooltip-mode -1)                       ; Display help info in minibuffer
 
 ;; Support opening new minibuffers from inside existing minibuffers
 (setq enable-recursive-minibuffers t)
@@ -82,9 +79,6 @@
 (setq completion-ignore-case t)
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t)
-
-;; Minibuffer faces
-(setq text-quoting-style 'grave)
 
 
 ;; Completions in minibuffers
@@ -183,43 +177,6 @@
           (vertico-cycle . t)))
 
   (add-to-list 'vertico-multiform-categories '(buffer (vertico-cycle . t)))
-
-  ;; Additions for moving up and down directories in `find-file'
-  ;;
-
-  ;; Update minibuffer history with candidate insertions
-  (define-advice vertico-insert (:after (&rest _) vertico-insert-add-history)
-    "Make vertico-insert add to the minibuffer history."
-    (unless (eq minibuffer-history-variable t)
-      (add-to-history minibuffer-history-variable (minibuffer-contents))))
-
-  ;; Pre-select previous directory when entering parent directory from `find-file'
-  ;;
-
-  (defvar previous-directory nil
-    "The directory that was just left. It is set when leaving a directory and
-    set back to nil once it is used in the parent directory.")
-
-  (defun set-previous-directory ()
-    "Set the directory that was just exited from within find-file."
-    (when (> (minibuffer-prompt-end) (point))
-      (save-excursion
-        (goto-char (1- (point)))
-        (when (search-backward "/" (minibuffer-prompt-end) t)
-          (setq previous-directory (buffer-substring (1+ (point)) (point-max)))
-          (when (not (string-suffix-p "/" previous-directory))
-            (setq previous-directory nil))
-          t))))
-  (advice-add #'vertico-directory-up :before #'set-previous-directory)
-
-  ;; Advise `vertico--update' to select the previous directory
-  (define-advice vertico--update (:after (&rest _) choose-candidate)
-    "Pick the previous directory rather than the prompt after updating candidates."
-    (cond
-     (previous-directory                ; select previous directory
-      (setq vertico--index (or (seq-position vertico--candidates previous-directory)
-                               vertico--index))
-      (setq previous-directory nil))))
 
   ;; Correct file path when changed (tidy shadowed file names)
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
@@ -452,11 +409,8 @@ Do not insert KEY if `char-after' point is not empty."
                          (= (char-after) ?\s)
                          (= (char-after) ?\n))))
               (if p (insert c)
-                (corfu-quit)))
-            (corfu-quit))
-        (progn
-          (corfu-quit)
-          (insert c)))))
+                nil)))
+        (insert c))))
 
   (dolist (k '("SPC" "." "," ":" ")" "}" "]" "'"))
     (keymap-set corfu-map k #'(lambda ()
@@ -479,12 +433,10 @@ Do not insert KEY if `char-after' point is not empty."
   (setq corfu-sort-override-function #'sthenno/corfu-combined-sort)
 
   ;; Maintain a list of recently selected candidates
-  ;;
   (corfu-history-mode 1)
   (add-to-list 'savehist-additional-variables 'corfu-history)
 
   ;; Popup candidates info
-  ;;
   (setq corfu-popupinfo-delay '(0.25 . 0.05))
   (setq corfu-popupinfo-hide nil)
 

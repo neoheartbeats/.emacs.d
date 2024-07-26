@@ -5,21 +5,19 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
-;;
+
 ;; This file mainly includes an Emacs UI design optimized for GUI mode. This file mainly
-;; configures `modus-themes', fonts, some global `face' and `mode-line' styles.
-;; For those feature-specific `faces', their configuration code is isolated. A typical
+;; configures `modus-themes', fonts, some global `face' and `mode-line' styles.  For
+;; those feature-specific `faces', their configuration code is isolated. A typical
 ;; example is `prettify-symbols-mode'. See also: `init-editing-utils', `init-org'.
-;;
+
 ;;; Code:
-;;
 
-;;
 ;; Modus Themes
-;;
-
 (use-package modus-themes
-  :ensure t
+  :vc (modus-themes
+       :url "https://gitlab.com/protesilaos/modus-themes"
+       :branch "main")
   :config
 
   ;; `modus-vivendi' customizations
@@ -93,20 +91,19 @@
 ;; Do not extend `region' background past the end of the line
 (custom-set-faces '(region ((t :extend nil))))
 
-
 ;; Clean up the title bar content
 (setq-default frame-title-format nil)
 (setq-default ns-use-proxy-icon nil)
 
 (progn
 
-  ;; No need to echo
+  ;; no need these features
   (put 'narrow-to-region 'disabled nil)
-  (put 'narrow-to-page 'disabled nil)
-  (put 'upcase-region 'disabled nil)
-  (put 'downcase-region 'disabled nil)
-  (put 'erase-buffer 'disabled nil)
-  (put 'scroll-left 'disabled nil))
+  (put 'narrow-to-page   'disabled nil)
+  (put 'upcase-region    'disabled nil)
+  (put 'downcase-region  'disabled nil)
+  (put 'erase-buffer     'disabled nil)
+  (put 'scroll-left      'disabled nil))
 
 ;; Cursor faces
 (setq-default cursor-type '(bar . 1))
@@ -141,7 +138,6 @@
 
     (set-char-table-parent composition-table composition-function-table)
     (setq composition-function-table composition-table)))
-
 (add-hook 'after-init-hook #'sthenno-mono-ligation-setup)
 
 ;; Set up font for unicode fontset
@@ -162,30 +158,19 @@
 ;; Ellipsis symbol
 (setq truncate-string-ellipsis " 􀍠")
 
-;; TODO:
-(add-hook 'help-fns-describe-function-functions #'shortdoc-help-fns-examples-function)
+;; Text quoting
+(setq text-quotsing-style 'grave)
 
-
-;; Collect pop-up windows
+;; Better `help-mode'
 ;;
-(use-package popper
-  :ensure t
-  :defer t
-  :init
-  (setq popper-reference-buffers '("\\*ielm\\*$"
-                                   "\\*Messages\\*$"
-                                   "\\*scratch\\*$"
+;; Perform autoload if docs are missing from autoload objects.
+(setopt help-enable-symbol-autoload t)
 
-                                   ;; Modes
-                                   snippet-mode
-                                   help-mode))
+;; Aallow editing values in *Help* buffers.
+(setopt help-enable-variable-value-editing t)
 
-  ;; Hooks
-  (add-hook 'after-init-hook #'(lambda ()
-                                 (popper-mode 1)))
-  
-  :bind (:map global-map
-              ("C-p" . popper-toggle)))
+;; Display example functions.
+(add-hook 'help-fns-describe-function-functions #'shortdoc-help-fns-examples-function)
 
 
 ;; Mode Line settings
@@ -206,7 +191,6 @@
                                    :mode-line-width 2
                                    :right-divider-width 0
                                    :scroll-bar-width 0))
-  
   :config (spacious-padding-mode 1))
 
 
