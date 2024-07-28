@@ -16,12 +16,12 @@
 ;;
 ;; Command `treesit-auto-install-all' is required if the tree-sitter grammar
 ;; libs have not been configured already
-(use-package treesit-auto
-  :ensure t
-  :config (global-treesit-auto-mode 1))
+;; (use-package treesit-auto
+;;   :ensure t
+;;   :config (global-treesit-auto-mode 1))
 
 ;; Remap `python-mode' to `python-ts-mode'
-;; (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+(add-to-list 'major-mode-remap-defaults '(python-mode . python-ts-mode))
 
 ;; To enable the maximum fontifications. If this is set to default, there could be
 ;; syntax highlighting error found in Org Babel

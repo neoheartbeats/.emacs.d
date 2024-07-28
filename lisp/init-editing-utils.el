@@ -118,8 +118,8 @@ and auto-paring for such entries."
 ;; same reason.
 ;; XXX: Side-effects come to `org-babel' is under discovering.
 ;;
-;; (add-hook 'org-mode-hook #'(lambda ()
-;;                              (setq electric-indent-inhibit t)))
+(add-hook 'org-mode-hook #'(lambda ()
+                             (setq electric-indent-inhibit t)))
 
 ;; Hooks
 (add-hook 'after-init-hook #'(lambda ()

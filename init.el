@@ -76,13 +76,13 @@
       user-mail-address "sthenno@sthenno.com")
 
 ;; Set path for custom-file
-(setopt custom-file (expand-file-name "custom.el" user-emacs-directory))
-(if (file-exists-p custom-file)
-    (load-file 'custom-file) nil)
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-readable-p "custom.el")
+  (load custom-file))
 
 
 ;; Emacs packages
-(eval-when-compile
+(eval-and-compile
   (require 'package)
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") 'append)
   (add-to-list 'package-archives '("devel" . "https://elpa.gnu.org/devel/") 'prepend)
@@ -93,8 +93,7 @@
   (setopt package-native-compile t)
 
   (require 'use-package)
-  (setopt use-package-expand-minimally t
-          use-package-enable-imenu-support t
+  (setopt use-package-enable-imenu-support t
           use-package-vc-prefer-newest t))
 
 

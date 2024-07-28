@@ -159,7 +159,7 @@
 (setq truncate-string-ellipsis " 􀍠")
 
 ;; Text quoting
-(setq text-quotsing-style 'grave)
+(setq text-quoting-style 'straight)
 
 ;; Better `help-mode'
 ;;
@@ -174,7 +174,7 @@
 
 
 ;; Mode Line settings
-(setq mode-line-compact t)
+(setopt mode-line-compact t)
 
 (use-package minions
   :ensure t

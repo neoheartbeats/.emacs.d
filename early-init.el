@@ -90,10 +90,7 @@
 (defvar user-cache-directory "~/.cache/emacs/"
   "Location that files created by Emacs are placed.")
 
-(setq native-comp-speed 2
-      native-comp-eln-load-path `(,(expand-file-name "eln/" user-cache-directory))
-      native-comp-enable-subr-trampolines (expand-file-name "trampolines/"
-                                                            native-comp-eln-load-path))
+(setq native-comp-speed 3)
 
 ;; By default any warnings encountered during async native compilation pops up. As this
 ;; tends to happen rather frequently with a lot of packages, it can get annoying.
