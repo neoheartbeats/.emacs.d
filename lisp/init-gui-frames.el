@@ -107,16 +107,16 @@
   (put 'scroll-left      'disabled nil))
 
 ;; Cursor faces
-;; (setq-default cursor-type '(bar . 1))
+(setopt cursor-type '(bar . 1))
+(setopt mouse-highlight nil)
 (blink-cursor-mode -1)
-(setq mouse-highlight nil)
 
 ;; highlight current line
-;; (global-hl-line-mode 1)
+(global-hl-line-mode 1)
 
 ;; Custom font
-(set-face-attribute 'default nil :family "Monaco" :height 140)
-;;(set-face-attribute 'fixed-pitch nil :family "Sthenno Mono" :height 140)
+(set-face-attribute 'default nil     :family "Sthenno Mono" :height 140)
+(set-face-attribute 'fixed-pitch nil :family "Sthenno Mono" :height 140)
 
 ;; Define the ligation dictionary
 ;; (defun sthenno-mono-ligation-setup ()
