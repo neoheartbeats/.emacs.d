@@ -23,7 +23,7 @@
 ;;
 
 ;; Prevent auto-composition of characters around point
-(setq composition-break-at-point t)
+;; (setq composition-break-at-point t)
 
 ;; Completion basics. See also `orderless'
 ;;
@@ -36,7 +36,7 @@
 (setopt text-mode-ispell-word-completion nil)
 
 ;; Do not use the TAB key for `completion-at-point'.
-(setq tab-always-indent t)
+(setq tab-always-indent 'complete)
 (setq tab-first-completion nil)
 
 ;; minibuffer
@@ -63,7 +63,7 @@
   ;; The basic completion style is specified as fallback in addition to orderless in
   ;; order to ensure that completion commands rely on dynamic completion tables
   ;;
-  (setq completion-styles '(basic orderless)
+  (setq completion-styles '(basic flex orderless)
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion))
 
@@ -85,6 +85,7 @@
 (use-package vertico
   :ensure t
   :init
+  (vertico-mode)
   (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
 
   ;; Disable showing the *Completions* buffer that conflicts with `vertico' if using
@@ -282,6 +283,7 @@
 
 ;; Add extensions for the completion backend
 (use-package cape
+  :disabled t
   :ensure t
   :init
 
@@ -347,109 +349,116 @@
 
 
 ;; The main completion frontend by Corfu
-(use-package corfu
-  :ensure t
-  :init (add-hook 'after-init-hook #'(lambda ()
-                                       (global-corfu-mode 1)))
+(use-package company
+  :init (global-company-mode 1)
   :config
-  (setq corfu-auto t
-        corfu-auto-delay 0.05           ; Making this to 0 is too expensive
-        corfu-auto-prefix 2)
+  (setopt company-icon-margin 4)
+  (setopt company-echo-delay 0.05
+          company-minimum-prefix-length 1))
 
-  (setq corfu-count 8
-        corfu-scroll-margin 4)
+;; (use-package corfu
+;;   :ensure t
+;;   :init (add-hook 'after-init-hook #'(lambda ()
+;;                                        (global-corfu-mode 1)))
+;;   :config
+;;   (setq corfu-auto t
+;;         corfu-auto-delay 0.05           ; Making this to 0 is too expensive
+;;         corfu-auto-prefix 2)
 
-  (setq corfu-min-width 5
-        corfu-max-width 40)
+;;   (setq corfu-count 8
+;;         corfu-scroll-margin 4)
 
-  (setq corfu-quit-at-boundary t
-        corfu-quit-no-match t
-        corfu-on-exact-match 'quit)
+;;   (setq corfu-min-width 5
+;;         corfu-max-width 40)
 
-  (setq corfu-preview-current nil)
-  (setq corfu-cycle nil)
+;;   (setq corfu-quit-at-boundary t
+;;         corfu-quit-no-match t
+;;         corfu-on-exact-match 'quit)
 
-  ;; Performance optimization
-  ;;
-  (defun sthenno/corfu-eshell-setup ()
-    (setq-local corfu-auto nil)
-    (corfu-mode 1)
-    (keymap-set corfu-map "RET" #'corfu-send))
+;;   (setq corfu-preview-current nil)
+;;   (setq corfu-cycle nil)
 
-  (add-hook 'eshell-mode-hook #'sthenno/corfu-eshell-setup)
+;;   ;; Performance optimization
+;;   ;;
+;;   (defun sthenno/corfu-eshell-setup ()
+;;     (setq-local corfu-auto nil)
+;;     (corfu-mode 1)
+;;     (keymap-set corfu-map "RET" #'corfu-send))
 
-  ;; Use special key to insert
-  ;;
-  ;; Like first, but select the prompt if it is a directory
-  (setq corfu-preselect 'directory)
+;;   (add-hook 'eshell-mode-hook #'sthenno/corfu-eshell-setup)
 
-  ;; Use convenient keys to insert candidates of `corfu--candidates'. Since the first
-  ;; candidate is usually pre-selected, it is better to trigger `corfu--insert'
-  ;; depending on different conditions.
-  ;;
-  (defun sthenno/corfu-insert-key (key)
-    "Insert selected candidate in `corfu--candidates' and KEY.
+;;   ;; Use special key to insert
+;;   ;;
+;;   ;; Like first, but select the prompt if it is a directory
+;;   (setq corfu-preselect 'directory)
 
-Do not `corfu--insert' if
-  - `corfu--candidates' is empty |
-  - `corfu--preselect'  is the prompt |
-  - `corfu--index'      is the first candidate in `corfu--candidates'.
+;;   ;; Use convenient keys to insert candidates of `corfu--candidates'. Since the first
+;;   ;; candidate is usually pre-selected, it is better to trigger `corfu--insert'
+;;   ;; depending on different conditions.
+;;   ;;
+;;   (defun sthenno/corfu-insert-key (key)
+;;     "Insert selected candidate in `corfu--candidates' and KEY.
 
-Do not insert KEY if `char-after' point is not empty."
+;; Do not `corfu--insert' if
+;;   - `corfu--candidates' is empty |
+;;   - `corfu--preselect'  is the prompt |
+;;   - `corfu--index'      is the first candidate in `corfu--candidates'.
 
-    ;; Check if `corfu--insert'
-    (let ((c (cond ((equal key "SPC") ?\s)
-                   (t (aref key 0)))))
-      (if (> corfu--index 0)
-          (progn
-            (corfu--insert 'finished)
+;; Do not insert KEY if `char-after' point is not empty."
 
-            ;; Check if insert key
-            (let ((p (or (not (char-after))
-                         (= (char-after) ?\s)
-                         (= (char-after) ?\n))))
-              (if p (insert c)
-                nil)))
-        (insert c))))
+;;     ;; Check if `corfu--insert'
+;;     (let ((c (cond ((equal key "SPC") ?\s)
+;;                    (t (aref key 0)))))
+;;       (if (> corfu--index 0)
+;;           (progn
+;;             (corfu--insert 'finished)
 
-  (dolist (k '("SPC" "." "," ":" ")" "}" "]" "'"))
-    (keymap-set corfu-map k #'(lambda ()
-                                (interactive)
-                                (sthenno/corfu-insert-key k))))
+;;             ;; Check if insert key
+;;             (let ((p (or (not (char-after))
+;;                          (= (char-after) ?\s)
+;;                          (= (char-after) ?\n))))
+;;               (if p (insert c)
+;;                 nil)))
+;;         (insert c))))
 
-  (keymap-set corfu-map "RET" #'corfu-insert)
+;;   (dolist (k '("SPC" "." "," ":" ")" "}" "]" "'"))
+;;     (keymap-set corfu-map k #'(lambda ()
+;;                                 (interactive)
+;;                                 (sthenno/corfu-insert-key k))))
 
-  ;; Combined sorting
-  (defun sthenno/corfu-combined-sort (candidates)
-    "Sort CANDIDATES using both display-sort-function and corfu-sort-function."
-    (let ((candidates
-           (let ((display-sort-func (corfu--metadata-get 'display-sort-function)))
-             (if display-sort-func
-                 (funcall display-sort-func candidates)
-               candidates))))
-      (if corfu-sort-function
-          (funcall corfu-sort-function candidates)
-        candidates)))
-  (setq corfu-sort-override-function #'sthenno/corfu-combined-sort)
+;;   (keymap-set corfu-map "RET" #'corfu-insert)
 
-  ;; Maintain a list of recently selected candidates
-  (corfu-history-mode 1)
-  (add-to-list 'savehist-additional-variables 'corfu-history)
+;;   ;; Combined sorting
+;;   (defun sthenno/corfu-combined-sort (candidates)
+;;     "Sort CANDIDATES using both display-sort-function and corfu-sort-function."
+;;     (let ((candidates
+;;            (let ((display-sort-func (corfu--metadata-get 'display-sort-function)))
+;;              (if display-sort-func
+;;                  (funcall display-sort-func candidates)
+;;                candidates))))
+;;       (if corfu-sort-function
+;;           (funcall corfu-sort-function candidates)
+;;         candidates)))
+;;   (setq corfu-sort-override-function #'sthenno/corfu-combined-sort)
 
-  ;; Popup candidates info
-  (setq corfu-popupinfo-delay '(0.25 . 0.05))
-  (setq corfu-popupinfo-hide nil)
+;;   ;; Maintain a list of recently selected candidates
+;;   (corfu-history-mode 1)
+;;   (add-to-list 'savehist-additional-variables 'corfu-history)
 
-  (setq corfu-popupinfo-max-width 40
-        corfu-popupinfo-min-width 20)
+;;   ;; Popup candidates info
+;;   (setq corfu-popupinfo-delay '(0.25 . 0.05))
+;;   (setq corfu-popupinfo-hide nil)
 
-  (add-hook 'prog-mode-hook #'(lambda ()
-                                (corfu-popupinfo-mode 1)))
+;;   (setq corfu-popupinfo-max-width 40
+;;         corfu-popupinfo-min-width 20)
 
-  :bind (:map corfu-map
-              ("<down>"   . corfu-next)
-              ("<tab>"    . corfu-next)
-              ("<up>"     . corfu-previous)
-              ("<escape>" . corfu-quit)))
+;;   (add-hook 'prog-mode-hook #'(lambda ()
+;;                                 (corfu-popupinfo-mode 1)))
+
+;;   :bind (:map corfu-map
+;;               ("<down>"   . corfu-next)
+;;               ("<tab>"    . corfu-next)
+;;               ("<up>"     . corfu-previous)
+;;               ("<escape>" . corfu-quit)))
 
 (provide 'init-comp)

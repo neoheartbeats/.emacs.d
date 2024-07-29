@@ -43,22 +43,22 @@
 ;; Adjust display according to `file-name-handler-alist'.  13feb2024
 ;; https://github.com/karthink/.emacs.d/blob/master/early-init.el.
 
-(if-let ((old-file-name-handler-alist file-name-handler-alist))
-    ;; `file-name-handler-alist' is consulted on each `require', `load' and various
-    ;; path/io functions. You get a minor speed up by insetting this.  Some warning,
-    ;; however: this could cause problems on builds of Emacs where its site lisp files
-    ;; aren't byte-compiled and we're forced to load the *.el.gz files (e.g. on Alpine).
-    (setq-default file-name-handler-alist nil)
-  ;; ...but restore `file-name-handler-alist' later, because it is needed for handling
-  ;; encrypted or compressed files, among other things.
-  (add-hook 'emacs-startup-hook
-            #'(lambda ()
-                (setq file-name-handler-alist
-                      ;; Merge instead of overwrite because there may have bene changes
-                      ;; to `file-name-handler-alist' since startup we want to preserve.
-                      (delete-dups (append file-name-handler-alist
-                                           old-file-name-handler-alist))))
-            101))
+;; (let ((old-file-name-handler-alist file-name-handler-alist))
+;;   ;; `file-name-handler-alist' is consulted on each `require', `load' and various
+;;   ;; path/io functions. You get a minor speed up by insetting this.  Some warning,
+;;   ;; however: this could cause problems on builds of Emacs where its site lisp files
+;;   ;; aren't byte-compiled and we're forced to load the *.el.gz files (e.g. on Alpine).
+;;   (setq-default file-name-handler-alist nil)
+;;   ;; ...but restore `file-name-handler-alist' later, because it is needed for handling
+;;   ;; encrypted or compressed files, among other things.
+;;   (add-hook 'emacs-startup-hook
+;;             #'(lambda ()
+;;                 (setq file-name-handler-alist
+;;                       ;; Merge instead of overwrite because there may have bene changes
+;;                       ;; to `file-name-handler-alist' since startup we want to preserve.
+;;                       (delete-dups (append file-name-handler-alist
+;;                                            old-file-name-handler-alist))))
+;;             101))
 
 ;; Do not eval this part isolately. `inhibit-redisplay' causes errors.
 (unless (or (not (called-interactively-p))

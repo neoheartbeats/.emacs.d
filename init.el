@@ -82,19 +82,22 @@
 
 
 ;; Emacs packages
-(eval-and-compile
-  (require 'package)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") 'append)
-  (add-to-list 'package-archives '("devel" . "https://elpa.gnu.org/devel/") 'prepend)
+;; (eval-and-compile
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") 'append)
+(add-to-list 'package-archives '("devel" . "https://elpa.gnu.org/devel/") 'prepend)
 
-  (setopt package-install-upgrade-built-in t)
+;; (setq package-enable-at-startup t)
+;; (setq package-quickstart t)
+;; (setopt package-install-upgrade-built-in t)
 
-  ;; Ensure to `native-compile' packages.
-  (setopt package-native-compile t)
+;; Ensure to `native-compile' packages.
+;; (setopt package-native-compile t)
 
-  (require 'use-package)
-  (setopt use-package-enable-imenu-support t
-          use-package-vc-prefer-newest t))
+;; (require 'use-package)
+;; (setopt use-package-enable-imenu-support t
+;;         use-package-vc-prefer-newest t)
+;; )
 
 
 ;; GCMH: the Garbage Collector Magic Hack
@@ -125,9 +128,10 @@ Cancel the previous one if present."
   (gcmh-mode 1))
 
 ;; Fix PATH for macOS
-;; (use-package exec-path-from-shell
-;;   :ensure t
-;;   :config (exec-path-from-shell-initialize))
+(use-package exec-path-from-shell
+  :ensure t
+  :config (exec-path-from-shell-initialize))
+(use-package dash :ensure t :demand t)
 
 
 ;; Load path

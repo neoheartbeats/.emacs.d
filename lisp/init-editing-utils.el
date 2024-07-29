@@ -121,9 +121,8 @@ and auto-paring for such entries."
 (add-hook 'org-mode-hook #'(lambda ()
                              (setq electric-indent-inhibit t)))
 
-;; Hooks
-(add-hook 'after-init-hook #'(lambda ()
-                               (electric-pair-mode 1)))
+
+(electric-pair-mode 1)
 
 ;; Show parenthesis
 (use-package paren
@@ -150,9 +149,7 @@ and auto-paring for such entries."
 ;;
 ;; Delete selection if you insert
 ;;
-(use-package delsel
-  :init (add-hook 'after-init-hook #'(lambda ()
-                                       (delete-selection-mode 1))))
+(delete-selection-mode 1)
 
 ;; Delete all tabs and spaces
 (setq backward-delete-char-untabify-method 'hungry)
@@ -167,8 +164,7 @@ and auto-paring for such entries."
 ;;
 ;; Face `fill-column-indicator' is set in `init-gui-frames'
 ;;
-(add-hook 'after-init-hook #'(lambda ()
-                               (global-display-fill-column-indicator-mode 1)))
+(global-display-fill-column-indicator-mode 1)
 
 ;; Display line numbers
 (setq-default display-line-numbers-width 4)
