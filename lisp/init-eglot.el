@@ -50,38 +50,38 @@
   (setq-default python-shell-interpreter
                 "/opt/homebrew/Caskroom/miniconda/base/envs/sthenno/bin/python")
 
-  (add-to-list 'eglot-server-programs '((python-ts-mode) . ("pylsp")))
-  (setopt eglot-workspace-configuration
-          '((:pylsp . (
-                       :configurationSources ["flake8"]
-                       :plugins (
-                                 :pycodestyle (
-                                               :enabled
-                                               :json-false)
-                                 :mccabe (
-                                          :enabled
-                                          :json-false)
-                                 :pyflakes (:enabled
-                                            :json-false)
-                                 :flake8 (:enabled
-                                          :json-false
-                                          :maxLineLength 88)
-                                 :ruff (
-                                        :enabled t
-                                        :lineLength 88)
-                                 :pydocstyle (
-                                              :enabled t
-                                              :convention "numpy")
-                                 :yapf (
-                                        :enabled t
-                                        :json-false)
-                                 :autopep8 (
-                                            :enabled
-                                            :json-false)
-                                 :black (
-                                         :enabled t
-                                         :line_length 88
-                                         :cache_config t))))))
+  ;; (add-to-list 'eglot-server-programs '((python-ts-mode) . ("pylsp")))
+  ;; (setopt eglot-workspace-configuration
+  ;;         '((:pylsp . (
+  ;;                      :configurationSources ["flake8"]
+  ;;                      :plugins (
+  ;;                                :pycodestyle (
+  ;;                                              :enabled
+  ;;                                              :json-false)
+  ;;                                :mccabe (
+  ;;                                         :enabled
+  ;;                                         :json-false)
+  ;;                                :pyflakes (:enabled
+  ;;                                           :json-false)
+  ;;                                :flake8 (:enabled
+  ;;                                         :json-false
+  ;;                                         :maxLineLength 88)
+  ;;                                :ruff (
+  ;;                                       :enabled t
+  ;;                                       :lineLength 88)
+  ;;                                :pydocstyle (
+  ;;                                             :enabled t
+  ;;                                             :convention "numpy")
+  ;;                                :yapf (
+  ;;                                       :enabled t
+  ;;                                       :json-false)
+  ;;                                :autopep8 (
+  ;;                                           :enabled
+  ;;                                           :json-false)
+  ;;                                :black (
+  ;;                                        :enabled t
+  ;;                                        :line_length 88
+  ;;                                        :cache_config t))))))
   
   (add-hook 'eglot-managed-mode-hook #'(lambda ()
                                          (add-hook 'before-save-hook #'eglot-format-buffer)

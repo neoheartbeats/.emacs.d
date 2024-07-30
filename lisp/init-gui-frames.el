@@ -32,8 +32,8 @@
   ;;
   (setq modus-vivendi-palette-overrides
         `(
-          ;; (bg-main "#0e1116")
-          ;; (fg-main "#e7edf2")
+          (bg-main "#0e1116")
+          (fg-main "#e7edf2")
           
           ;; Make the mode-line borderless and stand out less
           (bg-mode-line-active   bg-active)
@@ -82,8 +82,6 @@
           ;; Completions (see also `init-comp')
           (bg-completion bg-hl-line)
 
-          (cursor sthenno-blueberry)
-
           ,@modus-themes-preset-overrides-warmer))
 
   ;; Enable and load the theme
@@ -119,26 +117,26 @@
 (set-face-attribute 'fixed-pitch nil :family "Sthenno Mono" :height 140)
 
 ;; Define the ligation dictionary
-;; (defun sthenno-mono-ligation-setup ()
-;;   (let ((composition-table (make-char-table nil)))
-;;     (dolist (char-regexp-replacement
-;;              '((33 . ".\\(?:\\(==\\|!=\\)\\|[!=]\\)")              ; != ==
-;;                (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")          ; ### ## #( #_
-;;                (45 . ".\\(?:->\\|--\\|[<>|~-]\\)")                 ; -> -- >>
-;;                (46 . ".\\(?:\\.[.<]\\|[.:<-]\\)")                  ; .. .< .:
-;;                (47 . ".\\(?:\\*/\\|//\\|[*/>]\\)")                 ; */ // /->
-;;                (58 . ".\\(?:::\\|[:=]\\)")                         ; :: :=
-;;                (60 . ".\\(?:!--\\|--\\|<[<=|-]\\|=[<=|-]\\|<=\\)") ; <!-- << <- <=
-;;                (61 . ".\\(?:\\|=[=>]\\|=>\\)")                     ; == =>
-;;                (62 . ".\\(?:>>\\|>[=>-]\\|>=\\)")                  ; >> >=
-;;                (63 . ".\\(?:\\?\\?\\|[:=?]\\)")                    ; ?? ?: ?
-;;                (92 . ".\\(?:\\\\\\\\\\|[\\n]\\)")))                ; \\ \n
-;;       (set-char-table-range composition-table (car char-regexp-replacement)
-;;                             `([,(cdr char-regexp-replacement) 0 font-shape-gstring])))
+(defun sthenno-mono-ligation-setup ()
+  (let ((composition-table (make-char-table nil)))
+    (dolist (char-regexp-replacement
+             '((33 . ".\\(?:\\(==\\|!=\\)\\|[!=]\\)")              ; != ==
+               (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")          ; ### ## #( #_
+               (45 . ".\\(?:->\\|--\\|[<>|~-]\\)")                 ; -> -- >>
+               (46 . ".\\(?:\\.[.<]\\|[.:<-]\\)")                  ; .. .< .:
+               (47 . ".\\(?:\\*/\\|//\\|[*/>]\\)")                 ; */ // /->
+               (58 . ".\\(?:::\\|[:=]\\)")                         ; :: :=
+               (60 . ".\\(?:!--\\|--\\|<[<=|-]\\|=[<=|-]\\|<=\\)") ; <!-- << <- <=
+               (61 . ".\\(?:\\|=[=>]\\|=>\\)")                     ; == =>
+               (62 . ".\\(?:>>\\|>[=>-]\\|>=\\)")                  ; >> >=
+               (63 . ".\\(?:\\?\\?\\|[:=?]\\)")                    ; ?? ?: ?
+               (92 . ".\\(?:\\\\\\\\\\|[\\n]\\)")))                ; \\ \n
+      (set-char-table-range composition-table (car char-regexp-replacement)
+                            `([,(cdr char-regexp-replacement) 0 font-shape-gstring])))
 
-;;     (set-char-table-parent composition-table composition-function-table)
-;;     (setq composition-function-table composition-table)))
-;; (add-hook 'after-init-hook #'sthenno-mono-ligation-setup)
+    (set-char-table-parent composition-table composition-function-table)
+    (setq composition-function-table composition-table)))
+(add-hook 'after-init-hook #'sthenno-mono-ligation-setup)
 
 ;; Set up font for unicode fontset
 (set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
