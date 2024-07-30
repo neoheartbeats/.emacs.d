@@ -176,6 +176,9 @@
                            ("+" (:foreground "#ff5f5f"))
                            ("=" org-code)))
 
+;; (defface sthenno-org-button '((t (:foreground "#00bcff" :box t))))
+;; (custom-set-faces 'org-link sthenno-org-button)
+
 ;; Use this with `C-<return>'
 (setq org-insert-heading-respect-content t)
 

@@ -15,77 +15,84 @@
 
 ;; Modus Themes
 (use-package modus-themes
-  :vc (modus-themes
-       :url "https://gitlab.com/protesilaos/modus-themes"
-       :branch "main")
+  :ensure t
   :config
 
+  (setopt modus-themes-to-toggle nil)
   ;; `modus-vivendi' customizations
   ;;
   ;; Define a user palette (for Sthenno)
   ;;
 
-  (setq modus-vivendi-palette-user
-        '((sthenno-blueberry "#467fef")))
+  (setopt modus-vivendi-palette-user
+          '((sthenno-blueberry "#467fef")))
 
   ;; Mapping colors
   ;;
-  (setq modus-vivendi-palette-overrides
-        `(
-          (bg-main "#0e1116")
-          (fg-main "#e7edf2")
-          
-          ;; Make the mode-line borderless and stand out less
-          (bg-mode-line-active   bg-active)
-          (fg-mode-line-active   fg-main)
-          (bg-mode-line-inactive bg-dim)
-          (fg-mode-line-inactive fg-dim)
+  (setopt modus-vivendi-palette-overrides
+          `((bg-main "#0e1116")
+            (fg-main "#e7edf2")
 
-          ;; Make the mode line borderless
-          (border-mode-line-active   unspecified)
-          (border-mode-line-inactive unspecified)
+            ;; Make the mode-line borderless and stand out less
+            (bg-mode-line-active   bg-active)
+            (fg-mode-line-active   fg-main)
+            (bg-mode-line-inactive bg-dim)
+            (fg-mode-line-inactive fg-dim)
 
-          ;; Set color faces for `display-line-numbers-mode'
-          (fg-line-number-active   fg-main)
-          (bg-line-number-active   bg-hl-line)
-          (fg-line-number-inactive fg-dim)
-          (bg-line-number-inactive unspecified)
+            ;; Make the mode line borderless
+            (border-mode-line-active   unspecified)
+            (border-mode-line-inactive unspecified)
 
-          ;; Make the fringe invisible
-          (fringe unspecified)
+            ;; Set color faces for `display-line-numbers-mode'
+            (fg-line-number-active   fg-main)
+            (bg-line-number-active   bg-hl-line)
+            (fg-line-number-inactive fg-dim)
+            (bg-line-number-inactive unspecified)
 
-          ;; Subtle underlines
-          (underline-link          border)
-          (underline-link-visited  border)
-          (underline-link-symbolic border)
+            ;; Make the fringe invisible
+            (fringe unspecified)
 
-          ;; Make links the same color as `fg-main'
-          ;; This also affects `button' faces in Modus Themes
-          (fg-link         unspecified)
-          (fg-link-visited unspecified)
+            ;; Subtle underlines
+            (underline-link          border)
+            (underline-link-visited  border)
+            (underline-link-symbolic border)
 
-          ;; Prose colors
-          (prose-todo info)
-          (prose-done fg-dim)
+            ;; Make links the same color as `fg-main'
+            ;; This also affects `button' faces in Modus Themes
+            (fg-link         unspecified)
+            (fg-link-visited unspecified)
 
-          ;; Matching parenthesis
-          (fg-paren-match fg-main)
-          (bg-paren-match bg-green-intense)
+            ;; Prose colors
+            (prose-todo info)
+            (prose-done fg-dim)
 
-          ;; Custom region colors
-          (fg-region unspecified)
-          (bg-region bg-cyan-subtle)
+            ;; Matching parenthesis
+            (fg-paren-match fg-main)
+            (bg-paren-match bg-green-intense)
 
-          ;; Make code blocks more minimal
-          (bg-prose-block-contents unspecified)
+            ;; Custom region colors
+            (fg-region unspecified)
+            (bg-region bg-cyan-subtle)
 
-          ;; Completions (see also `init-comp')
-          (bg-completion bg-hl-line)
+            ;; Make code blocks more minimal
+            (bg-prose-block-contents unspecified)
 
-          ,@modus-themes-preset-overrides-warmer))
+            ;; Completions (see also `init-comp')
+            (bg-completion bg-hl-line)
+
+            ;; Org-mode headings
+            (fg-heading-1       sthenno-blueberry)
+            (overline-heading-0 sthenno-blueberry)
+
+            ,@modus-themes-preset-overrides-warmer))
 
   ;; Enable and load the theme
   (modus-themes-load-theme 'modus-vivendi))
+
+(use-package ef-themes
+  :ensure t
+  :config
+  (ef-themes-select 'ef-trio-light))
 
 ;; Do not extend `region' background past the end of the line
 (custom-set-faces '(region ((t :extend nil))))
@@ -105,9 +112,12 @@
   (put 'scroll-left      'disabled nil))
 
 ;; Cursor faces
-(setopt cursor-type '(bar . 1))
-(setopt mouse-highlight nil)
+(setopt cursor-type 'hbar)
+;; (set-default mouse-highlight nil)
 (blink-cursor-mode -1)
+
+;;
+(setq text-conversion-style 'password)
 
 ;; highlight current line
 (global-hl-line-mode 1)
@@ -145,7 +155,7 @@
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji") nil 'prepend)
 
 ;; Note this make all italic font style disabled
-(set-face-attribute 'italic nil :slant 'normal)
+;; (set-face-attribute 'italic t :slant 'normal)
 
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
@@ -157,7 +167,7 @@
 (setq truncate-string-ellipsis " 􀍠")
 
 ;; Text quoting
-(setq text-quoting-style 'straight)
+(setopt text-quoting-style 'grave)
 
 ;; Better `help-mode'
 ;;

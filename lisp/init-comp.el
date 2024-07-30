@@ -283,7 +283,6 @@
 
 ;; Add extensions for the completion backend
 (use-package cape
-  :disabled t
   :ensure t
   :init
 
@@ -295,9 +294,9 @@
   ;; Setup Capfs
   (defun sthenno/capf-eglot ()
     (setq-local completion-at-point-functions
-                `(,(cape-capf-super (cape-capf-buster
-                                     #'eglot-completion-at-point)
-                                    #'cape-dabbrev)
+                `(,(cape-capf-super
+                    (cape-capf-buster #'eglot-completion-at-point)
+                    #'cape-dabbrev)
                   cape-file)
                 cape-dabbrev-min-length 4))
   (add-hook 'eglot-managed-mode-hook #'sthenno/capf-eglot)
@@ -317,12 +316,12 @@
 
   (defun sthenno/capf-text ()
     (setq-local completion-at-point-functions
-                `(,(cape-capf-super (cape-capf-prefix-length
-                                     #'cape-dict 4)
-                                    #'cape-elisp-block
-                                    #'cape-dabbrev)
+                `(,(cape-capf-super
+                    (cape-capf-prefix-length #'cape-dict 4)
+                    #'cape-elisp-block
+                    #'cape-dabbrev)
                   cape-file)
-                cape-dabbrev-min-length 4))
+                cape-dabbrev-min-length 2))
   (add-hook 'text-mode-hook #'sthenno/capf-text)
 
   :config

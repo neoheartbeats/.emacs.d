@@ -109,3 +109,4 @@
 ;; font. By inhibiting this, we halve startup times, particularly when we use
 ;; fonts that are larger than the system default (which would resize the frame)
 (setq frame-inhibit-implied-resize t)
+

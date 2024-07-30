@@ -77,8 +77,8 @@
 
 ;; Set path for custom-file
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(when (file-readable-p "custom.el")
-  (load custom-file))
+;; (when (file-readable-p "custom.el")
+;;   (load custom-file t))
 
 
 ;; Emacs packages
@@ -128,24 +128,25 @@ Cancel the previous one if present."
   (gcmh-mode 1))
 
 ;; Fix PATH for macOS
-(use-package exec-path-from-shell
-  :ensure t
-  :config (exec-path-from-shell-initialize))
-(use-package dash :ensure t :demand t)
+;; (use-package exec-path-from-shell
+;;   :ensure t
+;;   :config (exec-path-from-shell-initialize))
 
 
 ;; Load path
 (use-package org :ensure t :demand t)   ; Load Org
 
 ;; Dir for init-* files
-(add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory) 'append)
+(add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory) t)
 
 ;; Require init-* files
-(require 'init-system)
-(require 'init-gui-frames)
-(require 'init-editing-utils)
+(require 'init-system nil t)
+(require 'init-gui-frames nil t)
+(require 'init-editing-utils nil t)
 (require 'init-org)
 (require 'init-projects)
 (require 'init-temp)
 (require 'init-comp)
 (require 'init-eglot)
+
+(setopt server-stop-automatically 'kill-terminal)
