@@ -15,7 +15,9 @@
 
 ;; Modus Themes
 (use-package modus-themes
-  :ensure t
+  :vc (modus-themes
+       :url "https://gitlab.com/protesilaos/modus-themes"
+       :branch "main")
   :config
 
   (setopt modus-themes-to-toggle nil)
@@ -82,17 +84,17 @@
 
             ;; Org-mode headings
             (fg-heading-1       sthenno-blueberry)
-            (overline-heading-0 sthenno-blueberry)
+            (overline-heading-1 sthenno-blueberry)
 
             ,@modus-themes-preset-overrides-warmer))
 
   ;; Enable and load the theme
   (modus-themes-load-theme 'modus-vivendi))
 
-(use-package ef-themes
-  :ensure t
-  :config
-  (ef-themes-select 'ef-trio-light))
+;; (use-package ef-themes
+;;   :ensure t
+;;   :config
+;;   (ef-themes-select 'ef-trio-light))
 
 ;; Do not extend `region' background past the end of the line
 (custom-set-faces '(region ((t :extend nil))))
@@ -112,8 +114,8 @@
   (put 'scroll-left      'disabled nil))
 
 ;; Cursor faces
-(setopt cursor-type 'hbar)
-;; (set-default mouse-highlight nil)
+(setq-default cursor-type '(bar . 1))
+(setq-default mouse-highlight nil)
 (blink-cursor-mode -1)
 
 ;;
@@ -155,13 +157,13 @@
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji") nil 'prepend)
 
 ;; Note this make all italic font style disabled
-;; (set-face-attribute 'italic t :slant 'normal)
+(set-face-attribute 'italic t :slant 'normal)
 
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
 
 ;; Stop showing fringe bitmaps
-;; (setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
+(setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
 
 ;; Ellipsis symbol
 (setq truncate-string-ellipsis " 􀍠")
