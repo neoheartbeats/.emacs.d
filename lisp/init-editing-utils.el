@@ -324,7 +324,7 @@ Version: 2017-07-02 2023-07-22 2023-07-30"
 (delete-selection-mode 1)
 
 ;; Delete all tabs and spaces
-;; (setq backward-delete-char-untabify-method 'hungry)
+(setq backward-delete-char-untabify-method 'hungry)
 
 ;; Automatically reload files was modified by external program
 (use-package autorevert
@@ -356,7 +356,7 @@ Version: 2017-07-02 2023-07-22 2023-07-30"
   ;;
   ;; Pulsing
   (add-hook 'after-save-hook #'pulsar-pulse-line-green)
-
+  
   (add-hook 'sthenno/delete-current-line-hook #'pulsar-pulse-line-magenta)
   (add-hook 'sthenno/cycle-to-next-buffer-hook #'pulsar-pulse-line-cyan)
   (add-hook 'sthenno/cycle-to-previous-buffer-hook #'pulsar-pulse-line-cyan)

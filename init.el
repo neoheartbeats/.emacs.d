@@ -59,7 +59,8 @@
 
 ;; NOTE: Since feature `alpha-background' conflicts with Emacs overlay rendering for
 ;; images such as SVG files, `alpha' can be a replacement for a rough approach.
-;;
+
+(add-to-list 'default-frame-alist '(alpha . (90 . 90)))
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 
 ;; Suppress GUI features
