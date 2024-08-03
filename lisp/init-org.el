@@ -321,8 +321,7 @@
 
   :config
   (setq denote-directory org-directory) ; Use `org-directory' as default
-  (setq denote-known-keywords '("dates"
-                                "blog"))
+  (setq denote-known-keywords '("dates" "blog"))
   (setq denote-prompts '(title))
   (setq denote-save-buffers t)
 
@@ -336,8 +335,7 @@
   (setq denote-org-front-matter "#+title: %1$s. 􀙤\n\n")
 
   :bind ((:map global-map
-
-               ;; Open today's note
+               ("C-c n" . denote)
                ("C-c d" . denote-journal-extras-new-or-existing-entry))
          (:map org-mode-map
                ("C-c i" . denote-link-or-create)

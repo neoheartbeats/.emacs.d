@@ -123,13 +123,178 @@ and auto-paring for such entries."
 
 
 (electric-pair-mode 1)
+(setq electric-pair-pairs '((?\" . ?\")
+                            (?\{ . ?\})))
+
+;; Delete brackets by pairs
+;;
+;; Ref: http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html
+
+(defun xah-delete-forward-bracket-pairs (&optional DeleteInnerTextQ)
+  "Delete the matching brackets to the right of cursor including the inner text.
+e.g. ▮(a b c)
+
+In lisp code, if DeleteInnerTextQ is true, also delete the inner text.
+
+After the command, mark is set at the left matching bracket position, so
+you can `exchange-point-and-mark' to select it.
+
+This command assumes the char to the right of point is a left bracket or
+quote, and have a matching one after.
+
+What char is considered bracket or quote is determined by current syntax
+table.
+
+URL
+`http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
+Version: 2017-07-02 2023-07-30"
+  (interactive (list t))
+  (if DeleteInnerTextQ
+      (progn
+        (mark-sexp)
+        (kill-region (region-beginning) (region-end)))
+    (let ((xpt (point)))
+      (forward-sexp)
+      (delete-char -1)
+      (push-mark (point) t)
+      (goto-char xpt)
+      (delete-char 1))))
+
+(defun xah-delete-backward-bracket-text ()
+  "Delete the matching brackets to the left of cursor, including the inner text.
+e.g. (a b c)▮
+
+This command assumes the left of cursor is a right bracket, and there is
+a matching one before it.
+
+What char is considered bracket or quote is determined by current syntax
+table.
+
+URL
+`http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
+Version: 2017-09-21 2023-07-30"
+  (interactive)
+  (progn
+    (forward-sexp -1)
+    (mark-sexp)
+    (kill-region (region-beginning) (region-end))))
+
+(defun xah-delete-backward-bracket-pair ()
+  "Delete the matching brackets/quotes to the left of cursor.
+After call, mark is set at the matching bracket position, so you can
+`exchange-point-and-mark' to select it.
+
+This command assumes the left of point is a right bracket, and there is
+a matching one before it.
+
+What char is considered bracket or quote is determined by current syntax
+table.
+
+URL
+`http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
+Version: 2017-07-02"
+  (interactive)
+  (let ((xp0 (point)) xp1)
+    (forward-sexp -1)
+    (setq xp1 (point))
+    (goto-char xp0)
+    (delete-char -1)
+    (goto-char xp1)
+    (delete-char 1)
+    (push-mark (point) t)
+    (goto-char (- xp0 2))))
+
+(defun xah-delete-backward-char-or-bracket-text ()
+  "Delete 1 character or delete quote/bracket pair and inner text.
+If the char to the left of cursor is a matching pair, delete it along
+with inner text, push the deleted text to `kill-ring'.
+
+What char is considered bracket or quote is determined by current syntax
+table.
+
+If `universal-argument' is called first, do not delete inner text.
+
+URL
+`http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
+Version: 2017-07-02 2023-07-22 2023-07-30"
+  (interactive)
+  (if (and delete-selection-mode (region-active-p))
+      (delete-region (region-beginning) (region-end))
+    (cond
+     ((prog2 (backward-char) (looking-at "\\s)") (forward-char))
+      (if current-prefix-arg
+          (xah-delete-backward-bracket-pair)
+        (xah-delete-backward-bracket-text))
+      ;; (if (string-equal major-mode "xah-wolfram-mode")
+      ;;           (let (xisComment (xp0 (point)))
+      ;;             (backward-char)
+      ;;             (setq xisComment (nth 4 (syntax-ppss)))
+      ;;             (goto-char xp0)
+      ;;             (if xisComment
+      ;;                 (if (forward-comment -1)
+      ;;                     (kill-region (point) xp0)
+      ;;                   (message "error GSNN2:parsing comment failed."))
+      ;;               (if current-prefix-arg
+      ;;                   (xah-delete-backward-bracket-pair)
+      ;;                 (xah-delete-backward-bracket-text))))
+      ;;         (progn
+      ;;           (if current-prefix-arg
+      ;;               (xah-delete-backward-bracket-pair)
+      ;;             (xah-delete-backward-bracket-text))))
+      )
+     ((prog2 (backward-char) (looking-at "\\s(") (forward-char))
+      (message "left of cursor is opening bracket")
+      (let (xpOpenBracketLeft
+            (xpOpenBracketRight (point)) xisComment)
+        (backward-char)
+        (setq xpOpenBracketLeft (point))
+        (goto-char xpOpenBracketRight)
+        (forward-char)
+        (setq xisComment (nth 4 (syntax-ppss)))
+        (if xisComment
+            (progn
+              (message "cursor is in comment")
+              (goto-char xpOpenBracketLeft)
+              (if (forward-comment 1)
+                  (kill-region (point) xpOpenBracketLeft)
+                (message "error hSnRp: parsing comment failed.")))
+          (progn
+            (message "right 1 char of cursor is not in comment")
+            (goto-char xpOpenBracketLeft)
+            (forward-sexp)
+            (if current-prefix-arg
+                (xah-delete-backward-bracket-pair)
+              (xah-delete-backward-bracket-text))))))
+     ((prog2 (backward-char) (looking-at "\\s\"") (forward-char))
+      (if (nth 3 (syntax-ppss))
+          (progn
+            (backward-char)
+            (xah-delete-forward-bracket-pairs (not current-prefix-arg)))
+        (if current-prefix-arg
+            (xah-delete-backward-bracket-pair)
+          (xah-delete-backward-bracket-text))))
+     (t
+      (delete-char -1)))))
+
+(global-set-key (kbd "<backspace>") #'xah-delete-backward-char-or-bracket-text)
 
 ;; Show parenthesis
-(use-package paren
-  :init (setq show-paren-delay 0.05
-              show-paren-highlight-openparen t
-              show-paren-style 'mixed   ; Highlight parenthesis matched off-screen
-              show-paren-when-point-inside-paren t))
+(setopt show-paren-delay 0.05
+        show-paren-highlight-openparen nil
+        show-paren-context-when-offscreen 'overlay
+        show-paren-when-point-inside-paren t)
+
+;; Cursor faces
+(setopt cursor-type t)
+(setopt mouse-highlight nil)
+(blink-cursor-mode -1)
+
+(defun sthenno/post-paren-match ()
+  (interactive)
+  (if (show-paren--categorize-paren (point))
+      (set-window-cursor-type nil 'hollow)
+    (set-window-cursor-type nil '(bar . 1))))
+(add-hook 'post-command-hook #'sthenno/post-paren-match)
 
 
 ;; Using rainbow delimiters
@@ -145,6 +310,13 @@ and auto-paring for such entries."
   :init (setq eldoc-idle-delay 0.05))
 
 
+(use-package vundo
+  :vc (vundo
+       :url "https://github.com/casouri/vundo")
+  :config
+  (keymap-global-set "M-z" #'vundo))
+
+
 ;; Deletions
 ;;
 ;; Delete selection if you insert
@@ -152,7 +324,7 @@ and auto-paring for such entries."
 (delete-selection-mode 1)
 
 ;; Delete all tabs and spaces
-(setq backward-delete-char-untabify-method 'hungry)
+;; (setq backward-delete-char-untabify-method 'hungry)
 
 ;; Automatically reload files was modified by external program
 (use-package autorevert

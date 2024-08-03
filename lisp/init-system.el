@@ -101,6 +101,14 @@ Activate again to undo this. If the window changes before then, the undo expires
            ("C-<left>"  . windmove-left)
            ("C-<right>" . windmove-right))
 
+
+;; Fix PATH for macOS
+(use-package exec-path-from-shell
+  :ensure t
+  :demand t
+  :config (exec-path-from-shell-initialize))
+
+
 ;; Remember changes on windows
 ;; Use C-c <left> and C-c <right> to undo and redo changes on windows
 (use-package winner
@@ -137,14 +145,7 @@ Activate again to undo this. If the window changes before then, the undo expires
   :config (recentf-mode 1))
 
 
-;; Encodings
-;;
-;; Contrary to what many Emacs users have in their configs, you don't need more
-;; than this to make UTF-8 the default coding system:
-(set-language-environment "UTF-8")
-;; ...but `set-language-environment' also sets `default-input-method', which is
-;; a step too opinionated.
-(setq default-input-method nil)
+
 
 
 ;; Special treatment for large files
@@ -169,6 +170,10 @@ Activate again to undo this. If the window changes before then, the undo expires
 ;; Still need time to figure out if this has any side-effects
 (setq auto-save-default t)
 (setq save-silently t)
+
+;; Real auto-save
+(auto-save-visited-mode 1)
+(setq auto-save-visited-interval 30)
 
 ;; files
 (setq create-lockfiles nil)
