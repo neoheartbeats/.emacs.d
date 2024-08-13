@@ -16,9 +16,9 @@
 ;;
 ;; Command `treesit-auto-install-all' is required if the tree-sitter grammar
 ;; libs have not been configured already
-;; (use-package treesit-auto
-;;   :ensure t
-;;   :config (global-treesit-auto-mode 1))
+(use-package treesit-auto
+  :ensure t
+  :config (global-treesit-auto-mode 1))
 
 ;; Remap `python-mode' to `python-ts-mode'
 (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
@@ -34,55 +34,10 @@
   :ensure t
   :init
 
-  ;; Config `corfu' for `eglot', see also `init-comp'
-  ;; Continuously update the candidates
-  ;; Enable cache busting, depending on if your server returns
-  ;; sufficiently many candidates in the first place
-  ;; (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
-
   ;; Hooks
   (add-hook 'python-ts-mode-hook #'eglot-ensure)
   (add-hook 'bash-ts-mode-hook   #'eglot-ensure)
 
-  (add-to-list 'exec-path "/opt/homebrew/Caskroom/miniconda/base/envs/sthenno/bin/")
-  (setq-default python-interpreter
-                "/opt/homebrew/Caskroom/miniconda/base/envs/sthenno/bin/python")
-  (setq-default python-shell-interpreter
-                "/opt/homebrew/Caskroom/miniconda/base/envs/sthenno/bin/python")
-
-  ;; (add-to-list 'eglot-server-programs '((python-ts-mode) . ("pylsp")))
-  ;; (setopt eglot-workspace-configuration
-  ;;         '((:pylsp . (
-  ;;                      :configurationSources ["flake8"]
-  ;;                      :plugins (
-  ;;                                :pycodestyle (
-  ;;                                              :enabled
-  ;;                                              :json-false)
-  ;;                                :mccabe (
-  ;;                                         :enabled
-  ;;                                         :json-false)
-  ;;                                :pyflakes (:enabled
-  ;;                                           :json-false)
-  ;;                                :flake8 (:enabled
-  ;;                                         :json-false
-  ;;                                         :maxLineLength 88)
-  ;;                                :ruff (
-  ;;                                       :enabled t
-  ;;                                       :lineLength 88)
-  ;;                                :pydocstyle (
-  ;;                                             :enabled t
-  ;;                                             :convention "numpy")
-  ;;                                :yapf (
-  ;;                                       :enabled t
-  ;;                                       :json-false)
-  ;;                                :autopep8 (
-  ;;                                           :enabled
-  ;;                                           :json-false)
-  ;;                                :black (
-  ;;                                        :enabled t
-  ;;                                        :line_length 88
-  ;;                                        :cache_config t))))))
-  
   (add-hook 'eglot-managed-mode-hook #'(lambda ()
                                          (add-hook 'before-save-hook #'eglot-format-buffer)
                                          (eglot-inlay-hints-mode 'toggle)))
@@ -98,48 +53,58 @@
 (setopt python-indent-offset 4)
 
 ;; Reformat Python buffers using the Black formatter
-;; (use-package blacken
-;;   :ensure t
-;;   :after (python eglot)
-;;   :init (add-hook 'python-ts-mode-hook #'(lambda ()
-;;                                            (blacken-mode 1)))
-;;   :bind (:map python-ts-mode-map
-;;               ("s-p" . blacken-buffer)))
+(use-package blacken
+  :ensure t
+  :after (python eglot)
+  :init (add-hook 'python-ts-mode-hook #'(lambda ()
+                                           (blacken-mode 1)))
+  :bind (:map python-ts-mode-map
+              ("s-p" . blacken-buffer)))
+
+(use-package conda
+  :ensure t
+  :config
+  (conda-env-initialize-interactive-shells)
+  (conda-env-initialize-eshell)
+  (conda-env-autoactivate-mode t)
+  (add-hook 'find-file-hook (lambda ()
+                              (when (bound-and-true-p conda-project-env-path)
+                                (conda-env-activate-for-buffer)))))
 
 
 ;; GitHub Copilot
-;; (use-package copilot
-;;   :vc (copilot
-;;        :url "https://github.com/copilot-emacs/copilot.el")
-;;   :defer t
-;;   :init
-;;   (setq copilot-node-executable "/opt/homebrew/bin/node")
-;;   (setq copilot-idle-delay 0.05)
-;;   (setq copilot-max-char (* 500 1000))  ; Default is 100,000
+(use-package copilot
+  :vc (copilot
+       :url "https://github.com/copilot-emacs/copilot.el")
+  :defer t
+  :init
+  (setq copilot-node-executable "/opt/homebrew/bin/node")
+  (setq copilot-idle-delay 0.05)
+  (setq copilot-max-char (* 500 1000))  ; Default is 100,000
 
-;;   ;; Toggling `copilot-mode'
-;;   (defun sthenno/copilot-on ()
-;;     (interactive)
-;;     (copilot-mode 1))
+  ;; Toggling `copilot-mode'
+  (defun sthenno/copilot-on ()
+    (interactive)
+    (copilot-mode 1))
 
-;;   (defun sthenno/copilot-off ()
-;;     (interactive)
-;;     (copilot-mode -1))
+  (defun sthenno/copilot-off ()
+    (interactive)
+    (copilot-mode -1))
 
-;;   :config
-;;   (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
-;;   (add-to-list 'copilot-major-mode-alist  '("python-ts" . "python"))
+  :config
+  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
+  (add-to-list 'copilot-major-mode-alist  '("python-ts" . "python"))
 
-;;   ;; Hooks
-;;   (add-hook 'python-ts-mode-hook #'sthenno/copilot-on)
+  ;; Hooks
+  (add-hook 'python-ts-mode-hook #'sthenno/copilot-on)
 
-;;   :bind ((:map prog-mode-map
-;;                ("C-x c" . sthenno/turn-on-copilot)
-;;                ("C-x C" . sthenno/turn-off-copilot))
-;;          (:map copilot-completion-map
-;;                ("<tab>"   . copilot-accept-completion)
-;;                ("<right>" . copilot-accept-completion-by-line)
-;;                ("<left>"  . copilot-clear-overlay)
-;;                ("RET"     . copilot-clear-overlay))))
+  :bind ((:map prog-mode-map
+               ("C-x c" . sthenno/turn-on-copilot)
+               ("C-x C" . sthenno/turn-off-copilot))
+         (:map copilot-completion-map
+               ("<tab>"   . copilot-accept-completion)
+               ("<right>" . copilot-accept-completion-by-line)
+               ("<left>"  . copilot-clear-overlay)
+               ("RET"     . copilot-clear-overlay))))
 
 (provide 'init-eglot)

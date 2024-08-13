@@ -10,6 +10,7 @@
 ;; configures `modus-themes', fonts, some global `face' and `mode-line' styles.  For
 ;; those feature-specific `faces', their configuration code is isolated. A typical
 ;; example is `prettify-symbols-mode'. See also: `init-editing-utils', `init-org'.
+;;
 
 ;;; Code:
 
@@ -21,7 +22,6 @@
   :demand t
   :config
   (setopt modus-themes-to-toggle nil)
-  (setopt modus-themes-bold-constructs t)
 
   ;; Mapping colors
   (setopt modus-vivendi-palette-overrides
@@ -100,7 +100,6 @@
   (put 'erase-buffer     'disabled nil)
   (put 'scroll-left      'disabled nil))
 
-
 ;; highlight current line
 (global-hl-line-mode 1)
 
@@ -114,9 +113,9 @@
 (setq default-input-method nil)
 
 ;; Custom font
-(set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
+(set-face-attribute 'default nil :family "PragmataPro Liga" :height 140)
 
-;; Set up font for unicode fontset
+;; Set up font for non-ascii fontset
 (set-fontset-font t 'big5                (font-spec :family "Noto Serif CJK SC"))
 (set-fontset-font t 'big5-hkscs          (font-spec :family "Noto Serif CJK SC"))
 (set-fontset-font t 'chinese-cns11643-1  (font-spec :family "Noto Serif CJK SC"))
@@ -143,7 +142,7 @@
 (set-fontset-font t 'kana                     (font-spec :family "Noto Serif CJK JP"))
 
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
-(set-fontset-font t 'ucs   (font-spec :family "SF Pro"))
+(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'append)
 
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
@@ -165,26 +164,49 @@
 ;; Display example functions.
 (add-hook 'help-fns-describe-function-functions #'shortdoc-help-fns-examples-function)
 
+
+(keymap-global-set "<f4>" 'describe-symbol)
+
 
 ;; Mode Line settings
 (setopt mode-line-compact t)
 
-(use-package minions
-  :ensure t
-  :init (setq minions-mode-line-lighter "􀠩")
-  :config (minions-mode 1))
+;; (use-package minions
+;;   :ensure t
+;;   :init (setq minions-mode-line-lighter "􀠩")
+;;   :config (minions-mode 1))
+
+;; (setq-default mode-line-format '("%e"
+;;                                  " "
+;;                                  sthenno/mode-line-buffer
+;;                                  " "
+;;                                  sthenno/mode-line-major))
+
+;; (defun sthenno/mode-line--buffer ()
+;;   (let ((buff (if (denote-file-is-note-p (buffer-file-name))
+;;                   (denote-retrieve-filename-title (buffer-file-name))
+;;                 (buffer-name))))
+;;     (format "%s" buff)))
+
+;; (defvar-local sthenno/mode-line-buffer
+;;     '(:eval
+;;       (list (format "BUFF: %s"
+;;                     (propertize (sthenno/mode-line--buffer) 'face 'success))))
+;;   "Mode-line construct to display the current buffer.")
+;; (put 'sthenno/mode-line-buffer 'risky-local-variable t)
+
+;; (defvar-local sthenno/mode-line-major
+;;     '(:eval
+;;       (format "MODE: %s"
+;;               (propertize (symbol-name major-mode)) 'face 'default))
+;;   "Mode-line construct to display the Major.")
+;; (put 'sthenno/mode-line-major 'risky-local-variable t)
 
 
 ;; Automatic adjusting for margins
 (use-package spacious-padding
   :ensure t
   :if (display-graphic-p)
-  :init
-  (setq spacious-padding-widths '( :internal-border-width 15
-                                   :header-line-width 0
-                                   :mode-line-width 2
-                                   :right-divider-width 0
-                                   :scroll-bar-width 0))
   :config (spacious-padding-mode 1))
 
 
@@ -192,11 +214,12 @@
 ;;
 ;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 ;;
-(defvar sthenno-quit-messages  `("Anyone else but you?"
-                                 "She depends on you."
-                                 "Please take care of Sthenno."
-                                 "It's not like I'll miss you or anything, b-baka!"
-                                 "Please don't go!")
+(defvar sthenno-quit-messages `(
+                                "Anyone else but you?"
+                                "She depends on you."
+                                "Please take care of Sthenno."
+                                "It's not like I'll miss you or anything, b-baka!"
+                                "Please don't go!")
   "A list of quit messages, picked randomly by `sthenno-quit'.")
 
 (defun sthenno-quit-p (&optional prompt)

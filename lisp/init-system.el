@@ -29,16 +29,27 @@
            ("s-z" . undo)
            ("s-d" . find-file))
 
-(defun load-current-lisp-file ()
-  "Load current Lisp file."
-  (interactive)
-  (load-file (buffer-file-name)))
+;; (defun load-current-lisp-file ()
+;;   "Load current Lisp file."
+;;   (interactive)
+;;   (load-file (buffer-file-name)))
 
-(bind-keys :map emacs-lisp-mode-map
-           ("C-c C-c". load-current-lisp-file))
+;; (bind-keys :map emacs-lisp-mode-map
+;;            ("C-c C-c". load-current-lisp-file))
 
 ;; Open the *ielm* buffer
-(keymap-global-set "<f2>" #'ielm)
+;; (keymap-global-set "<f2>" #'ielm)
+
+(defun mp-elisp-mode-eval-buffer ()
+  (interactive)
+  (message "Evaluated buffer")
+  (eval-buffer))
+
+(define-key emacs-lisp-mode-map (kbd "C-c C-c") #'mp-elisp-mode-eval-buffer)
+(define-key lisp-interaction-mode-map (kbd "C-c C-c") #'mp-elisp-mode-eval-buffer)
+
+;; TODO: Testing
+(keymap-global-set "S-<return>" 'eval-last-sexp)
 
 ;;
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)

@@ -118,17 +118,10 @@ and auto-paring for such entries."
 ;; same reason.
 ;; XXX: Side-effects come to `org-babel' is under discovering.
 ;;
-(add-hook 'org-mode-hook #'(lambda ()
-                             (setq electric-indent-inhibit t)))
-
 
 (electric-pair-mode 1)
 (setq electric-pair-pairs '((?\" . ?\")
                             (?\{ . ?\})))
-
-;; Delete brackets by pairs
-;;
-;; Ref: http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html
 
 (defun xah-delete-forward-bracket-pairs (&optional DeleteInnerTextQ)
   "Delete the matching brackets to the right of cursor including the inner text.
@@ -136,17 +129,13 @@ e.g. ▮(a b c)
 
 In lisp code, if DeleteInnerTextQ is true, also delete the inner text.
 
-After the command, mark is set at the left matching bracket position, so
-you can `exchange-point-and-mark' to select it.
+After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
 
-This command assumes the char to the right of point is a left bracket or
-quote, and have a matching one after.
+This command assumes the char to the right of point is a left bracket or quote, and have a matching one after.
 
-What char is considered bracket or quote is determined by current syntax
-table.
+What char is considered bracket or quote is determined by current syntax table.
 
-URL
-`http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
+URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Version: 2017-07-02 2023-07-30"
   (interactive (list t))
   (if DeleteInnerTextQ
@@ -164,14 +153,11 @@ Version: 2017-07-02 2023-07-30"
   "Delete the matching brackets to the left of cursor, including the inner text.
 e.g. (a b c)▮
 
-This command assumes the left of cursor is a right bracket, and there is
-a matching one before it.
+This command assumes the left of cursor is a right bracket, and there is a matching one before it.
 
-What char is considered bracket or quote is determined by current syntax
-table.
+What char is considered bracket or quote is determined by current syntax table.
 
-URL
-`http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
+URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Version: 2017-09-21 2023-07-30"
   (interactive)
   (progn
@@ -181,17 +167,13 @@ Version: 2017-09-21 2023-07-30"
 
 (defun xah-delete-backward-bracket-pair ()
   "Delete the matching brackets/quotes to the left of cursor.
-After call, mark is set at the matching bracket position, so you can
-`exchange-point-and-mark' to select it.
+After call, mark is set at the matching bracket position, so you can `exchange-point-and-mark' to select it.
 
-This command assumes the left of point is a right bracket, and there is
-a matching one before it.
+This command assumes the left of point is a right bracket, and there is a matching one before it.
 
-What char is considered bracket or quote is determined by current syntax
-table.
+What char is considered bracket or quote is determined by current syntax table.
 
-URL
-`http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
+URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Version: 2017-07-02"
   (interactive)
   (let ((xp0 (point)) xp1)
@@ -206,16 +188,13 @@ Version: 2017-07-02"
 
 (defun xah-delete-backward-char-or-bracket-text ()
   "Delete 1 character or delete quote/bracket pair and inner text.
-If the char to the left of cursor is a matching pair, delete it along
-with inner text, push the deleted text to `kill-ring'.
+If the char to the left of cursor is a matching pair, delete it along with inner text, push the deleted text to `kill-ring'.
 
-What char is considered bracket or quote is determined by current syntax
-table.
+What char is considered bracket or quote is determined by current syntax table.
 
 If `universal-argument' is called first, do not delete inner text.
 
-URL
-`http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
+URL `http://xahlee.info/emacs/emacs/emacs_delete_backward_char_or_bracket_text.html'
 Version: 2017-07-02 2023-07-22 2023-07-30"
   (interactive)
   (if (and delete-selection-mode (region-active-p))
@@ -276,25 +255,16 @@ Version: 2017-07-02 2023-07-22 2023-07-30"
      (t
       (delete-char -1)))))
 
-(global-set-key (kbd "<backspace>") #'xah-delete-backward-char-or-bracket-text)
+(global-set-key (kbd "<backspace>") 'xah-delete-backward-char-or-bracket-text)
 
 ;; Show parenthesis
 (setopt show-paren-delay 0.05
-        show-paren-highlight-openparen nil
-        show-paren-context-when-offscreen 'overlay
-        show-paren-when-point-inside-paren t)
+        show-paren-style 'mixed)
 
 ;; Cursor faces
-(setopt cursor-type t)
+(setopt cursor-type '(bar . 1))
 (setopt mouse-highlight nil)
 (blink-cursor-mode -1)
-
-(defun sthenno/post-paren-match ()
-  (interactive)
-  (if (show-paren--categorize-paren (point))
-      (set-window-cursor-type nil 'hollow)
-    (set-window-cursor-type nil '(bar . 1))))
-(add-hook 'post-command-hook #'sthenno/post-paren-match)
 
 
 ;; Using rainbow delimiters
@@ -356,7 +326,7 @@ Version: 2017-07-02 2023-07-22 2023-07-30"
   ;;
   ;; Pulsing
   (add-hook 'after-save-hook #'pulsar-pulse-line-green)
-  
+
   (add-hook 'sthenno/delete-current-line-hook #'pulsar-pulse-line-magenta)
   (add-hook 'sthenno/cycle-to-next-buffer-hook #'pulsar-pulse-line-cyan)
   (add-hook 'sthenno/cycle-to-previous-buffer-hook #'pulsar-pulse-line-cyan)

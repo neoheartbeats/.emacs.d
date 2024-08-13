@@ -63,7 +63,7 @@
   ;; The basic completion style is specified as fallback in addition to orderless in
   ;; order to ensure that completion commands rely on dynamic completion tables
   ;;
-  (setq completion-styles '(basic orderless flex)
+  (setq completion-styles '(basic orderless)
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion))
 
