@@ -84,8 +84,8 @@
 ;; Completions in minibuffers
 (use-package vertico
   :ensure t
+  :demand t
   :init
-  (vertico-mode)
   (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
 
   ;; Disable showing the *Completions* buffer that conflicts with `vertico' if using
@@ -350,7 +350,11 @@
 ;; The main completion frontend by Corfu
 
 (use-package corfu
-  :ensure t
+  :vc (corfu
+       :url "https://github.com/minad/corfu"
+       :branch "main"
+       :lisp-dir "extensions/")
+  :demand t
   :init (add-hook 'after-init-hook #'(lambda ()
                                        (global-corfu-mode 1)))
   :config
@@ -439,15 +443,18 @@ Do not insert KEY if `char-after' point is not empty."
   (add-to-list 'savehist-additional-variables 'corfu-history)
 
   ;; Popup candidates info
-  (setq corfu-popupinfo-delay '(0.25 . 0.05))
-  (setq corfu-popupinfo-hide nil)
+  ;; (setq corfu-popupinfo-delay '(0.25 . 0.05))
+  ;; (setq corfu-popupinfo-hide nil)
 
-  (setq corfu-popupinfo-max-width 40
-        corfu-popupinfo-min-width 20)
+  ;; (setq corfu-popupinfo-max-width 40
+  ;;       corfu-popupinfo-min-width 20)
 
-  (add-hook 'prog-mode-hook #'(lambda ()
-                                (corfu-popupinfo-mode 1)))
+  ;; (add-hook 'prog-mode-hook #'(lambda ()
+  ;;                               (corfu-popupinfo-mode 1)))
 
+  (corfu-echo-mode 1)
+  (setopt corfu-echo-delay '(0.10 . 0.05))
+  
   :bind (:map corfu-map
               ("<down>"   . corfu-next)
               ("<tab>"    . corfu-next)

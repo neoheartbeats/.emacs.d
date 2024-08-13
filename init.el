@@ -47,7 +47,7 @@
 ;; Font compacting can be terribly expensive, especially for rendering icon fonts on
 ;; MS. Whether disabling it has a notable affect on Linux and macOS hasn't been
 ;; determined, but do it anyway, just in case. This increases memory usage.
-(setq inhibit-compacting-font-caches t)
+;; (setq inhibit-compacting-font-caches t)
 
 
 (tool-bar-mode -1)
@@ -56,10 +56,6 @@
 
 (add-to-list 'default-frame-alist '(width . 120))
 (add-to-list 'default-frame-alist '(height . 50))
-
-;; NOTE: Since feature `alpha-background' conflicts with Emacs overlay rendering for
-;; images such as SVG files, `alpha' can be a replacement for a rough approach.
-;;
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 
 ;; Suppress GUI features
@@ -127,26 +123,19 @@ Cancel the previous one if present."
         gcmh-verbose nil)
   (gcmh-mode 1))
 
-;; Fix PATH for macOS
-;; (use-package exec-path-from-shell
-;;   :ensure t
-;;   :config (exec-path-from-shell-initialize))
-
 
 ;; Load path
-(use-package org :ensure t :demand t)   ; Load Org
+(use-package org)                       ; Load Org
 
 ;; Dir for init-* files
-(add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory) t)
+(add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
 
 ;; Require init-* files
-(require 'init-system nil t)
-(require 'init-gui-frames nil t)
-(require 'init-editing-utils nil t)
+(require 'init-system)
+(require 'init-gui-frames)
+(require 'init-editing-utils)
 (require 'init-org)
 (require 'init-projects)
 (require 'init-temp)
 (require 'init-comp)
 (require 'init-eglot)
-
-(setopt server-stop-automatically 'kill-terminal)

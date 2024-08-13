@@ -10,6 +10,7 @@
 ;; configures `modus-themes', fonts, some global `face' and `mode-line' styles.  For
 ;; those feature-specific `faces', their configuration code is isolated. A typical
 ;; example is `prettify-symbols-mode'. See also: `init-editing-utils', `init-org'.
+;;
 
 ;;; Code:
 
@@ -18,23 +19,13 @@
   :vc (modus-themes
        :url "https://gitlab.com/protesilaos/modus-themes"
        :branch "main")
+  :demand t
   :config
-
   (setopt modus-themes-to-toggle nil)
-  ;; `modus-vivendi' customizations
-  ;;
-  ;; Define a user palette (for Sthenno)
-  ;;
-
-  (setopt modus-vivendi-palette-user
-          '((sthenno-blueberry "#467fef")))
 
   ;; Mapping colors
-  ;;
   (setopt modus-vivendi-palette-overrides
-          `((bg-main "#0e1116")
-            (fg-main "#e7edf2")
-
+          '(
             ;; Make the mode-line borderless and stand out less
             (bg-mode-line-active   bg-active)
             (fg-mode-line-active   fg-main)
@@ -83,18 +74,14 @@
             (bg-completion bg-hl-line)
 
             ;; Org-mode headings
-            (fg-heading-1       sthenno-blueberry)
-            (overline-heading-1 sthenno-blueberry)
+            (fg-heading-1       magenta)
+            (overline-heading-1 magenta)
 
-            ,@modus-themes-preset-overrides-warmer))
+            ;; Cursor colors
+            (cursor "#0fed00")))
 
   ;; Enable and load the theme
   (modus-themes-load-theme 'modus-vivendi))
-
-;; (use-package ef-themes
-;;   :ensure t
-;;   :config
-;;   (ef-themes-select 'ef-trio-light))
 
 ;; Do not extend `region' background past the end of the line
 (custom-set-faces '(region ((t :extend nil))))
@@ -113,63 +100,58 @@
   (put 'erase-buffer     'disabled nil)
   (put 'scroll-left      'disabled nil))
 
-;; Cursor faces
-(setq-default cursor-type '(bar . 1))
-(setq-default mouse-highlight nil)
-(blink-cursor-mode -1)
-
-;;
-(setq text-conversion-style 'password)
-
 ;; highlight current line
 (global-hl-line-mode 1)
 
+;; Encodings
+;;
+;; Contrary to what many Emacs users have in their configs, you don't need more
+;; than this to make UTF-8 the default coding system:
+(set-language-environment "UTF-8")
+;; ...but `set-language-environment' also sets `default-input-method', which is
+;; a step too opinionated.
+(setq default-input-method nil)
+
 ;; Custom font
-(set-face-attribute 'default nil     :family "Sthenno Mono" :height 140)
-(set-face-attribute 'fixed-pitch nil :family "Sthenno Mono" :height 140)
+(set-face-attribute 'default nil :family "PragmataPro Liga" :height 140)
 
-;; Define the ligation dictionary
-(defun sthenno-mono-ligation-setup ()
-  (let ((composition-table (make-char-table nil)))
-    (dolist (char-regexp-replacement
-             '((33 . ".\\(?:\\(==\\|!=\\)\\|[!=]\\)")              ; != ==
-               (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")          ; ### ## #( #_
-               (45 . ".\\(?:->\\|--\\|[<>|~-]\\)")                 ; -> -- >>
-               (46 . ".\\(?:\\.[.<]\\|[.:<-]\\)")                  ; .. .< .:
-               (47 . ".\\(?:\\*/\\|//\\|[*/>]\\)")                 ; */ // /->
-               (58 . ".\\(?:::\\|[:=]\\)")                         ; :: :=
-               (60 . ".\\(?:!--\\|--\\|<[<=|-]\\|=[<=|-]\\|<=\\)") ; <!-- << <- <=
-               (61 . ".\\(?:\\|=[=>]\\|=>\\)")                     ; == =>
-               (62 . ".\\(?:>>\\|>[=>-]\\|>=\\)")                  ; >> >=
-               (63 . ".\\(?:\\?\\?\\|[:=?]\\)")                    ; ?? ?: ?
-               (92 . ".\\(?:\\\\\\\\\\|[\\n]\\)")))                ; \\ \n
-      (set-char-table-range composition-table (car char-regexp-replacement)
-                            `([,(cdr char-regexp-replacement) 0 font-shape-gstring])))
+;; Set up font for non-ascii fontset
+(set-fontset-font t 'big5                (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'big5-hkscs          (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-1  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-15 (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-2  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-3  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-4  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-5  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-6  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-7  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-gb2312      (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-gbk         (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'kanbun              (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'bopomofo            (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'han                 (font-spec :family "Noto Serif CJK SC"))
 
-    (set-char-table-parent composition-table composition-function-table)
-    (setq composition-function-table composition-table)))
-(add-hook 'after-init-hook #'sthenno-mono-ligation-setup)
+(set-fontset-font t 'japanese-jisx0208        (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'japanese-jisx0208-1978   (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'japanese-jisx0212        (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'japanese-jisx0213-1      (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'japanese-jisx0213-2      (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'japanese-jisx0213.2004-1 (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'jisx0201                 (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'kana                     (font-spec :family "Noto Serif CJK JP"))
 
-;; Set up font for unicode fontset
-(set-fontset-font "fontset-default" 'han "Noto Serif CJK SC")
-
-(set-fontset-font t 'unicode (font-spec :family "SF Pro Display")  nil 'prepend)
-(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji") nil 'prepend)
-
-;; Note this make all italic font style disabled
-(set-face-attribute 'italic t :slant 'normal)
+(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
+(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'append)
 
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
-
-;; Stop showing fringe bitmaps
-(setf (cdr (assq 'continuation fringe-indicator-alist)) '(nil nil))
 
 ;; Ellipsis symbol
 (setq truncate-string-ellipsis " 􀍠")
 
 ;; Text quoting
-(setopt text-quoting-style 'grave)
+(setopt text-quoting-style 'straight)
 
 ;; Better `help-mode'
 ;;
@@ -182,25 +164,49 @@
 ;; Display example functions.
 (add-hook 'help-fns-describe-function-functions #'shortdoc-help-fns-examples-function)
 
+
+(keymap-global-set "<f4>" 'describe-symbol)
+
 
 ;; Mode Line settings
 (setopt mode-line-compact t)
 
-(use-package minions
-  :ensure t
-  :init (setq minions-mode-line-lighter "􀠩")
-  :config (minions-mode 1))
+;; (use-package minions
+;;   :ensure t
+;;   :init (setq minions-mode-line-lighter "􀠩")
+;;   :config (minions-mode 1))
+
+;; (setq-default mode-line-format '("%e"
+;;                                  " "
+;;                                  sthenno/mode-line-buffer
+;;                                  " "
+;;                                  sthenno/mode-line-major))
+
+;; (defun sthenno/mode-line--buffer ()
+;;   (let ((buff (if (denote-file-is-note-p (buffer-file-name))
+;;                   (denote-retrieve-filename-title (buffer-file-name))
+;;                 (buffer-name))))
+;;     (format "%s" buff)))
+
+;; (defvar-local sthenno/mode-line-buffer
+;;     '(:eval
+;;       (list (format "BUFF: %s"
+;;                     (propertize (sthenno/mode-line--buffer) 'face 'success))))
+;;   "Mode-line construct to display the current buffer.")
+;; (put 'sthenno/mode-line-buffer 'risky-local-variable t)
+
+;; (defvar-local sthenno/mode-line-major
+;;     '(:eval
+;;       (format "MODE: %s"
+;;               (propertize (symbol-name major-mode)) 'face 'default))
+;;   "Mode-line construct to display the Major.")
+;; (put 'sthenno/mode-line-major 'risky-local-variable t)
 
 
 ;; Automatic adjusting for margins
 (use-package spacious-padding
   :ensure t
-  :init
-  (setq spacious-padding-widths '( :internal-border-width 15
-                                   :header-line-width 0
-                                   :mode-line-width 2
-                                   :right-divider-width 0
-                                   :scroll-bar-width 0))
+  :if (display-graphic-p)
   :config (spacious-padding-mode 1))
 
 
@@ -208,11 +214,12 @@
 ;;
 ;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 ;;
-(defvar sthenno-quit-messages  `("Anyone else but you?"
-                                 "She depends on you."
-                                 "Please take care of Sthenno."
-                                 "It's not like I'll miss you or anything, b-baka!"
-                                 "Please don't go!")
+(defvar sthenno-quit-messages `(
+                                "Anyone else but you?"
+                                "She depends on you."
+                                "Please take care of Sthenno."
+                                "It's not like I'll miss you or anything, b-baka!"
+                                "Please don't go!")
   "A list of quit messages, picked randomly by `sthenno-quit'.")
 
 (defun sthenno-quit-p (&optional prompt)

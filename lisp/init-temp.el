@@ -14,7 +14,7 @@
 ;; Abbrevs
 (use-package abbrev
   :init
-  (setq abbrev-file-name (expand-file-name "abbrev-defs.el" user-emacs-directory))
+  (setq abbrev-file-name (locate-user-emacs-file "abbrev-defs.el"))
 
   ;; Do not ask before saving abbrevs
   (setq save-abbrevs 'silently)
@@ -31,6 +31,7 @@
 ;; YASnippet
 (use-package yasnippet
   :ensure t
+  :demand t
   :config
   (setq yas-triggers-in-field t)
   (setq yas-visit-from-menu t)

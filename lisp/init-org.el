@@ -320,24 +320,22 @@
   (add-hook 'emacs-startup-hook #'denote-journal-extras-new-or-existing-entry)
 
   :config
-  (setq denote-directory org-directory) ; Use `org-directory' as default
-  (setq denote-known-keywords '("dates"
-                                "blog"))
-  (setq denote-prompts '(title))
-  (setq denote-save-buffers t)
+  (setopt denote-directory org-directory) ; Use `org-directory' as default
+  (setopt denote-known-keywords '("dates"))
+  (setopt denote-prompts '(title))
+  (setopt denote-save-buffers t)
 
   ;; Denote for journals
-  (setq denote-journal-extras-directory
-        (expand-file-name "dates/" denote-directory)) ; Sub-directory for journal files
-  (setq denote-journal-extras-keyword "dates")        ; Stages are journals
-  (setq denote-journal-extras-title-format "%F")      ; Use ISO 8601 for titles
+  (setopt denote-journal-extras-directory
+          (expand-file-name "dates/" denote-directory)) ; Sub-directory for journal files
+  (setopt denote-journal-extras-keyword "dates")        ; Stages are journals
+  (setopt denote-journal-extras-title-format "%F")      ; Use ISO 8601 for titles
 
   ;; Do not include date, tags and ids in note files
-  (setq denote-org-front-matter "#+title: %1$s. 􀙤\n\n")
+  (setopt denote-org-front-matter "#+title: %1$s. 􀙤\n\n")
 
   :bind ((:map global-map
-
-               ;; Open today's note
+               ("C-c n" . denote)
                ("C-c d" . denote-journal-extras-new-or-existing-entry))
          (:map org-mode-map
                ("C-c i" . denote-link-or-create)
