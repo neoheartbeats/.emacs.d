@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: key-map-global-set
+# key: keyg
+# --
+(keymap-global-set \"$1\" #'$0)

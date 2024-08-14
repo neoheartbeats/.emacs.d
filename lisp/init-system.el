@@ -29,16 +29,17 @@
            ("s-z" . undo)
            ("s-d" . find-file))
 
-;; (defun load-current-lisp-file ()
-;;   "Load current Lisp file."
-;;   (interactive)
-;;   (load-file (buffer-file-name)))
-
-;; (bind-keys :map emacs-lisp-mode-map
-;;            ("C-c C-c". load-current-lisp-file))
-
 ;; Open the *ielm* buffer
 ;; (keymap-global-set "<f2>" #'ielm)
+
+;; To use a familier undo-redo mechanism
+;; Note this global mode directly remaps the default keymaps.
+(use-package undo-tree
+  :ensure t
+  :config (global-undo-tree-mode 1))
+
+;; Quicker function to open the help buffer
+(keymap-global-set "s-h" #'describe-symbol)
 
 (defun mp-elisp-mode-eval-buffer ()
   (interactive)
@@ -154,15 +155,6 @@ Activate again to undo this. If the window changes before then, the undo expires
               recentf-max-saved-items 200
               recentf-auto-cleanup 300)
   :config (recentf-mode 1))
-
-
-
-
-
-;; Special treatment for large files
-;; (use-package so-long
-;;   :defer t
-;;   :init (global-so-long-mode 1))
 
 
 ;; Misc options

@@ -75,10 +75,7 @@
 
             ;; Org-mode headings
             (fg-heading-1       magenta)
-            (overline-heading-1 magenta)
-
-            ;; Cursor colors
-            (cursor "#0fed00")))
+            (overline-heading-1 magenta)))
 
   ;; Enable and load the theme
   (modus-themes-load-theme 'modus-vivendi))
@@ -113,7 +110,7 @@
 (setq default-input-method nil)
 
 ;; Custom font
-(set-face-attribute 'default nil :family "PragmataPro Liga" :height 140)
+(set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
 
 ;; Set up font for non-ascii fontset
 (set-fontset-font t 'big5                (font-spec :family "Noto Serif CJK SC"))
@@ -142,7 +139,7 @@
 (set-fontset-font t 'kana                     (font-spec :family "Noto Serif CJK JP"))
 
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
-(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'append)
+(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'prepend)
 
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
@@ -163,7 +160,6 @@
 
 ;; Display example functions.
 (add-hook 'help-fns-describe-function-functions #'shortdoc-help-fns-examples-function)
-
 
 (keymap-global-set "<f4>" 'describe-symbol)
 
