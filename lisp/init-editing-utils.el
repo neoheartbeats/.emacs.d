@@ -175,7 +175,6 @@ and auto-paring for such entries."
 
 (use-package pulsar
   :ensure t
-  :defer t
   :config
   (setq pulsar-pulse t
         pulsar-delay 0.05

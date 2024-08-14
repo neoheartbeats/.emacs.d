@@ -103,15 +103,8 @@ Activate again to undo this. If the window changes before then, the undo expires
            ("s-2" . split-window-below-focus)
            ("s-3" . split-window-right-focus))
 
-;; Move around windows
-(global-unset-key (kbd "C-x o"))        ; `other-window', `C-o' is used instead
-(global-set-key (kbd "C-o") #'other-window)
-
-(bind-keys :map global-map
-           ("C-<up>"    . windmove-up)
-           ("C-<down>"  . windmove-down)
-           ("C-<left>"  . windmove-left)
-           ("C-<right>" . windmove-right))
+;; Use shift with arrow keys to move around windows
+(windmove-default-keybindings)
 
 
 ;; Fix PATH for macOS
@@ -123,12 +116,7 @@ Activate again to undo this. If the window changes before then, the undo expires
 
 ;; Remember changes on windows
 ;; Use C-c <left> and C-c <right> to undo and redo changes on windows
-(use-package winner
-  :init
-
-  ;; Restore windows after finishing Ediff
-  (add-hook 'ediff-quit-hook #'winner-undo)
-  :config (winner-mode 1))
+(winner-mode 1)
 
 ;; Resizing frames in a smooth way
 (setq window-resize-pixelwise t)
