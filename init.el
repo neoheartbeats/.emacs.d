@@ -108,7 +108,7 @@ Cancel the previous one if present."
 
 ;; Load path
 (use-package org
-  :load-path "site-lisp/org/lisp/"
+  ;; :load-path "site-lisp/org/lisp/"
   :demand t)
 
 ;; Fix PATH for macOS
