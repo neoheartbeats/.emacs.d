@@ -248,7 +248,7 @@
              :items #'sthenno/consult--source-recentf-items)
 
   :bind ((:map global-map
-               ("C-d" . consult-buffer)
+               ("s-b" . consult-buffer)
                ("C-s" . consult-line)
                ("C-f" . consult-line-multi)
                ("C-v" . consult-yank-pop)
@@ -443,17 +443,17 @@ Do not insert KEY if `char-after' point is not empty."
   (add-to-list 'savehist-additional-variables 'corfu-history)
 
   ;; Popup candidates info
-  ;; (setq corfu-popupinfo-delay '(0.25 . 0.05))
-  ;; (setq corfu-popupinfo-hide nil)
+  (setq corfu-popupinfo-delay '(0.25 . 0.05))
+  (setq corfu-popupinfo-hide nil)
 
-  ;; (setq corfu-popupinfo-max-width 40
-  ;;       corfu-popupinfo-min-width 20)
+  (setq corfu-popupinfo-max-width 40
+        corfu-popupinfo-min-width 20)
 
-  ;; (add-hook 'prog-mode-hook #'(lambda ()
-  ;;                               (corfu-popupinfo-mode 1)))
+  (add-hook 'prog-mode-hook #'(lambda ()
+                                (corfu-popupinfo-mode 1)))
 
-  (corfu-echo-mode 1)
-  (setopt corfu-echo-delay '(0.10 . 0.05))
+  ;; (corfu-echo-mode 1)
+  ;; (setopt corfu-echo-delay '(0.10 . 0.05))
   
   :bind (:map corfu-map
               ("<down>"   . corfu-next)

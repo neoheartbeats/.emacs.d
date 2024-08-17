@@ -73,29 +73,12 @@
 
 ;; Set path for custom-file
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-;; (when (file-readable-p "custom.el")
-;;   (load custom-file t))
 
-
 ;; Emacs packages
-;; (eval-and-compile
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") 'append)
-(add-to-list 'package-archives '("devel" . "https://elpa.gnu.org/devel/") 'prepend)
+(add-to-list 'package-archives '("gnu-devel" . "https://elpa.gnu.org/devel/") 'prepend)
 
-;; (setq package-enable-at-startup t)
-;; (setq package-quickstart t)
-;; (setopt package-install-upgrade-built-in t)
-
-;; Ensure to `native-compile' packages.
-;; (setopt package-native-compile t)
-
-;; (require 'use-package)
-;; (setopt use-package-enable-imenu-support t
-;;         use-package-vc-prefer-newest t)
-;; )
-
-
 ;; GCMH: the Garbage Collector Magic Hack
 (use-package gcmh
   :ensure t
@@ -123,9 +106,16 @@ Cancel the previous one if present."
         gcmh-verbose nil)
   (gcmh-mode 1))
 
-
 ;; Load path
-(use-package org)                       ; Load Org
+(use-package org
+  :load-path "site-lisp/org/lisp/"
+  :demand t)
+
+;; Fix PATH for macOS
+(use-package exec-path-from-shell
+  :ensure t
+  :demand t
+  :config (exec-path-from-shell-initialize))
 
 ;; Dir for init-* files
 (add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))

@@ -32,18 +32,15 @@
 ;; Initialize `eglot'
 (use-package eglot
   :ensure t
-  :init
+  :config
 
   ;; Hooks
-  (add-hook 'python-ts-mode-hook #'eglot-ensure)
-  (add-hook 'bash-ts-mode-hook   #'eglot-ensure)
-
-  (add-hook 'eglot-managed-mode-hook #'(lambda ()
-                                         (add-hook 'before-save-hook #'eglot-format-buffer)
-                                         (eglot-inlay-hints-mode 'toggle)))
+  (add-hook 'python-mode-hook #'eglot-ensure)
+  (add-to-list 'eglot-server-programs
+               '(python-mode . ("pyright-langserver" "--stdio")))
+  
   :bind (:map eglot-mode-map
-              ("<f6>" . eglot-rename)
-              ("s-p"  . eglot-format-buffer)))
+              ("<f6>" . eglot-rename)))
 
 ;; Automatically confirm .dir-locals.el files
 (setq-default enable-local-variables :safe)
@@ -55,21 +52,10 @@
 ;; Reformat Python buffers using the Black formatter
 (use-package blacken
   :ensure t
-  :after (python eglot)
-  :init (add-hook 'python-ts-mode-hook #'(lambda ()
-                                           (blacken-mode 1)))
-  :bind (:map python-ts-mode-map
+  :init (add-hook 'python-mode-hook #'(lambda ()
+                                        (blacken-mode 1)))
+  :bind (:map python-mode-map
               ("s-p" . blacken-buffer)))
-
-(use-package conda
-  :ensure t
-  :config
-  (conda-env-initialize-interactive-shells)
-  (conda-env-initialize-eshell)
-  (conda-env-autoactivate-mode t)
-  (add-hook 'find-file-hook (lambda ()
-                              (when (bound-and-true-p conda-project-env-path)
-                                (conda-env-activate-for-buffer)))))
 
 
 ;; GitHub Copilot
@@ -96,7 +82,7 @@
   (add-to-list 'copilot-major-mode-alist  '("python-ts" . "python"))
 
   ;; Hooks
-  (add-hook 'python-ts-mode-hook #'sthenno/copilot-on)
+  (add-hook 'python-mode-hook #'sthenno/copilot-on)
 
   :bind ((:map prog-mode-map
                ("C-x c" . sthenno/turn-on-copilot)

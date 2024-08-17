@@ -49,10 +49,8 @@
 (define-key emacs-lisp-mode-map (kbd "C-c C-c") #'mp-elisp-mode-eval-buffer)
 (define-key lisp-interaction-mode-map (kbd "C-c C-c") #'mp-elisp-mode-eval-buffer)
 
-;; TODO: Testing
 (keymap-global-set "S-<return>" 'eval-last-sexp)
 
-;;
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
 ;; Disable these keys
@@ -62,15 +60,6 @@
 (global-unset-key (kbd "C-<wheel-up>"))
 (global-unset-key (kbd "C-<wheel-down>"))
 
-;; Move point
-(global-unset-key (kbd "C-<up>"))       ; `backward-paragraph', `M-<up>' is used instead
-(global-set-key (kbd "M-<up>") #'backward-paragraph)
-
-(global-unset-key (kbd "C-<down>"))    ; `forward-paragraph', `M-<down>' is used instead
-(global-set-key (kbd "M-<down>") #'forward-paragraph)
-
-(global-unset-key (kbd "C-<left>"))     ; `left-word', `M-<left>' is used instead
-(global-unset-key (kbd "C-<right>"))    ; `right-word', `M-<right>' is used instead
 
 
 ;; Split windows
@@ -103,17 +92,9 @@ Activate again to undo this. If the window changes before then, the undo expires
            ("s-2" . split-window-below-focus)
            ("s-3" . split-window-right-focus))
 
-;; Use shift with arrow keys to move around windows
-(windmove-default-keybindings)
+;; Use C-Arrow keys to move around windows
+(windmove-default-keybindings 'control)
 
-
-;; Fix PATH for macOS
-(use-package exec-path-from-shell
-  :ensure t
-  :demand t
-  :config (exec-path-from-shell-initialize))
-
-
 ;; Remember changes on windows
 ;; Use C-c <left> and C-c <right> to undo and redo changes on windows
 (winner-mode 1)

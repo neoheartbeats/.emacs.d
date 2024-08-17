@@ -167,10 +167,10 @@
 ;; Mode Line settings
 (setopt mode-line-compact t)
 
-;; (use-package minions
-;;   :ensure t
-;;   :init (setq minions-mode-line-lighter "􀠩")
-;;   :config (minions-mode 1))
+(use-package minions
+  :ensure t
+  :init (setq minions-mode-line-lighter "􀠩")
+  :config (minions-mode 1))
 
 ;; (setq-default mode-line-format '("%e"
 ;;                                  " "

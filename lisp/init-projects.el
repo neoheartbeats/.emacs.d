@@ -12,6 +12,7 @@
 ;;
 
 (setq project-prompter #'project-prompt-project-name)
+(keymap-global-set "s-l" #'project-find-file)
 
 ;; Git client using Magit
 (use-package magit

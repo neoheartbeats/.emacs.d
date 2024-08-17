@@ -37,11 +37,12 @@
 
 (global-set-key (kbd "s-<return>") #'sthenno/open-newline-below)
 
-;; Repeating C-SPC after popping mark pops it again
-(setq set-mark-command-repeat-pop t)
+;; To move between balanced expressions more efficiently
+(keymap-set prog-mode-map "s-<down>" #'forward-list)
+(keymap-set prog-mode-map "s-<up>"   #'backward-list)
 
-;; up/down moving based on logical lines
-(setq line-move-visual nil)
+(keymap-global-set "M-<down>" #'forward-paragraph)
+(keymap-global-set "M-<up>"   #'backward-paragraph)
 
 
 ;; Pretty-print
@@ -96,7 +97,7 @@ If `major-mode' is `python-mode', abort."
     (untabify-current-buffer))
   (run-hooks 'sthenno/pretty-print-current-buffer-hook))
 
-(global-set-key (kbd "s-p") #'sthenno/pretty-print-current-buffer)
+(keymap-set emacs-lisp-mode-map "s-p" #'sthenno/pretty-print-current-buffer)
 
 (defun sthenno/enable-pretty-print-auto ()
   "Enable pretty-print before saving in `emacs-lisp-mode'."
@@ -111,7 +112,7 @@ and auto-paring for such entries."
   (modify-syntax-entry ?> "." org-mode-syntax-table))
 (add-hook 'org-mode-hook #'sthenno/inhibit-specific-delimiters)
 
-;; Automatic pair parenthesis
+;; Automatic pairing parenthesis
 ;;
 ;; `python-mode' disables `electric-indent-mode' by default since Python does not
 ;; lend itself to fully automatic indentation. Org Mode should disable this for the
@@ -129,6 +130,7 @@ and auto-paring for such entries."
 
 ;; Cursor faces
 (setopt cursor-type '(bar . 1))
+
 (setopt mouse-highlight nil)
 (blink-cursor-mode -1)
 
@@ -156,9 +158,7 @@ and auto-paring for such entries."
 (setq backward-delete-char-untabify-method 'hungry)
 
 ;; Automatically reload files was modified by external program
-(use-package autorevert
-  :init (add-hook 'after-init-hook #'(lambda ()
-                                       (global-auto-revert-mode 1))))
+(global-auto-revert-mode 1)
 
 
 ;; Fill columns
