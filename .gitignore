@@ -31,3 +31,6 @@ recentf
 /package-quickstart.elc
 /ede-projects.el
 /sthenno-emacs.org
+/.early-init.el.~undo-tree~
+/.init.el.~undo-tree~
+/lisp/.init-editing-utils.el.~undo-tree~

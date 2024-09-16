@@ -165,38 +165,38 @@
 
 
 ;; Mode Line settings
-(setopt mode-line-compact t)
+;; (setopt mode-line-compact t)
 
-(use-package minions
-  :ensure t
-  :init (setq minions-mode-line-lighter "􀠩")
-  :config (minions-mode 1))
+;; (use-package minions
+;;   :ensure t
+;;   :init (setq minions-mode-line-lighter "􀠩")
+;;   :config (minions-mode 1))
 
-;; (setq-default mode-line-format '("%e"
-;;                                  " "
-;;                                  sthenno/mode-line-buffer
-;;                                  " "
-;;                                  sthenno/mode-line-major))
+(setq-default mode-line-format '("%e"
+                                 " "
+                                 sthenno/mode-line-buffer
+                                 " "
+                                 sthenno/mode-line-major))
 
-;; (defun sthenno/mode-line--buffer ()
-;;   (let ((buff (if (denote-file-is-note-p (buffer-file-name))
-;;                   (denote-retrieve-filename-title (buffer-file-name))
-;;                 (buffer-name))))
-;;     (format "%s" buff)))
+(defun sthenno/mode-line--buffer ()
+  (let ((buff (if (denote-file-is-note-p (buffer-file-name))
+                  (denote-retrieve-filename-title (buffer-file-name))
+                (buffer-name))))
+    (format "%s" buff)))
 
-;; (defvar-local sthenno/mode-line-buffer
-;;     '(:eval
-;;       (list (format "BUFF: %s"
-;;                     (propertize (sthenno/mode-line--buffer) 'face 'success))))
-;;   "Mode-line construct to display the current buffer.")
-;; (put 'sthenno/mode-line-buffer 'risky-local-variable t)
+(defvar-local sthenno/mode-line-buffer
+    '(:eval
+      (list (format "BUFF: %s"
+                    (propertize (sthenno/mode-line--buffer) 'face 'success))))
+  "Mode-line construct to display the current buffer.")
+(put 'sthenno/mode-line-buffer 'risky-local-variable t)
 
-;; (defvar-local sthenno/mode-line-major
-;;     '(:eval
-;;       (format "MODE: %s"
-;;               (propertize (symbol-name major-mode)) 'face 'default))
-;;   "Mode-line construct to display the Major.")
-;; (put 'sthenno/mode-line-major 'risky-local-variable t)
+(defvar-local sthenno/mode-line-major
+    '(:eval
+      (format "MODE: %s"
+              (propertize (symbol-name major-mode)) 'face 'default))
+  "Mode-line construct to display the Major.")
+(put 'sthenno/mode-line-major 'risky-local-variable t)
 
 
 ;; Automatic adjusting for margins
@@ -210,8 +210,7 @@
 ;;
 ;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 ;;
-(defvar sthenno-quit-messages `(
-                                "Anyone else but you?"
+(defvar sthenno-quit-messages `("Anyone else but you?"
                                 "She depends on you."
                                 "Please take care of Sthenno."
                                 "It's not like I'll miss you or anything, b-baka!"

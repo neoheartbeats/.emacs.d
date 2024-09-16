@@ -24,10 +24,10 @@
 ;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/492
 ;; - https://github.com/d12frosted/homebrew-emacs-plus/pull/542
 
-(setenv "LIBRARY_PATH"
-        (concat "/opt/homebrew/opt/gcc/lib/gcc/14:"
-                "/opt/homebrew/opt/gcc/lib/gcc/14/gcc/aarch64-apple-darwin23/14:"
-                "/opt/homebrew/opt/libgccjit/lib/gcc/14"))
+;; (setenv "LIBRARY_PATH"
+;;         (concat "/opt/homebrew/opt/gcc/lib/gcc/14:"
+;;                 "/opt/homebrew/opt/gcc/lib/gcc/14/gcc/aarch64-apple-darwin23/14:"
+;;                 "/opt/homebrew/opt/libgccjit/lib/gcc/14"))
 
 ;; Use a rather large GC threshold on startup, but revert back to sensible settings
 ;; afterwards.
