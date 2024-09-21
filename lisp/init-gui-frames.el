@@ -14,71 +14,79 @@
 
 ;;; Code:
 
+(require 'modus-themes)
 ;; Modus Themes
-(use-package modus-themes
-  :vc (modus-themes
-       :url "https://gitlab.com/protesilaos/modus-themes"
-       :branch "main")
+;; (use-package modus-themes
+;;   :vc (modus-themes
+;;        :url "https://gitlab.com/protesilaos/modus-themes"
+;;        :branch "main")
+;;   :demand t
+;;   :config
+;;   (setopt modus-themes-to-toggle nil)
+
+;;   ;; Mapping colors
+;;   (setopt modus-vivendi-palette-overrides
+;;           '(
+;;             ;; Make the mode-line borderless and stand out less
+;;             (bg-mode-line-active   bg-active)
+;;             (fg-mode-line-active   fg-main)
+;;             (bg-mode-line-inactive bg-dim)
+;;             (fg-mode-line-inactive fg-dim)
+
+;;             ;; Make the mode line borderless
+;;             (border-mode-line-active   unspecified)
+;;             (border-mode-line-inactive unspecified)
+
+;;             ;; Set color faces for `display-line-numbers-mode'
+;;             (fg-line-number-active   fg-main)
+;;             (bg-line-number-active   bg-hl-line)
+;;             (fg-line-number-inactive fg-dim)
+;;             (bg-line-number-inactive unspecified)
+
+;;             ;; Make the fringe invisible
+;;             (fringe unspecified)
+
+;;             ;; Subtle underlines
+;;             (underline-link          border)
+;;             (underline-link-visited  border)
+;;             (underline-link-symbolic border)
+
+;;             ;; Make links the same color as `fg-main'
+;;             ;; This also affects `button' faces in Modus Themes
+;;             (fg-link         unspecified)
+;;             (fg-link-visited unspecified)
+
+;;             ;; Prose colors
+;;             (prose-todo info)
+;;             (prose-done fg-dim)
+
+;;             ;; Matching parenthesis
+;;             (fg-paren-match fg-main)
+;;             (bg-paren-match bg-green-intense)
+
+;;             ;; Custom region colors
+;;             (fg-region unspecified)
+;;             (bg-region bg-cyan-subtle)
+
+;;             ;; Make code blocks more minimal
+;;             (bg-prose-block-contents unspecified)
+
+;;             ;; Completions (see also `init-comp')
+;;             (bg-completion bg-hl-line)
+
+;;             ;; Org-mode headings
+;;             (fg-heading-1       magenta)
+;;             (overline-heading-1 magenta)))
+
+;; ;; Enable and load the theme
+;; (modus-themes-load-theme 'modus-vivendi))
+
+(use-package ef-themes
+  :ensure t
   :demand t
   :config
-  (setopt modus-themes-to-toggle nil)
-
-  ;; Mapping colors
-  (setopt modus-vivendi-palette-overrides
-          '(
-            ;; Make the mode-line borderless and stand out less
-            (bg-mode-line-active   bg-active)
-            (fg-mode-line-active   fg-main)
-            (bg-mode-line-inactive bg-dim)
-            (fg-mode-line-inactive fg-dim)
-
-            ;; Make the mode line borderless
-            (border-mode-line-active   unspecified)
-            (border-mode-line-inactive unspecified)
-
-            ;; Set color faces for `display-line-numbers-mode'
-            (fg-line-number-active   fg-main)
-            (bg-line-number-active   bg-hl-line)
-            (fg-line-number-inactive fg-dim)
-            (bg-line-number-inactive unspecified)
-
-            ;; Make the fringe invisible
-            (fringe unspecified)
-
-            ;; Subtle underlines
-            (underline-link          border)
-            (underline-link-visited  border)
-            (underline-link-symbolic border)
-
-            ;; Make links the same color as `fg-main'
-            ;; This also affects `button' faces in Modus Themes
-            (fg-link         unspecified)
-            (fg-link-visited unspecified)
-
-            ;; Prose colors
-            (prose-todo info)
-            (prose-done fg-dim)
-
-            ;; Matching parenthesis
-            (fg-paren-match fg-main)
-            (bg-paren-match bg-green-intense)
-
-            ;; Custom region colors
-            (fg-region unspecified)
-            (bg-region bg-cyan-subtle)
-
-            ;; Make code blocks more minimal
-            (bg-prose-block-contents unspecified)
-
-            ;; Completions (see also `init-comp')
-            (bg-completion bg-hl-line)
-
-            ;; Org-mode headings
-            (fg-heading-1       magenta)
-            (overline-heading-1 magenta)))
-
-  ;; Enable and load the theme
-  (modus-themes-load-theme 'modus-vivendi))
+  (mapc #'disable-theme custom-enabled-themes)
+  (load-theme 'ef-maris-dark :no-confirm))
 
 ;; Do not extend `region' background past the end of the line
 (custom-set-faces '(region ((t :extend nil))))

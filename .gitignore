@@ -34,3 +34,5 @@ recentf
 /.early-init.el.~undo-tree~
 /.init.el.~undo-tree~
 /lisp/.init-editing-utils.el.~undo-tree~
+/.custom.el.~undo-tree~
+/lisp/.init-gui-frames.el.~undo-tree~
