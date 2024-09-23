@@ -14,7 +14,7 @@
 
 ;;; Code:
 
-(require 'modus-themes)
+(require-theme 'modus-themes)
 ;; Modus Themes
 ;; (use-package modus-themes
 ;;   :vc (modus-themes

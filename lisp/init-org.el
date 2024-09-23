@@ -23,20 +23,21 @@
 (setq org-directory "~/Developer/sthenno-notebook/")
 
 ;;; Org Mode buffer init behaviors
-(setq org-startup-with-inline-images t)
+(setq org-startup-with-inline-images t
+      org-startup-with-latex-preview t)
 
 ;; Fold titles by default
 ;; (setq org-startup-folded 'content)
 
 
 ;; Install AUCTeX
-;; (use-package tex
-;;   :ensure auctex)
+(use-package tex
+  :ensure auctex)
 
 ;; Use CDLaTeX to improve editing experiences
-;; (use-package cdlatex
-;;   :ensure t
-;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+(use-package cdlatex
+  :ensure t
+  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 ;; Default LaTeX preview image directory
 (setq org-preview-latex-image-directory
@@ -46,7 +47,7 @@
 
 ;; Experimental: `org-latex-preview'
 
-;; (require 'org-latex-preview)
+(require 'org-latex-preview)
 
 ;; (add-hook 'org-latex-preview-auto-ignored-commands #'next-line)
 ;; (add-hook 'org-latex-preview-auto-ignored-commands #'previous-line)
@@ -55,74 +56,70 @@
 ;; (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window)
 ;; (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window-down)
 
-;; (add-hook 'org-mode-hook #'(lambda ()
-;;                              (org-latex-preview-auto-mode 1)))
+(add-hook 'org-mode-hook #'(lambda ()
+                             (org-latex-preview-auto-mode 1)))
 
 ;; Preview functions
 ;;
 (defun sthenno/org-preview-fragments ()
   (interactive)
-  ;; (call-interactively 'org-latex-preview-clear-cache)
-  ;; (org-latex-preview 'buffer)
+  (call-interactively 'org-latex-preview-clear-cache)
+  (org-latex-preview 'buffer)
   (org-redisplay-inline-images))
 
 (bind-keys :map org-mode-map
            ("s-p" . sthenno/org-preview-fragments))
 
 ;;
-;; (setq org-latex-packages-alist
-;;       '(("T1" "fontenc" t)
-;;         ("" "amsmath"   t)
-;;         ("" "amssymb"   t)
-;;         ("" "siunitx"   t)
-;;         ("" "physics2"  t)
-;;         ;; ("" "mlmodern"  t)
-;;         ("etbb" "newtx" t)
+(setq org-latex-packages-alist
+      '(("T1" "fontenc" t)
+        ("" "amsmath"   t)
+        ("" "amssymb"   t)
+        ("" "siunitx"   t)
+        ("" "physics2"  t)
+        ("" "mlmodern"  t)
+        ;; ("etbb" "newtx" t)
 
-;;         ;; Load this after all math to give access to bold math
-;;         ;; See https://ctan.math.illinois.edu/fonts/newtx/doc/newtxdoc.pdf
-;;         ("" "bm" t)))
+        ;; Load this after all math to give access to bold math
+        ;; See https://ctan.math.illinois.edu/fonts/newtx/doc/newtxdoc.pdf
+        ("" "bm" t)))
 
-;; (setq org-latex-preview-preamble
-;;       (concat org-latex-preview-preamble
+(setq org-latex-preview-preamble
+      (concat org-latex-preview-preamble
 
-;;               ;; The following is used by the physics2 package
-;;               "\n\\usephysicsmodule{ab,ab.braket,diagmat,xmat}%"))
+              ;; The following is used by the physics2 package
+              "\n\\usephysicsmodule{ab,ab.braket,diagmat,xmat}%"))
 
-;; (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
-;; (setq org-use-sub-superscripts '{})
+(setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
+(setq org-use-sub-superscripts '{})
 
-;; (plist-put org-latex-preview-appearance-options :scale 1.0)
-;; (plist-put org-latex-preview-appearance-options :zoom
-;;            (- (/ (face-attribute 'default :height) 110.0) 0.025))
+(plist-put org-latex-preview-appearance-options :scale 1.0)
+(plist-put org-latex-preview-appearance-options :zoom
+           (- (/ (face-attribute 'default :height) 110.0) 0.025))
 
-;;
-;; The `org-latex-preview' process
-;;
+(setq org-latex-preview-process-default 'dvisvgm)
 
-;; (setq org-latex-preview-process-default 'dvisvgm)
+(defvar sthenno/libgs-dylib-path "/opt/homebrew/opt/ghostscript/lib/libgs.dylib"
+  "Path to Ghostscript shared library.")
 
-;; (defvar sthenno/libgs-dylib-path "/opt/homebrew/opt/ghostscript/lib/libgs.dylib"
-;;   "Path to Ghostscript shared library.")
+(setq dvisvgm-image-converter-command
+      (list (concat "dvisvgm --page=1- --optimize --clipjoin -R --no-font "
+                    "--bbox=preview --exact-bbox "
+                    "--libgs=" sthenno/libgs-dylib-path " "
+                    "--progress=0 "
+                    "-v4 -o %B-%%9p.svg %f")))
 
-;; (setq dvisvgm-image-converter-command
-;;       (list (concat "dvisvgm --page=1- --optimize --clipjoin -R --no-font "
-;;                     "--bbox=preview --exact-bbox "
-;;                     "--libgs=" sthenno/libgs-dylib-path " "
-;;                     "--progress=0 "
-;;                     "-v4 -o %B-%%9p.svg %f")))
-
-;; (setq org-latex-preview-process-alist
-;;       `((dvisvgm
-;;          :programs ("latex" "dvisvgm")
-;;          :description "dvi > svg"
-;;          :message "you need to install the programs: latex and dvisvgm."
-;;          :image-input-type "dvi"
-;;          :image-output-type "svg"
-;;          :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
-;;          :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\"
-;;       mylatexformat.ltx %f")
-;;          :image-converter ,dvisvgm-image-converter-command)))
+(setq org-latex-preview-process-alist
+      `((dvisvgm
+         :programs ("latex" "dvisvgm")
+         :description "dvi > svg"
+         :message "you need to install the programs: latex and dvisvgm."
+         :image-input-type "dvi"
+         :image-output-type "svg"
+         :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
+         :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\"
+      mylatexformat.ltx %f")
+         :image-converter ,dvisvgm-image-converter-command)))
 
 ;; [TODO] consult-reftex, see https://karthinks.com/software/reftex-in-org-mode/
 
