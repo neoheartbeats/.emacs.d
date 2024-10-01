@@ -110,7 +110,8 @@ Cancel the previous one if present."
 ;; Load path
 (use-package org
   :load-path "site-lisp/org/lisp/"
-  :demand t)
+  :demand t
+  :init (require 'org-latex-preview))
 
 ;; Fix PATH for macOS
 (use-package exec-path-from-shell
