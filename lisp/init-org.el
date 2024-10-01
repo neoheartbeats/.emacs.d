@@ -27,7 +27,7 @@
       org-startup-with-latex-preview t)
 
 ;; Fold titles by default
-;; (setq org-startup-folded 'content)
+(setq org-startup-folded 'content)
 
 
 ;; Install AUCTeX
@@ -85,7 +85,9 @@
 
 (plist-put org-latex-preview-appearance-options :scale 1.0)
 (plist-put org-latex-preview-appearance-options :zoom
-           (- (/ (face-attribute 'default :height) 110.0) 0.025))
+           (- (/ (face-attribute 'default :height)
+                 100.0)
+              0.025))
 
 (setq org-latex-preview-process-default 'dvisvgm)
 
@@ -137,13 +139,15 @@
     (setq-local line-spacing (if org-modern-mode
                                  0.1
                                0.0)))
-
   (add-hook 'org-modern-mode-hook #'sthenno/org-modern-spacing)
-
-  (global-org-modern-mode 1))
+  
+  (with-eval-after-load 'org
+    (global-org-modern-mode 1)))
 
 ;; External settings for `org-modern'
 (setq org-ellipsis " 􀍠")
+(set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
+
 (setq org-hide-emphasis-markers t)
 (setq org-auto-align-tags nil)
 (setq org-tags-column 0)
@@ -175,8 +179,8 @@
 (setq org-special-ctrl-a/e t)
 
 ;; Fold drawers by default
-;; (setq org-cycle-hide-drawer-startup t)
-;; (add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
+(setq org-cycle-hide-drawer-startup t)
+(add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
 
 ;; Org fragments and overlays
 ;;
@@ -392,22 +396,26 @@
       org-src-fontify-natively t
       org-src-tab-acts-natively t)
 
-(add-to-list 'org-babel-load-languages '(python . t))
+;; Enable these languages for Org-Babel
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python     . t)
+   (shell      . t)))
 
 
 ;; Org-agenda [TODO]
-;; (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
-;; (bind-keys :map global-map
-;;            ("C-c a" . org-agenda))
+;;
+(setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
+(keymap-global-set "C-c a" 'org-agenda)
 
-;; Org-agenda settings related to `org-modern'
-;; (setq org-agenda-tags-column 0)
-;; (setq org-agenda-block-separator ?─)
-;; (setq org-agenda-time-grid
-;;       '((daily today require-timed)
-;;         (800 1000 1200 1400 1600 1800 2000)
-;;         " ────── " "───────────────"))
-;; (setq org-agenda-current-time-string
-;;       "◀── now ─────────────────────────────────────────────────")
+(setq org-agenda-tags-column 0)
+(setq org-agenda-block-separator ?─)
+(setq org-agenda-time-grid
+      '((daily today require-timed)
+        (800 1000 1200 1400 1600 1800 2000)
+        " ────── " "───────────────"))
+(setq org-agenda-current-time-string
+      "◀── now ─────────────────────────────────────────────────")
 
 (provide 'init-org)
