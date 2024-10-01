@@ -77,8 +77,8 @@
         ("" "amssymb"   t)
         ("" "siunitx"   t)
         ("" "physics2"  t)
-        ("" "mlmodern"  t)
-        ;; ("etbb" "newtx" t)
+        ;; ("" "mlmodern"  t)
+        ("" "newtx" t)
 
         ;; Load this after all math to give access to bold math
         ;; See https://ctan.math.illinois.edu/fonts/newtx/doc/newtxdoc.pdf
@@ -314,6 +314,7 @@
 
   ;; Hooks
   (add-hook 'emacs-startup-hook #'denote-journal-extras-new-or-existing-entry)
+  (add-hook 'dired-mode-hook    #'denote-dired-mode)
 
   :config
   (setopt denote-directory org-directory) ; Use `org-directory' as default
@@ -328,8 +329,23 @@
   (setopt denote-journal-extras-title-format "%F")      ; Use ISO 8601 for titles
 
   ;; Do not include date, tags and ids in note files
-  (setopt denote-org-front-matter "#+title: %1$s 􀈭\n\n")
+  (setopt denote-org-front-matter "#+title: %1$s\n\n")
+  
+  ;; Automatically rename Denote buffers when opening them so that instead of their long
+  ;; file name they have a literal "[D]" followed by the file's title.  Read the doc
+  ;; string of `denote-rename-buffer-format' for how to modify this.
+  (denote-rename-buffer-mode 1)
 
+  (setopt denote-rename-buffer-format "􀈬 %t%b")
+
+  ;; Do not issue any extra prompts. Always sort by the `title' file name component and
+  ;; never do a reverse sort.
+  (setq denote-sort-dired-extra-prompts nil)
+  (setq denote-sort-dired-default-sort-component 'title)
+  (setq denote-sort-dired-default-reverse-sort t)
+
+  ;; The `denote-rename-buffer-mode' can now show if a file has backlinks
+  (setopt denote-rename-buffer-backlinks-indicator " 􀄾")
   :bind ((:map global-map
                ("C-c n" . denote)
                ("C-c d" . denote-journal-extras-new-or-existing-entry))
