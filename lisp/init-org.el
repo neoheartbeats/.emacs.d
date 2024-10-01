@@ -46,16 +46,6 @@
 (setq org-persist-directory (expand-file-name "org-persist" user-cache-directory))
 
 ;; Experimental: `org-latex-preview'
-
-(require 'org-latex-preview)
-
-;; (add-hook 'org-latex-preview-auto-ignored-commands #'next-line)
-;; (add-hook 'org-latex-preview-auto-ignored-commands #'previous-line)
-;; (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-up-command)
-;; (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-down-command)
-;; (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window)
-;; (add-hook 'org-latex-preview-auto-ignored-commands #'scroll-other-window-down)
-
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
 
@@ -300,7 +290,7 @@
 (setq org-return-follows-link t)
 
 ;; Open file links in current window
-;; (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
+(setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 
 ;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
