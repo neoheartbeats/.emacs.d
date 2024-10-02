@@ -25,7 +25,7 @@
   (setopt modus-themes-to-toggle nil)
 
   ;; Mapping colors
-  (setopt modus-vivendi-palette-overrides
+  (setopt modus-vivendi-tinted-palette-overrides
           '(
             ;; Make the mode-line borderless and stand out less
             (bg-mode-line-active   bg-active)
@@ -75,11 +75,20 @@
             (bg-completion bg-hl-line)
 
             ;; Org-mode headings
-            (fg-heading-1       magenta)
-            (overline-heading-1 magenta)))
+            (fg-heading-1 magenta)
+
+            ;; Make the Org-Agenda use alternative and varied colors
+            (date-common cyan)
+            (date-deadline red-warmer)
+            (date-event magenta-warmer)
+            (date-holiday blue)
+            (date-now yellow-warmer)
+            (date-scheduled magenta-cooler)
+            (date-weekday cyan-cooler)
+            (date-weekend blue-faint)))
 
   ;; Enable and load the theme
-  (modus-themes-load-theme 'modus-vivendi))
+  (modus-themes-load-theme 'modus-vivendi-tinted))
 
 ;; (use-package ef-themes
 ;;   :ensure t
@@ -90,6 +99,9 @@
 
 ;; Do not extend `region' background past the end of the line
 (custom-set-faces '(region ((t :extend nil))))
+
+;; Remove the `underline' for agenda views
+(custom-set-faces '(org-agenda-date-today ((t :underline nil))))
 
 ;; Clean up the title bar content
 (setq-default frame-title-format nil)

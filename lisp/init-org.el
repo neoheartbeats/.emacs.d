@@ -27,7 +27,7 @@
       org-startup-with-latex-preview t)
 
 ;; Fold titles by default
-(setq org-startup-folded 'content)
+;; (setq org-startup-folded 'content)
 
 
 ;; Install AUCTeX
@@ -49,6 +49,10 @@
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
 
+;; Show entities as UTF8 characters
+;; (setopt org-pretty-entities t
+;;         org-pretty-entities-include-sub-superscripts nil)
+
 ;; Preview functions
 ;;
 (defun sthenno/org-preview-fragments ()
@@ -60,7 +64,6 @@
 (bind-keys :map org-mode-map
            ("s-p" . sthenno/org-preview-fragments))
 
-;;
 (setq org-latex-packages-alist
       '(("T1" "fontenc" t)
         ("" "amsmath"   t)
@@ -119,39 +122,44 @@
 ;; Modern Org Mode theme
 (use-package org-modern
   :ensure t
-  :after (org)
   :config
   (setq org-modern-star 'fold
         org-modern-fold-stars '(("◉" . "○"))
         org-modern-hide-stars 'leading)
-
+  (setq org-modern-priority nil
+        org-modern-todo nil)
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '((?X  . "􀃰")
                               (?-  . "􀃞")
                               (?\s . "􀂒")))
 
-  (setq org-modern-block-name '(("src" . ("􀃤" "􀃤"))))
-
-  ;; From https://github.com/karthink/.emacs.d/blob/master/lisp/setup-org.el
-  (defun sthenno/org-modern-spacing ()
-    "Adjust line-spacing for `org-modern' to correct svg display.
-      This is useful if using font Iosevka."
-    (setq-local line-spacing (if org-modern-mode
-                                 0.1
-                               0.0)))
-  (add-hook 'org-modern-mode-hook #'sthenno/org-modern-spacing)
+  (setq org-modern-block-name '(("src"    . ("􀃤" "􀃤"))
+                                ("export" . ("􀣙" "􀓕"))))
   
-  (with-eval-after-load 'org
-    (global-org-modern-mode 1)))
+  (setq org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
+  (setq org-modern-keyword '(("title"   . "􀙭")
+                             ("results" . "􂨖")
+                             (t . t)))
+  
+  (defun sthenno/org-modern-spacing ()
+    "Adjust line-spacing for `org-modern' to correct svg display. This is
+useful if using font Iosevka."
+    (setq-local line-spacing (cond ((eq major-mode #'org-mode)        0.15)
+                                   ((eq major-mode #'org-agenda-mode) 0.15)
+                                   (t 0.0))))
+  (add-hook 'org-mode-hook            #'sthenno/org-modern-spacing)
+  (add-hook 'org-agenda-finalize-hook #'sthenno/org-modern-spacing)
+
+  ;; Hooks
+  (add-hook 'org-mode-hook #'(lambda ()
+                               (org-modern-mode 1))))
 
 ;; External settings for `org-modern'
-(setq org-ellipsis " 􀍠")
-(set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
-
+(setq org-ellipsis " ")
+(setq org-use-property-inheritance t)
 (setq org-hide-emphasis-markers t)
-(setq org-auto-align-tags nil)
+(setq org-auto-align-tags t)
 (setq org-tags-column 0)
-(setq org-fontify-whole-heading-line t)
 
 ;; Custom faces for Org emphasis
 ;;
@@ -179,8 +187,8 @@
 (setq org-special-ctrl-a/e t)
 
 ;; Fold drawers by default
-(setq org-cycle-hide-drawer-startup t)
-(add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
+;; (setq org-cycle-hide-drawer-startup t)
+;; (add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
 
 ;; Org fragments and overlays
 ;;
@@ -342,6 +350,7 @@
   (setopt denote-rename-buffer-backlinks-indicator " 􀄾")
   :bind ((:map global-map
                ("C-c n" . denote)
+               ("C-c o" . denote-open-or-create)
                ("C-c d" . denote-journal-extras-new-or-existing-entry))
          (:map org-mode-map
                ("C-c i" . denote-link-or-create)
@@ -349,7 +358,10 @@
                ("C-c e" . denote-org-extras-extract-org-subtree)
                ("C-c k" . denote-rename-file-keywords))))
 
-;; Extensions for Denote [TODO] Add `consult-denote' support
+;; Extensions for `denote'
+(use-package consult-denote
+  :ensure t
+  :config (consult-denote-mode 1))
 
 ;; Custom functions for Denote [TODO]
 (defun sthenno/denote-insert-links-current-month ()
@@ -397,25 +409,69 @@
       org-src-tab-acts-natively t)
 
 ;; Enable these languages for Org-Babel
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (python     . t)
-   (shell      . t)))
+(org-babel-do-load-languages 'org-babel-load-languages
+                             '((emacs-lisp . t)
+                               (python     . t)
+                               (shell      . t)
+                               (latex      . t)
+                               (org        . t)))
+
+;; Define a function to copy the code block at point
+(defun sthenno/org-copy-source-code-block ()
+  "Copy the contents of the source code block at point."
+  (interactive)
+  (let ((e (org-element-context)))
+    (if (eq (org-element-type e) 'src-block)
+        (let ((sc ""))
+          (save-restriction
+            (org-narrow-to-subtree)
+            (org-babel-map-src-blocks nil
+              (setq sc (concat sc (org-no-properties body)))))
+          (progn
+            (kill-new sc)
+            (message "Code block content copied")
+            (run-hooks 'sthenno/org-copy-source-code-block-hook)))
+      (message "Not in a code block"))))
+(keymap-set org-mode-map "s-<mouse-1>" #'sthenno/org-copy-source-code-block)
 
 
-;; Org-agenda [TODO]
+;; Org-Agenda
 ;;
-(setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
-(keymap-global-set "C-c a" 'org-agenda)
+(require 'denote)
+(setq org-agenda-files `(,denote-directory
+                         ,denote-journal-extras-directory))
 
-(setq org-agenda-tags-column 0)
+;; Bind keys
+(defun sthenno/org-agenda-open ()
+  (interactive)
+  (org-agenda nil "n"))
+(keymap-global-set "C-c a" #'sthenno/org-agenda-open)
+
+(setq org-log-done 'time)
+
+;; Make Org-Agenda look better
+(setq org-agenda-overriding-header "")
 (setq org-agenda-block-separator ?─)
-(setq org-agenda-time-grid
-      '((daily today require-timed)
-        (800 1000 1200 1400 1600 1800 2000)
-        " ────── " "───────────────"))
-(setq org-agenda-current-time-string
-      "◀── now ─────────────────────────────────────────────────")
+(setq org-agenda-time-grid '((daily today require-timed)
+                             (800 1000 1200 1400 1600 1800 2000)
+                             " ────── " "───────────────")
+      org-agenda-current-time-string "───────────────")
+
+(setq org-agenda-window-setup 'current-window
+      org-agenda-restore-windows-after-quit t)
+
+(setq org-agenda-span 5
+      org-agenda-start-day "+0d")
+(setq org-deadline-warning-days 4)
+
+(setq org-agenda-category-icon-alist nil)
+(setq org-agenda-prefix-format '((agenda . "%i %?-12t%s 􀐱 ")
+                                 (todo   . "%i 􀀀 ")
+                                 (tags   . "%i")
+                                 (search . "%i")))
+(setq org-agenda-format-date "\n􀧞 %F\n")
+(setq org-closed-string    "􁜓"
+      org-scheduled-string "􁙜"
+      org-deadline-string  "􁙝")
 
 (provide 'init-org)

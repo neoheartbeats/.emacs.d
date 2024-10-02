@@ -111,7 +111,10 @@ Cancel the previous one if present."
 (use-package org
   :load-path "site-lisp/org/lisp/"
   :demand t
-  :init (require 'org-latex-preview))
+  :init
+  (require 'org)
+  (require 'org-latex-preview)
+  (require 'org-agenda))
 
 ;; Fix PATH for macOS
 (use-package exec-path-from-shell

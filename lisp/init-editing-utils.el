@@ -165,7 +165,9 @@ and auto-paring for such entries."
 ;;
 ;; Face `fill-column-indicator' is set in `init-gui-frames'
 ;;
-(global-display-fill-column-indicator-mode 1)
+;; (global-display-fill-column-indicator-mode 1)
+(add-hook 'prog-mode-hook #'(lambda ()
+                              (display-fill-column-indicator-mode 1)))
 
 ;; Display line numbers
 (setq-default display-line-numbers-width 4)
@@ -189,6 +191,8 @@ and auto-paring for such entries."
   (add-hook 'sthenno/cycle-to-next-buffer-hook #'pulsar-pulse-line-cyan)
   (add-hook 'sthenno/cycle-to-previous-buffer-hook #'pulsar-pulse-line-cyan)
 
+  (add-hook 'sthenno/org-copy-source-code-block-hook #'pulsar-pulse-line-cyan)
+
   ;; Highlighting
   (add-hook 'split-window-below-focus-hook #'pulsar-highlight-line)
   (add-hook 'split-window-right-focus-hook #'pulsar-highlight-line)
@@ -197,29 +201,25 @@ and auto-paring for such entries."
                                  (pulsar-global-mode 1))))
 
 
-;; (use-package indent-bars
-;;   :straight (indent-bars
-;;              :type git
-;;              :host github
-;;              :repo "jdtsmith/indent-bars")
-;;   :defer t
-;;   :init
-;;   (setq indent-bars-treesit-support t
-;;         indent-bars-treesit-ignore-blank-lines-types '("module"))
+(use-package indent-bars
+  :ensure t
+  :init
+  (setq indent-bars-treesit-support t
+        indent-bars-treesit-ignore-blank-lines-types '("module"))
 
-;;   ;; Stipple-based pixel-toggling is not supported by NS built Emacs
-;;   (setq indent-bars-prefer-character t)
+  ;; Stipple-based pixel-toggling is not supported by NS built Emacs
+  (setq indent-bars-prefer-character t)
 
-;;   :config
-;;   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
-;;         indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-;;         indent-bars-highlight-current-depth '(:blend 0.8)
-;;         indent-bars-starting-column 0
-;;         indent-bars-display-on-blank-lines t)
+  :config
+  (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
+        indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+        indent-bars-highlight-current-depth '(:blend 0.8)
+        indent-bars-starting-column 0
+        indent-bars-display-on-blank-lines t)
 
-;;   ;; Hooks
-;;   (add-hook 'python-ts-mode-hook #'(lambda ()
-;;                                      (indent-bars-mode 1))))
+  ;; Hooks
+  (add-hook 'python-mode-hook #'(lambda ()
+                                  (indent-bars-mode 1))))
 
 
 ;; Highlight these keywords in code comments
@@ -239,6 +239,11 @@ and auto-paring for such entries."
     (global-hl-todo-mode 1))
 
   (add-hook 'prog-mode-hook #'sthenno/hl-todo-faces-setup))
+
+
+;; Edit multiple occurrences in the same way simultaneously
+(use-package iedit
+  :ensure t)
 
 
 ;;; Spell checking using Jinx

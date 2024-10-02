@@ -34,9 +34,9 @@
 
 ;; To use a familier undo-redo mechanism
 ;; Note this global mode directly remaps the default keymaps.
-(use-package undo-tree
-  :ensure t
-  :config (global-undo-tree-mode 1))
+;; (use-package undo-tree
+;;   :ensure t
+;;   :config (global-undo-tree-mode 1))
 
 ;; Quicker function to open the help buffer
 (keymap-global-set "s-h" #'describe-symbol)

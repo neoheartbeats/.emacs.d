@@ -37,3 +37,6 @@ recentf
 /.custom.el.~undo-tree~
 /lisp/.init-gui-frames.el.~undo-tree~
 /lisp/.init-org.el.~undo-tree~
+/lisp/.init-comp.el.~undo-tree~
+/lisp/.init-eglot.el.~undo-tree~
+/lisp/.init-system.el.~undo-tree~
