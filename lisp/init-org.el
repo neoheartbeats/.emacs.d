@@ -134,6 +134,7 @@
                               (?\s . "􀂒")))
 
   (setq org-modern-block-name '(("src"    . ("􀃤" "􀃤"))
+                                ("quote"  . ("􀙤" "􀙤"))
                                 ("export" . ("􀣙" "􀓕"))))
   
   (setq org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
@@ -145,7 +146,7 @@
     "Adjust line-spacing for `org-modern' to correct svg display. This is
 useful if using font Iosevka."
     (setq-local line-spacing (cond ((eq major-mode #'org-mode)        0.15)
-                                   ((eq major-mode #'org-agenda-mode) 0.15)
+                                   ((eq major-mode #'org-agenda-mode) 0.10)
                                    (t 0.0))))
   (add-hook 'org-mode-hook            #'sthenno/org-modern-spacing)
   (add-hook 'org-agenda-finalize-hook #'sthenno/org-modern-spacing)

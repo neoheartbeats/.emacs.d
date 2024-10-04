@@ -25,7 +25,7 @@
   (setopt modus-themes-to-toggle nil)
 
   ;; Mapping colors
-  (setopt modus-vivendi-tinted-palette-overrides
+  (setopt modus-vivendi-palette-overrides
           '(
             ;; Make the mode-line borderless and stand out less
             (bg-mode-line-active   bg-active)
@@ -88,7 +88,7 @@
             (date-weekend blue-faint)))
 
   ;; Enable and load the theme
-  (modus-themes-load-theme 'modus-vivendi-tinted))
+  (modus-themes-load-theme 'modus-vivendi))
 
 ;; (use-package ef-themes
 ;;   :ensure t
