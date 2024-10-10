@@ -154,6 +154,11 @@ Activate again to undo this. If the window changes before then, the undo expires
 ;; Emacs source files
 (setq find-function-C-source-directory "/Users/sthenno/Developer/emacs/src/")
 
+;; Large files
+(add-hook 'after-init-hook #'(lambda ()
+                               (global-so-long-mode 1)))
+
+
 
 ;; global functions for accessibility
 ;;

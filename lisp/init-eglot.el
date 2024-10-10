@@ -58,6 +58,11 @@
               ("s-p" . blacken-buffer)))
 
 
+;; JSON files
+;; (add-hook 'json-ts-mode-hook #'(lambda ()
+;;                                  (so-long-mode 1)))
+
+
 ;; GitHub Copilot
 (use-package copilot
   :vc (copilot

@@ -7,7 +7,7 @@
 ;;; Commentary:
 
 ;; This file mainly includes an Emacs UI design optimized for GUI mode. This file mainly
-;; configures `modus-themes', fonts, some global `face' and `mode-line' styles.  For
+;; configures `modus-themes', fonts, some global `face' and `mode-line' styles. For
 ;; those feature-specific `faces', their configuration code is isolated. A typical
 ;; example is `prettify-symbols-mode'. See also: `init-editing-utils', `init-org'.
 ;;
@@ -85,7 +85,10 @@
             (date-now yellow-warmer)
             (date-scheduled magenta-cooler)
             (date-weekday cyan-cooler)
-            (date-weekend blue-faint)))
+            (date-weekend blue-faint)
+
+            ;; Cursor color. See also `cursor-type'
+            (cursor green-faint)))
 
   ;; Enable and load the theme
   (modus-themes-load-theme 'modus-vivendi))
