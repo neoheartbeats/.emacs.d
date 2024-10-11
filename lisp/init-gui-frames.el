@@ -93,13 +93,6 @@
   ;; Enable and load the theme
   (modus-themes-load-theme 'modus-vivendi))
 
-;; (use-package ef-themes
-;;   :ensure t
-;;   :demand t
-;;   :config
-;;   (mapc #'disable-theme custom-enabled-themes)
-;;   (load-theme 'ef-maris-dark :no-confirm))
-
 ;; Do not extend `region' background past the end of the line
 (custom-set-faces '(region ((t :extend nil))))
 
@@ -133,7 +126,7 @@
 (setq default-input-method nil)
 
 ;; Custom font
-(set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
+(set-face-attribute 'default nil :family "Triplicate A Code" :height 140)
 
 ;; Set up font for non-ascii fontset
 (set-fontset-font t 'big5                (font-spec :family "Noto Serif CJK SC"))
@@ -178,7 +171,7 @@
 ;; Perform autoload if docs are missing from autoload objects.
 (setopt help-enable-symbol-autoload t)
 
-;; Aallow editing values in *Help* buffers.
+;; Allow editing values in *Help* buffers.
 (setopt help-enable-variable-value-editing t)
 
 ;; Display example functions.
@@ -233,12 +226,11 @@
 ;;
 ;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 ;;
-(defvar sthenno-quit-messages `(
-                                "Anyone else but you?"
-                                "She depends on you."
-                                "Please take care of Sthenno."
-                                "It's not like I'll miss you or anything, b-baka!"
-                                "Please don't go!")
+(defvar sthenno-quit-messages `( "Anyone else but you?"
+                                 "She depends on you."
+                                 "Please take care of Sthenno."
+                                 "It's not like I'll miss you or anything, b-baka!"
+                                 "Please don't go!" )
   "A list of quit messages, picked randomly by `sthenno-quit'.")
 
 (defun sthenno-quit-p (&optional prompt)

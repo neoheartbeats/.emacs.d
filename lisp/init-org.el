@@ -35,9 +35,11 @@
   :ensure auctex)
 
 ;; Use CDLaTeX to improve editing experiences
-(use-package cdlatex
-  :ensure t
-  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+;; This is temporarily disabled and replaced by `tempel'
+;;
+;; (use-package cdlatex
+;;   :ensure t
+;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 ;; Default LaTeX preview image directory
 (setq org-preview-latex-image-directory
@@ -86,11 +88,11 @@
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
 
-(plist-put org-latex-preview-appearance-options :scale 1.0)
-(plist-put org-latex-preview-appearance-options :zoom
-           (- (/ (face-attribute 'default :height)
-                 100.0)
-              0.025))
+;; (plist-put org-latex-preview-appearance-options :scale 1.0)
+;; (plist-put org-latex-preview-appearance-options :zoom
+;;            (- (/ (face-attribute 'default :height)
+;;                  100.0)
+;;               0.025))
 
 (setq org-latex-preview-process-default 'dvisvgm)
 
@@ -136,12 +138,12 @@
   (setq org-modern-block-name '(("src"    . ("􀃤" "􀃤"))
                                 ("quote"  . ("􀙤" "􀙤"))
                                 ("export" . ("􀣙" "􀓕"))))
-  
+
   (setq org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
-  (setq org-modern-keyword '(("title"   . "􀙭")
+  (setq org-modern-keyword '(("title"   . "􀉛")
                              ("results" . "􂨖")
                              (t . t)))
-  
+
   (defun sthenno/org-modern-spacing ()
     "Adjust line-spacing for `org-modern' to correct svg display. This is
 useful if using font Iosevka."
@@ -159,7 +161,7 @@ useful if using font Iosevka."
 (setq org-ellipsis " ")
 (setq org-use-property-inheritance t)
 (setq org-hide-emphasis-markers t)
-(setq org-auto-align-tags t)
+(setq org-auto-align-tags nil)
 (setq org-tags-column 0)
 
 ;; Custom faces for Org emphasis
@@ -188,8 +190,8 @@ useful if using font Iosevka."
 (setq org-special-ctrl-a/e t)
 
 ;; Fold drawers by default
-;; (setq org-cycle-hide-drawer-startup t)
-;; (add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
+(setq org-cycle-hide-drawer-startup t)
+(add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
 
 ;; Org fragments and overlays
 ;;
@@ -321,19 +323,20 @@ useful if using font Iosevka."
 
   :config
   (setopt denote-directory org-directory) ; Use `org-directory' as default
-  (setopt denote-known-keywords '("dates"))
+  (setopt denote-file-type 'org)
   (setopt denote-prompts '(title))
-  (setopt denote-save-buffers t)
+  (setopt denote-save-buffers t
+          denote-kill-buffers 'on-creation)
 
   ;; Denote for journals
   (setopt denote-journal-extras-directory
-          (expand-file-name "dates/" denote-directory)) ; Sub-directory for journal files
-  (setopt denote-journal-extras-keyword "dates")        ; Stages are journals
-  (setopt denote-journal-extras-title-format "%F")      ; Use ISO 8601 for titles
+          (expand-file-name "stages/" denote-directory)) ; Sub-directory for journal files
+  (setopt denote-journal-extras-keyword "stages")        ; Stages are journals
+  (setopt denote-journal-extras-title-format "%F")       ; Use ISO 8601 for titles
 
   ;; Do not include date, tags and ids in note files
   (setopt denote-org-front-matter "#+title: %1$s\n\n")
-  
+
   ;; Automatically rename Denote buffers when opening them so that instead of their long
   ;; file name they have a literal "[D]" followed by the file's title.  Read the doc
   ;; string of `denote-rename-buffer-format' for how to modify this.
@@ -347,49 +350,125 @@ useful if using font Iosevka."
   (setq denote-sort-dired-default-sort-component 'title)
   (setq denote-sort-dired-default-reverse-sort t)
 
+  ;; Creating and linking notes
+  (defun sthenno/denote-link-or-create ()
+    "Improved note creation and linking for Denote."
+    (interactive)
+    (let ((denote-prompts nil)
+          (denote-kill-buffers nil))
+      (cond
+       ((and (use-region-p)
+             (not (org-at-heading-p)))
+        (let* ((denote-ignore-region-in-denote-command t)
+               (path (buffer-substring-no-properties (region-beginning)
+                                                     (region-end)))
+               (regexp (format "--%s" path))
+               (target (car (denote-directory-files regexp :omit-current))))
+          (if target
+              (progn
+                (denote-link target
+                             (denote-filetype-heuristics (buffer-file-name))
+                             (denote--link-get-description target))
+                (save-buffer)
+                (message "Note linked to: %s" target))
+            (progn
+              (save-window-excursion
+                (setq target (denote path '("notes"))))
+              (denote-link target
+                           (denote-filetype-heuristics (buffer-file-name))
+                           (denote--link-get-description target))
+              (save-buffer)
+              (find-file target)
+              (message "Note created at: %s" target)))))
+       ((and (not (use-region-p))
+             (org-at-heading-p))
+        (denote-org-extras-extract-org-subtree)
+        (save-buffer))
+       (t
+        (call-interactively #'denote-link-or-create))))
+    (run-hooks 'sthenno/denote-link-or-create-hook))
+
   ;; The `denote-rename-buffer-mode' can now show if a file has backlinks
   (setopt denote-rename-buffer-backlinks-indicator " 􀄾")
+
+  ;; Org subtrees
+  (setopt denote-org-store-link-to-heading 'context)
+
   :bind ((:map global-map
-               ("C-c n" . denote)
                ("C-c o" . denote-open-or-create)
                ("C-c d" . denote-journal-extras-new-or-existing-entry))
          (:map org-mode-map
-               ("C-c i" . denote-link-or-create)
-               ("C-c b" . denote-backlinks)
-               ("C-c e" . denote-org-extras-extract-org-subtree)
-               ("C-c k" . denote-rename-file-keywords))))
+               ("s-i" . sthenno/denote-link-or-create)
+               ("s-b" . denote-backlinks)
+               ("s-r" . denote-region))))
 
 ;; Extensions for `denote'
-(use-package consult-denote
-  :ensure t
-  :config (consult-denote-mode 1))
+;;
+;; (use-package consult-denote
+;;   :ensure t
+;;   :config (consult-denote-mode 1))
+;;
+;; (use-package denote-menu
+;;   :ensure t
+;;   :after (denote)
+;;   :config
+;;   (setq denote-menu-date-column-width 25 
+;;         denote-menu-title-column-width 60)
 
-;; Custom functions for Denote [TODO]
-(defun sthenno/denote-insert-links-current-month ()
-  (interactive)
-  (denote-add-links (format-time-string "%B")))
+;;   ;; Remove Denote journal entries from the menu
+;;   (setq denote-menu-initial-regex "_notes")
+
+;;   ;; HACK
+;;   (define-derived-mode denote-menu-mode tabulated-list-mode "Denote Menu"
+;;     "Major mode for browsing a list of Denote files."
+;;     :interactive nil
+;;     (setq tabulated-list-format `[("􀧞" ,denote-menu-date-column-width t)
+;;                                   ("􀉛" ,denote-menu-title-column-width t)])
+
+;;     (setq tabulated-list-padding 5)
+;;     (denote-menu-update-entries)
+;;     (setq tabulated-list-sort-key '("􀧞" . t))
+;;     (tabulated-list-init-header)    
+;;     (tabulated-list-print))
+
+;;   :bind (:map global-map
+;;               ("s-o" . sthenno/denote-menu-open)))
+
+;;; Custom functions for Denote
+;;
+;; (defun sthenno/denote-insert-links-current-month ()
+;;   (interactive)
+;;   (denote-add-links (format-time-string "%B")))
+
+(defun sthenno/get-sorted-note-files (directory)
+  "Return a list of note files in DIRECTORY, sorted by name."
+  (sort (seq-filter 'denote-file-is-note-p
+                    (directory-files directory t "\\`[^.]"))
+        'string<))
+
+(defun sthenno/denote-open-adjacent-file (direction)
+  "Open the adjacent note file in the given DIRECTION (-1 for previous, +1 for next)."
+  (let* ((current-file (buffer-file-name))
+         (directory (file-name-directory current-file))
+         (sorted-files (sthenno/get-sorted-note-files directory))
+         (current-file-index (cl-position current-file sorted-files :test 'string=)))
+    (if (null current-file-index)
+        (message "Current file is not a note file.")
+      (let ((adjacent-index (+ current-file-index direction)))
+        (if (or (< adjacent-index 0)
+                (>= adjacent-index (length sorted-files)))
+            (message "No adjacent note file.")
+          (find-file (nth adjacent-index sorted-files)))))))
 
 (defun sthenno/denote-open-previous-file ()
+  "Open the previous note file in the current directory."
   (interactive)
-  (let* ((current-file (buffer-file-name))
-         (directory (file-name-directory current-file))
-         (files (directory-files directory t "\\`[^.]"))
-         (sorted-files (sort files 'string<))
-         (current-file-index (cl-position current-file sorted-files :test 'string=)))
-
-    (when (and current-file-index (> current-file-index 0))
-      (find-file (nth (1- current-file-index) sorted-files)))))
+  (sthenno/denote-open-adjacent-file -1))
 
 (defun sthenno/denote-open-next-file ()
+  "Open the next note file in the current directory."
   (interactive)
-  (let* ((current-file (buffer-file-name))
-         (directory (file-name-directory current-file))
-         (files (directory-files directory t "\\`[^.]"))
-         (sorted-files (sort files 'string<))
-         (current-file-index (cl-position current-file sorted-files :test 'string=)))
-
-    (when (and current-file-index (< current-file-index (1- (length sorted-files))))
-      (find-file (nth (1+ current-file-index) sorted-files)))))
+  (sthenno/denote-open-adjacent-file +1))
 
 (bind-keys :map org-mode-map
            ("s-<up>"   . sthenno/denote-open-previous-file)
@@ -412,10 +491,8 @@ useful if using font Iosevka."
 ;; Enable these languages for Org-Babel
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
-                               (python     . t)
-                               (shell      . t)
-                               (latex      . t)
-                               (org        . t)))
+                               (python . t)
+                               (shell . t)))
 
 ;; Define a function to copy the code block at point
 (defun sthenno/org-copy-source-code-block ()
@@ -467,7 +544,7 @@ useful if using font Iosevka."
 
 (setq org-agenda-category-icon-alist nil)
 (setq org-agenda-prefix-format '((agenda . "%i %?-12t%s 􀐱 ")
-                                 (todo   . "%i 􀀀 ")
+                                 (todo   . "%i ○ ")
                                  (tags   . "%i")
                                  (search . "%i")))
 (setq org-agenda-format-date "\n􀧞 %F\n")

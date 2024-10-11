@@ -46,8 +46,8 @@
 
 ;; Font compacting can be terribly expensive, especially for rendering icon fonts on
 ;; MS. Whether disabling it has a notable affect on Linux and macOS hasn't been
-;; determined, but do it anyway, just in case. This increases memory usage.
-;; (setq inhibit-compacting-font-caches t)
+;; determined, but do it anyway, just in case. This increases memory usage.  (setq
+;; inhibit-compacting-font-caches t)
 
 
 (tool-bar-mode -1)
@@ -56,7 +56,7 @@
 
 (add-to-list 'default-frame-alist '(width . 120))
 (add-to-list 'default-frame-alist '(height . 50))
-(add-to-list 'default-frame-alist '(alpha . (85 . 85)))
+;; (add-to-list 'default-frame-alist '(alpha . (85 . 85)))
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 
 ;; Suppress GUI features

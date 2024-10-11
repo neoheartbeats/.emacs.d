@@ -241,7 +241,7 @@ and auto-paring for such entries."
   (add-hook 'prog-mode-hook #'sthenno/hl-todo-faces-setup))
 
 
-;; Edit multiple occurrences in the same way simultaneously
+;; Edit multiple occurrences in the same way simultaneously using "C-;"
 (use-package iedit
   :ensure t)
 
@@ -326,8 +326,8 @@ Optionally show prompt INFO and insert INITIAL input."
   ;;
   ;; (add-hook 'emacs-startup-hook #'(lambda ()
   ;;                                   (global-jinx-mode 1)))
-  ;; (add-hook 'text-mode-hook #'(lambda ()
-  ;;                               (jinx-mode 1)))
+  (add-hook 'text-mode-hook #'(lambda ()
+                                (jinx-mode 1)))
 
   :bind (:map jinx-overlay-map
               ("C-SPC" . jinx-correct)))
