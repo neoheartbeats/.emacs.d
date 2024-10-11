@@ -271,19 +271,19 @@ Optionally show prompt INFO and insert INITIAL input."
                     (overlay-start overlay) (overlay-end overlay)))
              (choice
               (jinx--correct-highlight overlay
-                                       (lambda ()
-                                         (when (or (< (point) (window-start))
-                                                   (> (point) (window-end nil t)))
-                                           (recenter))
-                                         (minibuffer-with-setup-hook
-                                             #'jinx--correct-setup
-                                           (or (completing-read
-                                                (format "Correct '%s'%s: " word
-                                                        (or info ""))
-                                                (jinx--correct-table
-                                                 (jinx--correct-suggestions word))
-                                                nil nil initial t word)
-                                               word)))))
+                (lambda ()
+                  (when (or (< (point) (window-start))
+                            (> (point) (window-end nil t)))
+                    (recenter))
+                  (minibuffer-with-setup-hook
+                      #'jinx--correct-setup
+                    (or (completing-read
+                         (format "Correct '%s'%s: " word
+                                 (or info ""))
+                         (jinx--correct-table
+                          (jinx--correct-suggestions word))
+                         nil nil initial t word)
+                        word)))))
              (len (length choice)))
         (pcase (and (> len 0) (assq (aref choice 0) jinx--save-keys))
           (`(,key . ,fun)
@@ -326,10 +326,12 @@ Optionally show prompt INFO and insert INITIAL input."
   ;;
   ;; (add-hook 'emacs-startup-hook #'(lambda ()
   ;;                                   (global-jinx-mode 1)))
-  (add-hook 'text-mode-hook #'(lambda ()
-                                (jinx-mode 1)))
+  ;; (add-hook 'text-mode-hook #'(lambda ()
+  ;;                               (jinx-mode 1)))
 
-  :bind (:map jinx-overlay-map
-              ("C-SPC" . jinx-correct)))
+  :bind ((:map jinx-overlay-map
+               ("C-SPC" . jinx-correct))
+         (:map global-map
+               ("C-c j" . jinx-mode))))
 
 (provide 'init-editing-utils)

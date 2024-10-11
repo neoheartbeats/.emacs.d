@@ -88,11 +88,11 @@
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
 
-;; (plist-put org-latex-preview-appearance-options :scale 1.0)
-;; (plist-put org-latex-preview-appearance-options :zoom
-;;            (- (/ (face-attribute 'default :height)
-;;                  100.0)
-;;               0.025))
+(plist-put org-latex-preview-appearance-options :scale 1.0)
+(plist-put org-latex-preview-appearance-options :zoom
+           (- (/ (face-attribute 'default :height)
+                 100.0)
+              0.025))
 
 (setq org-latex-preview-process-default 'dvisvgm)
 
@@ -126,17 +126,16 @@
   :ensure t
   :config
   (setq org-modern-star 'fold
-        org-modern-fold-stars '(("◉" . "○"))
+        org-modern-fold-stars '(("▶" . "▼")
+                                ("▷" . "▽"))
         org-modern-hide-stars 'leading)
-  (setq org-modern-priority nil
-        org-modern-todo nil)
+  
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '((?X  . "􀃰")
                               (?-  . "􀃞")
                               (?\s . "􀂒")))
 
   (setq org-modern-block-name '(("src"    . ("􀃤" "􀃤"))
-                                ("quote"  . ("􀙤" "􀙤"))
                                 ("export" . ("􀣙" "􀓕"))))
 
   (setq org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
@@ -147,7 +146,7 @@
   (defun sthenno/org-modern-spacing ()
     "Adjust line-spacing for `org-modern' to correct svg display. This is
 useful if using font Iosevka."
-    (setq-local line-spacing (cond ((eq major-mode #'org-mode)        0.15)
+    (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.10)
                                    ((eq major-mode #'org-agenda-mode) 0.10)
                                    (t 0.0))))
   (add-hook 'org-mode-hook            #'sthenno/org-modern-spacing)
@@ -155,7 +154,7 @@ useful if using font Iosevka."
 
   ;; Hooks
   (add-hook 'org-mode-hook #'(lambda ()
-                               (org-modern-mode 1))))
+                               (global-org-modern-mode 1))))
 
 ;; External settings for `org-modern'
 (setq org-ellipsis " ")

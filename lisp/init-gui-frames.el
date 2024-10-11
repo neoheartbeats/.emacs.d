@@ -22,7 +22,8 @@
        :branch "main")
   :demand t
   :config
-  (setopt modus-themes-to-toggle nil)
+  (setopt modus-themes-bold-constructs   t
+          modus-themes-italic-constructs t)
 
   ;; Mapping colors
   (setopt modus-vivendi-palette-overrides
@@ -53,8 +54,8 @@
 
             ;; Make links the same color as `fg-main'
             ;; This also affects `button' faces in Modus Themes
-            ;; (fg-link         unspecified)
-            ;; (fg-link-visited unspecified)
+            (fg-link         unspecified)
+            (fg-link-visited unspecified)
 
             ;; Prose colors
             (prose-todo info)
@@ -102,16 +103,6 @@
 ;; Clean up the title bar content
 (setq-default frame-title-format nil)
 (setq-default ns-use-proxy-icon nil)
-
-(progn
-
-  ;; no need these features
-  (put 'narrow-to-region 'disabled nil)
-  (put 'narrow-to-page   'disabled nil)
-  (put 'upcase-region    'disabled nil)
-  (put 'downcase-region  'disabled nil)
-  (put 'erase-buffer     'disabled nil)
-  (put 'scroll-left      'disabled nil))
 
 ;; highlight current line
 (global-hl-line-mode 1)
@@ -168,16 +159,14 @@
 
 ;; Better `help-mode'
 ;;
-;; Perform autoload if docs are missing from autoload objects.
+;; Perform autoload if docs are missing from autoload objects
 (setopt help-enable-symbol-autoload t)
 
-;; Allow editing values in *Help* buffers.
+;; Allow editing values in *Help* buffers
 (setopt help-enable-variable-value-editing t)
 
-;; Display example functions.
+;; Display example functions
 (add-hook 'help-fns-describe-function-functions #'shortdoc-help-fns-examples-function)
-
-(keymap-global-set "<f4>" 'describe-symbol)
 
 
 ;; Mode Line settings
