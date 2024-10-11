@@ -44,7 +44,7 @@
   :ensure t
   :init
   (setopt tempel-trigger-prefix "<")
-  
+
   ;; Setup completion at point
   (defun tempel-setup-capf ()
     ;; Add the Tempel Capf to `completion-at-point-functions'.  `tempel-expand' only

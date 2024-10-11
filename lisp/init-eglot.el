@@ -64,38 +64,38 @@
 
 
 ;; GitHub Copilot
-(use-package copilot
-  :vc (copilot
-       :url "https://github.com/copilot-emacs/copilot.el")
-  :defer t
-  :init
-  (setq copilot-node-executable "/opt/homebrew/bin/node")
-  (setq copilot-idle-delay 0.05)
-  (setq copilot-max-char (* 500 1000))  ; Default is 100,000
+;; (use-package copilot
+;;   :vc (copilot
+;;        :url "https://github.com/copilot-emacs/copilot.el")
+;;   :defer t
+;;   :init
+;;   (setq copilot-node-executable "/opt/homebrew/bin/node")
+;;   (setq copilot-idle-delay 0.05)
+;;   (setq copilot-max-char (* 500 1000))  ; Default is 100,000
 
-  ;; Toggling `copilot-mode'
-  (defun sthenno/copilot-on ()
-    (interactive)
-    (copilot-mode 1))
+;;   ;; Toggling `copilot-mode'
+;;   (defun sthenno/copilot-on ()
+;;     (interactive)
+;;     (copilot-mode 1))
 
-  (defun sthenno/copilot-off ()
-    (interactive)
-    (copilot-mode -1))
+;;   (defun sthenno/copilot-off ()
+;;     (interactive)
+;;     (copilot-mode -1))
 
-  :config
-  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
-  (add-to-list 'copilot-major-mode-alist  '("python-ts" . "python"))
+;;   :config
+;;   (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
+;;   (add-to-list 'copilot-major-mode-alist  '("python-ts" . "python"))
 
-  ;; Hooks
-  (add-hook 'python-mode-hook #'sthenno/copilot-on)
+;;   ;; Hooks
+;;   (add-hook 'python-mode-hook #'sthenno/copilot-on)
 
-  :bind ((:map prog-mode-map
-               ("C-x c" . sthenno/turn-on-copilot)
-               ("C-x C" . sthenno/turn-off-copilot))
-         (:map copilot-completion-map
-               ("<tab>"   . copilot-accept-completion)
-               ("<right>" . copilot-accept-completion-by-line)
-               ("<left>"  . copilot-clear-overlay)
-               ("RET"     . copilot-clear-overlay))))
+;;   :bind ((:map prog-mode-map
+;;                ("C-x c" . sthenno/turn-on-copilot)
+;;                ("C-x C" . sthenno/turn-off-copilot))
+;;          (:map copilot-completion-map
+;;                ("<tab>"   . copilot-accept-completion)
+;;                ("<right>" . copilot-accept-completion-by-line)
+;;                ("<left>"  . copilot-clear-overlay)
+;;                ("RET"     . copilot-clear-overlay))))
 
 (provide 'init-eglot)

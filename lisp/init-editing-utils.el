@@ -227,18 +227,20 @@ and auto-paring for such entries."
 (use-package hl-todo
   :ensure t
   :config
-  (defun sthenno/hl-todo-faces-setup ()
-    (modus-themes-with-colors
-      (setq hl-todo-keyword-faces
-            `(("TODO"  . ,prose-todo)
-              ("FIXME" . ,err)
-              ("XXXX*" . ,err)
-              ("NOTE"  . ,fg-changed)
-              ("HACK"  . ,fg-changed))))
 
-    (global-hl-todo-mode 1))
+  ;; (defun sthenno/hl-todo-faces-setup ()
+  ;;   (modus-themes-with-colors
+  ;;     (setq hl-todo-keyword-faces
+  ;;           `(("TODO"  . ,prose-todo)
+  ;;             ("FIXME" . ,err)
+  ;;             ("XXXX*" . ,err)
+  ;;             ("NOTE"  . ,fg-changed)
+  ;;             ("HACK"  . ,fg-changed))))
+  ;;(add-hook 'prog-mode-hook #'sthenno/hl-todo-faces-setup)
 
-  (add-hook 'prog-mode-hook #'sthenno/hl-todo-faces-setup))
+  (global-hl-todo-mode 1))
+
+
 
 
 ;; Edit multiple occurrences in the same way simultaneously using "C-;"
@@ -271,19 +273,19 @@ Optionally show prompt INFO and insert INITIAL input."
                     (overlay-start overlay) (overlay-end overlay)))
              (choice
               (jinx--correct-highlight overlay
-                (lambda ()
-                  (when (or (< (point) (window-start))
-                            (> (point) (window-end nil t)))
-                    (recenter))
-                  (minibuffer-with-setup-hook
-                      #'jinx--correct-setup
-                    (or (completing-read
-                         (format "Correct '%s'%s: " word
-                                 (or info ""))
-                         (jinx--correct-table
-                          (jinx--correct-suggestions word))
-                         nil nil initial t word)
-                        word)))))
+                                       (lambda ()
+                                         (when (or (< (point) (window-start))
+                                                   (> (point) (window-end nil t)))
+                                           (recenter))
+                                         (minibuffer-with-setup-hook
+                                             #'jinx--correct-setup
+                                           (or (completing-read
+                                                (format "Correct '%s'%s: " word
+                                                        (or info ""))
+                                                (jinx--correct-table
+                                                 (jinx--correct-suggestions word))
+                                                nil nil initial t word)
+                                               word)))))
              (len (length choice)))
         (pcase (and (> len 0) (assq (aref choice 0) jinx--save-keys))
           (`(,key . ,fun)

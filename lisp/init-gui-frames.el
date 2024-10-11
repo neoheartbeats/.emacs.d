@@ -14,8 +14,7 @@
 
 ;;; Code:
 
-;; (require-theme 'modus-themes)
-;; Modus Themes
+;;; Modus Themes
 (use-package modus-themes
   :vc (modus-themes
        :url "https://gitlab.com/protesilaos/modus-themes"
@@ -117,7 +116,7 @@
 (setq default-input-method nil)
 
 ;; Custom font
-(set-face-attribute 'default nil :family "Triplicate A Code" :height 140)
+(set-face-attribute 'default nil :family "Triplicate OT" :height 140)
 
 ;; Set up font for non-ascii fontset
 (set-fontset-font t 'big5                (font-spec :family "Noto Serif CJK SC"))
@@ -156,17 +155,6 @@
 
 ;; Text quoting
 (setopt text-quoting-style 'straight)
-
-;; Better `help-mode'
-;;
-;; Perform autoload if docs are missing from autoload objects
-(setopt help-enable-symbol-autoload t)
-
-;; Allow editing values in *Help* buffers
-(setopt help-enable-variable-value-editing t)
-
-;; Display example functions
-(add-hook 'help-fns-describe-function-functions #'shortdoc-help-fns-examples-function)
 
 
 ;; Mode Line settings
@@ -215,11 +203,12 @@
 ;;
 ;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 ;;
-(defvar sthenno-quit-messages `( "Anyone else but you?"
-                                 "She depends on you."
-                                 "Please take care of Sthenno."
-                                 "It's not like I'll miss you or anything, b-baka!"
-                                 "Please don't go!" )
+(defvar sthenno-quit-messages `(
+                                "Anyone else but you?"
+                                "She depends on you."
+                                "Please take care of Sthenno."
+                                "It's not like I'll miss you or anything, b-baka!"
+                                "Please don't go!")
   "A list of quit messages, picked randomly by `sthenno-quit'.")
 
 (defun sthenno-quit-p (&optional prompt)
