@@ -547,8 +547,8 @@ useful if using font Iosevka."
                                  (tags   . "%i")
                                  (search . "%i")))
 (setq org-agenda-format-date "\n􀧞 %F\n")
-(setq org-closed-string    "􁜓"
-      org-scheduled-string "􁙜"
-      org-deadline-string  "􁙝")
+;; (setq org-closed-string    "􁜓"
+;;       org-scheduled-string "􁙜"
+;;       org-deadline-string  "􁙝")
 
 (provide 'init-org)
