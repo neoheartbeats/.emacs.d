@@ -24,6 +24,8 @@
   (setopt modus-themes-bold-constructs t
           modus-themes-italic-constructs t)
 
+  (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-faint)
+  
   ;; Mapping colors
   (setopt modus-vivendi-palette-overrides
           '(
@@ -34,7 +36,7 @@
             (fg-mode-line-inactive fg-dim)
 
             ;; Make the mode line borderless
-            (border-mode-line-active   unspecified)
+            (border-mode-line-active unspecified)
             (border-mode-line-inactive unspecified)
 
             ;; Set color faces for `display-line-numbers-mode'
@@ -75,20 +77,10 @@
             (bg-completion bg-hl-line)
 
             ;; Org-mode headings
-            (fg-heading-1 magenta)
-
-            ;; Make the Org-Agenda use alternative and varied colors
-            (date-common cyan)
-            (date-deadline red-warmer)
-            (date-event magenta-warmer)
-            (date-holiday blue)
-            (date-now yellow-warmer)
-            (date-scheduled magenta-cooler)
-            (date-weekday cyan-cooler)
-            (date-weekend blue-faint)
+            ;; (fg-heading-1 magenta)
 
             ;; Cursor color. See also `cursor-type'
-            (cursor green-faint)))
+            (cursor red-faint)))
 
   ;; Enable and load the theme
   (modus-themes-load-theme 'modus-vivendi))
@@ -205,29 +197,28 @@
 ;;
 ;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 ;;
-(defvar sthenno-quit-messages `(
-                                "Anyone else but you?"
-                                "She depends on you."
-                                "Please take care of Sthenno."
-                                "It's not like I'll miss you or anything, b-baka!"
-                                "Please don't go!")
-  "A list of quit messages, picked randomly by `sthenno-quit'.")
+;; (defvar sthenno-quit-messages '("Anyone else but you?"
+;;                                 "She depends on you."
+;;                                 "Please take care of Sthenno."
+;;                                 "It's not like I'll miss you or anything, b-baka!"
+;;                                 "Please don't go!")
+;;   "A list of quit messages, picked randomly by `sthenno-quit'.")
 
-(defun sthenno-quit-p (&optional prompt)
-  "Prompt the user for confirmation when killing Emacs.
-Returns t if it is safe to kill this session. Does not prompt if no real buffers
-are open."
-  (or (yes-or-no-p (format "%s" (or prompt "Really quit Emacs?")))
-      (ignore (message "Aborted"))))
+;; (defun sthenno-quit-p (&optional prompt)
+;;   "Prompt the user for confirmation when killing Emacs.
+;; Returns t if it is safe to kill this session. Does not prompt if no real buffers
+;; are open."
+;;   (or (yes-or-no-p (format "%s" (or prompt "Really quit Emacs?")))
+;;       (ignore (message "Aborted"))))
 
-(defun sthenno-quit-fn (&rest _)
-  (sthenno-quit-p
-   (format "Sthenno: %s 􀄫 %s"
-           (propertize (nth (random (length sthenno-quit-messages))
-                            sthenno-quit-messages)
-                       'face 'modus-themes-prompt)
-           "Really quit Emacs?")))
+;; (defun sthenno-quit-fn (&rest _)
+;;   (sthenno-quit-p
+;;    (format "Sthenno: %s 􀄫 %s"
+;;            (propertize (nth (random (length sthenno-quit-messages))
+;;                             sthenno-quit-messages)
+;;                        'face 'modus-themes-prompt)
+;;            "Really quit Emacs?")))
 
-(setq confirm-kill-emacs #'sthenno-quit-fn)
+;; (setq confirm-kill-emacs #'sthenno-quit-fn)
 
 (provide 'init-gui-frames)

@@ -458,7 +458,7 @@ Do not insert KEY if `char-after' point is not empty."
   
   :bind (:map corfu-map
               ("<down>"   . corfu-next)
-              ("<tab>"    . corfu-next)
+              ;; ("<tab>"    . corfu-next)
               ("<up>"     . corfu-previous)
               ("<escape>" . corfu-quit)))
 

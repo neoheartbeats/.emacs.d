@@ -55,7 +55,7 @@
 (scroll-bar-mode -1)
 
 (add-to-list 'default-frame-alist '(width . 120))
-(add-to-list 'default-frame-alist '(height . 50))
+(add-to-list 'default-frame-alist '(height . 55))
 (add-to-list 'default-frame-alist '(alpha . (85 . 85)))
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 
@@ -79,6 +79,10 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") 'append)
 (add-to-list 'package-archives '("gnu-devel" . "https://elpa.gnu.org/devel/") 'prepend)
+
+(use-package diminish
+  :ensure t
+  :config (diminish 'eldoc-mode))
 
 ;; GCMH: the Garbage Collector Magic Hack
 (use-package gcmh

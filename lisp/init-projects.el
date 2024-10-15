@@ -12,9 +12,9 @@
 ;;
 
 (setq project-prompter #'project-prompt-project-name)
-(keymap-global-set "s-l" #'project-find-file)
+(keymap-global-set "s-o" #'project-find-file)
 
-;; Git client using Magit
+;;; Git client using Magit
 (use-package magit
   :ensure t
   :defer t
@@ -23,7 +23,6 @@
   (setq magit-diff-refine-hunk t)
   :bind ("C-x g" . magit-status))
 
-
 ;;; Xref
 ;;
 ;; For further backends support, see also `etags', `init-eglot'

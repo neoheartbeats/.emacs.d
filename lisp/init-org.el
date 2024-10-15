@@ -206,7 +206,7 @@ useful if using font Iosevka."
     (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.10)
                                    ((eq major-mode #'org-agenda-mode) 0.10)
                                    (t 0.0))))
-  (add-hook 'org-mode-hook            #'sthenno/org-modern-spacing)
+  (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
   (add-hook 'org-agenda-finalize-hook #'sthenno/org-modern-spacing)
 
   ;; Hooks
@@ -600,10 +600,10 @@ boundaries with possible narrowing."
                          ,denote-journal-extras-directory))
 
 ;; Bind keys
-(defun sthenno/org-agenda-open ()
+(defun sthenno/org-agenda-list-all-todos ()
   (interactive)
-  (org-agenda nil "n"))
-(keymap-global-set "C-c a" #'sthenno/org-agenda-open)
+  (org-agenda nil "t"))
+(keymap-global-set "C-c a" #'sthenno/org-agenda-list-all-todos)
 
 (setq org-log-done 'time)
 

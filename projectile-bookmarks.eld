@@ -1,0 +1,1 @@
+("~/Developer/sthenno-notebook/" "~/.emacs.d/" "/opt/homebrew/" "~/Developer/offnine/" "~/Developer/offnine-endpoints/")

@@ -44,8 +44,7 @@
 (keymap-global-set "M-<down>" #'forward-paragraph)
 (keymap-global-set "M-<up>"   #'backward-paragraph)
 
-
-;; Pretty-print
+;;; Pretty-print
 ;;
 ;; XXX: Pretty-print comes from various mechanisms respecting to the current programming
 ;; language. For example, formatters like Black are preferred over `indent-region' and
@@ -96,8 +95,7 @@ If `major-mode' is `python-mode', abort."
     (indent-current-buffer-comment)
     (untabify-current-buffer))
   (run-hooks 'sthenno/pretty-print-current-buffer-hook))
-
-(keymap-set emacs-lisp-mode-map "s-p" #'sthenno/pretty-print-current-buffer)
+(keymap-set emacs-lisp-mode-map "s-i" #'sthenno/pretty-print-current-buffer)
 
 (defun sthenno/enable-pretty-print-auto ()
   "Enable pretty-print before saving in `emacs-lisp-mode'."
@@ -112,7 +110,7 @@ and auto-paring for such entries."
   (modify-syntax-entry ?> "." org-mode-syntax-table))
 (add-hook 'org-mode-hook #'sthenno/inhibit-specific-delimiters)
 
-;; Automatic pairing parenthesis
+;;; Automatic pairing parenthesis
 ;;
 ;; `python-mode' disables `electric-indent-mode' by default since Python does not
 ;; lend itself to fully automatic indentation. Org Mode should disable this for the
@@ -160,12 +158,10 @@ and auto-paring for such entries."
 ;; Automatically reload files was modified by external program
 (global-auto-revert-mode 1)
 
-
-;; Fill columns
+;;; Fill columns
 ;;
 ;; Face `fill-column-indicator' is set in `init-gui-frames'
 ;;
-;; (global-display-fill-column-indicator-mode 1)
 (add-hook 'prog-mode-hook #'(lambda ()
                               (display-fill-column-indicator-mode 1)))
 
@@ -227,18 +223,17 @@ and auto-paring for such entries."
 (use-package hl-todo
   :ensure t
   :config
+  (defun sthenno/hl-todo-faces-setup ()
+    (modus-themes-with-colors
+      (setq hl-todo-keyword-faces
+            `(("TODO"  . ,prose-todo)
+              ("FIXME" . ,err)
+              ("XXXX*" . ,err)
+              ("NOTE"  . ,fg-changed)
+              ("HACK"  . ,fg-changed))))
+    (add-hook 'prog-mode-hook #'sthenno/hl-todo-faces-setup)
 
-  ;; (defun sthenno/hl-todo-faces-setup ()
-  ;;   (modus-themes-with-colors
-  ;;     (setq hl-todo-keyword-faces
-  ;;           `(("TODO"  . ,prose-todo)
-  ;;             ("FIXME" . ,err)
-  ;;             ("XXXX*" . ,err)
-  ;;             ("NOTE"  . ,fg-changed)
-  ;;             ("HACK"  . ,fg-changed))))
-  ;;(add-hook 'prog-mode-hook #'sthenno/hl-todo-faces-setup)
-
-  (global-hl-todo-mode 1))
+    (global-hl-todo-mode 1)))
 
 
 
