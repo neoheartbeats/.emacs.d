@@ -36,6 +36,7 @@
 ;; Note this global mode directly remaps the default keymaps.
 (use-package undo-tree
   :ensure t
+  :diminish (undo-tree-mode)
   :config
   (setq undo-tree-auto-save-history nil)
   (global-undo-tree-mode 1))

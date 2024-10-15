@@ -28,16 +28,14 @@
 ;;
 (setq treesit-font-lock-level 4)
 
-
-;; Initialize `eglot'
+;;; Initialize `eglot'
 (use-package eglot
   :ensure t
   :config
 
   ;; Hooks
   (add-hook 'python-mode-hook #'eglot-ensure)
-  (add-to-list 'eglot-server-programs
-               '(python-mode . ("pyright-langserver" "--stdio")))
+  (setq eglot-server-programs '((python-mode . ("pyright-langserver" "--stdio"))))
   
   :bind (:map eglot-mode-map
               ("<f6>" . eglot-rename)))
@@ -45,8 +43,25 @@
 ;; Automatically confirm .dir-locals.el files
 (setq-default enable-local-variables :safe)
 
-
-;; Python project management
+;;; Python project management using Conda
+(use-package conda
+  :ensure t
+  :init (conda-env-initialize-interactive-shells)
+  :config
+  (setopt conda-anaconda-home "~/cond/")
+  
+  ;; Enable auto-activation
+  (conda-env-autoactivate-mode 1)
+
+  ;; Automatically activate a Conda environment on the opening of a file
+  (add-hook 'find-file-hook (lambda ()
+                              (when (bound-and-true-p conda-project-env-path)
+                                (conda-env-activate-for-buffer))))
+
+  ;; Displaying the currently active environment on the `mode-line'
+  (add-hook 'python-mode-hook #'conda-mode-line-setup))
+
+
 (setopt python-indent-offset 4)
 
 ;; Reformat Python buffers using the Black formatter
@@ -55,47 +70,41 @@
   :init (add-hook 'python-mode-hook #'(lambda ()
                                         (blacken-mode 1)))
   :bind (:map python-mode-map
-              ("s-p" . blacken-buffer)))
+              ("s-i" . blacken-buffer)))
 
-
 ;; JSON files
 ;; (add-hook 'json-ts-mode-hook #'(lambda ()
 ;;                                  (so-long-mode 1)))
 
-
-;; GitHub Copilot
-;; (use-package copilot
-;;   :vc (copilot
-;;        :url "https://github.com/copilot-emacs/copilot.el")
-;;   :defer t
-;;   :init
-;;   (setq copilot-node-executable "/opt/homebrew/bin/node")
-;;   (setq copilot-idle-delay 0.05)
-;;   (setq copilot-max-char (* 500 1000))  ; Default is 100,000
+;;; GitHub Copilot
+;;
+;; After installing this, run `copilot-login'
+(use-package copilot
+  :vc (copilot
+       :url "https://github.com/copilot-emacs/copilot.el"
+       :rev :newest
+       :branch "main")
+  :init
+  (setq copilot-node-executable "/opt/homebrew/bin/node")
+  
+  ;; Toggling `copilot-mode'
+  (defun sthenno/copilot-on ()
+    (interactive)
+    (copilot-mode 1))
 
-;;   ;; Toggling `copilot-mode'
-;;   (defun sthenno/copilot-on ()
-;;     (interactive)
-;;     (copilot-mode 1))
+  :config
+  
+  ;; Hooks
+  (add-hook 'python-mode-hook #'sthenno/copilot-on)
 
-;;   (defun sthenno/copilot-off ()
-;;     (interactive)
-;;     (copilot-mode -1))
-
-;;   :config
-;;   (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
-;;   (add-to-list 'copilot-major-mode-alist  '("python-ts" . "python"))
-
-;;   ;; Hooks
-;;   (add-hook 'python-mode-hook #'sthenno/copilot-on)
-
-;;   :bind ((:map prog-mode-map
-;;                ("C-x c" . sthenno/turn-on-copilot)
-;;                ("C-x C" . sthenno/turn-off-copilot))
-;;          (:map copilot-completion-map
-;;                ("<tab>"   . copilot-accept-completion)
-;;                ("<right>" . copilot-accept-completion-by-line)
-;;                ("<left>"  . copilot-clear-overlay)
-;;                ("RET"     . copilot-clear-overlay))))
+  :bind ((:map prog-mode-map
+               ("C-x c" . sthenno/copilot-on)
+               ("C-x C" . sthenno/copilot-off))
+         (:map copilot-completion-map
+               ("<tab>"   . copilot-accept-completion)
+               ("TAB"     . copilot-accept-completion)
+               ("<right>" . copilot-accept-completion-by-line)
+               ("<left>"  . copilot-clear-overlay)
+               ("RET"     . copilot-clear-overlay))))
 
 (provide 'init-eglot)

@@ -21,15 +21,15 @@
        :branch "main")
   :demand t
   :config
-  (setopt modus-themes-bold-constructs   t
+  (setopt modus-themes-bold-constructs t
           modus-themes-italic-constructs t)
 
   ;; Mapping colors
   (setopt modus-vivendi-palette-overrides
           '(
             ;; Make the mode-line borderless and stand out less
-            (bg-mode-line-active   bg-active)
-            (fg-mode-line-active   fg-main)
+            (bg-mode-line-active bg-active)
+            (fg-mode-line-active fg-main)
             (bg-mode-line-inactive bg-dim)
             (fg-mode-line-inactive fg-dim)
 
@@ -38,8 +38,8 @@
             (border-mode-line-inactive unspecified)
 
             ;; Set color faces for `display-line-numbers-mode'
-            (fg-line-number-active   fg-main)
-            (bg-line-number-active   bg-hl-line)
+            (fg-line-number-active fg-main)
+            (bg-line-number-active bg-hl-line)
             (fg-line-number-inactive fg-dim)
             (bg-line-number-inactive unspecified)
 
@@ -47,13 +47,13 @@
             (fringe unspecified)
 
             ;; Subtle underlines
-            (underline-link          border)
+            (underline-link border)
             (underline-link-visited  border)
             (underline-link-symbolic border)
 
             ;; Make links the same color as `fg-main'
             ;; This also affects `button' faces in Modus Themes
-            (fg-link         unspecified)
+            (fg-link unspecified)
             (fg-link-visited unspecified)
 
             ;; Prose colors
@@ -103,8 +103,10 @@
 (setq-default frame-title-format nil)
 (setq-default ns-use-proxy-icon nil)
 
-;; highlight current line
-(global-hl-line-mode 1)
+;;; Highlight current line
+;; (global-hl-line-mode 1)
+(add-hook 'prog-mode-hook #'(lambda ()
+                              (hl-line-mode 1)))
 
 ;; Encodings
 ;;
@@ -160,10 +162,10 @@
 ;; Mode Line settings
 (setopt mode-line-compact t)
 
-(use-package minions
-  :ensure t
-  :init (setq minions-mode-line-lighter "􀠩")
-  :config (minions-mode 1))
+;; (use-package minions
+;;   :ensure t
+;;   :init (setq minions-mode-line-lighter "􀠩")
+;;   :config (minions-mode 1))
 
 ;; (setq-default mode-line-format '("%e"
 ;;                                  " "

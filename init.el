@@ -84,6 +84,7 @@
 (use-package gcmh
   :ensure t
   :demand t
+  :diminish (gcmh-mode)
   :config
 
   ;; The GC introduces annoying pauses and stuttering into our Emacs experience, so we
