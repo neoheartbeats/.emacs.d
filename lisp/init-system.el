@@ -30,24 +30,36 @@
            ("s-d" . find-file))
 
 ;; Open the *ielm* buffer
-;; (keymap-global-set "<f2>" #'ielm)
+(keymap-global-set "<f2>" #'ielm)
 
 ;; To use a familier undo-redo mechanism
 ;; Note this global mode directly remaps the default keymaps.
-;; (use-package undo-tree
-;;   :ensure t
-;;   :config (global-undo-tree-mode 1))
+(use-package undo-tree
+  :ensure t
+  :diminish (undo-tree-mode)
+  :config
+  (setq undo-tree-auto-save-history nil)
+  (global-undo-tree-mode 1))
+
+;;; Better `help-mode'
+;;
+;; Perform autoload if docs are missing from autoload objects
+(setopt help-enable-symbol-autoload t)
+
+;; Display example functions
+(add-hook 'help-fns-describe-function-functions #'shortdoc-help-fns-examples-function)
+
 
 ;; Quicker function to open the help buffer
 (keymap-global-set "s-h" #'describe-symbol)
 
-(defun mp-elisp-mode-eval-buffer ()
+(defun sthenno/elisp-mode-eval-buffer ()
   (interactive)
   (message "Evaluated buffer")
   (eval-buffer))
 
-(define-key emacs-lisp-mode-map (kbd "C-c C-c") #'mp-elisp-mode-eval-buffer)
-(define-key lisp-interaction-mode-map (kbd "C-c C-c") #'mp-elisp-mode-eval-buffer)
+(define-key emacs-lisp-mode-map (kbd "C-c C-c") #'sthenno/elisp-mode-eval-buffer)
+(define-key lisp-interaction-mode-map (kbd "C-c C-c") #'sthenno/elisp-mode-eval-buffer)
 
 (keymap-global-set "S-<return>" 'eval-last-sexp)
 
@@ -97,11 +109,11 @@ Activate again to undo this. If the window changes before then, the undo expires
 
 ;; Remember changes on windows
 ;; Use C-c <left> and C-c <right> to undo and redo changes on windows
-(winner-mode 1)
+;; (winner-mode 1)
 
 ;; Resizing frames in a smooth way
-(setq window-resize-pixelwise t)
-(setq frame-resize-pixelwise t)
+;; (setq window-resize-pixelwise t)
+;; (setq frame-resize-pixelwise t)
 
 
 ;; Locate position history
@@ -118,12 +130,12 @@ Activate again to undo this. If the window changes before then, the undo expires
   (savehist-mode 1))
 
 
-;; Keep track of recently opened files.
-(use-package recentf
-  :init (setq recentf-save-file (expand-file-name "recentf" user-cache-directory)
-              recentf-max-saved-items 200
-              recentf-auto-cleanup 300)
-  :config (recentf-mode 1))
+;; Keep track of recently opened files
+;; (use-package recentf
+;;   :init (setq recentf-save-file (expand-file-name "recentf" user-cache-directory)
+;;               recentf-max-saved-items 200
+;;               recentf-auto-cleanup 300)
+;;   :config (recentf-mode 1))
 
 
 ;; Misc options
@@ -152,11 +164,11 @@ Activate again to undo this. If the window changes before then, the undo expires
 (setq make-backup-files nil)
 
 ;; Emacs source files
-(setq find-function-C-source-directory "/Users/sthenno/Developer/emacs/src/")
+;; (setq find-function-C-source-directory "/Users/sthenno/Developer/emacs/src/")
 
 ;; Large files
-(add-hook 'after-init-hook #'(lambda ()
-                               (global-so-long-mode 1)))
+;; (add-hook 'after-init-hook #'(lambda ()
+;;                                (global-so-long-mode 1)))
 
 
 

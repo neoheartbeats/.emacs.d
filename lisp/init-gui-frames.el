@@ -14,33 +14,34 @@
 
 ;;; Code:
 
-;; (require-theme 'modus-themes)
-;; Modus Themes
+;;; Modus Themes
 (use-package modus-themes
   :vc (modus-themes
        :url "https://gitlab.com/protesilaos/modus-themes"
        :branch "main")
   :demand t
   :config
-  (setopt modus-themes-bold-constructs   t
+  (setopt modus-themes-bold-constructs t
           modus-themes-italic-constructs t)
 
+  ;; (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-faint)
+  
   ;; Mapping colors
   (setopt modus-vivendi-palette-overrides
           '(
             ;; Make the mode-line borderless and stand out less
-            (bg-mode-line-active   bg-active)
-            (fg-mode-line-active   fg-main)
+            (bg-mode-line-active bg-active)
+            (fg-mode-line-active fg-main)
             (bg-mode-line-inactive bg-dim)
             (fg-mode-line-inactive fg-dim)
 
             ;; Make the mode line borderless
-            (border-mode-line-active   unspecified)
+            (border-mode-line-active unspecified)
             (border-mode-line-inactive unspecified)
 
             ;; Set color faces for `display-line-numbers-mode'
-            (fg-line-number-active   fg-main)
-            (bg-line-number-active   bg-hl-line)
+            (fg-line-number-active fg-main)
+            (bg-line-number-active bg-hl-line)
             (fg-line-number-inactive fg-dim)
             (bg-line-number-inactive unspecified)
 
@@ -48,13 +49,13 @@
             (fringe unspecified)
 
             ;; Subtle underlines
-            (underline-link          border)
+            (underline-link border)
             (underline-link-visited  border)
             (underline-link-symbolic border)
 
             ;; Make links the same color as `fg-main'
             ;; This also affects `button' faces in Modus Themes
-            (fg-link         unspecified)
+            (fg-link unspecified)
             (fg-link-visited unspecified)
 
             ;; Prose colors
@@ -76,20 +77,10 @@
             (bg-completion bg-hl-line)
 
             ;; Org-mode headings
-            (fg-heading-1 magenta)
-
-            ;; Make the Org-Agenda use alternative and varied colors
-            (date-common cyan)
-            (date-deadline red-warmer)
-            (date-event magenta-warmer)
-            (date-holiday blue)
-            (date-now yellow-warmer)
-            (date-scheduled magenta-cooler)
-            (date-weekday cyan-cooler)
-            (date-weekend blue-faint)
+            ;; (fg-heading-1 magenta)
 
             ;; Cursor color. See also `cursor-type'
-            (cursor green-faint)))
+            (cursor red-faint)))
 
   ;; Enable and load the theme
   (modus-themes-load-theme 'modus-vivendi))
@@ -104,8 +95,10 @@
 (setq-default frame-title-format nil)
 (setq-default ns-use-proxy-icon nil)
 
-;; highlight current line
-(global-hl-line-mode 1)
+;;; Highlight current line
+;; (global-hl-line-mode 1)
+(add-hook 'prog-mode-hook #'(lambda ()
+                              (hl-line-mode 1)))
 
 ;; Encodings
 ;;
@@ -157,25 +150,19 @@
 ;; Text quoting
 (setopt text-quoting-style 'straight)
 
-;; Better `help-mode'
-;;
-;; Perform autoload if docs are missing from autoload objects
-(setopt help-enable-symbol-autoload t)
+;; Do not show buffer boundaries
+(setq indicate-buffer-boundaries nil)
 
-;; Allow editing values in *Help* buffers
-(setopt help-enable-variable-value-editing t)
+;; Do not show empty lines
+(setq indicate-empty-lines nil)
 
-;; Display example functions
-(add-hook 'help-fns-describe-function-functions #'shortdoc-help-fns-examples-function)
-
-
-;; Mode Line settings
+;;; Mode Line settings
 (setopt mode-line-compact t)
 
-(use-package minions
-  :ensure t
-  :init (setq minions-mode-line-lighter "􀠩")
-  :config (minions-mode 1))
+;; (use-package minions
+;;   :ensure t
+;;   :init (setq minions-mode-line-lighter "􀠩")
+;;   :config (minions-mode 1))
 
 ;; (setq-default mode-line-format '("%e"
 ;;                                  " "
@@ -215,28 +202,28 @@
 ;;
 ;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 ;;
-(defvar sthenno-quit-messages `( "Anyone else but you?"
-                                 "She depends on you."
-                                 "Please take care of Sthenno."
-                                 "It's not like I'll miss you or anything, b-baka!"
-                                 "Please don't go!" )
-  "A list of quit messages, picked randomly by `sthenno-quit'.")
+;; (defvar sthenno-quit-messages '("Anyone else but you?"
+;;                                 "She depends on you."
+;;                                 "Please take care of Sthenno."
+;;                                 "It's not like I'll miss you or anything, b-baka!"
+;;                                 "Please don't go!")
+;;   "A list of quit messages, picked randomly by `sthenno-quit'.")
 
-(defun sthenno-quit-p (&optional prompt)
-  "Prompt the user for confirmation when killing Emacs.
-Returns t if it is safe to kill this session. Does not prompt if no real buffers
-are open."
-  (or (yes-or-no-p (format "%s" (or prompt "Really quit Emacs?")))
-      (ignore (message "Aborted"))))
+;; (defun sthenno-quit-p (&optional prompt)
+;;   "Prompt the user for confirmation when killing Emacs.
+;; Returns t if it is safe to kill this session. Does not prompt if no real buffers
+;; are open."
+;;   (or (yes-or-no-p (format "%s" (or prompt "Really quit Emacs?")))
+;;       (ignore (message "Aborted"))))
 
-(defun sthenno-quit-fn (&rest _)
-  (sthenno-quit-p
-   (format "Sthenno: %s 􀄫 %s"
-           (propertize (nth (random (length sthenno-quit-messages))
-                            sthenno-quit-messages)
-                       'face 'modus-themes-prompt)
-           "Really quit Emacs?")))
+;; (defun sthenno-quit-fn (&rest _)
+;;   (sthenno-quit-p
+;;    (format "Sthenno: %s 􀄫 %s"
+;;            (propertize (nth (random (length sthenno-quit-messages))
+;;                             sthenno-quit-messages)
+;;                        'face 'modus-themes-prompt)
+;;            "Really quit Emacs?")))
 
-(setq confirm-kill-emacs #'sthenno-quit-fn)
+;; (setq confirm-kill-emacs #'sthenno-quit-fn)
 
 (provide 'init-gui-frames)

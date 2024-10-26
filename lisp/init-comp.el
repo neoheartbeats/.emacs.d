@@ -115,7 +115,7 @@
   (add-hook 'after-init-hook #'sthenno/vertico-on)
 
   :config
-  (setq vertico-count 8)
+  (setq vertico-count 10)
   (setq vertico-scroll-margin 4)
   (setq vertico-cycle nil)
 
@@ -128,36 +128,36 @@
   ;; Prefix candidates
   (defvar sthenno/vertico-using-prefix-symbol-p t)
 
-  (cl-defmethod vertico--format-candidate :around
-    (cand prefix suffix index start &context
-          ((and sthenno/vertico-using-prefix-symbol-p
-                (not (bound-and-true-p vertico-flat-mode)))
-           (eql t)))
-    (setq cand (cl-call-next-method cand prefix suffix index start))
-    (modus-themes-with-colors
-      (if (= vertico--index index)
-          (concat (propertize "◉ " 'face
-                              `(:background ,bg-hl-line :inherit modus-themes-prompt))
-                  cand)
-        (concat (propertize "○ " 'face `(:foreground ,fg-dim))
-                cand))))
+  ;; (cl-defmethod vertico--format-candidate :around
+  ;;   (cand prefix suffix index start &context
+  ;;         ((and sthenno/vertico-using-prefix-symbol-p
+  ;;               (not (bound-and-true-p vertico-flat-mode)))
+  ;;          (eql t)))
+  ;;   (setq cand (cl-call-next-method cand prefix suffix index start))
+  ;;   (modus-themes-with-colors
+  ;;     (if (= vertico--index index)
+  ;;         (concat (propertize "◉ " 'face
+  ;;                             `(:background ,bg-hl-line :inherit modus-themes-prompt))
+  ;;                 cand)
+  ;;       (concat (propertize "○ " 'face `(:foreground ,fg-dim))
+  ;;               cand))))
 
   ;; Candidate display transformations
   ;;
-  (defvar sthenno/vertico-transform-functions nil)
+  ;; (defvar sthenno/vertico-transform-functions nil)
 
-  (cl-defmethod vertico--format-candidate :around
-    (cand prefix suffix index start &context
-          ((not sthenno/vertico-transform-functions) null))
-    (dolist (fun (ensure-list sthenno/vertico-transform-functions))
-      (setq cand (funcall fun cand)))
-    (cl-call-next-method cand prefix suffix index start))
+  ;; (cl-defmethod vertico--format-candidate :around
+  ;;   (cand prefix suffix index start &context
+  ;;         ((not sthenno/vertico-transform-functions) null))
+  ;;   (dolist (fun (ensure-list sthenno/vertico-transform-functions))
+  ;;     (setq cand (funcall fun cand)))
+  ;;   (cl-call-next-method cand prefix suffix index start))
 
-  (defun sthenno/vertico-highlight-directory (file)
-    "If FILE ends with a slash, highlight it as a directory."
-    (if (string-suffix-p "/" file)
-        (propertize file 'face 'marginalia-file-priv-dir)
-      file))
+  ;; (defun sthenno/vertico-highlight-directory (file)
+  ;;   "If FILE ends with a slash, highlight it as a directory."
+  ;;   (if (string-suffix-p "/" file)
+  ;;       (propertize file 'face 'marginalia-file-priv-dir)
+  ;;     file))
 
 
   ;; Multiform
@@ -192,7 +192,7 @@
 (use-package marginalia
   :ensure t
   :init
-  (setq marginalia-field-width 45)
+  (setq marginalia-field-width 50)
   (setq marginalia-separator " ")
   (setq marginalia-align 'left)
   (setq marginalia-align-offset 4)
@@ -254,7 +254,8 @@
                ("C-v" . consult-yank-pop)
                ("s-m" . consult-imenu-multi)
                ("s-n" . consult-recent-file)
-               ("M-i" . consult-info))
+               ("M-i" . consult-info)
+               ("M-s" . consult-ripgrep))
          (:map org-mode-map
                ("s-m" . consult-org-heading)
                ("M-a" . consult-org-agenda))))
@@ -309,6 +310,7 @@
                      #'(lambda (cand)
                          (or (not (keywordp cand))
                              (eq (char-after (car completion-in-region--data)) ?:))))
+                    #'cape-dict
                     #'cape-dabbrev)
                   cape-file)
                 cape-dabbrev-min-length 4))
@@ -321,7 +323,7 @@
                     #'cape-elisp-block
                     #'cape-dabbrev)
                   cape-file)
-                cape-dabbrev-min-length 2))
+                cape-dabbrev-min-length 4))
   (add-hook 'text-mode-hook #'sthenno/capf-text)
 
   :config
@@ -359,8 +361,8 @@
                                        (global-corfu-mode 1)))
   :config
   (setq corfu-auto t
-        corfu-auto-delay 0.05           ; Making this to 0 is too expensive
-        corfu-auto-prefix 2)
+        corfu-auto-delay 0.1            ; Making this to 0 is too expensive
+        corfu-auto-prefix 3)
 
   (setq corfu-count 8
         corfu-scroll-margin 4)
@@ -445,7 +447,6 @@ Do not insert KEY if `char-after' point is not empty."
   ;; Popup candidates info
   (setq corfu-popupinfo-delay '(0.25 . 0.05))
   (setq corfu-popupinfo-hide nil)
-
   (setq corfu-popupinfo-max-width 40
         corfu-popupinfo-min-width 20)
 
@@ -457,7 +458,7 @@ Do not insert KEY if `char-after' point is not empty."
   
   :bind (:map corfu-map
               ("<down>"   . corfu-next)
-              ("<tab>"    . corfu-next)
+              ;; ("<tab>"    . corfu-next)
               ("<up>"     . corfu-previous)
               ("<escape>" . corfu-quit)))
 

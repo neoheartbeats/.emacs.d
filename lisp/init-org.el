@@ -51,6 +51,13 @@
 (add-hook 'org-mode-hook #'(lambda ()
                              (org-latex-preview-auto-mode 1)))
 
+;; Ignore scrolling commands for `org-latex-preview-auto-mode'
+(setq org-latex-preview-auto-ignored-commands
+      '(
+        next-line previous-line
+        pixel-scroll-precision
+        scroll-up-command scroll-down-command))
+
 ;; Show entities as UTF8 characters
 ;; (setopt org-pretty-entities t
 ;;         org-pretty-entities-include-sub-superscripts nil)
@@ -62,28 +69,46 @@
   (call-interactively 'org-latex-preview-clear-cache)
   (org-latex-preview 'buffer)
   (org-redisplay-inline-images))
-
 (bind-keys :map org-mode-map
            ("s-p" . sthenno/org-preview-fragments))
 
-(setq org-latex-packages-alist
-      '(("T1" "fontenc" t)
-        ("" "amsmath"   t)
-        ("" "amssymb"   t)
-        ("" "siunitx"   t)
-        ("" "physics2"  t)
-        ;; ("" "mlmodern"  t)
-        ("" "newtx" t)
+(setq org-latex-packages-alist '(("T1" "fontenc" t)
+                                 ("" "amsmath"   t)
+                                 ("" "amssymb"   t)
+                                 ("" "siunitx"   t)
 
-        ;; Load this after all math to give access to bold math
-        ;; See https://ctan.math.illinois.edu/fonts/newtx/doc/newtxdoc.pdf
-        ("" "bm" t)))
+                                 ;; Font packages
+                                 ("libertinus" "newtx" t)
+                                 
+                                 ;; Load this after all math to give access to bold math
+                                 ;; See https://ctan.org/pkg/newtx
+                                 ("" "bm" t)
 
-(setq org-latex-preview-preamble
-      (concat org-latex-preview-preamble
+                                 ;; Package physics2 requires to be loaded after font
+                                 ;; packages. See https://ctan.org/pkg/physics2
+                                 ("" "physics2" t)
 
-              ;; The following is used by the physics2 package
-              "\n\\usephysicsmodule{ab,ab.braket,diagmat,xmat}%"))
+                                 ;; Differentiations
+                                 ("normal" "fixdif")))
+
+;; Add additional modules required by LaTeX packages like physics2 to the preamble
+(let* ((physics2-modules '(("" "ab")
+                           ("" "diagmat")
+                           ("" "xmat")))
+       (physics2-preamble (mapconcat
+                           (lambda (m)
+                             (let ((options (car  m))
+                                   (module  (cadr m)))
+                               (if (string= options "")
+                                   (format "\\usephysicsmodule{%s}" module)
+                                 (format "\\usephysicsmodule[%s]{%s}" options module))))
+                           physics2-modules
+                           "\n")))
+  (unless (and org-latex-preview-preamble
+               (string-match
+                (regexp-quote physics2-preamble) org-latex-preview-preamble))
+    (setq org-latex-preview-preamble (concat (or org-latex-preview-preamble "")
+                                             "\n" physics2-preamble))))
 
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
@@ -100,11 +125,16 @@
   "Path to Ghostscript shared library.")
 
 (setq dvisvgm-image-converter-command
-      (list (concat "dvisvgm --page=1- --optimize --clipjoin -R --no-font "
-                    "--bbox=preview --exact-bbox "
-                    "--libgs=" sthenno/libgs-dylib-path " "
-                    "--progress=0 "
-                    "-v4 -o %B-%%9p.svg %f")))
+      
+      ;; The --optimise, --clipjoin, and --relative flags cause dvisvgm to do some extra
+      ;; work to tidy up the SVG output, but barely add to the overall dvisvgm runtime
+      ;; (<1% increace, from testing).
+      `(,(concat "dvisvgm --page=1- --optimize --clipjoin -R --no-font --bbox=preview"
+                 " --libgs=" sthenno/libgs-dylib-path
+
+                 ;; Default is "-v3" here, but it does not seem to work correctly in my
+                 ;; client.
+                 " --progress=0 -v4 -o %B-%%9p.svg %f")))
 
 (setq org-latex-preview-process-alist
       `((dvisvgm
@@ -114,9 +144,36 @@
          :image-input-type "dvi"
          :image-output-type "svg"
          :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
-         :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\"
-      mylatexformat.ltx %f")
+         :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
          :image-converter ,dvisvgm-image-converter-command)))
+
+;; Centering previews using Org's alignment system instead of adding edges to original
+;; SVG files.
+;;
+;; By karthink:
+;; https://discord.com/channels/406534637242810369/1056621127188881439/1288235109128081440
+
+;; (defun sthenno/org-latex-preview-uncenter (ov)
+;;   (overlay-put ov 'before-string nil))
+
+;; (defun sthenno/org-latex-preview-recenter (ov)
+;;   (overlay-put ov 'before-string (overlay-get ov 'justify)))
+
+;; (defun sthenno/org-latex-preview-center (ov)
+;;   (save-excursion
+;;     (goto-char (overlay-start ov))
+;;     (when-let* ((elem (org-element-context))
+;;                 ((or (eq (org-element-type elem) 'latex-environment)
+;;                      (string-match-p "^\\\\\\[" (org-element-property :value elem))))
+;;                 (img (overlay-get ov 'display))
+;;                 (prop `(space :align-to (- center (0.55 . ,img))))
+;;                 (justify (propertize " " 'display prop 'face 'default)))
+;;       (overlay-put ov 'justify justify)
+;;       (overlay-put ov 'before-string (overlay-get ov 'justify)))))
+
+;; (add-hook 'org-latex-preview-overlay-open-functions  #'sthenno/org-latex-preview-uncenter)
+;; (add-hook 'org-latex-preview-overlay-close-functions #'sthenno/org-latex-preview-recenter)
+;; (add-hook 'org-latex-preview-overlay-update-functions #'sthenno/org-latex-preview-center)
 
 ;; [TODO] consult-reftex, see https://karthinks.com/software/reftex-in-org-mode/
 
@@ -149,7 +206,7 @@ useful if using font Iosevka."
     (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.10)
                                    ((eq major-mode #'org-agenda-mode) 0.10)
                                    (t 0.0))))
-  (add-hook 'org-mode-hook            #'sthenno/org-modern-spacing)
+  (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
   (add-hook 'org-agenda-finalize-hook #'sthenno/org-modern-spacing)
 
   ;; Hooks
@@ -163,18 +220,30 @@ useful if using font Iosevka."
 (setq org-auto-align-tags nil)
 (setq org-tags-column 0)
 
+(defun sthenno/org-toggle-emphasis ()
+  "Toggle hiding of Org emphasis markers."
+  (interactive)
+  (if org-hide-emphasis-markers
+      (progn
+        (setq-local org-hide-emphasis-markers nil)
+        (message "Org emphasis markers are not hiding."))
+    (progn
+      (setq-local org-hide-emphasis-markers t)
+      (message "Org emphasis markers are hiding."))))
+(keymap-set org-mode-map "C-c e" #'sthenno/org-toggle-emphasis)
+
 ;; Custom faces for Org emphasis
 ;;
-(defface sthenno-org-emphasis-prefix '((t (:foreground "#00bcff" :height 0.8)))
-  "Sthenno's prefix emphasis for Org.")
+;; (defface sthenno-org-emphasis-prefix '((t (:foreground "#00bcff" :height 0.8)))
+;;   "Sthenno's prefix emphasis for Org.")
 
-(defface sthenno-org-emphasis-on '((t (:underline t)))
-  "Sthenno's emphasized emphasis for Org.")
+;; (defface sthenno-org-emphasis-on '((t (:underline t)))
+;;   "Sthenno's emphasized emphasis for Org.")
 
-(setq org-emphasis-alist '(("*" sthenno-org-emphasis-on)
-                           ("_" sthenno-org-emphasis-prefix)
-                           ("+" (:foreground "#ff5f5f"))
-                           ("=" org-code)))
+;; (setq org-emphasis-alist '(("*" sthenno-org-emphasis-on)
+;;                            ("_" sthenno-org-emphasis-prefix)
+;;                            ("+" (:foreground "#ff5f5f"))
+;;                            ("=" org-code)))
 
 ;; (defface sthenno-org-button '((t (:foreground "#00bcff" :box t))))
 ;; (custom-set-faces 'org-link sthenno-org-button)
@@ -192,7 +261,7 @@ useful if using font Iosevka."
 (setq org-cycle-hide-drawer-startup t)
 (add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
 
-;; Org fragments and overlays
+;;; Org fragments and overlays
 ;;
 ;; Org images
 ;;
@@ -203,6 +272,30 @@ useful if using font Iosevka."
         org-display-remote-inline-images 'cache)
 
 (defun sthenno/org-display-inline-images (&optional include-linked refresh beg end)
+  "Display inline images.
+
+An inline image is a link which follows either of these conventions:
+
+  1. Its path is a file with an extension matching return value from
+     `image-file-name-regexp' and it has no contents.
+
+  2. Its description consists in a single link of the previous type.  In
+     this case, that link must be a well-formed plain or angle link,
+     i.e., it must have an explicit \"file\" or \"attachment\" type.
+
+Equip each image with the key-map `image-map'.
+
+When optional argument INCLUDE-LINKED is non-nil, also links with a text
+description part will be inlined.  This can be nice for a quick look at
+those images, but it does not reflect what exported files will look
+like.
+
+When optional argument REFRESH is non-nil, refresh existing images
+between BEG and END.  This will create new image displays only if
+necessary.
+
+BEG and END define the considered part. They default to the buffer
+boundaries with possible narrowing."
   (interactive "P")
   (when (display-graphic-p)
     (when refresh
@@ -216,7 +309,8 @@ useful if using font Iosevka."
                                      (append org-link-abbrev-alist-local
                                              org-link-abbrev-alist)))
                (file-types-re
-                (format "\\[\\[\\(?:file%s:\\|attachment:\\|[./~]\\)\\|\\]\\[\\(<?\\(?:file\\|attachment\\):\\)"
+                (format "\\[\\[\\(?:file%s:\\|attachment:\\|[./~]\\)\\|\\]
+\\[\\(<?\\(?:file\\|attachment\\):\\)"
                         (if (not link-abbrevs) ""
                           (concat "\\|" (regexp-opt link-abbrevs))))))
           (while (re-search-forward file-types-re end t)
@@ -290,8 +384,8 @@ useful if using font Iosevka."
                                     (pcase align
 
                                       ;; Apply the edge for alignments
-                                      ("center" `(space :align-to (- (0.5 . ,edge)
-                                                                     (0.5 . ,image))))
+                                      ("center" `(space :align-to (- (0.55 . ,edge)
+                                                                     (0.55 . ,image))))
                                       ("right"  `(space :align-to (- ,edge
                                                                      ,image))))))))
                               (push ov org-inline-image-overlays))))))))))))))))
@@ -300,17 +394,60 @@ useful if using font Iosevka."
 (setq org-yank-dnd-method 'file-link)
 (setq org-yank-image-save-method (expand-file-name "images/" org-directory))
 
-;; Org links
+;;; Org Hyperlinks
+(require 'ol)
 (setq org-return-follows-link t)
+
+;; Support for links to kill strings as its content
+(org-link-set-parameters "kill"
+                         :follow #'sthenno/org-kill-open
+                         :export #'sthenno/org-kill-export
+                         :store #'sthenno/org-kill-store-link)
+
+(defcustom sthenno/org-kill-command 'kill-new
+  "The Emacs command to be used to kill a string as the latest kill in the
+kill ring."
+  :group 'org-link
+  :type '(choice (const kill-new)
+                 (const org-kill-new)))
+
+(defun sthenno/org-kill-open (text _)
+  "Make TEXT the latest kill in the kill ring."
+  (funcall sthenno/org-kill-command text)
+  (message "String %s killed." text))
+
+(defun sthenno/org-kill-store-link (&optional _interactive?)
+  "Store a link to a string."
+  (let* ((text (buffer-substring-no-properties (region-beginning)
+                                               (region-end)))
+         (link (concat "kill:" text)))
+    (org-link-store-props
+     :type "kill"
+     :link link
+     :description text)))
+
+(defun sthenno/org-kill-export (link description format _)
+  "Export a kill link from Org files."
+  (let ((text link)
+        (desc (or description link)))
+    (pcase format
+      (_ text))))
+
+(defun sthenno/org-kill-insert ()
+  (interactive)
+  (let* ((lo (region-beginning))
+         (hi (region-end))
+         (text (buffer-substring-no-properties lo hi)))
+    (delete-region lo hi)
+    (insert (format "[[kill:%s][%s]]" text text))))
 
 ;; Open file links in current window
 (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 
-;; Using shift-<arrow-keys> to select text
+;;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select t)
 
-
-;; The Zettlekasten note-taking system by Denote
+;;; The Zettlekasten note-taking system by Denote
 (use-package denote
   :ensure t
   :after (org)
@@ -356,8 +493,7 @@ useful if using font Iosevka."
     (let ((denote-prompts nil)
           (denote-kill-buffers nil))
       (cond
-       ((and (use-region-p)
-             (not (org-at-heading-p)))
+       ((use-region-p)
         (let* ((denote-ignore-region-in-denote-command t)
                (path (buffer-substring-no-properties (region-beginning)
                                                      (region-end)))
@@ -469,6 +605,15 @@ useful if using font Iosevka."
   (interactive)
   (sthenno/denote-open-adjacent-file +1))
 
+
+;;; Experimental: org-node
+
+;; (use-package org-node
+;;   :after org
+;;   :ensure t
+;;   :config (org-node-cache-mode))
+
+
 (bind-keys :map org-mode-map
            ("s-<up>"   . sthenno/denote-open-previous-file)
            ("s-<down>" . sthenno/denote-open-next-file))
@@ -511,18 +656,17 @@ useful if using font Iosevka."
       (message "Not in a code block"))))
 (keymap-set org-mode-map "s-<mouse-1>" #'sthenno/org-copy-source-code-block)
 
-
-;; Org-Agenda
+;;; Org-Agenda
 ;;
 (require 'denote)
 (setq org-agenda-files `(,denote-directory
                          ,denote-journal-extras-directory))
 
 ;; Bind keys
-(defun sthenno/org-agenda-open ()
+(defun sthenno/org-agenda-list-all-todos ()
   (interactive)
-  (org-agenda nil "n"))
-(keymap-global-set "C-c a" #'sthenno/org-agenda-open)
+  (org-agenda nil "t"))
+(keymap-global-set "C-c a" #'sthenno/org-agenda-list-all-todos)
 
 (setq org-log-done 'time)
 
@@ -547,8 +691,5 @@ useful if using font Iosevka."
                                  (tags   . "%i")
                                  (search . "%i")))
 (setq org-agenda-format-date "\n􀧞 %F\n")
-(setq org-closed-string    "􁜓"
-      org-scheduled-string "􁙜"
-      org-deadline-string  "􁙝")
 
 (provide 'init-org)

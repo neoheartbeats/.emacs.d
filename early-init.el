@@ -60,12 +60,9 @@
 (define-advice startup--load-user-init-file (:before (&rest _) nomessage-remove)
   (advice-remove #'load-file #'load-file@silence))
 
-
-;; Customize Native-Compilation and caching
+;;; Customize Native-Compilation and caching
 (defvar user-cache-directory "~/.cache/emacs/"
   "Location that files created by Emacs are placed.")
-
-(setq native-comp-speed 3)
 
 ;; By default any warnings encountered during async native compilation pops up. As this
 ;; tends to happen rather frequently with a lot of packages, it can get annoying.

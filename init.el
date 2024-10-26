@@ -49,14 +49,14 @@
 ;; determined, but do it anyway, just in case. This increases memory usage.  (setq
 ;; inhibit-compacting-font-caches t)
 
-
+;;; Basic UI setup
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
 (add-to-list 'default-frame-alist '(width . 120))
-(add-to-list 'default-frame-alist '(height . 50))
-;; (add-to-list 'default-frame-alist '(alpha . (85 . 85)))
+(add-to-list 'default-frame-alist '(height . 55))
+(add-to-list 'default-frame-alist '(alpha . (85 . 85)))
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 
 ;; Suppress GUI features
@@ -68,22 +68,30 @@
 
 (setq initial-scratch-message nil)
 
-;; User information
+;;; User information
 (setq user-full-name "Sthenno"
       user-mail-address "sthenno@sthenno.com")
 
-;; Set path for custom-file
+;;; Set path for custom-file
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(if (file-exists-p custom-file)
+    (load custom-file)
+  nil)
 
-;; Emacs packages
+;;; Emacs packages
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") 'append)
 (add-to-list 'package-archives '("gnu-devel" . "https://elpa.gnu.org/devel/") 'prepend)
+
+(use-package diminish
+  :ensure t
+  :config (diminish 'eldoc-mode))
 
 ;; GCMH: the Garbage Collector Magic Hack
 (use-package gcmh
   :ensure t
   :demand t
+  :diminish (gcmh-mode)
   :config
 
   ;; The GC introduces annoying pauses and stuttering into our Emacs experience, so we
@@ -107,7 +115,7 @@ Cancel the previous one if present."
         gcmh-verbose nil)
   (gcmh-mode 1))
 
-;; Load path
+;;; Load path
 (use-package org
   :load-path "site-lisp/org/lisp/"
   :demand t
