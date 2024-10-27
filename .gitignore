@@ -41,3 +41,4 @@ recentf
 /lisp/.init-eglot.el.~undo-tree~
 /lisp/.init-system.el.~undo-tree~
 /projectile.cache
+/tree-sitter/

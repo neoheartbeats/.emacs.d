@@ -22,11 +22,26 @@
   :config (global-treesit-auto-mode 1))
 
 ;; Remap `python-mode' to `python-ts-mode'
-(add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+(setq major-mode-remap-alist '((sh-mode . bash-ts-mode)
+                               (js-mode . js-ts-mode)
+                               (json-mode . json-ts-mode)
+                               (python-mode . python-ts-mode)
+                               (typescript-mode . typescript-ts-mode)
+                               (yaml-mode . yaml-ts-mode)))
+
+;; Append *-mode-hook to *-ts-mode-hook for modes in `major-mode-remap-list'
+(mapc #'(lambda (major-mode-remap)
+          (let ((major-mode-hook
+                 (intern (concat (symbol-name (car major-mode-remap)) "-hook")))
+                (major-ts-mode-hook
+                 (intern (concat (symbol-name (cdr major-mode-remap)) "-hook"))))
+            (add-hook major-ts-mode-hook `(lambda ()
+                                            (run-hooks (quote ,major-mode-hook))))))
+      major-mode-remap-alist)
 
 ;; To enable the maximum fontifications. If this is set to default, there could be
 ;; syntax highlighting error found in Org Babel
-(setq treesit-font-lock-level 4)
+;; (setq treesit-font-lock-level 4)
 
 ;;; Terminal integration
 (use-package vterm
@@ -65,17 +80,18 @@
 ;;; Initialize `eglot'
 (use-package eglot
   :ensure t
+  :demand t
   :config
-
-  ;; Hooks
-  (add-hook 'python-ts-mode-hook #'eglot-ensure)
-  (setq eglot-server-programs '((python-mode . ("pyright-langserver" "--stdio"))))
+  (add-to-list 'eglot-server-programs
+               '(python-mode . ("pyright-langserver" "--stdio")))
   
+  ;; Hooks
+  (add-hook 'prog-mode-hook #'eglot-ensure)
   :bind (:map eglot-mode-map
               ("<f2>" . eglot-rename)))
 
 ;; Automatically confirm .dir-locals.el files
-(setq-default enable-local-variables :safe)
+;; (setq-default enable-local-variables :safe)
 
 ;;; Python project management using Conda
 (use-package conda
@@ -105,8 +121,7 @@
   :config
 
   ;; Hooks
-  (add-hook 'python-mode-hook #'(lambda ()
-                                  (blacken-mode 1)))
+  (add-hook 'python-mode-hook #'blacken-mode)
 
   ;; Formatting buffers
   (defun sthenno/python-format-buffer ()
@@ -115,8 +130,8 @@
     ;; pip install isort
     (python-sort-imports)
     (blacken-buffer))
-  
-  :bind (:map python-mode-map
+
+  :bind (:map python-base-mode-map
               ("s-i" . sthenno/python-format-buffer)))
 
 ;; JSON files
