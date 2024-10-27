@@ -55,7 +55,7 @@
 (add-hook 'minibuffer-setup-hook #'(lambda ()
                                      (cursor-intangible-mode 1)))
 
-;; Use the `orderless' completion style
+;;; Use the `orderless' completion style
 (use-package orderless
   :ensure t
   :config
@@ -80,8 +80,7 @@
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t)
 
-
-;; Completions in minibuffers
+;;; Completions in minibuffers
 (use-package vertico
   :ensure t
   :demand t
@@ -187,8 +186,7 @@
                ("<return>"    . vertico-directory-enter)
                ("<backspace>" . vertico-directory-delete-char))))
 
-
-;; Rich annotations for minibuffer
+;;; Rich annotations for minibuffer
 (use-package marginalia
   :ensure t
   :init
@@ -198,8 +196,7 @@
   (setq marginalia-align-offset 4)
   (marginalia-mode 1))
 
-
-;; Consult is useful previewing current content in buffer
+;;; Consult is useful previewing current content in buffer
 (use-package consult
   :ensure t
   :init
@@ -226,9 +223,9 @@
   (consult-customize consult-buffer
                      :prompt "Buffer → ")
 
-  (consult-customize consult-line
-                     :add-history (seq-some #'thing-at-point '(region symbol))
-                     :initial (thing-at-point 'symbol))
+  ;; (consult-customize consult-line
+  ;;                    :add-history (seq-some #'thing-at-point '(region symbol))
+  ;;                    :initial (thing-at-point 'symbol))
 
   ;; Shorten recent files in `consult-buffer'
   (defun sthenno/consult--source-recentf-items ()
@@ -344,13 +341,15 @@
     "Modify the annotation for boundp symbols."
     (sthenno/cape--symbol-annotation sym))
 
-  (setq cape--dabbrev-properties (list :annotation-function (lambda (_) " <dab>")
+  (setq cape--dabbrev-properties (list :annotation-function (lambda (_)
+                                                              ;; FIXME: how to avoid
+                                                              ;; parsing this as a
+                                                              ;; docstring?
+                                                              " <dab>")
                                        :company-kind (lambda (_) 'text)
                                        :exclusive 'no)))
 
-
-;; The main completion frontend by Corfu
-
+;;; The main completion frontend by Corfu
 (use-package corfu
   :vc (corfu
        :url "https://github.com/minad/corfu"

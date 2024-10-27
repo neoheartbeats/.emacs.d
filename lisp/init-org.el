@@ -29,8 +29,7 @@
 ;; Fold titles by default
 ;; (setq org-startup-folded 'content)
 
-
-;; Install AUCTeX
+;;; Install AUCTeX
 (use-package tex
   :ensure auctex)
 
@@ -605,7 +604,6 @@ kill ring."
   (interactive)
   (sthenno/denote-open-adjacent-file +1))
 
-
 ;;; Experimental: org-node
 
 ;; (use-package org-node
@@ -657,7 +655,7 @@ kill ring."
 (keymap-set org-mode-map "s-<mouse-1>" #'sthenno/org-copy-source-code-block)
 
 ;;; Org-Agenda
-;;
+
 (require 'denote)
 (setq org-agenda-files `(,denote-directory
                          ,denote-journal-extras-directory))

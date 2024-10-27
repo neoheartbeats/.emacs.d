@@ -132,21 +132,11 @@ and auto-paring for such entries."
 (setopt mouse-highlight nil)
 (blink-cursor-mode -1)
 
-
-;; Using rainbow delimiters
-(use-package rainbow-delimiters
-  :ensure t
-  :defer t
-  :init (add-hook 'prog-mode-hook #'(lambda ()
-                                      (rainbow-delimiters-mode 1))))
-
-
-;; Show doc-string in echo area
+;;; Show doc-string in echo area
 (use-package eldoc
   :init (setq eldoc-idle-delay 0.05))
 
-
-;; Deletions
+;;; Deletions
 ;;
 ;; Delete selection if you insert
 ;;
@@ -170,7 +160,7 @@ and auto-paring for such entries."
 (add-hook 'prog-mode-hook #'(lambda ()
                               (display-line-numbers-mode 1)))
 
-
+;;;
 (use-package pulsar
   :ensure t
   :config
@@ -196,7 +186,6 @@ and auto-paring for such entries."
   (add-hook 'after-init-hook #'(lambda ()
                                  (pulsar-global-mode 1))))
 
-
 (use-package indent-bars
   :ensure t
   :init
@@ -217,9 +206,7 @@ and auto-paring for such entries."
   (add-hook 'python-mode-hook #'(lambda ()
                                   (indent-bars-mode 1))))
 
-
-;; Highlight these keywords in code comments
-;;
+;;; Highlight these keywords in code comments
 (use-package hl-todo
   :ensure t
   :config
@@ -230,25 +217,30 @@ and auto-paring for such entries."
               ("FIXME" . ,err)
               ("XXXX*" . ,err)
               ("NOTE"  . ,fg-changed)
-              ("HACK"  . ,fg-changed))))
-    (add-hook 'prog-mode-hook #'sthenno/hl-todo-faces-setup)
+              ("HACK"  . ,fg-changed)))))
+  (add-hook 'prog-mode-hook #'sthenno/hl-todo-faces-setup)
+  (global-hl-todo-mode 1))
 
-    (global-hl-todo-mode 1)))
+;;; Hightlight parenthesis dynamically surrounding point
+(use-package highlight-parentheses
+  :ensure t
+  :diminish highlight-parentheses-mode
+  :hook (prog-mode . highlight-parentheses-mode))
 
+;;; Highlight color for each identifier uniquely based on its name
+(use-package color-identifiers-mode
+  :ensure t
+  :config (add-hook 'after-init-hook #'global-color-identifiers-mode))
 
-
-
-;; Edit multiple occurrences in the same way simultaneously using "C-;"
+;;; Edit multiple occurrences in the same way simultaneously using "C-;"
 (use-package iedit
   :ensure t)
 
-
 ;;; Spell checking using Jinx
 ;;
 ;; GNU Aspell is used as the backend by default.
 ;; Enchant need to be installed first. Use "brew install enchant" on macOS.
 ;; Personal dictionary is located at "~/.config/enchant/en_US.dic" on macOS.
-
 (use-package jinx
   :ensure t
   :init
