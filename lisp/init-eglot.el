@@ -177,7 +177,7 @@
   (defun sthenno/gptel-buffer ()
     "Open the `gptel' buffer."
     (interactive)
-    (let ((buff "*LLM*"))
+    (let ((buff "*vLLM*"))
       (gptel buff)
       (pop-to-buffer buff)))
 

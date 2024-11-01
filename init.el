@@ -56,7 +56,7 @@
 
 (add-to-list 'default-frame-alist '(width . 120))
 (add-to-list 'default-frame-alist '(height . 55))
-(add-to-list 'default-frame-alist '(alpha . (85 . 85)))
+;; (add-to-list 'default-frame-alist '(alpha . (85 . 85)))
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 
 ;; Suppress GUI features

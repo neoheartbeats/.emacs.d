@@ -176,8 +176,7 @@
 
 ;; [TODO] consult-reftex, see https://karthinks.com/software/reftex-in-org-mode/
 
-
-;; Modern Org Mode theme
+;;; Modern Org Mode theme
 (use-package org-modern
   :ensure t
   :config
@@ -191,8 +190,9 @@
                               (?-  . "􀃞")
                               (?\s . "􀂒")))
 
-  (setq org-modern-block-name '(("src"    . ("􀃤" "􀃤"))
-                                ("export" . ("􀣙" "􀓕"))))
+  (setq org-modern-block-name '(("src"    . ("􀃤" "􀂓"))
+                                ("quote"  . ("􀈎" "􀂓"))
+                                ("export" . ("􀣙" "􀂓"))))
 
   (setq org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
   (setq org-modern-keyword '(("title"   . "􀉛")
@@ -373,7 +373,7 @@ boundaries with possible narrowing."
                                 (overlay-put ov 'keymap image-map))
                               (when align
 
-                                ;; Use fill-column to indicate the left-edge to display
+                                ;; Use fill-column to indicate the right-edge to display
                                 (let ((edge fill-column))
                                   (overlay-put
                                    ov 'before-string
@@ -616,8 +616,7 @@ kill ring."
            ("s-<up>"   . sthenno/denote-open-previous-file)
            ("s-<down>" . sthenno/denote-open-next-file))
 
-
-;; Load languages for Org Babel
+;;; Load languages for Org Babel
 
 ;; Do not ask for confirmation before executing
 (setq org-link-elisp-confirm-function nil

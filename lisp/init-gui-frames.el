@@ -22,7 +22,7 @@
   :demand t
   :config
   (setopt modus-themes-bold-constructs t
-          modus-themes-italic-constructs t)
+          modus-themes-italic-constructs nil)
 
   ;; (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-faint)
   
