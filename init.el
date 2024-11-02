@@ -13,7 +13,8 @@
 
 ;;; Code:
 
-;; Speed up startup
+;;; Speed up startup
+
 ;; Process performance tuning
 (setq-default process-adaptive-read-buffering nil)
 
@@ -51,7 +52,7 @@
 
 ;;; Basic UI setup
 (tool-bar-mode -1)
-(menu-bar-mode -1)
+;; (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
 (add-to-list 'default-frame-alist '(width . 120))
@@ -73,10 +74,16 @@
       user-mail-address "sthenno@sthenno.com")
 
 ;;; Set path for custom-file
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(if (file-exists-p custom-file)
-    (load custom-file)
-  nil)
+(setq custom-file (locate-user-emacs-file "custom.el"))
+
+;;; FIXME
+(add-to-list 'load-path "~/.emacs.d/site-lisp/org/lisp/")
+(use-package org
+  :load-path "site-lisp/org/lisp/"
+  :demand t
+  :init
+  (require 'org)
+  (require 'org-latex-preview))
 
 ;;; Emacs packages
 (require 'package)
@@ -87,7 +94,10 @@
   :ensure t
   :config (diminish 'eldoc-mode))
 
-;; GCMH: the Garbage Collector Magic Hack
+;;; FIXME
+;; (require 'python)
+
+;;; GCMH: the Garbage Collector Magic Hack
 (use-package gcmh
   :ensure t
   :demand t
@@ -116,19 +126,14 @@ Cancel the previous one if present."
   (gcmh-mode 1))
 
 ;;; Load path
-(use-package org
-  :load-path "site-lisp/org/lisp/"
-  :demand t
-  :init
-  (require 'org)
-  (require 'org-latex-preview)
-  (require 'org-agenda))
+
+
 
 ;; Fix PATH for macOS
-(use-package exec-path-from-shell
-  :ensure t
-  :demand t
-  :config (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell
+;;   :ensure t
+;;   :demand t
+;;   :config (exec-path-from-shell-initialize))
 
 ;; Dir for init-* files
 (add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
@@ -142,3 +147,5 @@ Cancel the previous one if present."
 (require 'init-temp)
 (require 'init-comp)
 (require 'init-eglot)
+
+(provide 'init)

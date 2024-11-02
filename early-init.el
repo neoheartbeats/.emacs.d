@@ -77,8 +77,8 @@
 (push '(tool-bar-lines . 0)   default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
 
+
 ;; Resizing the Emacs frame can be a terribly expensive part of changing the font. By
 ;; inhibiting this, we halve startup times, particularly when we use fonts that are
 ;; larger than the system default (which would resize the frame)
 (setq frame-inhibit-implied-resize t)
-

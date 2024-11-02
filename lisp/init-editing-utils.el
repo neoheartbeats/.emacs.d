@@ -11,8 +11,7 @@
 ;;; Code:
 ;;
 
-
-;; Global functions for editing enhancement
+;;; Global functions for editing enhancement
 ;;
 
 (defun sthenno/delete-current-line ()
@@ -93,7 +92,8 @@ If `major-mode' is `python-mode', abort."
   (save-excursion
     (indent-current-buffer)
     (indent-current-buffer-comment)
-    (untabify-current-buffer))
+    (untabify-current-buffer)
+    (delete-trailing-whitespace))
   (run-hooks 'sthenno/pretty-print-current-buffer-hook))
 (keymap-set emacs-lisp-mode-map "s-i" #'sthenno/pretty-print-current-buffer)
 
@@ -155,12 +155,13 @@ and auto-paring for such entries."
 (add-hook 'prog-mode-hook #'(lambda ()
                               (display-fill-column-indicator-mode 1)))
 
-;; Display line numbers
+;;; Display line numbers
+
 (setq-default display-line-numbers-width 4)
 (add-hook 'prog-mode-hook #'(lambda ()
                               (display-line-numbers-mode 1)))
 
-;;;
+;;; TODO: Do I really need this?
 (use-package pulsar
   :ensure t
   :config
@@ -171,55 +172,52 @@ and auto-paring for such entries."
   ;; Hooks
   ;;
   ;; Pulsing
-  (add-hook 'after-save-hook #'pulsar-pulse-line-green)
+
+  ;; (add-hook 'after-save-hook #'pulsar-pulse-line-green)
 
   (add-hook 'sthenno/delete-current-line-hook #'pulsar-pulse-line-magenta)
-  (add-hook 'sthenno/cycle-to-next-buffer-hook #'pulsar-pulse-line-cyan)
-  (add-hook 'sthenno/cycle-to-previous-buffer-hook #'pulsar-pulse-line-cyan)
+  ;; (add-hook 'sthenno/cycle-to-next-buffer-hook #'pulsar-pulse-line-cyan)
+  ;; (add-hook 'sthenno/cycle-to-previous-buffer-hook #'pulsar-pulse-line-cyan)
 
-  (add-hook 'sthenno/org-copy-source-code-block-hook #'pulsar-pulse-line-cyan)
+  ;; (add-hook 'sthenno/org-copy-source-code-block-hook #'pulsar-pulse-line-cyan)
 
   ;; Highlighting
   (add-hook 'split-window-below-focus-hook #'pulsar-highlight-line)
   (add-hook 'split-window-right-focus-hook #'pulsar-highlight-line)
 
-  (add-hook 'after-init-hook #'(lambda ()
-                                 (pulsar-global-mode 1))))
+  (pulsar-global-mode 1))
 
-(use-package indent-bars
-  :ensure t
-  :init
-  (setq indent-bars-treesit-support t
-        indent-bars-treesit-ignore-blank-lines-types '("module"))
+;;; Indentations
+;; (use-package indent-bars
+;;   :ensure t
+;;   :init
+;;   (setq indent-bars-treesit-support t
+;;         indent-bars-treesit-ignore-blank-lines-types '("module"))
 
-  ;; Stipple-based pixel-toggling is not supported by NS built Emacs
-  (setq indent-bars-prefer-character t)
+;;   ;; Stipple-based pixel-toggling is not supported by NS built Emacs
+;;   (setq indent-bars-prefer-character t)
 
-  :config
-  (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
-        indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-        indent-bars-highlight-current-depth '(:blend 0.8)
-        indent-bars-starting-column 0
-        indent-bars-display-on-blank-lines t)
-
-  ;; Hooks
-  (add-hook 'python-mode-hook #'(lambda ()
-                                  (indent-bars-mode 1))))
+;;   :config
+;;   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
+;;         indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+;;         indent-bars-highlight-current-depth '(:blend 0.8)
+;;         indent-bars-starting-column 0
+;;         indent-bars-display-on-blank-lines t))
 
 ;;; Highlight these keywords in code comments
-(use-package hl-todo
-  :ensure t
-  :config
-  (defun sthenno/hl-todo-faces-setup ()
-    (modus-themes-with-colors
-      (setq hl-todo-keyword-faces
-            `(("TODO"  . ,prose-todo)
-              ("FIXME" . ,err)
-              ("XXXX*" . ,err)
-              ("NOTE"  . ,fg-changed)
-              ("HACK"  . ,fg-changed)))))
-  (add-hook 'prog-mode-hook #'sthenno/hl-todo-faces-setup)
-  (global-hl-todo-mode 1))
+;; (use-package hl-todo
+;;   :ensure t
+;;   :config
+;;   (defun sthenno/hl-todo-faces-setup ()
+;;     (modus-themes-with-colors
+;;       (setq hl-todo-keyword-faces
+;;             `(("TODO"  . ,prose-todo)
+;;               ("FIXME" . ,err)
+;;               ("XXXX*" . ,err)
+;;               ("NOTE"  . ,fg-changed)
+;;               ("HACK"  . ,fg-changed)))))
+;;   (add-hook 'prog-mode-hook #'sthenno/hl-todo-faces-setup)
+;;   (global-hl-todo-mode 1))
 
 ;;; Hightlight parenthesis dynamically surrounding point
 (use-package highlight-parentheses
@@ -228,9 +226,9 @@ and auto-paring for such entries."
   :hook (prog-mode . highlight-parentheses-mode))
 
 ;;; Highlight color for each identifier uniquely based on its name
-(use-package color-identifiers-mode
-  :ensure t
-  :config (add-hook 'after-init-hook #'global-color-identifiers-mode))
+;; (use-package color-identifiers-mode
+;;   :ensure t
+;;   :config (add-hook 'after-init-hook #'global-color-identifiers-mode))
 
 ;;; Edit multiple occurrences in the same way simultaneously using "C-;"
 (use-package iedit
@@ -241,86 +239,86 @@ and auto-paring for such entries."
 ;; GNU Aspell is used as the backend by default.
 ;; Enchant need to be installed first. Use "brew install enchant" on macOS.
 ;; Personal dictionary is located at "~/.config/enchant/en_US.dic" on macOS.
-(use-package jinx
-  :ensure t
-  :init
-  (setq jinx-languages "en_US"
-        jinx-menu-suggestions 5)
+;; (use-package jinx
+;;   :ensure t
+;;   :init
+;;   (setq jinx-languages "en_US"
+;;         jinx-menu-suggestions 5)
 
-  (setq jinx--save-keys
-        `((?= . ,#'jinx--save-personal)))
+;;   (setq jinx--save-keys
+;;         `((?= . ,#'jinx--save-personal)))
 
-  ;; HACK
-  ;;
-  (cl-defun jinx--correct-overlay (overlay &key info initial)
-    "Correct word at OVERLAY.
-Optionally show prompt INFO and insert INITIAL input."
-    (catch 'jinx--goto
-      (let* ((word (buffer-substring-no-properties
-                    (overlay-start overlay) (overlay-end overlay)))
-             (choice
-              (jinx--correct-highlight overlay
-                                       (lambda ()
-                                         (when (or (< (point) (window-start))
-                                                   (> (point) (window-end nil t)))
-                                           (recenter))
-                                         (minibuffer-with-setup-hook
-                                             #'jinx--correct-setup
-                                           (or (completing-read
-                                                (format "Correct '%s'%s: " word
-                                                        (or info ""))
-                                                (jinx--correct-table
-                                                 (jinx--correct-suggestions word))
-                                                nil nil initial t word)
-                                               word)))))
-             (len (length choice)))
-        (pcase (and (> len 0) (assq (aref choice 0) jinx--save-keys))
-          (`(,key . ,fun)
-           (funcall fun 'save key
-                    (if (> len 1) (substring-no-properties choice 1) word))
-           (jinx--recheck-overlays))
-          ((guard (not (equal choice word)))
-           (jinx--correct-replace overlay choice)))
-        nil)))
+;;   ;; HACK
+;;   ;;
+;;   (cl-defun jinx--correct-overlay (overlay &key info initial)
+;;     "Correct word at OVERLAY.
+;; Optionally show prompt INFO and insert INITIAL input."
+;;     (catch 'jinx--goto
+;;       (let* ((word (buffer-substring-no-properties
+;;                     (overlay-start overlay) (overlay-end overlay)))
+;;              (choice
+;;               (jinx--correct-highlight overlay
+;;                                        (lambda ()
+;;                                          (when (or (< (point) (window-start))
+;;                                                    (> (point) (window-end nil t)))
+;;                                            (recenter))
+;;                                          (minibuffer-with-setup-hook
+;;                                              #'jinx--correct-setup
+;;                                            (or (completing-read
+;;                                                 (format "Correct '%s'%s: " word
+;;                                                         (or info ""))
+;;                                                 (jinx--correct-table
+;;                                                  (jinx--correct-suggestions word))
+;;                                                 nil nil initial t word)
+;;                                                word)))))
+;;              (len (length choice)))
+;;         (pcase (and (> len 0) (assq (aref choice 0) jinx--save-keys))
+;;           (`(,key . ,fun)
+;;            (funcall fun 'save key
+;;                     (if (> len 1) (substring-no-properties choice 1) word))
+;;            (jinx--recheck-overlays))
+;;           ((guard (not (equal choice word)))
+;;            (jinx--correct-replace overlay choice)))
+;;         nil)))
 
-  (defun jinx--correct-suggestions (word)
-    "Retrieve suggestions for WORD from all dictionaries."
-    (let ((ht (make-hash-table :test #'equal))
-          (list nil))
-      (dolist (dict jinx--dicts)
-        (let* ((desc (jinx--mod-describe dict))
-               (group (format "Suggestions from dictionary '%s' - %s"
-                              (car desc) (cdr desc))))
-          (dolist (w (jinx--mod-suggest dict word))
-            (setq list (jinx--add-suggestion list ht w group)))))
-      (dolist (w (jinx--session-suggestions word))
-        (setq list (jinx--add-suggestion list ht w "Suggestions from session")))
-      (cl-loop for (key . fun) in jinx--save-keys
-               for actions = (funcall fun nil key word) do
-               (when (and actions (not (consp (car actions))))
-                 (setq actions (list actions)))
-               (cl-loop for (k w a) in actions do
-                        (push (propertize
-                               (concat (propertize (if (stringp k) k
-                                                     (char-to-string k))
-                                                   'face 'jinx-save 'rear-nonsticky t)
-                                       w)
-                               'jinx--group "Accept"
-                               'jinx--suffix
-                               (format #(" [%s]" 0 5 (face jinx-annotation)) a))
-                              list)))
-      (nreverse list)))
+;;   (defun jinx--correct-suggestions (word)
+;;     "Retrieve suggestions for WORD from all dictionaries."
+;;     (let ((ht (make-hash-table :test #'equal))
+;;           (list nil))
+;;       (dolist (dict jinx--dicts)
+;;         (let* ((desc (jinx--mod-describe dict))
+;;                (group (format "Suggestions from dictionary '%s' - %s"
+;;                               (car desc) (cdr desc))))
+;;           (dolist (w (jinx--mod-suggest dict word))
+;;             (setq list (jinx--add-suggestion list ht w group)))))
+;;       (dolist (w (jinx--session-suggestions word))
+;;         (setq list (jinx--add-suggestion list ht w "Suggestions from session")))
+;;       (cl-loop for (key . fun) in jinx--save-keys
+;;                for actions = (funcall fun nil key word) do
+;;                (when (and actions (not (consp (car actions))))
+;;                  (setq actions (list actions)))
+;;                (cl-loop for (k w a) in actions do
+;;                         (push (propertize
+;;                                (concat (propertize (if (stringp k) k
+;;                                                      (char-to-string k))
+;;                                                    'face 'jinx-save 'rear-nonsticky t)
+;;                                        w)
+;;                                'jinx--group "Accept"
+;;                                'jinx--suffix
+;;                                (format #(" [%s]" 0 5 (face jinx-annotation)) a))
+;;                               list)))
+;;       (nreverse list)))
 
-  ;; Hooks
-  ;;
-  ;; (add-hook 'emacs-startup-hook #'(lambda ()
-  ;;                                   (global-jinx-mode 1)))
-  ;; (add-hook 'text-mode-hook #'(lambda ()
-  ;;                               (jinx-mode 1)))
+;;   ;; Hooks
+;;   ;;
+;;   ;; (add-hook 'emacs-startup-hook #'(lambda ()
+;;   ;;                                   (global-jinx-mode 1)))
+;;   ;; (add-hook 'text-mode-hook #'(lambda ()
+;;   ;;                               (jinx-mode 1)))
 
-  :bind ((:map jinx-overlay-map
-               ("C-SPC" . jinx-correct))
-         (:map global-map
-               ("C-c j" . jinx-mode))))
+;;   :bind ((:map jinx-overlay-map
+;;                ("C-SPC" . jinx-correct))
+;;          (:map global-map
+;;                ("C-c j" . jinx-mode))))
 
 (provide 'init-editing-utils)

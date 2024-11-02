@@ -16,77 +16,81 @@
 
 ;;; Modus Themes
 (use-package modus-themes
-  :vc (modus-themes
-       :url "https://gitlab.com/protesilaos/modus-themes"
-       :branch "main")
-  :demand t
+  :ensure t
   :config
-  (setopt modus-themes-bold-constructs t
-          modus-themes-italic-constructs nil)
 
-  ;; (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-faint)
-  
+  ;; Less is more.
+
+  ;; "On a page of text, nothing draws the eye more powerfully than a contrast between
+  ;; light and dark colors."
+
+  ;; "The horse may be long out of the barn on this one, but on the web, the same rule
+  ;; of restraint applies: less color is more effective. When everything is emphasized,
+  ;; nothing is emphasized."
+
+  ;; See https://practicaltypography.com/color.html
+
   ;; Mapping colors
-  (setopt modus-vivendi-palette-overrides
-          '(
-            ;; Make the mode-line borderless and stand out less
-            (bg-mode-line-active bg-active)
-            (fg-mode-line-active fg-main)
-            (bg-mode-line-inactive bg-dim)
-            (fg-mode-line-inactive fg-dim)
+  (setq modus-vivendi-palette-overrides
+        `(
+          ;; Make the mode-line borderless and stand out less
+          (bg-mode-line-active bg-dim)
+          (fg-mode-line-active fg-dim)
+          (bg-mode-line-inactive bg-dim)
+          (fg-mode-line-inactive fg-dim)
 
-            ;; Make the mode line borderless
-            (border-mode-line-active unspecified)
-            (border-mode-line-inactive unspecified)
+          ;; Make the mode line borderless
+          (border-mode-line-active unspecified)
+          (border-mode-line-inactive unspecified)
 
-            ;; Set color faces for `display-line-numbers-mode'
-            (fg-line-number-active fg-main)
-            (bg-line-number-active bg-hl-line)
-            (fg-line-number-inactive fg-dim)
-            (bg-line-number-inactive unspecified)
+          ;; Set color faces for `display-line-numbers-mode'
+          (fg-line-number-active fg-main)
+          (bg-line-number-active bg-hl-line)
+          (fg-line-number-inactive fg-dim)
+          (bg-line-number-inactive unspecified)
 
-            ;; Make the fringe invisible
-            (fringe unspecified)
+          ;; Make the fringe invisible
+          (fringe unspecified)
 
-            ;; Subtle underlines
-            (underline-link border)
-            (underline-link-visited  border)
-            (underline-link-symbolic border)
+          ;; No underlines
+          (underline-link unspecified)
+          (underline-link-visited unspecified)
+          (underline-link-symbolic unspecified)
 
-            ;; Make links the same color as `fg-main'
-            ;; This also affects `button' faces in Modus Themes
-            (fg-link unspecified)
-            (fg-link-visited unspecified)
+          ;; Make links the same color as `fg-main'
+          ;; This also affects `button' faces in Modus Themes
+          (fg-link unspecified)
+          (fg-link-visited unspecified)
 
-            ;; Prose colors
-            (prose-todo info)
-            (prose-done fg-dim)
+          ;; Prose colors
+          (prose-todo info)
+          (prose-done fg-dim)
 
-            ;; Matching parenthesis
-            (fg-paren-match fg-main)
-            (bg-paren-match bg-green-intense)
+          ;; Matching parenthesis
+          (fg-paren-match info)
+          (bg-paren-match unspecified)
 
-            ;; Custom region colors
-            (fg-region unspecified)
-            (bg-region bg-cyan-subtle)
+          ;; Custom region colors
+          ;; (fg-region unspecified)
+          ;; (bg-region bg-cyan-subtle)
 
-            ;; Make code blocks more minimal
-            (bg-prose-block-contents unspecified)
+          ;; Make code blocks more minimal
+          (bg-prose-block-contents unspecified)
 
-            ;; Completions (see also `init-comp')
-            (bg-completion bg-hl-line)
+          ;; Completions (see also `init-comp')
+          (bg-completion bg-hl-line)
 
-            ;; Org-mode headings
-            ;; (fg-heading-1 magenta)
+          ;; Cursor color. See also `cursor-type'
+          ;; (cursor red-faint)
 
-            ;; Cursor color. See also `cursor-type'
-            (cursor red-faint)))
+          ;; Apply the presets
+          ,@modus-themes-preset-overrides-faint))
 
   ;; Enable and load the theme
-  (modus-themes-load-theme 'modus-vivendi))
+  (load-theme 'modus-vivendi :no-confirm))
 
 ;; Do not extend `region' background past the end of the line
-(custom-set-faces '(region ((t :extend nil))))
+;; (custom-set-faces '(region ((t :extend nil))))
 
 ;; Remove the `underline' for agenda views
 (custom-set-faces '(org-agenda-date-today ((t :underline nil))))
@@ -96,11 +100,12 @@
 (setq-default ns-use-proxy-icon nil)
 
 ;;; Highlight current line
-;; (global-hl-line-mode 1)
-(add-hook 'prog-mode-hook #'(lambda ()
-                              (hl-line-mode 1)))
 
-;; Encodings
+(global-hl-line-mode 1)
+;; (add-hook 'prog-mode-hook #'(lambda ()
+;;                               (hl-line-mode 1)))
+
+;;; Encodings
 ;;
 ;; Contrary to what many Emacs users have in their configs, you don't need more
 ;; than this to make UTF-8 the default coding system:
@@ -109,8 +114,14 @@
 ;; a step too opinionated.
 (setq default-input-method nil)
 
-;; Custom font
-(set-face-attribute 'default nil :family "Triplicate A Code" :height 140)
+;;; Font settings
+
+;; "In print, the optimal point size for body text is 10–12 point. On the web, the
+;; optimal size is 15–25 pixels."
+
+;; See: https://practicaltypography.com/point-size.html
+
+(set-face-attribute 'default nil :family "Triplicate A Code" :height 150)
 
 ;; Set up font for non-ascii fontset
 (set-fontset-font t 'big5                (font-spec :family "Noto Serif CJK SC"))
@@ -145,9 +156,12 @@
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
 
 ;; Ellipsis symbol
-(setq truncate-string-ellipsis " 􀍠")
+(setq truncate-string-ellipsis " …")
 
 ;; Text quoting
+
+;; See https://practicaltypography.com/straight-and-curly-quotes.html
+
 (setopt text-quoting-style 'straight)
 
 ;; Do not show buffer boundaries
@@ -190,15 +204,13 @@
 ;;   "Mode-line construct to display the Major.")
 ;; (put 'sthenno/mode-line-major 'risky-local-variable t)
 
-
-;; Automatic adjusting for margins
+;;; Automatic adjusting for margins
 (use-package spacious-padding
   :ensure t
   :if (display-graphic-p)
   :config (spacious-padding-mode 1))
 
-
-;; Sthenno's customization of "doom-quit"
+;;; Sthenno's customization of "doom-quit"
 ;;
 ;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
 ;;

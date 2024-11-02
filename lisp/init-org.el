@@ -18,8 +18,7 @@
 
 ;;; Code:
 
-;; Setup default directory
-;;
+;;; Setup default directory
 (setq org-directory "~/Developer/sthenno-notebook/")
 
 ;;; Org Mode buffer init behaviors
@@ -27,13 +26,14 @@
       org-startup-with-latex-preview t)
 
 ;; Fold titles by default
-;; (setq org-startup-folded 'content)
+(setq org-startup-folded 'content)
 
 ;;; Install AUCTeX
 (use-package tex
   :ensure auctex)
 
-;; Use CDLaTeX to improve editing experiences
+;;; Use CDLaTeX to improve editing experiences
+
 ;; This is temporarily disabled and replaced by `tempel'
 ;;
 ;; (use-package cdlatex
@@ -47,15 +47,13 @@
 (setq org-persist-directory (expand-file-name "org-persist" user-cache-directory))
 
 ;; Experimental: `org-latex-preview'
-(add-hook 'org-mode-hook #'(lambda ()
-                             (org-latex-preview-auto-mode 1)))
+(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
 
 ;; Ignore scrolling commands for `org-latex-preview-auto-mode'
-(setq org-latex-preview-auto-ignored-commands
-      '(
-        next-line previous-line
-        pixel-scroll-precision
-        scroll-up-command scroll-down-command))
+;; (setq org-latex-preview-auto-ignored-commands
+;;       '( next-line previous-line
+;;          pixel-scroll-precision
+;;          scroll-up-command scroll-down-command))
 
 ;; Show entities as UTF8 characters
 ;; (setopt org-pretty-entities t
@@ -78,7 +76,7 @@
 
                                  ;; Font packages
                                  ("libertinus" "newtx" t)
-                                 
+
                                  ;; Load this after all math to give access to bold math
                                  ;; See https://ctan.org/pkg/newtx
                                  ("" "bm" t)
@@ -124,7 +122,7 @@
   "Path to Ghostscript shared library.")
 
 (setq dvisvgm-image-converter-command
-      
+
       ;; The --optimise, --clipjoin, and --relative flags cause dvisvgm to do some extra
       ;; work to tidy up the SVG output, but barely add to the overall dvisvgm runtime
       ;; (<1% increace, from testing).
@@ -184,7 +182,7 @@
         org-modern-fold-stars '(("▶" . "▼")
                                 ("▷" . "▽"))
         org-modern-hide-stars 'leading)
-  
+
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '((?X  . "􀃰")
                               (?-  . "􀃞")
@@ -202,22 +200,24 @@
   (defun sthenno/org-modern-spacing ()
     "Adjust line-spacing for `org-modern' to correct svg display. This is
 useful if using font Iosevka."
-    (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.10)
-                                   ((eq major-mode #'org-agenda-mode) 0.10)
-                                   (t 0.0))))
+
+    ;; FIXME: This may not set properly
+    (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.20)
+                                   ((eq major-mode #'org-agenda-mode) 0.20)
+                                   (t nil))))
   (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
   (add-hook 'org-agenda-finalize-hook #'sthenno/org-modern-spacing)
 
   ;; Hooks
-  (add-hook 'org-mode-hook #'(lambda ()
-                               (global-org-modern-mode 1))))
+  (add-hook 'org-mode-hook #'global-org-modern-mode 1))
 
 ;; External settings for `org-modern'
-(setq org-ellipsis " ")
+(setq org-ellipsis " …")
 (setq org-use-property-inheritance t)
-(setq org-hide-emphasis-markers t)
 (setq org-auto-align-tags nil)
 (setq org-tags-column 0)
+
+(setq-default org-hide-emphasis-markers nil)
 
 (defun sthenno/org-toggle-emphasis ()
   "Toggle hiding of Org emphasis markers."
@@ -258,7 +258,7 @@ useful if using font Iosevka."
 
 ;; Fold drawers by default
 (setq org-cycle-hide-drawer-startup t)
-(add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
+;; (add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
 
 ;;; Org fragments and overlays
 ;;
@@ -394,53 +394,54 @@ boundaries with possible narrowing."
 (setq org-yank-image-save-method (expand-file-name "images/" org-directory))
 
 ;;; Org Hyperlinks
-(require 'ol)
+;; (require 'ol)
 (setq org-return-follows-link t)
 
 ;; Support for links to kill strings as its content
-(org-link-set-parameters "kill"
-                         :follow #'sthenno/org-kill-open
-                         :export #'sthenno/org-kill-export
-                         :store #'sthenno/org-kill-store-link)
+;; (org-link-set-parameters "kill"
+;;                          :follow #'sthenno/org-kill-open
+;;                          :export #'sthenno/org-kill-export
+;;                          :store #'sthenno/org-kill-store-link)
 
-(defcustom sthenno/org-kill-command 'kill-new
-  "The Emacs command to be used to kill a string as the latest kill in the
-kill ring."
-  :group 'org-link
-  :type '(choice (const kill-new)
-                 (const org-kill-new)))
+;; (defcustom sthenno/org-kill-command 'kill-new
+;;   "The Emacs command to be used to kill a string as the latest kill in the
+;; kill ring."
+;;   :group 'org-link
+;;   :type '(choice (const kill-new)
+;;                  (const org-kill-new)))
 
-(defun sthenno/org-kill-open (text _)
-  "Make TEXT the latest kill in the kill ring."
-  (funcall sthenno/org-kill-command text)
-  (message "String %s killed." text))
+;; (defun sthenno/org-kill-open (text _)
+;;   "Make TEXT the latest kill in the kill ring."
+;;   (funcall sthenno/org-kill-command text)
+;;   (message "String %s killed." text))
 
-(defun sthenno/org-kill-store-link (&optional _interactive?)
-  "Store a link to a string."
-  (let* ((text (buffer-substring-no-properties (region-beginning)
-                                               (region-end)))
-         (link (concat "kill:" text)))
-    (org-link-store-props
-     :type "kill"
-     :link link
-     :description text)))
+;; (defun sthenno/org-kill-store-link (&optional _interactive?)
+;;   "Store a link to a string."
+;;   (let* ((text (buffer-substring-no-properties (region-beginning)
+;;                                                (region-end)))
+;;          (link (concat "kill:" text)))
+;;     (org-link-store-props
+;;      :type "kill"
+;;      :link link
+;;      :description text)))
 
-(defun sthenno/org-kill-export (link description format _)
-  "Export a kill link from Org files."
-  (let ((text link)
-        (desc (or description link)))
-    (pcase format
-      (_ text))))
+;; (defun sthenno/org-kill-export (link description format _)
+;;   "Export a kill link from Org files."
+;;   (let ((text link)
+;;         (desc (or description link)))
+;;     (pcase format
+;;       (_ text))))
 
-(defun sthenno/org-kill-insert ()
-  (interactive)
-  (let* ((lo (region-beginning))
-         (hi (region-end))
-         (text (buffer-substring-no-properties lo hi)))
-    (delete-region lo hi)
-    (insert (format "[[kill:%s][%s]]" text text))))
+;; (defun sthenno/org-kill-insert ()
+;;   (interactive)
+;;   (let* ((lo (region-beginning))
+;;          (hi (region-end))
+;;          (text (buffer-substring-no-properties lo hi)))
+;;     (delete-region lo hi)
+;;     (insert (format "[[kill:%s][%s]]" text text))))
 
-;; Open file links in current window
+;;; Open file links in current window
+
 (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 
 ;;; Using shift-<arrow-keys> to select text
@@ -449,12 +450,11 @@ kill ring."
 ;;; The Zettlekasten note-taking system by Denote
 (use-package denote
   :ensure t
-  :after (org)
   :init
 
   ;; Hooks
   (add-hook 'emacs-startup-hook #'denote-journal-extras-new-or-existing-entry)
-  (add-hook 'dired-mode-hook    #'denote-dired-mode)
+  (add-hook 'dired-mode-hook #'denote-dired-mode)
 
   :config
   (setopt denote-directory org-directory) ; Use `org-directory' as default
@@ -546,7 +546,7 @@ kill ring."
 ;;   :ensure t
 ;;   :after (denote)
 ;;   :config
-;;   (setq denote-menu-date-column-width 25 
+;;   (setq denote-menu-date-column-width 25
 ;;         denote-menu-title-column-width 60)
 
 ;;   ;; Remove Denote journal entries from the menu
@@ -562,7 +562,7 @@ kill ring."
 ;;     (setq tabulated-list-padding 5)
 ;;     (denote-menu-update-entries)
 ;;     (setq tabulated-list-sort-key '("􀧞" . t))
-;;     (tabulated-list-init-header)    
+;;     (tabulated-list-init-header)
 ;;     (tabulated-list-print))
 
 ;;   :bind (:map global-map
@@ -604,14 +604,6 @@ kill ring."
   (interactive)
   (sthenno/denote-open-adjacent-file +1))
 
-;;; Experimental: org-node
-
-;; (use-package org-node
-;;   :after org
-;;   :ensure t
-;;   :config (org-node-cache-mode))
-
-
 (bind-keys :map org-mode-map
            ("s-<up>"   . sthenno/denote-open-previous-file)
            ("s-<down>" . sthenno/denote-open-next-file))
@@ -632,61 +624,60 @@ kill ring."
 ;; Enable these languages for Org-Babel
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
-                               (python . t)
-                               (shell . t)))
+                               (python . t)))
 
 ;; Define a function to copy the code block at point
-(defun sthenno/org-copy-source-code-block ()
-  "Copy the contents of the source code block at point."
-  (interactive)
-  (let ((e (org-element-context)))
-    (if (eq (org-element-type e) 'src-block)
-        (let ((sc ""))
-          (save-restriction
-            (org-narrow-to-subtree)
-            (org-babel-map-src-blocks nil
-              (setq sc (concat sc (org-no-properties body)))))
-          (progn
-            (kill-new sc)
-            (message "Code block content copied")
-            (run-hooks 'sthenno/org-copy-source-code-block-hook)))
-      (message "Not in a code block"))))
-(keymap-set org-mode-map "s-<mouse-1>" #'sthenno/org-copy-source-code-block)
+;; (defun sthenno/org-copy-source-code-block ()
+;;   "Copy the contents of the source code block at point."
+;;   (interactive)
+;;   (let ((e (org-element-context)))
+;;     (if (eq (org-element-type e) 'src-block)
+;;         (let ((sc ""))
+;;           (save-restriction
+;;             (org-narrow-to-subtree)
+;;             (org-babel-map-src-blocks nil
+;;               (setq sc (concat sc (org-no-properties body)))))
+;;           (progn
+;;             (kill-new sc)
+;;             (message "Code block content copied")
+;;             (run-hooks 'sthenno/org-copy-source-code-block-hook)))
+;;       (message "Not in a code block"))))
+;; (keymap-set org-mode-map "s-<mouse-1>" #'sthenno/org-copy-source-code-block)
 
 ;;; Org-Agenda
 
-(require 'denote)
-(setq org-agenda-files `(,denote-directory
-                         ,denote-journal-extras-directory))
+;; (require 'denote)                       ; FIXME: ???
+;; (setq org-agenda-files `(,denote-directory
+;;                          ,denote-journal-extras-directory))
 
-;; Bind keys
-(defun sthenno/org-agenda-list-all-todos ()
-  (interactive)
-  (org-agenda nil "t"))
-(keymap-global-set "C-c a" #'sthenno/org-agenda-list-all-todos)
+;; ;; Bind keys
+;; (defun sthenno/org-agenda-list-all-todos ()
+;;   (interactive)
+;;   (org-agenda nil "t"))
+;; (keymap-global-set "C-c a" #'sthenno/org-agenda-list-all-todos)
 
-(setq org-log-done 'time)
+;; (setq org-log-done 'time)
 
-;; Make Org-Agenda look better
-(setq org-agenda-overriding-header "")
-(setq org-agenda-block-separator ?─)
-(setq org-agenda-time-grid '((daily today require-timed)
-                             (800 1000 1200 1400 1600 1800 2000)
-                             " ────── " "───────────────")
-      org-agenda-current-time-string "───────────────")
+;; ;; Make Org-Agenda look better
+;; (setq org-agenda-overriding-header "")
+;; (setq org-agenda-block-separator ?─)
+;; (setq org-agenda-time-grid '((daily today require-timed)
+;;                              (800 1000 1200 1400 1600 1800 2000)
+;;                              " ────── " "───────────────")
+;;       org-agenda-current-time-string "───────────────")
 
-(setq org-agenda-window-setup 'current-window
-      org-agenda-restore-windows-after-quit t)
+;; (setq org-agenda-window-setup 'current-window
+;;       org-agenda-restore-windows-after-quit t)
 
-(setq org-agenda-span 5
-      org-agenda-start-day "+0d")
-(setq org-deadline-warning-days 4)
+;; (setq org-agenda-span 5
+;;       org-agenda-start-day "+0d")
+;; (setq org-deadline-warning-days 4)
 
-(setq org-agenda-category-icon-alist nil)
-(setq org-agenda-prefix-format '((agenda . "%i %?-12t%s 􀐱 ")
-                                 (todo   . "%i ○ ")
-                                 (tags   . "%i")
-                                 (search . "%i")))
-(setq org-agenda-format-date "\n􀧞 %F\n")
+;; (setq org-agenda-category-icon-alist nil)
+;; (setq org-agenda-prefix-format '((agenda . "%i %?-12t%s 􀐱 ")
+;;                                  (todo   . "%i ○ ")
+;;                                  (tags   . "%i")
+;;                                  (search . "%i")))
+;; (setq org-agenda-format-date "\n􀧞 %F\n")
 
 (provide 'init-org)

@@ -44,47 +44,47 @@
 ;; (setq treesit-font-lock-level 4)
 
 ;;; Terminal integration
-(use-package vterm
-  :ensure t
-  :config (setq vterm-always-compile-module t))
 
-(use-package vterm-toggle
-  :ensure t
-  :after (vterm)
-  :config
+;; (use-package vterm
+;;   :ensure t
+;;   :config (setq vterm-always-compile-module t))
 
-  ;; Show vterm buffer in bottom side
-  (setq vterm-toggle-fullscreen-p nil)
-  (add-to-list 'display-buffer-alist
-               '((lambda (buffer-or-name _)
-                   (let ((buffer (get-buffer buffer-or-name)))
-                     (with-current-buffer buffer
-                       (or (equal major-mode 'vterm-mode)
-                           (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-                 (display-buffer-reuse-window display-buffer-at-bottom)
-                 (display-buffer-reuse-window display-buffer-in-direction)
-                 (direction . bottom)
-                 (dedicated . t)
-                 (reusable-frames . visible)
-                 (window-height . 0.4)))
-  
-  ;; Key bindings
-  (keymap-global-set "s-t" #'vterm-toggle)
-  
-  ;; Switch to next vterm buffer
-  (keymap-set vterm-mode-map "s-<right>" #'vterm-toggle-forward)
+;; (use-package vterm-toggle
+;;   :ensure t
+;;   :after (vterm)
+;;   :config
 
-  ;; Switch to previous vterm buffer
-  (keymap-set vterm-mode-map "s-<left>" #'vterm-toggle-backward))
+;;   ;; Show vterm buffer in bottom side
+;;   (setq vterm-toggle-fullscreen-p nil)
+;;   (add-to-list 'display-buffer-alist
+;;                '((lambda (buffer-or-name _)
+;;                    (let ((buffer (get-buffer buffer-or-name)))
+;;                      (with-current-buffer buffer
+;;                        (or (equal major-mode 'vterm-mode)
+;;                            (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+;;                  (display-buffer-reuse-window display-buffer-at-bottom)
+;;                  (display-buffer-reuse-window display-buffer-in-direction)
+;;                  (direction . bottom)
+;;                  (dedicated . t)
+;;                  (reusable-frames . visible)
+;;                  (window-height . 0.4)))
+
+;;   ;; Key bindings
+;;   (keymap-global-set "s-t" #'vterm-toggle)
+
+;;   ;; Switch to next vterm buffer
+;;   (keymap-set vterm-mode-map "s-<right>" #'vterm-toggle-forward)
+
+;;   ;; Switch to previous vterm buffer
+;;   (keymap-set vterm-mode-map "s-<left>" #'vterm-toggle-backward))
 
 ;;; Initialize `eglot'
 (use-package eglot
   :ensure t
-  :demand t
   :config
   (add-to-list 'eglot-server-programs
                '(python-mode . ("pyright-langserver" "--stdio")))
-  
+
   ;; Hooks
   (add-hook 'prog-mode-hook #'eglot-ensure)
   :bind (:map eglot-mode-map
@@ -94,45 +94,45 @@
 ;; (setq-default enable-local-variables :safe)
 
 ;;; Python project management using Conda
-(use-package conda
-  :ensure t
-  :init (conda-env-initialize-interactive-shells)
-  :config
-  (setopt conda-anaconda-home "/opt/homebrew/Caskroom/miniconda/base/")
-  
-  ;; Enable auto-activation
-  (conda-env-autoactivate-mode 1)
+;; (use-package conda
+;;   :ensure t
+;;   :init (conda-env-initialize-interactive-shells)
+;;   :config
+;;   (setopt conda-anaconda-home "/opt/homebrew/Caskroom/miniconda/base/")
 
-  ;; Automatically activate a Conda environment on the opening of a file
-  (add-hook 'find-file-hook (lambda ()
-                              (when (bound-and-true-p conda-project-env-path)
-                                (conda-env-activate-for-buffer))))
+;;   ;; Enable auto-activation
+;;   (conda-env-autoactivate-mode 1)
 
-  ;; Displaying the currently active environment on the `mode-line'
-  (add-hook 'python-mode-hook #'conda-mode-line-setup))
+;;   ;; Automatically activate a Conda environment on the opening of a file
+;;   (add-hook 'find-file-hook (lambda ()
+;;                               (when (bound-and-true-p conda-project-env-path)
+;;                                 (conda-env-activate-for-buffer))))
 
-(setq python-indent-offset 4)
-(setq python-indent-guess-indent-offset t)  
-(setq python-indent-guess-indent-offset-verbose nil)
+;;   ;; Displaying the currently active environment on the `mode-line'
+;;   (add-hook 'python-mode-hook #'conda-mode-line-setup))
+
+;; (setq python-indent-offset 4)
+;; (setq python-indent-guess-indent-offset t)
+;; (setq python-indent-guess-indent-offset-verbose nil)
 
 ;; Reformat Python buffers using the Black formatter
-(use-package blacken
-  :ensure t
-  :config
+;; (use-package blacken
+;;   :ensure t
+;;   :config
 
-  ;; Hooks
-  (add-hook 'python-mode-hook #'blacken-mode)
+;;   ;; Hooks
+;;   (add-hook 'python-mode-hook #'blacken-mode)
 
-  ;; Formatting buffers
-  (defun sthenno/python-format-buffer ()
-    (interactive)
+;;   ;; Formatting buffers
+;;   (defun sthenno/python-format-buffer ()
+;;     (interactive)
 
-    ;; pip install isort
-    (python-sort-imports)
-    (blacken-buffer))
+;;     ;; pip install isort
+;;     (python-sort-imports)
+;;     (blacken-buffer))
 
-  :bind (:map python-base-mode-map
-              ("s-i" . sthenno/python-format-buffer)))
+;;   :bind (:map python-base-mode-map
+;;               ("s-i" . sthenno/python-format-buffer)))
 
 ;; JSON files
 ;; (add-hook 'json-ts-mode-hook #'(lambda ()
@@ -148,12 +148,11 @@
                         :protocol "http"
                         :endpoint "/v1/chat/completions"
                         :stream t
-                        :key "EMPTY"
+                        :key "sk-1234"
                         :models '(sthenno)))
   ;; System messages
-  (setq gptel-directives
-        '((default   . "You are Sthenno.")))
-  
+  (setq gptel-directives '((default . "You are Sthenno.")))
+
   ;; LLM request options
   (setq gptel-max-tokens 1024
         gptel-temperature 0.70)
@@ -163,10 +162,10 @@
 
   ;; Chat UI options
   (setq gptel-default-mode #'org-mode)
-  
+
   ;; Scroll automatically as the response is inserted
   (add-hook 'gptel-post-stream-hook #'gptel-auto-scroll)
-  
+
   ;; Move to the next prompt after the response is inserted
   (add-hook 'gptel-post-response-functions #'gptel-end-of-response)
 
@@ -184,36 +183,37 @@
   ;; Key bindings
   (keymap-global-set "s-l" #'sthenno/gptel-buffer)
 
-  (keymap-set gptel-mode-map "s-<return>" #'gptel-send)
-  (keymap-set org-mode-map   "S-<return>" #'gptel-send))
+  (keymap-set gptel-mode-map "S-<return>" #'gptel-send)
+  (keymap-set org-mode-map "S-<return>" #'gptel-send))
 
 ;;; GitHub Copilot
 ;;
 ;; After installing this, run `copilot-login'
-(use-package copilot
-  :vc (copilot
-       :url "https://github.com/copilot-emacs/copilot.el"
-       :branch "main")
-  :init (setq copilot-node-executable "/opt/homebrew/bin/node")
-  :config
 
-  ;; Toggling `copilot-mode'
-  (defun sthenno/copilot-on ()
-    (interactive)
-    (copilot-mode 1))
+;; (use-package copilot
+;;   :vc (copilot
+;;        :url "https://github.com/copilot-emacs/copilot.el"
+;;        :branch "main")
+;;   :init (setq copilot-node-executable "/opt/homebrew/bin/node")
+;;   :config
 
-  ;; Hooks
-  (add-hook 'python-mode-hook #'sthenno/copilot-on)
+;;   ;; Toggling `copilot-mode'
+;;   (defun sthenno/copilot-on ()
+;;     (interactive)
+;;     (copilot-mode 1))
 
-  :bind ((:map prog-mode-map
-               ("C-x c" . sthenno/copilot-on)
-               ("C-x C" . sthenno/copilot-off))
-         (:map copilot-completion-map
-               ("<tab>"   . copilot-accept-completion)
-               ("TAB"     . copilot-accept-completion)
-               ("<right>" . copilot-accept-completion-by-line)
-               ("<left>"  . copilot-clear-overlay)
-               ("RET"     . copilot-clear-overlay))))
+;;   ;; Hooks
+;;   (add-hook 'python-mode-hook #'sthenno/copilot-on)
+
+;;   :bind ((:map prog-mode-map
+;;                ("C-x c" . sthenno/copilot-on)
+;;                ("C-x C" . sthenno/copilot-off))
+;;          (:map copilot-completion-map
+;;                ("<tab>"   . copilot-accept-completion)
+;;                ("TAB"     . copilot-accept-completion)
+;;                ("<right>" . copilot-accept-completion-by-line)
+;;                ("<left>"  . copilot-clear-overlay)
+;;                ("RET"     . copilot-clear-overlay))))
 
 ;;; codeium.el
 
