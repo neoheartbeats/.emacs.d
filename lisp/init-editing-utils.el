@@ -126,6 +126,11 @@ and auto-paring for such entries."
 (setopt show-paren-delay 0.05
         show-paren-style 'mixed)
 
+;; But dim the parenthesis for s-expressions
+(use-package paren-face
+  :ensure t
+  :config (global-paren-face-mode 1))
+
 ;; Cursor faces
 (setopt cursor-type '(bar . 1))
 
@@ -152,8 +157,10 @@ and auto-paring for such entries."
 ;;
 ;; Face `fill-column-indicator' is set in `init-gui-frames'
 ;;
-(add-hook 'prog-mode-hook #'(lambda ()
-                              (display-fill-column-indicator-mode 1)))
+;; (add-hook 'prog-mode-hook #'(lambda ()
+;;                               (display-fill-column-indicator-mode 1)))
+
+(global-display-fill-column-indicator-mode 1)
 
 ;;; Display line numbers
 
@@ -161,31 +168,33 @@ and auto-paring for such entries."
 (add-hook 'prog-mode-hook #'(lambda ()
                               (display-line-numbers-mode 1)))
 
+;; (global-display-line-numbers-mode 1)
+
 ;;; TODO: Do I really need this?
-(use-package pulsar
-  :ensure t
-  :config
-  (setq pulsar-pulse t
-        pulsar-delay 0.05
-        pulsar-iterations 15)
+;; (use-package pulsar
+;;   :ensure t
+;;   :config
+;;   (setq pulsar-pulse t
+;;         pulsar-delay 0.05
+;;         pulsar-iterations 15)
 
-  ;; Hooks
-  ;;
-  ;; Pulsing
+;;   ;; Hooks
+;;   ;;
+;;   ;; Pulsing
 
-  ;; (add-hook 'after-save-hook #'pulsar-pulse-line-green)
+;;   ;; (add-hook 'after-save-hook #'pulsar-pulse-line-green)
 
-  (add-hook 'sthenno/delete-current-line-hook #'pulsar-pulse-line-magenta)
-  ;; (add-hook 'sthenno/cycle-to-next-buffer-hook #'pulsar-pulse-line-cyan)
-  ;; (add-hook 'sthenno/cycle-to-previous-buffer-hook #'pulsar-pulse-line-cyan)
+;;   (add-hook 'sthenno/delete-current-line-hook #'pulsar-pulse-line-magenta)
+;;   ;; (add-hook 'sthenno/cycle-to-next-buffer-hook #'pulsar-pulse-line-cyan)
+;;   ;; (add-hook 'sthenno/cycle-to-previous-buffer-hook #'pulsar-pulse-line-cyan)
 
-  ;; (add-hook 'sthenno/org-copy-source-code-block-hook #'pulsar-pulse-line-cyan)
+;;   ;; (add-hook 'sthenno/org-copy-source-code-block-hook #'pulsar-pulse-line-cyan)
 
-  ;; Highlighting
-  (add-hook 'split-window-below-focus-hook #'pulsar-highlight-line)
-  (add-hook 'split-window-right-focus-hook #'pulsar-highlight-line)
+;;   ;; Highlighting
+;;   (add-hook 'split-window-below-focus-hook #'pulsar-highlight-line)
+;;   (add-hook 'split-window-right-focus-hook #'pulsar-highlight-line)
 
-  (pulsar-global-mode 1))
+;;   (pulsar-global-mode 1))
 
 ;;; Indentations
 ;; (use-package indent-bars
