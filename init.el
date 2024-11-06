@@ -73,8 +73,8 @@
 (setq user-full-name "Sthenno"
       user-mail-address "sthenno@sthenno.com")
 
-;;; Set path for custom-file
-(setq custom-file (locate-user-emacs-file "custom.el"))
+;;; Set path for custom-file (do not ask me about this for any reason)
+(setq custom-file (make-temp-file "Ciallo～(∠・ω< )⌒★"))
 
 ;;; FIXME
 (add-to-list 'load-path "~/.emacs.d/site-lisp/org/lisp/")
@@ -98,36 +98,34 @@
 ;; (require 'python)
 
 ;;; GCMH: the Garbage Collector Magic Hack
-(use-package gcmh
-  :ensure t
-  :demand t
-  :diminish (gcmh-mode)
-  :config
+;; (use-package gcmh
+;;   :ensure t
+;;   :demand t
+;;   :diminish (gcmh-mode)
+;;   :config
 
-  ;; The GC introduces annoying pauses and stuttering into our Emacs experience, so we
-  ;; use `gcmh' to stave off the GC while we're using Emacs, and provoke it when it's
-  ;; idle. However, if the idle delay is too long, we run the risk of runaway memory
-  ;; usage in busy sessions. If it's too low, then we may as well not be using gcmh at
-  ;; all.
-  (defun gcmh-register-idle-gc ()
-    "Register a timer to run `gcmh-idle-garbage-collect'.
-Cancel the previous one if present."
-    (unless (eq this-command 'self-insert-command)
-      (let ((idle-t (if (eq gcmh-idle-delay 'auto)
-                        (* gcmh-auto-idle-delay-factor gcmh-last-gc-time)
-                      gcmh-idle-delay)))
-        (if (timerp gcmh-idle-timer)
-            (timer-set-time gcmh-idle-timer idle-t)
-          (setf gcmh-idle-timer
-                (run-with-timer idle-t nil #'gcmh-idle-garbage-collect))))))
-  (setq gcmh-idle-delay 'auto
-        gcmh-high-cons-threshold (* 32 1024 1024)
-        gcmh-verbose nil)
-  (gcmh-mode 1))
+;;   ;; The GC introduces annoying pauses and stuttering into our Emacs experience, so we
+;;   ;; use `gcmh' to stave off the GC while we're using Emacs, and provoke it when it's
+;;   ;; idle. However, if the idle delay is too long, we run the risk of runaway memory
+;;   ;; usage in busy sessions. If it's too low, then we may as well not be using gcmh at
+;;   ;; all.
+;;   (defun gcmh-register-idle-gc ()
+;;     "Register a timer to run `gcmh-idle-garbage-collect'.
+;; Cancel the previous one if present."
+;;     (unless (eq this-command 'self-insert-command)
+;;       (let ((idle-t (if (eq gcmh-idle-delay 'auto)
+;;                         (* gcmh-auto-idle-delay-factor gcmh-last-gc-time)
+;;                       gcmh-idle-delay)))
+;;         (if (timerp gcmh-idle-timer)
+;;             (timer-set-time gcmh-idle-timer idle-t)
+;;           (setf gcmh-idle-timer
+;;                 (run-with-timer idle-t nil #'gcmh-idle-garbage-collect))))))
+;;   (setq gcmh-idle-delay 'auto
+;;         gcmh-high-cons-threshold (* 32 1024 1024)
+;;         gcmh-verbose nil)
+;;   (gcmh-mode 1))
 
 ;;; Load path
-
-
 
 ;; Fix PATH for macOS
 ;; (use-package exec-path-from-shell

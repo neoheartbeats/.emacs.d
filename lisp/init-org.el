@@ -179,8 +179,7 @@
   :ensure t
   :config
   (setq org-modern-star 'fold
-        org-modern-fold-stars '(("▶" . "▼")
-                                ("▷" . "▽"))
+        org-modern-fold-stars '(("◉" . "○"))
         org-modern-hide-stars 'leading)
 
   (setq org-modern-list '((?- . "•")))
@@ -192,7 +191,7 @@
                                 ("quote"  . ("􀈎" "􀂓"))
                                 ("export" . ("􀣙" "􀂓"))))
 
-  (setq org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
+  (setq org-modern-timestamp nil)
   (setq org-modern-keyword '(("title"   . "􀉛")
                              ("results" . "􂨖")
                              (t . t)))
@@ -203,10 +202,8 @@ useful if using font Iosevka."
 
     ;; FIXME: This may not set properly
     (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.20)
-                                   ((eq major-mode #'org-agenda-mode) 0.20)
                                    (t nil))))
   (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
-  (add-hook 'org-agenda-finalize-hook #'sthenno/org-modern-spacing)
 
   ;; Hooks
   (add-hook 'org-mode-hook #'global-org-modern-mode 1))

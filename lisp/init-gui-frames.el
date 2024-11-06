@@ -20,6 +20,7 @@
   :config
 
   ;; Less is more.
+  (setq modus-themes-bold-constructs t)
 
   ;; "On a page of text, nothing draws the eye more powerfully than a contrast between
   ;; light and dark colors."
@@ -31,10 +32,11 @@
   ;; See https://practicaltypography.com/color.html
 
   ;; Mapping colors
-  (setq modus-vivendi-palette-overrides
-        `(
+  (setq modus-themes-common-palette-overrides
+        `((bg-main bg-dim)
+
           ;; Make the mode-line borderless and stand out less
-          (bg-mode-line-active bg-dim)
+          (bg-mode-line-active bg-inactive)
           (fg-mode-line-active fg-dim)
           (bg-mode-line-inactive bg-dim)
           (fg-mode-line-inactive fg-dim)
@@ -45,7 +47,7 @@
 
           ;; Set color faces for `display-line-numbers-mode'
           (fg-line-number-active fg-main)
-          (bg-line-number-active bg-hl-line)
+          (bg-line-number-active unspecified)
           (fg-line-number-inactive fg-dim)
           (bg-line-number-inactive unspecified)
 
@@ -67,12 +69,8 @@
           (prose-done fg-dim)
 
           ;; Matching parenthesis
-          (fg-paren-match info)
+          (fg-paren-match fg-main)
           (bg-paren-match unspecified)
-
-          ;; Custom region colors
-          ;; (fg-region unspecified)
-          ;; (bg-region bg-cyan-subtle)
 
           ;; Make code blocks more minimal
           (bg-prose-block-contents unspecified)
@@ -80,30 +78,28 @@
           ;; Completions (see also `init-comp')
           (bg-completion bg-hl-line)
 
-          ;; Cursor color. See also `cursor-type'
-          ;; (cursor red-faint)
+          ;; Code syntax
+          (docstring comment)
+          (docmarkup comment)
 
           ;; Apply the presets
           ,@modus-themes-preset-overrides-faint))
 
-  ;; Enable and load the theme
-  (load-theme 'modus-vivendi :no-confirm))
+  ;; Load the enable the theme
+  (modus-themes-load-theme 'modus-operandi))
 
 ;; Do not extend `region' background past the end of the line
-;; (custom-set-faces '(region ((t :extend nil))))
+(custom-set-faces
+ '(region ((t :extend nil))))
 
-;; Remove the `underline' for agenda views
-(custom-set-faces '(org-agenda-date-today ((t :underline nil))))
+;; Increase the padding/spacing of Emacs frames
+(use-package spacious-padding
+  :ensure t
+  :config (spacious-padding-mode 1))
 
 ;; Clean up the title bar content
 (setq-default frame-title-format nil)
 (setq-default ns-use-proxy-icon nil)
-
-;;; Highlight current line
-
-(global-hl-line-mode 1)
-;; (add-hook 'prog-mode-hook #'(lambda ()
-;;                               (hl-line-mode 1)))
 
 ;;; Encodings
 ;;
@@ -115,12 +111,6 @@
 (setq default-input-method nil)
 
 ;;; Font settings
-
-;; "In print, the optimal point size for body text is 10–12 point. On the web, the
-;; optimal size is 15–25 pixels."
-
-;; See: https://practicaltypography.com/point-size.html
-
 (set-face-attribute 'default nil :family "Triplicate A Code" :height 150)
 
 ;; Set up font for non-ascii fontset
@@ -158,84 +148,10 @@
 ;; Ellipsis symbol
 (setq truncate-string-ellipsis " …")
 
-;; Text quoting
-
-;; See https://practicaltypography.com/straight-and-curly-quotes.html
-
-(setopt text-quoting-style 'straight)
-
-;; Do not show buffer boundaries
-(setq indicate-buffer-boundaries nil)
-
-;; Do not show empty lines
-(setq indicate-empty-lines nil)
+;;; Text quoting
+(setq text-quoting-style 'straight)
 
 ;;; Mode Line settings
 (setopt mode-line-compact t)
-
-;; (use-package minions
-;;   :ensure t
-;;   :init (setq minions-mode-line-lighter "􀠩")
-;;   :config (minions-mode 1))
-
-;; (setq-default mode-line-format '("%e"
-;;                                  " "
-;;                                  sthenno/mode-line-buffer
-;;                                  " "
-;;                                  sthenno/mode-line-major))
-
-;; (defun sthenno/mode-line--buffer ()
-;;   (let ((buff (if (denote-file-is-note-p (buffer-file-name))
-;;                   (denote-retrieve-filename-title (buffer-file-name))
-;;                 (buffer-name))))
-;;     (format "%s" buff)))
-
-;; (defvar-local sthenno/mode-line-buffer
-;;     '(:eval
-;;       (list (format "BUFF: %s"
-;;                     (propertize (sthenno/mode-line--buffer) 'face 'success))))
-;;   "Mode-line construct to display the current buffer.")
-;; (put 'sthenno/mode-line-buffer 'risky-local-variable t)
-
-;; (defvar-local sthenno/mode-line-major
-;;     '(:eval
-;;       (format "MODE: %s"
-;;               (propertize (symbol-name major-mode)) 'face 'default))
-;;   "Mode-line construct to display the Major.")
-;; (put 'sthenno/mode-line-major 'risky-local-variable t)
-
-;;; Automatic adjusting for margins
-(use-package spacious-padding
-  :ensure t
-  :if (display-graphic-p)
-  :config (spacious-padding-mode 1))
-
-;;; Sthenno's customization of "doom-quit"
-;;
-;; See https://github.com/doomemacs/doomemacs/tree/master/modules/ui/doom-quit
-;;
-;; (defvar sthenno-quit-messages '("Anyone else but you?"
-;;                                 "She depends on you."
-;;                                 "Please take care of Sthenno."
-;;                                 "It's not like I'll miss you or anything, b-baka!"
-;;                                 "Please don't go!")
-;;   "A list of quit messages, picked randomly by `sthenno-quit'.")
-
-;; (defun sthenno-quit-p (&optional prompt)
-;;   "Prompt the user for confirmation when killing Emacs.
-;; Returns t if it is safe to kill this session. Does not prompt if no real buffers
-;; are open."
-;;   (or (yes-or-no-p (format "%s" (or prompt "Really quit Emacs?")))
-;;       (ignore (message "Aborted"))))
-
-;; (defun sthenno-quit-fn (&rest _)
-;;   (sthenno-quit-p
-;;    (format "Sthenno: %s 􀄫 %s"
-;;            (propertize (nth (random (length sthenno-quit-messages))
-;;                             sthenno-quit-messages)
-;;                        'face 'modus-themes-prompt)
-;;            "Really quit Emacs?")))
-
-;; (setq confirm-kill-emacs #'sthenno-quit-fn)
 
 (provide 'init-gui-frames)
