@@ -29,8 +29,7 @@
 (setq org-startup-folded 'content)
 
 ;;; Install AUCTeX
-(use-package tex
-  :ensure auctex)
+(use-package tex :ensure auctex)
 
 ;;; Use CDLaTeX to improve editing experiences
 
@@ -46,21 +45,11 @@
 
 (setq org-persist-directory (expand-file-name "org-persist" user-cache-directory))
 
-;; Experimental: `org-latex-preview'
+;;; Experimental: `org-latex-preview'
 (add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
 
-;; Ignore scrolling commands for `org-latex-preview-auto-mode'
-;; (setq org-latex-preview-auto-ignored-commands
-;;       '( next-line previous-line
-;;          pixel-scroll-precision
-;;          scroll-up-command scroll-down-command))
-
-;; Show entities as UTF8 characters
-;; (setopt org-pretty-entities t
-;;         org-pretty-entities-include-sub-superscripts nil)
-
 ;; Preview functions
-;;
+
 (defun sthenno/org-preview-fragments ()
   (interactive)
   (call-interactively 'org-latex-preview-clear-cache)
@@ -69,6 +58,7 @@
 (bind-keys :map org-mode-map
            ("s-p" . sthenno/org-preview-fragments))
 
+;; Setup for `org-latex-preview'
 (setq org-latex-packages-alist '(("T1" "fontenc" t)
                                  ("" "amsmath"   t)
                                  ("" "amssymb"   t)
@@ -110,39 +100,22 @@
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
 
-(plist-put org-latex-preview-appearance-options :scale 1.0)
-(plist-put org-latex-preview-appearance-options :zoom
-           (- (/ (face-attribute 'default :height)
-                 100.0)
-              0.025))
+(let ((factor (- (/ (face-attribute 'default :height)
+                    100.0)
+                 0.025)))
+  (plist-put org-latex-preview-appearance-options :scale factor)
+  (plist-put org-latex-preview-appearance-options :zoom  factor))
 
-(setq org-latex-preview-process-default 'dvisvgm)
+(setopt org-latex-preview-process-default 'dvisvgm)
+(let ((dvisvgm (alist-get 'dvisvgm org-latex-preview-process-alist))
+      (libgs "/opt/homebrew/opt/ghostscript/lib/libgs.dylib"))
+  (plist-put dvisvgm :image-converter
+             `(,(concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts"
+                        " --libgs=" libgs
 
-(defvar sthenno/libgs-dylib-path "/opt/homebrew/opt/ghostscript/lib/libgs.dylib"
-  "Path to Ghostscript shared library.")
-
-(setq dvisvgm-image-converter-command
-
-      ;; The --optimise, --clipjoin, and --relative flags cause dvisvgm to do some extra
-      ;; work to tidy up the SVG output, but barely add to the overall dvisvgm runtime
-      ;; (<1% increace, from testing).
-      `(,(concat "dvisvgm --page=1- --optimize --clipjoin -R --no-font --bbox=preview"
-                 " --libgs=" sthenno/libgs-dylib-path
-
-                 ;; Default is "-v3" here, but it does not seem to work correctly in my
-                 ;; client.
-                 " --progress=0 -v4 -o %B-%%9p.svg %f")))
-
-(setq org-latex-preview-process-alist
-      `((dvisvgm
-         :programs ("latex" "dvisvgm")
-         :description "dvi > svg"
-         :message "you need to install the programs: latex and dvisvgm."
-         :image-input-type "dvi"
-         :image-output-type "svg"
-         :latex-compiler ("%l -interaction nonstopmode -output-directory %o %f")
-         :latex-precompiler ("%l -output-directory %o -ini -jobname=%b \"&%L\" mylatexformat.ltx %f")
-         :image-converter ,dvisvgm-image-converter-command)))
+                        ;; Default is "-v3" here, but it does not seem to work correctly
+                        ;; on my client.
+                        " --bbox=preview -v4 -o %B-%%9p.svg %f"))))
 
 ;; Centering previews using Org's alignment system instead of adding edges to original
 ;; SVG files.
@@ -178,27 +151,27 @@
 (use-package org-modern
   :ensure t
   :config
-  (setq org-modern-star 'fold
-        org-modern-fold-stars '(("◉" . "○"))
-        org-modern-hide-stars 'leading)
+  (setopt org-modern-star 'fold
+          ;; org-modern-fold-stars '(("◉" . "○"))
+          org-modern-hide-stars 'leading)
 
-  (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X  . "􀃰")
-                              (?-  . "􀃞")
-                              (?\s . "􀂒")))
+  (setopt org-modern-list '((?- . "•")))
+  (setopt org-modern-checkbox '((?X  . "􀃰")
+                                (?-  . "􀃞")
+                                (?\s . "􀂒")))
 
-  (setq org-modern-block-name '(("src"    . ("􀃤" "􀂓"))
-                                ("quote"  . ("􀈎" "􀂓"))
-                                ("export" . ("􀣙" "􀂓"))))
+  ;; (setopt org-modern-block-name '(("src"    . ("􀃤" "􀂓"))
+  ;;                                 ("quote"  . ("􀈎" "􀂓"))
+  ;;                                 ("export" . ("􀣙" "􀂓"))))
 
-  (setq org-modern-timestamp nil)
-  (setq org-modern-keyword '(("title"   . "􀉛")
-                             ("results" . "􂨖")
-                             (t . t)))
+  (setopt org-modern-keyword '(("title"   . "􀉛")
+                               ("results" . "􂨖")
+                               (t . t)))
+
+  (setopt org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
 
   (defun sthenno/org-modern-spacing ()
-    "Adjust line-spacing for `org-modern' to correct svg display. This is
-useful if using font Iosevka."
+    "Adjust line-spacing for `org-modern' to correct svg display."
 
     ;; FIXME: This may not set properly
     (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.20)
@@ -206,27 +179,29 @@ useful if using font Iosevka."
   (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
 
   ;; Hooks
-  (add-hook 'org-mode-hook #'global-org-modern-mode 1))
+  (add-hook 'org-mode-hook #'org-modern-mode))
 
 ;; External settings for `org-modern'
-(setq org-ellipsis " …")
+(setq org-ellipsis "…")
+(set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
+
 (setq org-use-property-inheritance t)
 (setq org-auto-align-tags nil)
 (setq org-tags-column 0)
 
-(setq-default org-hide-emphasis-markers nil)
+(setq org-hide-emphasis-markers nil)
 
-(defun sthenno/org-toggle-emphasis ()
-  "Toggle hiding of Org emphasis markers."
-  (interactive)
-  (if org-hide-emphasis-markers
-      (progn
-        (setq-local org-hide-emphasis-markers nil)
-        (message "Org emphasis markers are not hiding."))
-    (progn
-      (setq-local org-hide-emphasis-markers t)
-      (message "Org emphasis markers are hiding."))))
-(keymap-set org-mode-map "C-c e" #'sthenno/org-toggle-emphasis)
+;; (defun sthenno/org-toggle-emphasis ()
+;;   "Toggle hiding of Org emphasis markers."
+;;   (interactive)
+;;   (if org-hide-emphasis-markers
+;;       (progn
+;;         (setq-local org-hide-emphasis-markers nil)
+;;         (message "Org emphasis markers are not hiding."))
+;;     (progn
+;;       (setq-local org-hide-emphasis-markers t)
+;;       (message "Org emphasis markers are hiding."))))
+;; (keymap-set org-mode-map "C-c e" #'sthenno/org-toggle-emphasis)
 
 ;; Custom faces for Org emphasis
 ;;
@@ -442,7 +417,7 @@ boundaries with possible narrowing."
 (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 
 ;;; Using shift-<arrow-keys> to select text
-(setq org-support-shift-select t)
+(setq org-support-shift-select 'always) ; Everywhere except timestamps
 
 ;;; The Zettlekasten note-taking system by Denote
 (use-package denote
@@ -529,7 +504,8 @@ boundaries with possible narrowing."
                ("C-c o" . denote-open-or-create)
                ("C-c d" . denote-journal-extras-new-or-existing-entry))
          (:map org-mode-map
-               ("s-i" . sthenno/denote-link-or-create)
+               ("s-l" . sthenno/denote-link-or-create)
+               ("s-i" . denote-insert-link)
                ("s-b" . denote-backlinks)
                ("s-r" . denote-region))))
 

@@ -20,7 +20,7 @@
   :config
 
   ;; Less is more.
-  (setq modus-themes-bold-constructs t)
+  (setopt modus-themes-bold-constructs t)
 
   ;; "On a page of text, nothing draws the eye more powerfully than a contrast between
   ;; light and dark colors."
@@ -36,9 +36,9 @@
         `((bg-main bg-dim)
 
           ;; Make the mode-line borderless and stand out less
-          (bg-mode-line-active bg-inactive)
+          (bg-mode-line-active unspecified)
           (fg-mode-line-active fg-dim)
-          (bg-mode-line-inactive bg-dim)
+          (bg-mode-line-inactive unspecified)
           (fg-mode-line-inactive fg-dim)
 
           ;; Make the mode line borderless
@@ -46,9 +46,9 @@
           (border-mode-line-inactive unspecified)
 
           ;; Set color faces for `display-line-numbers-mode'
-          (fg-line-number-active fg-main)
+          (fg-line-number-active fg-dim)
           (bg-line-number-active unspecified)
-          (fg-line-number-inactive fg-dim)
+          (fg-line-number-inactive "#c4c4c4")
           (bg-line-number-inactive unspecified)
 
           ;; Make the fringe invisible
@@ -69,7 +69,7 @@
           (prose-done fg-dim)
 
           ;; Matching parenthesis
-          (fg-paren-match fg-main)
+          (fg-paren-match green-intense)
           (bg-paren-match unspecified)
 
           ;; Make code blocks more minimal
@@ -92,10 +92,64 @@
 (custom-set-faces
  '(region ((t :extend nil))))
 
-;; Increase the padding/spacing of Emacs frames
+;;; Parentheses
+
+(use-package paren
+  :config
+  (setopt show-paren-delay 0.125)
+  (custom-set-faces
+   '(show-paren-match ((t :inherit 'bold))))
+  (show-paren-mode 1))
+
+;; Dim parenthesis for s-expressions
+(use-package paren-face
+  :ensure t
+  :config
+  (defun sthenno/paren-face (&rest _)
+    (modus-themes-with-colors
+      (custom-set-faces
+
+       ;; Why why why why don't I dim you a lot, forever?
+       `(parenthesis ((t (:foreground "#c4c4c4"))))))
+    (global-paren-face-mode 1))
+  (add-hook 'after-init-hook #'sthenno/paren-face))
+
+;; Hightlight parentheses dynamically surrounding point
+(use-package highlight-parentheses
+  :ensure t
+  :diminish
+  :config
+  (setopt highlight-parentheses-delay 0.125)
+
+  (defun sthenno/highlight-parentheses (&rest _)
+    (modus-themes-with-colors
+      (setq highlight-parentheses-colors `(,fg-completion-match-0
+                                           ,fg-completion-match-1
+                                           ,fg-completion-match-2
+                                           ,fg-completion-match-3)))
+    ;; (custom-set-faces
+    ;;  '(highlight-parentheses-highlight ((t :inherit 'bold))))
+    (global-highlight-parentheses-mode 1))
+  (add-hook 'after-init-hook #'sthenno/highlight-parentheses))
+
+;;; Cursor faces
+
+(setopt cursor-type '(bar . 1))
+
+(blink-cursor-mode -1)
+
+;;; Increase the padding/spacing of Emacs frames
 (use-package spacious-padding
   :ensure t
-  :config (spacious-padding-mode 1))
+  :config
+  (plist-put spacious-padding-widths :fringe-width 20)
+  (plist-put spacious-padding-widths :mode-line-width 5)
+  (plist-put spacious-padding-widths :internal-border-width 10)
+  (plist-put spacious-padding-widths :right-divider-width 0)
+  (plist-put spacious-padding-widths :header-line-width 0)
+  (plist-put spacious-padding-widths :scroll-bar-width 0)
+  (setq spacious-padding-subtle-mode-line '(:mode-line-active "#c4c4c4"))
+  (spacious-padding-mode 1))
 
 ;; Clean up the title bar content
 (setq-default frame-title-format nil)

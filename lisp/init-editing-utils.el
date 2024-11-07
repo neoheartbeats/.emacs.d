@@ -101,35 +101,9 @@ and auto-paring for such entries."
 ;;; Automatic pairing parenthesis
 (electric-pair-mode 1)
 
-;; But dim the parenthesis for s-expressions
-(use-package paren-face
-  :ensure t
-  :config (global-paren-face-mode 1))
-
-;;; Hightlight parenthesis dynamically surrounding point
-(use-package highlight-parentheses
-  :ensure t
-  :diminish
-  :config
-  (defun sthenno/highlight-parentheses (&rest _)
-    (modus-themes-with-colors
-      (setq highlight-parentheses-colors `(,fg-completion-match-0
-                                           ,fg-completion-match-1
-                                           ,fg-completion-match-2
-                                           ,fg-completion-match-3)))
-    (set-face-attribute 'highlight-parentheses-highlight nil :inherit 'bold)
-    (global-highlight-parentheses-mode 1))
-  (add-hook 'after-init-hook #'sthenno/highlight-parentheses))
-
-;; Cursor faces
-(setopt cursor-type '(bar . 1))
-(blink-cursor-mode -1)
-
-(setopt mouse-highlight nil)
-
 ;;; Show doc-string in echo area
 (use-package eldoc
-  :init (setq eldoc-idle-delay 0.1))
+  :init (setq eldoc-idle-delay 0.125))
 
 ;;; Deletions
 ;;
