@@ -33,10 +33,9 @@
 
   ;; Mapping colors
   (setq modus-themes-common-palette-overrides
-        `((bg-main bg-dim)
-
+        `(
           ;; Make the mode-line borderless and stand out less
-          (bg-mode-line-active unspecified)
+          (bg-mode-line-active bg-dim)
           (fg-mode-line-active fg-dim)
           (bg-mode-line-inactive unspecified)
           (fg-mode-line-inactive fg-dim)
@@ -46,9 +45,9 @@
           (border-mode-line-inactive unspecified)
 
           ;; Set color faces for `display-line-numbers-mode'
-          (fg-line-number-active fg-dim)
-          (bg-line-number-active unspecified)
-          (fg-line-number-inactive "#c4c4c4")
+          (fg-line-number-active fg-main)
+          (bg-line-number-active bg-hl-line)
+          (fg-line-number-inactive fg-dim)
           (bg-line-number-inactive unspecified)
 
           ;; Make the fringe invisible
@@ -79,14 +78,14 @@
           (bg-completion bg-hl-line)
 
           ;; Code syntax
-          (docstring comment)
-          (docmarkup comment)
+          ;; (docstring comment)
+          ;; (docmarkup comment)
 
           ;; Apply the presets
           ,@modus-themes-preset-overrides-faint))
 
   ;; Load the enable the theme
-  (modus-themes-load-theme 'modus-operandi))
+  (modus-themes-load-theme 'modus-vivendi))
 
 ;; Do not extend `region' background past the end of the line
 (custom-set-faces
@@ -110,7 +109,7 @@
       (custom-set-faces
 
        ;; Why why why why don't I dim you a lot, forever?
-       `(parenthesis ((t (:foreground "#c4c4c4"))))))
+       `(parenthesis ((t (:foreground "#535353"))))))
     (global-paren-face-mode 1))
   (add-hook 'after-init-hook #'sthenno/paren-face))
 
@@ -127,8 +126,6 @@
                                            ,fg-completion-match-1
                                            ,fg-completion-match-2
                                            ,fg-completion-match-3)))
-    ;; (custom-set-faces
-    ;;  '(highlight-parentheses-highlight ((t :inherit 'bold))))
     (global-highlight-parentheses-mode 1))
   (add-hook 'after-init-hook #'sthenno/highlight-parentheses))
 
@@ -141,19 +138,7 @@
 ;;; Increase the padding/spacing of Emacs frames
 (use-package spacious-padding
   :ensure t
-  :config
-  (plist-put spacious-padding-widths :fringe-width 20)
-  (plist-put spacious-padding-widths :mode-line-width 5)
-  (plist-put spacious-padding-widths :internal-border-width 10)
-  (plist-put spacious-padding-widths :right-divider-width 0)
-  (plist-put spacious-padding-widths :header-line-width 0)
-  (plist-put spacious-padding-widths :scroll-bar-width 0)
-  (setq spacious-padding-subtle-mode-line '(:mode-line-active "#c4c4c4"))
-  (spacious-padding-mode 1))
-
-;; Clean up the title bar content
-(setq-default frame-title-format nil)
-(setq-default ns-use-proxy-icon nil)
+  :config (spacious-padding-mode 1))
 
 ;;; Encodings
 ;;

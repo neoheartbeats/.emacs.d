@@ -67,12 +67,16 @@
 
 (setq initial-scratch-message nil)
 
+;; Clean up the title bar content
+(setq-default frame-title-format nil)
+(setq-default ns-use-proxy-icon nil)
+
 ;;; User information
 (setq user-full-name "Sthenno"
       user-mail-address "sthenno@sthenno.com")
 
 ;;; Set path for custom-file (do not ask me about this for any reason)
-(setq custom-file (make-temp-file "Ciallo～(∠・ω< )⌒★"))
+(setq custom-file (make-temp-file "_tmp"))
 
 ;;; FIXME
 (add-to-list 'load-path "~/.emacs.d/site-lisp/org/lisp/")

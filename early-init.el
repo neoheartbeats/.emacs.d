@@ -68,12 +68,13 @@
 ;; tends to happen rather frequently with a lot of packages, it can get annoying.
 (setq native-comp-async-report-warnings-errors 'silent)
 
-;; Perform drawing the frame when initialization
-;;
+;;; Perform drawing the frame when initialization
+
 ;; NOTE: `menu-bar-lines' is forced to redrawn under macOS GUI, therefore it is helpless
 ;; by inhibiting it in the early stage. However, since I don't use the `menu-bar' under
 ;; macOS, `menu-bar-mode' is disabled later.
 
+(push '(menu-bar-lines . 0)  default-frame-alist)
 (push '(tool-bar-lines . 0)   default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
 
