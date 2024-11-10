@@ -15,11 +15,12 @@
 
 ;;; Code:
 
-;; Defer garbage collection further back in the startup process
+;;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
 
 ;; Adjust display according to `file-name-handler-alist'.  13feb2024
 ;; https://github.com/karthink/.emacs.d/blob/master/early-init.el.
+
 (unless (or (not (called-interactively-p))
             (daemonp)
             noninteractive)
@@ -42,11 +43,10 @@
 
 (setq-default inhibit-redisplay t
               inhibit-message t)
-(add-hook 'window-setup-hook
-          (lambda ()
-            (setq-default inhibit-redisplay nil
-                          inhibit-message nil)
-            (redisplay)))
+(add-hook 'window-setup-hook #'(lambda ()
+                                 (setq-default inhibit-redisplay nil
+                                               inhibit-message nil)
+                                 (redisplay)))
 
 ;; Site files tend to use `load-file', which emits "Loading X..." messages in the echo
 ;; area, which in turn triggers a redisplay. Redisplays can have a substantial effect on

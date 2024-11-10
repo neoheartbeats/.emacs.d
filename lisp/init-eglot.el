@@ -22,12 +22,12 @@
   :config (global-treesit-auto-mode 1))
 
 ;; Remap `python-mode' to `python-ts-mode'
-(setq major-mode-remap-alist '((sh-mode . bash-ts-mode)
-                               (js-mode . js-ts-mode)
-                               (json-mode . json-ts-mode)
-                               (python-mode . python-ts-mode)
+(setq major-mode-remap-alist '((sh-mode         . bash-ts-mode)
+                               (js-mode         . js-ts-mode)
+                               (json-mode       . json-ts-mode)
+                               (python-mode     . python-ts-mode)
                                (typescript-mode . typescript-ts-mode)
-                               (yaml-mode . yaml-ts-mode)))
+                               (yaml-mode       . yaml-ts-mode)))
 
 ;; Append *-mode-hook to *-ts-mode-hook for modes in `major-mode-remap-list'
 (mapc #'(lambda (major-mode-remap)
@@ -82,6 +82,7 @@
 (use-package eglot
   :ensure t
   :config
+  (setq read-process-output-max (* 1024 1024))
   (add-to-list 'eglot-server-programs
                '(python-mode . ("pyright-langserver" "--stdio")))
 
@@ -161,7 +162,7 @@
   (setq gptel-use-header-line nil)
 
   ;; Chat UI options
-  (setq gptel-default-mode #'org-mode)
+  (setq gptel-default-mode 'org-mode)
 
   ;; Scroll automatically as the response is inserted
   (add-hook 'gptel-post-stream-hook #'gptel-auto-scroll)

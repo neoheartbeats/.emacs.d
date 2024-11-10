@@ -81,14 +81,8 @@ If `major-mode' is `python-mode', abort."
     (indent-current-buffer)
     (indent-current-buffer-comment)
     (untabify-current-buffer)
-    (delete-trailing-whitespace))
-  (run-hooks 'sthenno/pretty-print-current-buffer-hook))
+    (delete-trailing-whitespace)))
 (keymap-set emacs-lisp-mode-map "s-i" #'sthenno/pretty-print-current-buffer)
-
-(defun sthenno/enable-pretty-print-auto ()
-  "Enable pretty-print before saving in `emacs-lisp-mode'."
-  (add-hook 'before-save-hook #'sthenno/pretty-print-current-buffer nil t))
-(add-hook 'emacs-lisp-mode-hook #'sthenno/enable-pretty-print-auto)
 
 ;; Inhibit passing these delimiters
 (defun sthenno/inhibit-specific-delimiters ()
@@ -98,24 +92,58 @@ and auto-paring for such entries."
   (modify-syntax-entry ?> "." org-mode-syntax-table))
 (add-hook 'org-mode-hook #'sthenno/inhibit-specific-delimiters)
 
-;;; Automatic pairing parenthesis
+;; Automatic pairing parenthesis
 (electric-pair-mode 1)
+
+;; Indentations
+(use-package aggressive-indent
+  :ensure t
+  :diminish
+  :config (global-aggressive-indent-mode 1))
+
+(use-package indent-bars
+  :ensure t
+  :config
+  (require 'indent-bars-ts)
+  (setq indent-bars-no-descend-lists t  ; no extra bars in continued func arg lists
+        indent-bars-treesit-support t
+        indent-bars-treesit-ignore-blank-lines-types '("module"))
+
+  (setq indent-bars-prefer-character t)
+
+  (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
+        indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+        indent-bars-highlight-current-depth '(:blend 0.8)
+        indent-bars-starting-column 0
+        indent-bars-display-on-blank-lines t))
+
+;;; Highlight these keywords in code comments
+(use-package hl-todo
+  :ensure t
+  :config
+  (defun sthenno/hl-todo-faces-setup ()
+    (modus-themes-with-colors
+      (setq hl-todo-keyword-faces
+            `(("TODO"  . ,prose-todo)
+              ("FIXME" . ,err)
+              ("XXXX*" . ,err)
+              ("NOTE"  . ,fg-changed)
+              ("HACK"  . ,fg-changed))))
+    (global-hl-todo-mode 1))
+  (add-hook 'after-init-hook #'sthenno/hl-todo-faces-setup))
 
 ;;; Show doc-string in echo area
 (use-package eldoc
-  :init (setq eldoc-idle-delay 0.125))
+  :init (eldoc-mode -1)
+  :config
+  (setq eldoc-echo-area-use-multiline-p 3)
+  (setq eldoc-echo-area-display-truncation-message nil)
+  (add-hook 'prog-mode-hook #'eldoc-mode))
 
 ;;; Deletions
-;;
+
 ;; Delete selection if you insert
-;;
 (delete-selection-mode 1)
-
-;; Delete all tabs and spaces
-(setq backward-delete-char-untabify-method 'hungry)
-
-;; Automatically reload files was modified by external program
-(global-auto-revert-mode 1)
 
 ;;; Fill columns
 (global-display-fill-column-indicator-mode 1)
@@ -123,43 +151,16 @@ and auto-paring for such entries."
 ;;; Display line numbers
 
 (setq-default display-line-numbers-width 4)
-(add-hook 'prog-mode-hook #'display-line-numbers-mode 1)
-
-;; (global-display-line-numbers-mode 1)
-
-;;; Indentations
-;; (use-package indent-bars
-;;   :ensure t
-;;   :init
-;;   (setq indent-bars-treesit-support t
-;;         indent-bars-treesit-ignore-blank-lines-types '("module"))
-
-;;   ;; Stipple-based pixel-toggling is not supported by NS built Emacs
-;;   (setq indent-bars-prefer-character t)
-
-;;   :config
-;;   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
-;;         indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-;;         indent-bars-highlight-current-depth '(:blend 0.8)
-;;         indent-bars-starting-column 0
-;;         indent-bars-display-on-blank-lines t))
-
-;;; Highlight these keywords in code comments
-;; (use-package hl-todo
-;;   :ensure t
-;;   :config
-;;   (defun sthenno/hl-todo-faces-setup ()
-;;     (modus-themes-with-colors
-;;       (setq hl-todo-keyword-faces
-;;             `(("TODO"  . ,prose-todo)
-;;               ("FIXME" . ,err)
-;;               ("XXXX*" . ,err)
-;;               ("NOTE"  . ,fg-changed)
-;;               ("HACK"  . ,fg-changed)))))
-;;   (add-hook 'prog-mode-hook #'sthenno/hl-todo-faces-setup)
-;;   (global-hl-todo-mode 1))
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+(add-hook 'dired-mode-hook #'display-line-numbers-mode)
 
 ;;; Edit multiple occurrences in the same way simultaneously using "C-;"
 (use-package iedit :ensure t)
+
+;;; expand-region
+(use-package expand-region
+  :ensure t
+  :bind ((:map global-map
+               ("C-SPC" . er/expand-region))))
 
 (provide 'init-editing-utils)

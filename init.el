@@ -14,6 +14,11 @@
 ;;; Code:
 
 ;;; Speed up startup
+(setq gc-cons-percentage 0.5
+      gc-cons-threshold (* 128 1024 1024))
+
+;; Garbage collect at the end of startup
+(add-hook 'after-init-hook #'garbage-collect t)
 
 ;; Process performance tuning
 (setq-default process-adaptive-read-buffering nil)
@@ -45,11 +50,6 @@
 ;; bidirectional text with embedded parentheses.
 (setq bidi-inhibit-bpa t)
 
-;; Font compacting can be terribly expensive, especially for rendering icon fonts on
-;; MS. Whether disabling it has a notable affect on Linux and macOS hasn't been
-;; determined, but do it anyway, just in case. This increases memory usage.  (setq
-;; inhibit-compacting-font-caches t)
-
 ;;; Basic UI setup
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -62,10 +62,11 @@
 (setq use-dialog-box nil
       use-file-dialog nil)
 
-(setq inhibit-splash-screen t
-      inhibit-startup-buffer-menu t)
+(setq inhibit-startup-screen t
+      inhibit-startup-echo-area-message "Sthenno")
 
-(setq initial-scratch-message nil)
+(setq initial-buffer-choice t
+      initial-scratch-message "")
 
 ;; Clean up the title bar content
 (setq-default frame-title-format nil)
@@ -78,8 +79,6 @@
 ;;; Set path for custom-file (do not ask me about this for any reason)
 (setq custom-file (make-temp-file "_tmp"))
 
-;;; FIXME
-(add-to-list 'load-path "~/.emacs.d/site-lisp/org/lisp/")
 (use-package org
   :load-path "site-lisp/org/lisp/"
   :demand t
@@ -96,46 +95,7 @@
   :ensure t
   :config (diminish 'eldoc-mode))
 
-;;; FIXME
-;; (require 'python)
-
-;;; GCMH: the Garbage Collector Magic Hack
-;; (use-package gcmh
-;;   :ensure t
-;;   :demand t
-;;   :diminish (gcmh-mode)
-;;   :config
-
-;;   ;; The GC introduces annoying pauses and stuttering into our Emacs experience, so we
-;;   ;; use `gcmh' to stave off the GC while we're using Emacs, and provoke it when it's
-;;   ;; idle. However, if the idle delay is too long, we run the risk of runaway memory
-;;   ;; usage in busy sessions. If it's too low, then we may as well not be using gcmh at
-;;   ;; all.
-;;   (defun gcmh-register-idle-gc ()
-;;     "Register a timer to run `gcmh-idle-garbage-collect'.
-;; Cancel the previous one if present."
-;;     (unless (eq this-command 'self-insert-command)
-;;       (let ((idle-t (if (eq gcmh-idle-delay 'auto)
-;;                         (* gcmh-auto-idle-delay-factor gcmh-last-gc-time)
-;;                       gcmh-idle-delay)))
-;;         (if (timerp gcmh-idle-timer)
-;;             (timer-set-time gcmh-idle-timer idle-t)
-;;           (setf gcmh-idle-timer
-;;                 (run-with-timer idle-t nil #'gcmh-idle-garbage-collect))))))
-;;   (setq gcmh-idle-delay 'auto
-;;         gcmh-high-cons-threshold (* 32 1024 1024)
-;;         gcmh-verbose nil)
-;;   (gcmh-mode 1))
-
-;;; Load path
-
-;; Fix PATH for macOS
-;; (use-package exec-path-from-shell
-;;   :ensure t
-;;   :demand t
-;;   :config (exec-path-from-shell-initialize))
-
-;; Dir for init-* files
+;;; Dir for init-* files
 (add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
 
 ;; Require init-* files

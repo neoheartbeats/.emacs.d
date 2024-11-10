@@ -29,7 +29,7 @@
 ;;
 
 ;; TAB cycle if there are only few candidates
-(setq completion-cycle-threshold nil)
+(setq completion-cycle-threshold nil)   ; Always show candidates in menu
 
 ;; Emacs 30: `cape-dict' is used instead.
 ;; NOTE: `setopt' is necessary.
@@ -63,8 +63,7 @@
   ;; The basic completion style is specified as fallback in addition to orderless in
   ;; order to ensure that completion commands rely on dynamic completion tables
   ;;
-  (setq completion-styles '(basic orderless)
-        completion-category-defaults nil
+  (setq completion-styles '(orderless basic)
         completion-category-overrides '((file (styles partial-completion))
 
                                         ;; There is further configuration for better
@@ -115,6 +114,7 @@
 
   :config
   (setq vertico-count 10)
+  (setq vertico-resize nil)
   (setq vertico-scroll-margin 4)
   (setq vertico-cycle nil)
 
@@ -123,41 +123,6 @@
 
   ;; Do not render italic fonts
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
-
-  ;; Prefix candidates
-  (defvar sthenno/vertico-using-prefix-symbol-p t)
-
-  ;; (cl-defmethod vertico--format-candidate :around
-  ;;   (cand prefix suffix index start &context
-  ;;         ((and sthenno/vertico-using-prefix-symbol-p
-  ;;               (not (bound-and-true-p vertico-flat-mode)))
-  ;;          (eql t)))
-  ;;   (setq cand (cl-call-next-method cand prefix suffix index start))
-  ;;   (modus-themes-with-colors
-  ;;     (if (= vertico--index index)
-  ;;         (concat (propertize "◉ " 'face
-  ;;                             `(:background ,bg-hl-line :inherit modus-themes-prompt))
-  ;;                 cand)
-  ;;       (concat (propertize "○ " 'face `(:foreground ,fg-dim))
-  ;;               cand))))
-
-  ;; Candidate display transformations
-  ;;
-  ;; (defvar sthenno/vertico-transform-functions nil)
-
-  ;; (cl-defmethod vertico--format-candidate :around
-  ;;   (cand prefix suffix index start &context
-  ;;         ((not sthenno/vertico-transform-functions) null))
-  ;;   (dolist (fun (ensure-list sthenno/vertico-transform-functions))
-  ;;     (setq cand (funcall fun cand)))
-  ;;   (cl-call-next-method cand prefix suffix index start))
-
-  ;; (defun sthenno/vertico-highlight-directory (file)
-  ;;   "If FILE ends with a slash, highlight it as a directory."
-  ;;   (if (string-suffix-p "/" file)
-  ;;       (propertize file 'face 'marginalia-file-priv-dir)
-  ;;     file))
-
 
   ;; Multiform
   ;;
@@ -257,8 +222,7 @@
                ("s-m" . consult-org-heading)
                ("M-a" . consult-org-agenda))))
 
-
-;; Dabbrev settings
+;;; Dabbrev settings
 (use-package dabbrev
   :config
 
@@ -302,12 +266,7 @@
   (defun sthenno/capf-elisp ()
     (setq-local completion-at-point-functions
                 `(,(cape-capf-super
-                    (cape-capf-predicate
-                     #'cape-elisp-symbol
-                     #'(lambda (cand)
-                         (or (not (keywordp cand))
-                             (eq (char-after (car completion-in-region--data)) ?:))))
-                    #'cape-dict
+                    #'elisp-completion-at-point
                     #'cape-dabbrev)
                   cape-file)
                 cape-dabbrev-min-length 4))
@@ -320,7 +279,7 @@
                     #'cape-elisp-block
                     #'cape-dabbrev)
                   cape-file)
-                cape-dabbrev-min-length 4))
+                cape-dabbrev-min-length 2))
   (add-hook 'text-mode-hook #'sthenno/capf-text)
 
   :config
@@ -351,29 +310,29 @@
 
 ;;; The main completion frontend by Corfu
 (use-package corfu
-  :vc (corfu
-       :url "https://github.com/minad/corfu"
-       :branch "main"
-       :lisp-dir "extensions/")
+  :ensure t
   :demand t
   :init (add-hook 'after-init-hook #'(lambda ()
                                        (global-corfu-mode 1)))
   :config
   (setq corfu-auto t
-        corfu-auto-delay 0.1            ; Making this to 0 is too expensive
-        corfu-auto-prefix 3)
+        corfu-auto-delay 0.125          ; Making this to 0 is too expensive
+        corfu-auto-prefix 2)
 
   (setq corfu-count 8
         corfu-scroll-margin 4)
 
-  (setq corfu-min-width 5
-        corfu-max-width 40)
+  (setq corfu-min-width 40
+        corfu-max-width 80)
 
   (setq corfu-quit-at-boundary t
-        corfu-quit-no-match t
+        corfu-separator ?\s             ; Use space
+        corfu-quit-no-match 'separator  ; Don't quit if there is `corfu-separator'
+                                        ; inserted
+        corfu-preview-current 'insert   ; Preview first candidate. Insert on input if
+                                        ; only one
         corfu-on-exact-match 'quit)
 
-  (setq corfu-preview-current nil)
   (setq corfu-cycle nil)
 
   ;; Performance optimization
@@ -388,7 +347,7 @@
   ;; Use special key to insert
   ;;
   ;; Like first, but select the prompt if it is a directory
-  (setq corfu-preselect 'directory)
+  ;; (setq corfu-preselect 'directory)
 
   ;; Use convenient keys to insert candidates of `corfu--candidates'. Since the first
   ;; candidate is usually pre-selected, it is better to trigger `corfu--insert'
@@ -423,9 +382,8 @@ Do not insert KEY if `char-after' point is not empty."
     (keymap-set corfu-map k #'(lambda ()
                                 (interactive)
                                 (sthenno/corfu-insert-key k))))
-
   (keymap-set corfu-map "RET" #'corfu-insert)
-
+  
   ;; Combined sorting
   (defun sthenno/corfu-combined-sort (candidates)
     "Sort CANDIDATES using both display-sort-function and corfu-sort-function."
@@ -446,15 +404,12 @@ Do not insert KEY if `char-after' point is not empty."
   ;; Popup candidates info
   (setq corfu-popupinfo-delay '(0.25 . 0.05))
   (setq corfu-popupinfo-hide nil)
-  (setq corfu-popupinfo-max-width 40
-        corfu-popupinfo-min-width 20)
+  (setq corfu-popupinfo-max-width 80
+        corfu-popupinfo-min-width 40)
 
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (corfu-popupinfo-mode 1)))
 
-  ;; (corfu-echo-mode 1)
-  ;; (setopt corfu-echo-delay '(0.10 . 0.05))
-  
   :bind (:map corfu-map
               ("<down>"   . corfu-next)
               ;; ("<tab>"    . corfu-next)

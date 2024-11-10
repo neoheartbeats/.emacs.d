@@ -188,36 +188,7 @@
 (setq org-use-property-inheritance t)
 (setq org-auto-align-tags nil)
 (setq org-tags-column 0)
-
-(setq org-hide-emphasis-markers nil)
-
-;; (defun sthenno/org-toggle-emphasis ()
-;;   "Toggle hiding of Org emphasis markers."
-;;   (interactive)
-;;   (if org-hide-emphasis-markers
-;;       (progn
-;;         (setq-local org-hide-emphasis-markers nil)
-;;         (message "Org emphasis markers are not hiding."))
-;;     (progn
-;;       (setq-local org-hide-emphasis-markers t)
-;;       (message "Org emphasis markers are hiding."))))
-;; (keymap-set org-mode-map "C-c e" #'sthenno/org-toggle-emphasis)
-
-;; Custom faces for Org emphasis
-;;
-;; (defface sthenno-org-emphasis-prefix '((t (:foreground "#00bcff" :height 0.8)))
-;;   "Sthenno's prefix emphasis for Org.")
-
-;; (defface sthenno-org-emphasis-on '((t (:underline t)))
-;;   "Sthenno's emphasized emphasis for Org.")
-
-;; (setq org-emphasis-alist '(("*" sthenno-org-emphasis-on)
-;;                            ("_" sthenno-org-emphasis-prefix)
-;;                            ("+" (:foreground "#ff5f5f"))
-;;                            ("=" org-code)))
-
-;; (defface sthenno-org-button '((t (:foreground "#00bcff" :box t))))
-;; (custom-set-faces 'org-link sthenno-org-button)
+(setq org-hide-emphasis-markers t)
 
 ;; Use this with `C-<return>'
 (setq org-insert-heading-respect-content t)
@@ -418,6 +389,7 @@ boundaries with possible narrowing."
 
 ;;; Using shift-<arrow-keys> to select text
 (setq org-support-shift-select 'always) ; Everywhere except timestamps
+(setq org-use-fast-todo-selection 'expert)
 
 ;;; The Zettlekasten note-taking system by Denote
 (use-package denote

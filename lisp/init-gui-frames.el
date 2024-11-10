@@ -20,7 +20,7 @@
   :config
 
   ;; Less is more.
-  (setopt modus-themes-bold-constructs t)
+  ;; (setopt modus-themes-bold-constructs t)
 
   ;; "On a page of text, nothing draws the eye more powerfully than a contrast between
   ;; light and dark colors."
@@ -33,7 +33,9 @@
 
   ;; Mapping colors
   (setq modus-themes-common-palette-overrides
-        `(
+        `((bg-main "#0a0c0f")
+          (fg-main "#e7edf2")
+          
           ;; Make the mode-line borderless and stand out less
           (bg-mode-line-active bg-dim)
           (fg-mode-line-active fg-dim)
@@ -45,9 +47,9 @@
           (border-mode-line-inactive unspecified)
 
           ;; Set color faces for `display-line-numbers-mode'
-          (fg-line-number-active fg-main)
+          (fg-line-number-active fg-dim)
           (bg-line-number-active bg-hl-line)
-          (fg-line-number-inactive fg-dim)
+          (fg-line-number-inactive "#535353")
           (bg-line-number-inactive unspecified)
 
           ;; Make the fringe invisible
@@ -81,11 +83,16 @@
           ;; (docstring comment)
           ;; (docmarkup comment)
 
+          ;;
+          (cursor "#477fef")
+
           ;; Apply the presets
           ,@modus-themes-preset-overrides-faint))
 
   ;; Load the enable the theme
   (modus-themes-load-theme 'modus-vivendi))
+
+(global-hl-line-mode 1)
 
 ;; Do not extend `region' background past the end of the line
 (custom-set-faces
@@ -95,7 +102,7 @@
 
 (use-package paren
   :config
-  (setopt show-paren-delay 0.125)
+  (setopt show-paren-delay 0)
   (custom-set-faces
    '(show-paren-match ((t :inherit 'bold))))
   (show-paren-mode 1))
@@ -118,7 +125,7 @@
   :ensure t
   :diminish
   :config
-  (setopt highlight-parentheses-delay 0.125)
+  (setopt highlight-parentheses-delay 0)
 
   (defun sthenno/highlight-parentheses (&rest _)
     (modus-themes-with-colors
@@ -129,10 +136,16 @@
     (global-highlight-parentheses-mode 1))
   (add-hook 'after-init-hook #'sthenno/highlight-parentheses))
 
+;;; Dim surrounding text
+(use-package focus
+  :ensure t
+  :config
+  (add-to-list 'focus-mode-to-thing '(python-mode . paragraph))
+  (custom-set-faces
+   `(focus-unfocused ((t (:foreground "#535353"))))))
+
 ;;; Cursor faces
-
 (setopt cursor-type '(bar . 1))
-
 (blink-cursor-mode -1)
 
 ;;; Increase the padding/spacing of Emacs frames
@@ -188,7 +201,7 @@
 (setq truncate-string-ellipsis " …")
 
 ;;; Text quoting
-(setq text-quoting-style 'straight)
+;; (setq text-quoting-style 'straight)
 
 ;;; Mode Line settings
 (setopt mode-line-compact t)
