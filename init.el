@@ -7,18 +7,24 @@
 ;;; Commentary:
 
 ;; This file bootstraps the configuration.
-;;
-;; TODO: Credits
-;;
 
 ;;; Code:
 
 ;;; Speed up startup
-(setq gc-cons-percentage 0.5
-      gc-cons-threshold (* 128 1024 1024))
+
+(add-hook 'emacs-startup-hook #'(lambda ()
+                                  (setq gc-cons-percentage 0.5
+                                        gc-cons-threshold (* 128 1024 1024))))
+
 
 ;; Garbage collect at the end of startup
 (add-hook 'after-init-hook #'garbage-collect t)
+
+;; Prefer loading newer compiled files
+(setq load-prefer-newer t)
+
+;; Increase how much is read from processes in a single chunk (default is 4kb).
+(setq read-process-output-max (* 256 1024)) ; 256kb
 
 ;; Process performance tuning
 (setq-default process-adaptive-read-buffering nil)
@@ -36,6 +42,9 @@
 ;; should help a little with scrolling performance.
 (setq redisplay-skip-fontification-on-input t)
 
+;; By default, Emacs updates its UI more often than it needs to
+(setq idle-update-delay 1.0)
+
 ;; Don't ping things that look like domain names.
 (setq ffap-machine-p-known 'reject)
 
@@ -50,27 +59,48 @@
 ;; bidirectional text with embedded parentheses.
 (setq bidi-inhibit-bpa t)
 
+;; Font compacting can be very resource-intensive, especially when rendering icon fonts.
+(setq inhibit-compacting-font-caches t)
+
 ;;; Basic UI setup
+
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(menu-bar-mode -1)
 
-(add-to-list 'default-frame-alist '(width . 120))
+(add-to-list 'default-frame-alist '(width  . 120))
 (add-to-list 'default-frame-alist '(height . 55))
+(add-to-list 'default-frame-alist '(alpha  . (90 . 90)))
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 
 ;; Suppress GUI features
 (setq use-dialog-box nil
       use-file-dialog nil)
 
-(setq inhibit-startup-screen t
-      inhibit-startup-echo-area-message "Sthenno")
+(setq inhibit-startup-screen t          ; This is not enough
+      inhibit-startup-echo-area-message user-login-name
+      inhibit-startup-buffer-menu t)
 
-(setq initial-buffer-choice t
-      initial-scratch-message "")
+(advice-add #'display-startup-screen :override #'ignore) ; This is enough
+
+(setq inhibit-x-resources t)
+
+(setq initial-buffer-choice nil
+      initial-scratch-message nil)
 
 ;; Clean up the title bar content
 (setq-default frame-title-format nil)
 (setq-default ns-use-proxy-icon nil)
+
+;; Startup message at echo area
+
+(defun sthenno/display-startup-echo-area-message ()
+  (let ((icon "􂨖")
+        (text "Funding for this program was made possible by viewers like you."))
+    (message "%s %s" icon text)))
+
+(advice-add #'display-startup-echo-area-message :override
+            #'sthenno/display-startup-echo-area-message)
 
 ;;; User information
 (setq user-full-name "Sthenno"
@@ -87,9 +117,10 @@
   (require 'org-latex-preview))
 
 ;;; Emacs packages
+
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") 'append)
-(add-to-list 'package-archives '("gnu-devel" . "https://elpa.gnu.org/devel/") 'prepend)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("gnu-devel" . "https://elpa.gnu.org/devel/"))
 
 (use-package diminish
   :ensure t

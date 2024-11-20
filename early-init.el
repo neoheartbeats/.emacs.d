@@ -7,6 +7,7 @@
 ;;; Commentary:
 
 ;; Code loaded before the package system and GUI is initialized.
+
 ;; This file includes:
 ;;   - Init garbage-collection config
 ;;   - Native-Compilation specified config
@@ -18,8 +19,7 @@
 ;;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
 
-;; Adjust display according to `file-name-handler-alist'.  13feb2024
-;; https://github.com/karthink/.emacs.d/blob/master/early-init.el.
+;;; Adjust display according to `file-name-handler-alist'
 
 (unless (or (not (called-interactively-p))
             (daemonp)
@@ -40,13 +40,6 @@
             (delete-dups (append file-name-handler-alist
                                  old-file-name-handler-alist))))
     (add-hook 'emacs-startup-hook #'sthenno/reset-file-handler-alist 101)))
-
-(setq-default inhibit-redisplay t
-              inhibit-message t)
-(add-hook 'window-setup-hook #'(lambda ()
-                                 (setq-default inhibit-redisplay nil
-                                               inhibit-message nil)
-                                 (redisplay)))
 
 ;; Site files tend to use `load-file', which emits "Loading X..." messages in the echo
 ;; area, which in turn triggers a redisplay. Redisplays can have a substantial effect on
@@ -74,10 +67,12 @@
 ;; by inhibiting it in the early stage. However, since I don't use the `menu-bar' under
 ;; macOS, `menu-bar-mode' is disabled later.
 
-(push '(menu-bar-lines . 0)  default-frame-alist)
-(push '(tool-bar-lines . 0)   default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
+(push '(menu-bar-lines . 0)     default-frame-alist)
+(push '(tool-bar-lines . 0)     default-frame-alist)
+(push '(vertical-scroll-bars)   default-frame-alist)
+(push '(horizontal-scroll-bars) default-frame-alist)
 
+(horizontal-scroll-bar-mode -1)
 
 ;; Resizing the Emacs frame can be a terribly expensive part of changing the font. By
 ;; inhibiting this, we halve startup times, particularly when we use fonts that are

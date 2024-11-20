@@ -134,9 +134,9 @@
   ;;                                 ("quote"  . ("􀈎" "􀂓"))
   ;;                                 ("export" . ("􀣙" "􀂓"))))
 
-  (setopt org-modern-keyword '(("title"   . "􀉛")
-                               ("results" . "􂨖")
-                               (t . t)))
+  ;; (setopt org-modern-keyword '(("title"   . "􀉛")
+  ;;                              ("results" . "􂨖")
+  ;;                              (t . t)))
 
   (setopt org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
 
@@ -313,51 +313,8 @@ boundaries with possible narrowing."
 (setq org-yank-image-save-method (expand-file-name "images/" org-directory))
 
 ;;; Org Hyperlinks
-;; (require 'ol)
+
 (setq org-return-follows-link t)
-
-;; Support for links to kill strings as its content
-;; (org-link-set-parameters "kill"
-;;                          :follow #'sthenno/org-kill-open
-;;                          :export #'sthenno/org-kill-export
-;;                          :store #'sthenno/org-kill-store-link)
-
-;; (defcustom sthenno/org-kill-command 'kill-new
-;;   "The Emacs command to be used to kill a string as the latest kill in the
-;; kill ring."
-;;   :group 'org-link
-;;   :type '(choice (const kill-new)
-;;                  (const org-kill-new)))
-
-;; (defun sthenno/org-kill-open (text _)
-;;   "Make TEXT the latest kill in the kill ring."
-;;   (funcall sthenno/org-kill-command text)
-;;   (message "String %s killed." text))
-
-;; (defun sthenno/org-kill-store-link (&optional _interactive?)
-;;   "Store a link to a string."
-;;   (let* ((text (buffer-substring-no-properties (region-beginning)
-;;                                                (region-end)))
-;;          (link (concat "kill:" text)))
-;;     (org-link-store-props
-;;      :type "kill"
-;;      :link link
-;;      :description text)))
-
-;; (defun sthenno/org-kill-export (link description format _)
-;;   "Export a kill link from Org files."
-;;   (let ((text link)
-;;         (desc (or description link)))
-;;     (pcase format
-;;       (_ text))))
-
-;; (defun sthenno/org-kill-insert ()
-;;   (interactive)
-;;   (let* ((lo (region-beginning))
-;;          (hi (region-end))
-;;          (text (buffer-substring-no-properties lo hi)))
-;;     (delete-region lo hi)
-;;     (insert (format "[[kill:%s][%s]]" text text))))
 
 ;;; Open file links in current window
 
@@ -457,44 +414,6 @@ boundaries with possible narrowing."
                ("s-b" . denote-backlinks)
                ("s-r" . denote-region))))
 
-;; Extensions for `denote'
-;;
-;; (use-package consult-denote
-;;   :ensure t
-;;   :config (consult-denote-mode 1))
-;;
-;; (use-package denote-menu
-;;   :ensure t
-;;   :after (denote)
-;;   :config
-;;   (setq denote-menu-date-column-width 25
-;;         denote-menu-title-column-width 60)
-
-;;   ;; Remove Denote journal entries from the menu
-;;   (setq denote-menu-initial-regex "_notes")
-
-;;   ;; HACK
-;;   (define-derived-mode denote-menu-mode tabulated-list-mode "Denote Menu"
-;;     "Major mode for browsing a list of Denote files."
-;;     :interactive nil
-;;     (setq tabulated-list-format `[("􀧞" ,denote-menu-date-column-width t)
-;;                                   ("􀉛" ,denote-menu-title-column-width t)])
-
-;;     (setq tabulated-list-padding 5)
-;;     (denote-menu-update-entries)
-;;     (setq tabulated-list-sort-key '("􀧞" . t))
-;;     (tabulated-list-init-header)
-;;     (tabulated-list-print))
-
-;;   :bind (:map global-map
-;;               ("s-o" . sthenno/denote-menu-open)))
-
-;;; Custom functions for Denote
-;;
-;; (defun sthenno/denote-insert-links-current-month ()
-;;   (interactive)
-;;   (denote-add-links (format-time-string "%B")))
-
 (defun sthenno/get-sorted-note-files (directory)
   "Return a list of note files in DIRECTORY, sorted by name."
   (sort (seq-filter 'denote-file-is-note-p
@@ -546,59 +465,5 @@ boundaries with possible narrowing."
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
                                (python . t)))
-
-;; Define a function to copy the code block at point
-;; (defun sthenno/org-copy-source-code-block ()
-;;   "Copy the contents of the source code block at point."
-;;   (interactive)
-;;   (let ((e (org-element-context)))
-;;     (if (eq (org-element-type e) 'src-block)
-;;         (let ((sc ""))
-;;           (save-restriction
-;;             (org-narrow-to-subtree)
-;;             (org-babel-map-src-blocks nil
-;;               (setq sc (concat sc (org-no-properties body)))))
-;;           (progn
-;;             (kill-new sc)
-;;             (message "Code block content copied")
-;;             (run-hooks 'sthenno/org-copy-source-code-block-hook)))
-;;       (message "Not in a code block"))))
-;; (keymap-set org-mode-map "s-<mouse-1>" #'sthenno/org-copy-source-code-block)
-
-;;; Org-Agenda
-
-;; (require 'denote)                       ; FIXME: ???
-;; (setq org-agenda-files `(,denote-directory
-;;                          ,denote-journal-extras-directory))
-
-;; ;; Bind keys
-;; (defun sthenno/org-agenda-list-all-todos ()
-;;   (interactive)
-;;   (org-agenda nil "t"))
-;; (keymap-global-set "C-c a" #'sthenno/org-agenda-list-all-todos)
-
-;; (setq org-log-done 'time)
-
-;; ;; Make Org-Agenda look better
-;; (setq org-agenda-overriding-header "")
-;; (setq org-agenda-block-separator ?─)
-;; (setq org-agenda-time-grid '((daily today require-timed)
-;;                              (800 1000 1200 1400 1600 1800 2000)
-;;                              " ────── " "───────────────")
-;;       org-agenda-current-time-string "───────────────")
-
-;; (setq org-agenda-window-setup 'current-window
-;;       org-agenda-restore-windows-after-quit t)
-
-;; (setq org-agenda-span 5
-;;       org-agenda-start-day "+0d")
-;; (setq org-deadline-warning-days 4)
-
-;; (setq org-agenda-category-icon-alist nil)
-;; (setq org-agenda-prefix-format '((agenda . "%i %?-12t%s 􀐱 ")
-;;                                  (todo   . "%i ○ ")
-;;                                  (tags   . "%i")
-;;                                  (search . "%i")))
-;; (setq org-agenda-format-date "\n􀧞 %F\n")
 
 (provide 'init-org)

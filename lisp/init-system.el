@@ -14,7 +14,7 @@
 ;; macOS specified key mapping
 ;;
 
-(setq mac-option-modifier 'meta)
+(setq mac-option-modifier  'meta)
 (setq mac-command-modifier 'super)
 
 (bind-keys :map global-map
@@ -29,8 +29,9 @@
            ("s-z" . undo)
            ("s-d" . find-file))
 
-;; To use a familier undo-redo mechanism
-;; Note this global mode directly remaps the default keymaps.
+;;; To use a familier undo-redo mechanism
+
+;; Note this global mode directly remaps the default keymaps
 (use-package undo-tree
   :ensure t
   :diminish (undo-tree-mode)
@@ -38,15 +39,10 @@
   (setq undo-tree-auto-save-history nil)
   (global-undo-tree-mode 1))
 
-(defun sthenno/elisp-mode-eval-buffer ()
-  (interactive)
-  (message "Evaluated buffer")
-  (eval-buffer))
-
-(define-key emacs-lisp-mode-map (kbd "C-c C-c") #'sthenno/elisp-mode-eval-buffer)
-(define-key lisp-interaction-mode-map (kbd "C-c C-c") #'sthenno/elisp-mode-eval-buffer)
-
-;;;
+(keymap-set emacs-lisp-mode-map "C-c C-c" #'(lambda ()
+                                              (interactive)
+                                              (let ((debug-on-error t))
+                                                (elisp-eval-region-or-buffer))))
 
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 
@@ -56,7 +52,6 @@
 ;; Do not scaling frame using mouse
 (global-unset-key (kbd "C-<wheel-up>"))
 (global-unset-key (kbd "C-<wheel-down>"))
-
 
 ;;; Split windows
 (defun split-window-below-focus ()
@@ -92,8 +87,6 @@ Activate again to undo this. If the window changes before then, the undo expires
 ;; Remember changes on windows
 ;; Use C-c <left> and C-c <right> to undo and redo changes on windows
 (use-package winner
-  :unless noninteractive
-  :demand t
   :config (winner-mode 1))
 
 ;;; Locate position history
@@ -149,15 +142,15 @@ Activate again to undo this. If the window changes before then, the undo expires
   (setq trash-directory "~/.Trash")
 
   ;; simple.el
-  (setq backward-delete-char-untabify-method 'untabify)
-  (setq column-number-mode t)
-  (setq indent-tabs-mode nil)
+  (setq backward-delete-char-untabify-method 'hungry)
+  (setq column-number-mode nil)
+  (setq line-number-mode nil)
+  
   (setq kill-do-not-save-duplicates t)
   (setq kill-ring-max 500)
   (setq kill-whole-line t)
-  (setq line-number-mode t)
-  (setq mail-user-agent 'gnus-user-agent)
-  (setq next-line-add-newlines t)
+  
+  (setq next-line-add-newlines nil)
   (setq save-interprogram-paste-before-kill t)
 
   ;; paragraphs.el

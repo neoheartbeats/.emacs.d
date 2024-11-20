@@ -12,7 +12,6 @@
 ;;
 
 ;;; Global functions for editing enhancement
-;;
 
 (defun sthenno/delete-current-line ()
   "Delete the current line."
@@ -25,27 +24,14 @@
   (interactive)
   (delete-region (line-beginning-position) (point)))
 
-(global-set-key (kbd "s-<backspace>") #'sthenno/delete-current-line)
-(global-set-key (kbd "C-<backspace>") #'sthenno/delete-to-beginning-of-line)
+(keymap-global-set "s-<backspace>" #'sthenno/delete-current-line)
+(keymap-global-set "C-<backspace>" #'sthenno/delete-to-beginning-of-line)
 
 (keymap-global-set "M-<down>" #'forward-paragraph)
-(keymap-global-set "M-<up>" #'backward-paragraph)
+(keymap-global-set "M-<up>"   #'backward-paragraph)
 
-;;; Pretty-print
-;;
-;; XXX: Pretty-print comes from various mechanisms respecting to the current programming
-;; language. For example, formatters like Black are preferred over `indent-region' and
-;; `untabify' for formatting Python code since a formatter usually provides a full
-;; combination of executions that covers the basic functions that Emacs provides. Thus,
-;; behaviors of `sthenno/pretty-print-current-buffer' should be considered separately
-;; for each particular case especially when `sthenno/enable-pretty-print-on-save' is
-;; demanded.
-;;
-;; NOTE: I did not intentionally distinguish between Indent, Pretty-print, and Format,
-;; although there are minor differences in their applicable scenarios. Any
-;; formatting-related concepts in this configuration is collectively referred to as
-;; Pretty-print.
-;;
+;;; Indentations
+
 (defun indent-current-buffer ()
   "Indent current buffer.
 If `major-mode' is `python-mode', abort."
@@ -132,14 +118,6 @@ and auto-paring for such entries."
     (global-hl-todo-mode 1))
   (add-hook 'after-init-hook #'sthenno/hl-todo-faces-setup))
 
-;;; Show doc-string in echo area
-(use-package eldoc
-  :init (eldoc-mode -1)
-  :config
-  (setq eldoc-echo-area-use-multiline-p 3)
-  (setq eldoc-echo-area-display-truncation-message nil)
-  (add-hook 'prog-mode-hook #'eldoc-mode))
-
 ;;; Deletions
 
 ;; Delete selection if you insert
@@ -151,7 +129,8 @@ and auto-paring for such entries."
 ;;; Display line numbers
 
 (setq-default display-line-numbers-width 4)
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+
+(add-hook 'prog-mode-hook  #'display-line-numbers-mode)
 (add-hook 'dired-mode-hook #'display-line-numbers-mode)
 
 ;;; Edit multiple occurrences in the same way simultaneously using "C-;"

@@ -114,7 +114,7 @@
 
   :config
   (setq vertico-count 10)
-  (setq vertico-resize nil)
+  (setq vertico-resize t)
   (setq vertico-scroll-margin 4)
   (setq vertico-cycle nil)
 
@@ -355,14 +355,7 @@
   ;; depending on different conditions.
   ;;
   (defun sthenno/corfu-insert-key (key)
-    "Insert selected candidate in `corfu--candidates' and KEY.
-
-Do not `corfu--insert' if
-  - `corfu--candidates' is empty |
-  - `corfu--preselect'  is the prompt |
-  - `corfu--index'      is the first candidate in `corfu--candidates'.
-
-Do not insert KEY if `char-after' point is not empty."
+    "Insert selected candidate in `corfu--candidates' and KEY."
 
     ;; Check if `corfu--insert'
     (let ((c (cond ((equal key "SPC") ?\s)

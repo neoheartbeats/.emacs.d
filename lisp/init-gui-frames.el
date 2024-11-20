@@ -33,9 +33,8 @@
 
   ;; Mapping colors
   (setq modus-themes-common-palette-overrides
-        `(
-          ;; (bg-main "#0a0c0f")
-          ;; (fg-main "#e7edf2")
+        `((bg-main "#0a0a0a")
+          (fg-main "#e5e5e5")
           
           ;; Make the mode-line borderless and stand out less
           (bg-mode-line-active bg-dim)
@@ -68,26 +67,33 @@
 
           ;; Prose colors
           (prose-todo info)
-          (prose-done fg-dim)
+          (prose-done "#535353")
 
           ;; Matching parenthesis
-          (fg-paren-match green-intense)
+          (fg-paren-match green-faint)
           (bg-paren-match unspecified)
 
           ;; Make code blocks more minimal
           (bg-prose-block-contents unspecified)
           (bg-prose-block-delimiter unspecified)
-          ;; (fg-prose-block-delimiter fg-main)
+          (fg-prose-block-delimiter fg-dim)
 
           ;; Completions (see also `init-comp')
-          ;; (bg-completion bg-hl-line)
+          (bg-completion bg-hl-line)
 
           ;; Code syntax
-          ;; (docstring comment)
-          ;; (docmarkup comment)
+          (constant fg-main)
+          (string comment)
+          (docstring comment)
+
+          ;; Faint
+          (fg-completion-match-0 "#059669")
+          (fg-completion-match-1 "#6ee7b7")
+          (fg-completion-match-2 "#d1fae5")
+          (fg-completion-match-3 "#ecfdf5")
 
           ;;
-          (cursor "#477fef")
+          ;; (cursor magenta-intense)
 
           ;; Apply the presets
           ,@modus-themes-preset-overrides-faint))
@@ -105,7 +111,7 @@
 
 (use-package paren
   :config
-  (setopt show-paren-delay 0)
+  (setopt show-paren-delay 0.05)
   (custom-set-faces
    '(show-paren-match ((t :inherit 'bold))))
   (show-paren-mode 1))
@@ -128,7 +134,7 @@
   :ensure t
   :diminish
   :config
-  (setopt highlight-parentheses-delay 0)
+  (setopt highlight-parentheses-delay 0.05)
 
   (defun sthenno/highlight-parentheses (&rest _)
     (modus-themes-with-colors
@@ -140,6 +146,7 @@
   (add-hook 'after-init-hook #'sthenno/highlight-parentheses))
 
 ;;; Dim surrounding text
+
 ;; (use-package focus
 ;;   :ensure t
 ;;   :config
@@ -152,6 +159,7 @@
 (blink-cursor-mode -1)
 
 ;;; Increase the padding/spacing of Emacs frames
+
 (use-package spacious-padding
   :ensure t
   :config (spacious-padding-mode 1))
@@ -163,7 +171,8 @@
 (set-language-environment "UTF-8")
 ;; ...but `set-language-environment' also sets `default-input-method', which is
 ;; a step too opinionated.
-(setq default-input-method nil)
+
+;; (setq default-input-method nil)
 
 ;;; Font settings
 (set-face-attribute 'default nil :family "Triplicate A Code" :height 150)
