@@ -304,6 +304,7 @@
                                                               ;; FIXME: how to avoid
                                                               ;; parsing this as a
                                                               ;; docstring?
+                                                              ""
                                                               " <dab>")
                                        :company-kind (lambda (_) 'text)
                                        :exclusive 'no)))
@@ -322,8 +323,8 @@
   (setq corfu-count 8
         corfu-scroll-margin 4)
 
-  (setq corfu-min-width 40
-        corfu-max-width 80)
+  (setq corfu-min-width 20
+        corfu-max-width 40)
 
   (setq corfu-quit-at-boundary t
         corfu-separator ?\s             ; Use space
@@ -405,14 +406,13 @@ Do not insert KEY if `char-after' point is not empty."
   (setq corfu-popupinfo-delay '(0.25 . 0.05))
   (setq corfu-popupinfo-hide nil)
   (setq corfu-popupinfo-max-width 80
-        corfu-popupinfo-min-width 40)
+        corfu-popupinfo-min-width 20)
 
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (corfu-popupinfo-mode 1)))
 
   :bind (:map corfu-map
               ("<down>"   . corfu-next)
-              ;; ("<tab>"    . corfu-next)
               ("<up>"     . corfu-previous)
               ("<escape>" . corfu-quit)))
 

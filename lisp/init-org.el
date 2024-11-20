@@ -26,7 +26,7 @@
       org-startup-with-latex-preview t)
 
 ;; Fold titles by default
-(setq org-startup-folded 'content)
+;; (setq org-startup-folded 'content)
 
 ;;; Install AUCTeX
 (use-package tex :ensure auctex)
@@ -117,36 +117,6 @@
                         ;; on my client.
                         " --bbox=preview -v4 -o %B-%%9p.svg %f"))))
 
-;; Centering previews using Org's alignment system instead of adding edges to original
-;; SVG files.
-;;
-;; By karthink:
-;; https://discord.com/channels/406534637242810369/1056621127188881439/1288235109128081440
-
-;; (defun sthenno/org-latex-preview-uncenter (ov)
-;;   (overlay-put ov 'before-string nil))
-
-;; (defun sthenno/org-latex-preview-recenter (ov)
-;;   (overlay-put ov 'before-string (overlay-get ov 'justify)))
-
-;; (defun sthenno/org-latex-preview-center (ov)
-;;   (save-excursion
-;;     (goto-char (overlay-start ov))
-;;     (when-let* ((elem (org-element-context))
-;;                 ((or (eq (org-element-type elem) 'latex-environment)
-;;                      (string-match-p "^\\\\\\[" (org-element-property :value elem))))
-;;                 (img (overlay-get ov 'display))
-;;                 (prop `(space :align-to (- center (0.55 . ,img))))
-;;                 (justify (propertize " " 'display prop 'face 'default)))
-;;       (overlay-put ov 'justify justify)
-;;       (overlay-put ov 'before-string (overlay-get ov 'justify)))))
-
-;; (add-hook 'org-latex-preview-overlay-open-functions  #'sthenno/org-latex-preview-uncenter)
-;; (add-hook 'org-latex-preview-overlay-close-functions #'sthenno/org-latex-preview-recenter)
-;; (add-hook 'org-latex-preview-overlay-update-functions #'sthenno/org-latex-preview-center)
-
-;; [TODO] consult-reftex, see https://karthinks.com/software/reftex-in-org-mode/
-
 ;;; Modern Org Mode theme
 (use-package org-modern
   :ensure t
@@ -178,6 +148,12 @@
                                    (t nil))))
   (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
 
+  (defun sthenno/org-modern-checkbox ()
+    (modus-themes-with-colors
+      (custom-set-faces
+       `(org-checkbox ((t (:foreground ,prose-todo)))))))
+  (add-hook 'org-mode-hook #'sthenno/org-modern-checkbox)
+  
   ;; Hooks
   (add-hook 'org-mode-hook #'org-modern-mode))
 

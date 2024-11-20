@@ -33,8 +33,9 @@
 
   ;; Mapping colors
   (setq modus-themes-common-palette-overrides
-        `((bg-main "#0a0c0f")
-          (fg-main "#e7edf2")
+        `(
+          ;; (bg-main "#0a0c0f")
+          ;; (fg-main "#e7edf2")
           
           ;; Make the mode-line borderless and stand out less
           (bg-mode-line-active bg-dim)
@@ -75,9 +76,11 @@
 
           ;; Make code blocks more minimal
           (bg-prose-block-contents unspecified)
+          (bg-prose-block-delimiter unspecified)
+          ;; (fg-prose-block-delimiter fg-main)
 
           ;; Completions (see also `init-comp')
-          (bg-completion bg-hl-line)
+          ;; (bg-completion bg-hl-line)
 
           ;; Code syntax
           ;; (docstring comment)
@@ -137,12 +140,12 @@
   (add-hook 'after-init-hook #'sthenno/highlight-parentheses))
 
 ;;; Dim surrounding text
-(use-package focus
-  :ensure t
-  :config
-  (add-to-list 'focus-mode-to-thing '(python-mode . paragraph))
-  (custom-set-faces
-   `(focus-unfocused ((t (:foreground "#535353"))))))
+;; (use-package focus
+;;   :ensure t
+;;   :config
+;;   (add-to-list 'focus-mode-to-thing '(python-mode . paragraph))
+;;   (custom-set-faces
+;;    `(focus-unfocused ((t (:foreground "#535353"))))))
 
 ;;; Cursor faces
 (setopt cursor-type '(bar . 1))
