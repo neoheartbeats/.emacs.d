@@ -134,9 +134,11 @@
   ;;                                 ("quote"  . ("􀈎" "􀂓"))
   ;;                                 ("export" . ("􀣙" "􀂓"))))
 
-  ;; (setopt org-modern-keyword '(("title"   . "􀉛")
-  ;;                              ("results" . "􂨖")
-  ;;                              (t . t)))
+  (setopt org-modern-todo nil)
+
+  (setopt org-modern-keyword '(("title"   . "􀉛")
+                               ("results" . "􂨖")
+                               (t . t)))
 
   (setopt org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
 

@@ -33,9 +33,7 @@
 
   ;; Mapping colors
   (setq modus-themes-common-palette-overrides
-        `((bg-main "#0a0a0a")
-          (fg-main "#e5e5e5")
-          
+        `(
           ;; Make the mode-line borderless and stand out less
           (bg-mode-line-active bg-dim)
           (fg-mode-line-active fg-dim)
@@ -175,7 +173,7 @@
 ;; (setq default-input-method nil)
 
 ;;; Font settings
-(set-face-attribute 'default nil :family "Triplicate A Code" :height 150)
+(set-face-attribute 'default nil :family "Triplicate A Code" :height 140) ; Forma DJR Mono
 
 ;; Set up font for non-ascii fontset
 (set-fontset-font t 'big5                (font-spec :family "Noto Serif CJK SC"))
