@@ -170,7 +170,7 @@
 ;; ...but `set-language-environment' also sets `default-input-method', which is
 ;; a step too opinionated.
 
-;; (setq default-input-method nil)
+(setq default-input-method nil)
 
 ;;; Font settings
 (set-face-attribute 'default nil :family "Triplicate A Code" :height 140) ; Forma DJR Mono

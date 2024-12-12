@@ -92,29 +92,29 @@
               ("<f2>" . eglot-rename)))
 
 ;; Automatically confirm .dir-locals.el files
-;; (setq-default enable-local-variables :safe)
+(setq-default enable-local-variables :safe)
 
-;;; Python project management using Conda
-;; (use-package conda
-;;   :ensure t
-;;   :init (conda-env-initialize-interactive-shells)
-;;   :config
-;;   (setopt conda-anaconda-home "/opt/homebrew/Caskroom/miniconda/base/")
+;; Python project management using Conda
+(use-package conda
+  :ensure t
+  :init (conda-env-initialize-interactive-shells)
+  :config
+  (setopt conda-anaconda-home "/opt/homebrew/Caskroom/miniconda/base/")
 
-;;   ;; Enable auto-activation
-;;   (conda-env-autoactivate-mode 1)
+  ;; Enable auto-activation
+  (conda-env-autoactivate-mode 1)
 
-;;   ;; Automatically activate a Conda environment on the opening of a file
-;;   (add-hook 'find-file-hook (lambda ()
-;;                               (when (bound-and-true-p conda-project-env-path)
-;;                                 (conda-env-activate-for-buffer))))
+  ;; Automatically activate a Conda environment on the opening of a file
+  (add-hook 'find-file-hook (lambda ()
+                              (when (bound-and-true-p conda-project-env-path)
+                                (conda-env-activate-for-buffer))))
 
-;;   ;; Displaying the currently active environment on the `mode-line'
-;;   (add-hook 'python-mode-hook #'conda-mode-line-setup))
+  ;; Displaying the currently active environment on the `mode-line'
+  (add-hook 'python-mode-hook #'conda-mode-line-setup))
 
-;; (setq python-indent-offset 4)
-;; (setq python-indent-guess-indent-offset t)
-;; (setq python-indent-guess-indent-offset-verbose nil)
+(setq python-indent-offset 4)
+(setq python-indent-guess-indent-offset t)
+(setq python-indent-guess-indent-offset-verbose nil)
 
 ;; Reformat Python buffers using the Black formatter
 ;; (use-package blacken
