@@ -30,6 +30,16 @@
 (keymap-global-set "M-<down>" #'forward-paragraph)
 (keymap-global-set "M-<up>"   #'backward-paragraph)
 
+;;; Fill columns
+(global-display-fill-column-indicator-mode 1)
+
+;;; Display line numbers
+
+(setq-default display-line-numbers-width 4)
+
+(add-hook 'prog-mode-hook  #'display-line-numbers-mode)
+(add-hook 'dired-mode-hook #'display-line-numbers-mode)
+
 ;;; Indentations
 
 (defun indent-current-buffer ()
@@ -79,31 +89,34 @@ and auto-paring for such entries."
 (add-hook 'org-mode-hook #'sthenno/inhibit-specific-delimiters)
 
 ;; Automatic pairing parenthesis
+
 (electric-pair-mode 1)
 
-;; Indentations
-(use-package aggressive-indent
-  :ensure t
-  :diminish
-  :config (global-aggressive-indent-mode 1))
+;;; Indentations
 
-(use-package indent-bars
-  :ensure t
-  :config
-  (require 'indent-bars-ts)
-  (setq indent-bars-no-descend-lists t  ; no extra bars in continued func arg lists
-        indent-bars-treesit-support t
-        indent-bars-treesit-ignore-blank-lines-types '("module"))
+;; (use-package aggressive-indent
+;;   :ensure t
+;;   :diminish
+;;   :config (global-aggressive-indent-mode 1))
 
-  (setq indent-bars-prefer-character t)
+;; (use-package indent-bars
+;;   :ensure t
+;;   :config
+;;   (require 'indent-bars-ts)
+;;   (setq indent-bars-no-descend-lists t  ; no extra bars in continued func arg lists
+;;         indent-bars-treesit-support t
+;;         indent-bars-treesit-ignore-blank-lines-types '("module"))
 
-  (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
-        indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-        indent-bars-highlight-current-depth '(:blend 0.8)
-        indent-bars-starting-column 0
-        indent-bars-display-on-blank-lines t))
+;;   (setq indent-bars-prefer-character t)
+
+;;   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
+;;         indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+;;         indent-bars-highlight-current-depth '(:blend 0.8)
+;;         indent-bars-starting-column 0
+;;         indent-bars-display-on-blank-lines t))
 
 ;;; Highlight these keywords in code comments
+
 (use-package hl-todo
   :ensure t
   :config
@@ -123,18 +136,22 @@ and auto-paring for such entries."
 ;; Delete selection if you insert
 (delete-selection-mode 1)
 
-;;; Fill columns
-(global-display-fill-column-indicator-mode 1)
+;;; Multiple occurrences
 
-;;; Display line numbers
-
-(setq-default display-line-numbers-width 4)
-
-(add-hook 'prog-mode-hook  #'display-line-numbers-mode)
-(add-hook 'dired-mode-hook #'display-line-numbers-mode)
-
-;;; Edit multiple occurrences in the same way simultaneously using "C-;"
+;; Edit multiple occurrences in the same way simultaneously using "C-;"
 (use-package iedit :ensure t)
+
+;; Highlight multiple occurrences
+(use-package region-occurrences-highlighter 
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook #'region-occurrences-highlighter-mode)
+  (add-hook 'text-mode-hook #'region-occurrences-highlighter-mode)
+
+  (keymap-set region-occurrences-highlighter-nav-mode-map
+              "<down>" #'region-occurrences-highlighter-next)
+  (keymap-set region-occurrences-highlighter-nav-mode-map
+              "<up>"   #'region-occurrences-highlighter-prev))
 
 ;;; expand-region
 (use-package expand-region

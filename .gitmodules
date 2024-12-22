@@ -1,3 +1,6 @@
 [submodule "site-lisp/org"]
 	path = site-lisp/org
 	url = https://code.tecosaur.net/tec/org-mode.git
+[submodule "site-lisp/python-bridge"]
+	path = site-lisp/python-bridge
+	url = https://github.com/manateelazycat/python-bridge.git

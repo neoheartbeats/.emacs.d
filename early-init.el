@@ -67,12 +67,10 @@
 ;; by inhibiting it in the early stage. However, since I don't use the `menu-bar' under
 ;; macOS, `menu-bar-mode' is disabled later.
 
-(push '(menu-bar-lines . 0)     default-frame-alist)
-(push '(tool-bar-lines . 0)     default-frame-alist)
-(push '(vertical-scroll-bars)   default-frame-alist)
+(push '(menu-bar-lines . 0) default-frame-alist)
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
 (push '(horizontal-scroll-bars) default-frame-alist)
-
-(horizontal-scroll-bar-mode -1)
 
 ;; Resizing the Emacs frame can be a terribly expensive part of changing the font. By
 ;; inhibiting this, we halve startup times, particularly when we use fonts that are

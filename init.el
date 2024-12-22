@@ -16,7 +16,6 @@
                                   (setq gc-cons-percentage 0.5
                                         gc-cons-threshold (* 128 1024 1024))))
 
-
 ;; Garbage collect at the end of startup
 (add-hook 'after-init-hook #'garbage-collect t)
 
@@ -66,11 +65,11 @@
 
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
-(menu-bar-mode -1)
+;; (menu-bar-mode -1)
 
-(add-to-list 'default-frame-alist '(width  . 120))
-(add-to-list 'default-frame-alist '(height . 55))
-(add-to-list 'default-frame-alist '(alpha  . (85 . 85)))
+(add-to-list 'default-frame-alist '(width  . 100))
+(add-to-list 'default-frame-alist '(height . 45))
+(add-to-list 'default-frame-alist '(alpha  . (90 . 90)))
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 
 ;; Suppress GUI features
@@ -126,12 +125,14 @@
   :ensure t
   :config (diminish 'eldoc-mode))
 
-;; Fix PATH for macOS
+;;; Fix PATH for macOS
+
 (use-package exec-path-from-shell
   :ensure t
   :demand t
   :config (exec-path-from-shell-initialize))
 
+(server-start)
 
 ;;; Dir for init-* files
 (add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))

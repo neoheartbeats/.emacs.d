@@ -39,46 +39,18 @@
                                             (run-hooks (quote ,major-mode-hook))))))
       major-mode-remap-alist)
 
-;; To enable the maximum fontifications. If this is set to default, there could be
-;; syntax highlighting error found in Org Babel
-;; (setq treesit-font-lock-level 4)
+(setq treesit-font-lock-level 4)
+
+;;; python-bridge
+
+(use-package python-bridge
+  :load-path "site-lisp/python-bridge/"
+  :config (python-bridge-enable))
 
 ;;; Terminal integration
 
-;; (use-package vterm
-;;   :ensure t
-;;   :config (setq vterm-always-compile-module t))
-
-;; (use-package vterm-toggle
-;;   :ensure t
-;;   :after (vterm)
-;;   :config
-
-;;   ;; Show vterm buffer in bottom side
-;;   (setq vterm-toggle-fullscreen-p nil)
-;;   (add-to-list 'display-buffer-alist
-;;                '((lambda (buffer-or-name _)
-;;                    (let ((buffer (get-buffer buffer-or-name)))
-;;                      (with-current-buffer buffer
-;;                        (or (equal major-mode 'vterm-mode)
-;;                            (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-;;                  (display-buffer-reuse-window display-buffer-at-bottom)
-;;                  (display-buffer-reuse-window display-buffer-in-direction)
-;;                  (direction . bottom)
-;;                  (dedicated . t)
-;;                  (reusable-frames . visible)
-;;                  (window-height . 0.4)))
-
-;;   ;; Key bindings
-;;   (keymap-global-set "s-t" #'vterm-toggle)
-
-;;   ;; Switch to next vterm buffer
-;;   (keymap-set vterm-mode-map "s-<right>" #'vterm-toggle-forward)
-
-;;   ;; Switch to previous vterm buffer
-;;   (keymap-set vterm-mode-map "s-<left>" #'vterm-toggle-backward))
-
 ;;; Initialize `eglot'
+
 (use-package eglot
   :ensure t
   :config
@@ -94,7 +66,8 @@
 ;; Automatically confirm .dir-locals.el files
 (setq-default enable-local-variables :safe)
 
-;; Python project management using Conda
+;;; Python project management using Conda
+
 (use-package conda
   :ensure t
   :init (conda-env-initialize-interactive-shells)
@@ -116,76 +89,78 @@
 (setq python-indent-guess-indent-offset t)
 (setq python-indent-guess-indent-offset-verbose nil)
 
-;; Reformat Python buffers using the Black formatter
-;; (use-package blacken
-;;   :ensure t
-;;   :config
+;;; Reformat Python buffers using the Black formatter
 
-;;   ;; Hooks
-;;   (add-hook 'python-mode-hook #'blacken-mode)
+(use-package blacken
+  :ensure t
+  :config
 
-;;   ;; Formatting buffers
-;;   (defun sthenno/python-format-buffer ()
-;;     (interactive)
+  ;; Hooks
+  (add-hook 'python-mode-hook #'blacken-mode)
 
-;;     ;; pip install isort
-;;     (python-sort-imports)
-;;     (blacken-buffer))
+  ;; Formatting buffers
+  (defun sthenno/python-format-buffer ()
+    (interactive)
 
-;;   :bind (:map python-base-mode-map
-;;               ("s-i" . sthenno/python-format-buffer)))
+    ;; pip install isort
+    (python-sort-imports)
+    (blacken-buffer))
+
+  :bind (:map python-base-mode-map
+              ("s-i" . sthenno/python-format-buffer)))
 
 ;; JSON files
 ;; (add-hook 'json-ts-mode-hook #'(lambda ()
 ;;                                  (so-long-mode 1)))
 
 ;;; gptel: A simple LLM client for Emacs
-(use-package gptel
-  :ensure t
-  :config
-  (setq gptel-model 'sthenno
-        gptel-backend (gptel-make-openai "vLLM"
-                        :host "192.168.100.128:8000"
-                        :protocol "http"
-                        :endpoint "/v1/chat/completions"
-                        :stream t
-                        :key "sk-1234"
-                        :models '(sthenno)))
-  ;; System messages
-  (setq gptel-directives '((default . "You are Sthenno.")))
 
-  ;; LLM request options
-  (setq gptel-max-tokens 1024
-        gptel-temperature 0.70)
+;; (use-package gptel
+;;   :ensure t
+;;   :config
+;;   (setq gptel-model 'sthenno
+;;         gptel-backend (gptel-make-openai "vLLM"
+;;                         :host "192.168.100.128:8000"
+;;                         :protocol "http"
+;;                         :endpoint "/v1/chat/completions"
+;;                         :stream t
+;;                         :key "sk-1234"
+;;                         :models '(sthenno)))
+;;   ;; System messages
+;;   (setq gptel-directives '((default . "You are Sthenno.")))
 
-  ;; Use the mode-line to display status info
-  (setq gptel-use-header-line nil)
+;;   ;; LLM request options
+;;   (setq gptel-max-tokens 1024
+;;         gptel-temperature 0.70)
 
-  ;; Chat UI options
-  (setq gptel-default-mode 'org-mode)
+;;   ;; Use the mode-line to display status info
+;;   (setq gptel-use-header-line nil)
 
-  ;; Scroll automatically as the response is inserted
-  (add-hook 'gptel-post-stream-hook #'gptel-auto-scroll)
+;;   ;; Chat UI options
+;;   (setq gptel-default-mode 'org-mode)
 
-  ;; Move to the next prompt after the response is inserted
-  (add-hook 'gptel-post-response-functions #'gptel-end-of-response)
+;;   ;; Scroll automatically as the response is inserted
+;;   (add-hook 'gptel-post-stream-hook #'gptel-auto-scroll)
 
-  ;; Org-mode UI options
-  (setq gptel-org-branching-context t)
+;;   ;; Move to the next prompt after the response is inserted
+;;   (add-hook 'gptel-post-response-functions #'gptel-end-of-response)
 
-  ;; Custom functions
-  (defun sthenno/gptel-buffer ()
-    "Open the `gptel' buffer."
-    (interactive)
-    (let ((buff "*vLLM*"))
-      (gptel buff)
-      (pop-to-buffer buff)))
+;;   ;; Org-mode UI options
+;;   (setq gptel-org-branching-context t)
 
-  ;; Key bindings
-  (keymap-global-set "s-l" #'sthenno/gptel-buffer)
+;;   ;; Custom functions
+;;   (defun sthenno/gptel-buffer ()
+;;     "Open the `gptel' buffer."
+;;     (interactive)
+;;     (let ((buff "*vLLM*"))
+;;       (gptel buff)
+;;       (pop-to-buffer buff)))
 
-  (keymap-set gptel-mode-map "S-<return>" #'gptel-send)
-  (keymap-set org-mode-map "S-<return>" #'gptel-send))
+;;   ;; Key bindings
+;;   (keymap-global-set "s-l" #'sthenno/gptel-buffer)
+
+;;   (keymap-set gptel-mode-map "S-<return>" #'gptel-send)
+;;   (keymap-set org-mode-map "S-<return>" #'gptel-send))
 
 ;;; GitHub Copilot
 ;;

@@ -15,6 +15,7 @@
 ;;; Code:
 
 ;;; Modus Themes
+
 (use-package modus-themes
   :ensure t
   :config
@@ -68,7 +69,7 @@
           (prose-done "#535353")
 
           ;; Matching parenthesis
-          (fg-paren-match green-faint)
+          ;; (fg-paren-match green-faint)
           (bg-paren-match unspecified)
 
           ;; Make code blocks more minimal
@@ -80,17 +81,17 @@
           (bg-completion bg-hl-line)
 
           ;; Code syntax
-          (constant fg-main)
-          (string comment)
-          (docstring comment)
+          
+          (constant string)
+          (docstring string)
 
           ;; Faint
-          (fg-completion-match-0 "#059669")
-          (fg-completion-match-1 "#6ee7b7")
-          (fg-completion-match-2 "#d1fae5")
-          (fg-completion-match-3 "#ecfdf5")
+          
+          ;; (fg-completion-match-0 "#059669")
+          ;; (fg-completion-match-1 "#6ee7b7")
+          ;; (fg-completion-match-2 "#d1fae5")
+          ;; (fg-completion-match-3 "#ecfdf5")
 
-          ;;
           ;; (cursor magenta-intense)
 
           ;; Apply the presets
@@ -143,21 +144,14 @@
     (global-highlight-parentheses-mode 1))
   (add-hook 'after-init-hook #'sthenno/highlight-parentheses))
 
-;;; Dim surrounding text
-
-;; (use-package focus
-;;   :ensure t
-;;   :config
-;;   (add-to-list 'focus-mode-to-thing '(python-mode . paragraph))
-;;   (custom-set-faces
-;;    `(focus-unfocused ((t (:foreground "#535353"))))))
-
 ;;; Cursor faces
+
 (setopt cursor-type '(bar . 1))
+(setopt mouse-highlight nil)
+
 (blink-cursor-mode -1)
 
 ;;; Increase the padding/spacing of Emacs frames
-
 (use-package spacious-padding
   :ensure t
   :config (spacious-padding-mode 1))
@@ -173,7 +167,8 @@
 (setq default-input-method nil)
 
 ;;; Font settings
-(set-face-attribute 'default nil :family "Triplicate A Code" :height 140) ; Forma DJR Mono
+
+(set-face-attribute 'default nil :family "Triplicate A Code" :height 140)
 
 ;; Set up font for non-ascii fontset
 (set-fontset-font t 'big5                (font-spec :family "Noto Serif CJK SC"))
@@ -209,9 +204,6 @@
 
 ;; Ellipsis symbol
 (setq truncate-string-ellipsis " …")
-
-;;; Text quoting
-;; (setq text-quoting-style 'straight)
 
 ;;; Mode Line settings
 (setopt mode-line-compact t)
