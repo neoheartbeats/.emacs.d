@@ -38,12 +38,12 @@
           ;; Make the mode-line borderless and stand out less
           (bg-mode-line-active bg-dim)
           (fg-mode-line-active fg-dim)
-          (bg-mode-line-inactive unspecified)
+          (bg-mode-line-inactive bg-main)
           (fg-mode-line-inactive fg-dim)
 
           ;; Make the mode line borderless
           (border-mode-line-active unspecified)
-          (border-mode-line-inactive unspecified)
+          (border-mode-line-inactive bg-mode-line-inactive)
 
           ;; Set color faces for `display-line-numbers-mode'
           (fg-line-number-active fg-dim)
