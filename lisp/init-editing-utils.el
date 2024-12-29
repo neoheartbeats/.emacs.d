@@ -42,45 +42,62 @@
 
 ;;; Indentations
 
-(defun indent-current-buffer ()
-  "Indent current buffer.
-If `major-mode' is `python-mode', abort."
+(defun sthenno/buffer-format ()
+  "Format the current buffer with indentation, comment indentation,
+untabifying, and removing trailing whitespace. Skips formatting in
+`python-mode'."
   (interactive)
+
+  ;; Skip for Python buffers
   (if (derived-mode-p 'python-mode)
-      (message "Indentation does not support for Python.")
+      (message "Indentation not supported for Python buffers.")
     (save-excursion
-      (indent-region (point-min) (point-max) nil))))
 
-(defun indent-current-buffer-comment ()
-  "Indent comment for current buffer."
-  (interactive)
-  (let ((lo (point-min))
-        (hi (point-max)))
-    (save-excursion
-      (setq hi (copy-marker hi))
-      (goto-char lo)
-      (while (< (point) hi)
-        (if (comment-search-forward hi t)
-            (comment-indent)
-          (goto-char hi))))))
+      ;; Convert tabs to spaces first, so indentation doesn't introduce them
+      (untabify (point-min) (point-max))
 
-(defun untabify-current-buffer ()
-  "Convert all tabs to multiple spaces for current buffer."
-  (interactive)
-  (save-excursion
-    (untabify (point-min) (point-max))))
+      ;; Indent everything
+      (indent-region (point-min) (point-max))
 
-(defun sthenno/pretty-print-current-buffer ()
-  "Pretty-print current buffer."
-  (interactive)
-  (save-excursion
-    (indent-current-buffer)
-    (indent-current-buffer-comment)
-    (untabify-current-buffer)
-    (delete-trailing-whitespace)))
-(keymap-set emacs-lisp-mode-map "s-i" #'sthenno/pretty-print-current-buffer)
+      ;; Indent only comment lines in a single pass
+      (goto-char (point-min))
+      (while (comment-search-forward (point-max) t)
+        (comment-indent))
 
-;; Inhibit passing these delimiters
+      ;; Remove trailing whitespace
+      (delete-trailing-whitespace))))
+
+;; Bind it to a convenient key in Emacs Lisp mode
+(keymap-set emacs-lisp-mode-map "s-i" #'sthenno/buffer-format)
+
+;; Run the formatter automatically on save for Emacs Lisp mode
+(defun sthenno/buffer-format-on-save ()
+  (add-hook 'before-save-hook #'sthenno/buffer-format nil t))
+
+(add-hook 'emacs-lisp-mode-hook #'sthenno/buffer-format-on-save)
+
+;; Indentation highlights
+(use-package indent-bars
+  :ensure t
+  :config
+  (require 'indent-bars-ts)
+
+  (setq indent-bars-no-descend-lists t  ; no extra bars in continued func arg lists
+        indent-bars-treesit-support t
+        indent-bars-treesit-ignore-blank-lines-types '("module"))
+
+  (setq indent-bars-prefer-character t)
+
+  (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
+        indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+        indent-bars-highlight-current-depth '(:blend 0.8)
+        indent-bars-starting-column 0
+        indent-bars-display-on-blank-lines t)
+
+  ;; Hooks
+  (add-hook 'python-mode-hook #'indent-bars-mode))
+
+;;; Inhibit passing these delimiters
 (defun sthenno/inhibit-specific-delimiters ()
   "Remove the following from current `syntax-table'. This disables syntax highlighting
 and auto-paring for such entries."
@@ -89,31 +106,7 @@ and auto-paring for such entries."
 (add-hook 'org-mode-hook #'sthenno/inhibit-specific-delimiters)
 
 ;; Automatic pairing parenthesis
-
 (electric-pair-mode 1)
-
-;;; Indentations
-
-;; (use-package aggressive-indent
-;;   :ensure t
-;;   :diminish
-;;   :config (global-aggressive-indent-mode 1))
-
-;; (use-package indent-bars
-;;   :ensure t
-;;   :config
-;;   (require 'indent-bars-ts)
-;;   (setq indent-bars-no-descend-lists t  ; no extra bars in continued func arg lists
-;;         indent-bars-treesit-support t
-;;         indent-bars-treesit-ignore-blank-lines-types '("module"))
-
-;;   (setq indent-bars-prefer-character t)
-
-;;   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
-;;         indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-;;         indent-bars-highlight-current-depth '(:blend 0.8)
-;;         indent-bars-starting-column 0
-;;         indent-bars-display-on-blank-lines t))
 
 ;;; Highlight these keywords in code comments
 
@@ -142,16 +135,17 @@ and auto-paring for such entries."
 (use-package iedit :ensure t)
 
 ;; Highlight multiple occurrences
-(use-package region-occurrences-highlighter 
-  :ensure t
-  :config
-  (add-hook 'prog-mode-hook #'region-occurrences-highlighter-mode)
-  (add-hook 'text-mode-hook #'region-occurrences-highlighter-mode)
 
-  (keymap-set region-occurrences-highlighter-nav-mode-map
-              "<down>" #'region-occurrences-highlighter-next)
-  (keymap-set region-occurrences-highlighter-nav-mode-map
-              "<up>"   #'region-occurrences-highlighter-prev))
+;; (use-package region-occurrences-highlighter
+;;   :ensure t
+;;   :config
+;;   (add-hook 'prog-mode-hook #'region-occurrences-highlighter-mode)
+;;   (add-hook 'text-mode-hook #'region-occurrences-highlighter-mode)
+
+;;   (keymap-set region-occurrences-highlighter-nav-mode-map
+;;               "<down>" #'region-occurrences-highlighter-next)
+;;   (keymap-set region-occurrences-highlighter-nav-mode-map
+;;               "<up>"   #'region-occurrences-highlighter-prev))
 
 ;;; expand-region
 (use-package expand-region

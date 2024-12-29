@@ -44,7 +44,7 @@
       echo-keystrokes-help t)        ; Display help info for keystrokes in the echo area
 
 ;; Support opening new minibuffers from inside existing minibuffers
-(setq enable-recursive-minibuffers t)
+(setq-default enable-recursive-minibuffers t)
 
 ;; Hide undefined commands in M-x
 (setq read-extended-command-predicate #'command-completion-default-include-p)
@@ -58,26 +58,29 @@
 ;;; Use the `orderless' completion style
 (use-package orderless
   :ensure t
-  :config
+  :init
 
   ;; The basic completion style is specified as fallback in addition to orderless in
   ;; order to ensure that completion commands rely on dynamic completion tables
-  ;;
-  (setq completion-styles '(orderless basic)
-        completion-category-overrides '((file (styles partial-completion))
+  (setq-default completion-styles '(flex orderless)
+                completion-category-overrides '((file (styles partial-completion))
 
-                                        ;; There is further configuration for better
-                                        ;; `eglot' support. See also `init-eglot'
-                                        (eglot      (styles orderless))
-                                        (eglot-capf (styles orderless)))))
+                                                ;; There is further configuration for
+                                                ;; better `eglot' support. See also
+                                                ;; `init-eglot'
+                                                (eglot      (styles orderless))
+                                                (eglot-capf (styles orderless))))
+  :config
+  (setq-default orderless-matching-styles
+                '(orderless-literal orderless-flex orderless-regexp)))
 
 ;; Sort candidates by `minibuffer-sort-by-history'
 (setopt completions-sort 'historical)
 
 ;; Ignore cases for completions
-(setq completion-ignore-case t)
-(setq read-file-name-completion-ignore-case t
-      read-buffer-completion-ignore-case t)
+(setq-default completion-ignore-case t)
+(setq-default read-file-name-completion-ignore-case t
+              read-buffer-completion-ignore-case t)
 
 ;;; Completions in minibuffers
 (use-package vertico
@@ -213,6 +216,7 @@
                ("s-b" . consult-buffer)
                ("C-s" . consult-line)
                ("C-f" . consult-line-multi)
+               ("s-;" . consult-goto-line)
                ("C-v" . consult-yank-pop)
                ("s-m" . consult-imenu-multi)
                ("s-n" . consult-recent-file)
@@ -377,7 +381,7 @@
                                 (interactive)
                                 (sthenno/corfu-insert-key k))))
   (keymap-set corfu-map "RET" #'corfu-insert)
-  
+
   ;; Combined sorting
   (defun sthenno/corfu-combined-sort (candidates)
     "Sort CANDIDATES using both display-sort-function and corfu-sort-function."

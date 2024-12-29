@@ -18,6 +18,7 @@
 
 ;; Garbage collect at the end of startup
 (add-hook 'after-init-hook #'garbage-collect t)
+(setq-default garbage-collection-messages nil)
 
 ;; Prefer loading newer compiled files
 (setq load-prefer-newer t)
@@ -61,24 +62,24 @@
 ;; Font compacting can be very resource-intensive, especially when rendering icon fonts.
 (setq inhibit-compacting-font-caches t)
 
+;;; User information
+(setq user-full-name "Sthenno"
+      user-mail-address "sthenno@sthenno.com")
+
 ;;; Basic UI setup
 
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
-;; (menu-bar-mode -1)
-
-(add-to-list 'default-frame-alist '(width  . 100))
-(add-to-list 'default-frame-alist '(height . 45))
-(add-to-list 'default-frame-alist '(alpha  . (90 . 90)))
-(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(menu-bar-mode -1)
 
 ;; Suppress GUI features
 (setq use-dialog-box nil
       use-file-dialog nil)
 
-(setq inhibit-startup-screen t          ; This is not enough
-      inhibit-startup-echo-area-message user-login-name
-      inhibit-startup-buffer-menu t)
+(setq-default inhibit-startup-screen t  ; This is not enough
+              inhibit-startup-message t
+              inhibit-startup-echo-area-message user-login-name
+              inhibit-startup-buffer-menu t)
 
 (advice-add #'display-startup-screen :override #'ignore) ; This is enough
 
@@ -91,33 +92,18 @@
 (setq-default frame-title-format nil)
 (setq-default ns-use-proxy-icon nil)
 
-;; Startup message at echo area
 
-(defun sthenno/display-startup-echo-area-message ()
-  (let ((icon "􂨖")
-        (text "Funding for this program was made possible by viewers like you."))
-    (message "%s %s" icon text)))
-
-(advice-add #'display-startup-echo-area-message :override
-            #'sthenno/display-startup-echo-area-message)
-
-;;; User information
-(setq user-full-name "Sthenno"
-      user-mail-address "sthenno@sthenno.com")
-
-;;; Set path for custom-file (do not ask me about this for any reason)
-(setq custom-file (make-temp-file "_tmp"))
-
-(use-package org
-  :load-path "site-lisp/org/lisp/"
-  :demand t
-  :init
-  (require 'org)
-  (require 'org-latex-preview))
+;;; Set path for custom-file
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(when (file-exists-p custom-file)
+  (load custom-file))
 
 ;;; Emacs packages
-
 (require 'package)
+
+(use-package org :load-path "site-lisp/org/lisp/")
+
+;; Add package sources
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu-devel" . "https://elpa.gnu.org/devel/"))
 
@@ -127,24 +113,23 @@
 
 ;;; Fix PATH for macOS
 
-(use-package exec-path-from-shell
-  :ensure t
-  :demand t
-  :config (exec-path-from-shell-initialize))
-
-(server-start)
+;; (use-package exec-path-from-shell
+;;   :ensure t
+;;   :demand t
+;;   :config (exec-path-from-shell-initialize))
 
 ;;; Dir for init-* files
-(add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
+(add-to-list 'load-path (locate-user-emacs-file "lisp/"))
 
 ;; Require init-* files
 (require 'init-system)
 (require 'init-gui-frames)
-(require 'init-editing-utils)
 (require 'init-org)
+(require 'init-editing-utils)
 (require 'init-projects)
 (require 'init-temp)
 (require 'init-comp)
 (require 'init-eglot)
 
+;;; _
 (provide 'init)

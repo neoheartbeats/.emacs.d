@@ -22,12 +22,12 @@
   :config (global-treesit-auto-mode 1))
 
 ;; Remap `python-mode' to `python-ts-mode'
-(setq major-mode-remap-alist '((sh-mode         . bash-ts-mode)
-                               (js-mode         . js-ts-mode)
-                               (json-mode       . json-ts-mode)
-                               (python-mode     . python-ts-mode)
-                               (typescript-mode . typescript-ts-mode)
-                               (yaml-mode       . yaml-ts-mode)))
+(setq-default major-mode-remap-alist '((sh-mode         . bash-ts-mode)
+                                       (js-mode         . js-ts-mode)
+                                       (json-mode       . json-ts-mode)
+                                       (python-mode     . python-ts-mode)
+                                       (typescript-mode . typescript-ts-mode)
+                                       (yaml-mode       . yaml-ts-mode)))
 
 ;; Append *-mode-hook to *-ts-mode-hook for modes in `major-mode-remap-list'
 (mapc #'(lambda (major-mode-remap)
@@ -39,27 +39,19 @@
                                             (run-hooks (quote ,major-mode-hook))))))
       major-mode-remap-alist)
 
-(setq treesit-font-lock-level 4)
-
-;;; python-bridge
-
-(use-package python-bridge
-  :load-path "site-lisp/python-bridge/"
-  :config (python-bridge-enable))
-
-;;; Terminal integration
+;;
+(setq-default treesit-font-lock-level 4)
 
 ;;; Initialize `eglot'
 
 (use-package eglot
   :ensure t
   :config
-  (setq read-process-output-max (* 1024 1024))
   (add-to-list 'eglot-server-programs
                '(python-mode . ("pyright-langserver" "--stdio")))
 
   ;; Hooks
-  (add-hook 'prog-mode-hook #'eglot-ensure)
+  (add-hook 'python-mode-hook #'eglot-ensure)
   :bind (:map eglot-mode-map
               ("<f2>" . eglot-rename)))
 
@@ -68,46 +60,46 @@
 
 ;;; Python project management using Conda
 
-(use-package conda
-  :ensure t
-  :init (conda-env-initialize-interactive-shells)
-  :config
-  (setopt conda-anaconda-home "/opt/homebrew/Caskroom/miniconda/base/")
+;; (use-package conda
+;;   :ensure t
+;;   :init (conda-env-initialize-interactive-shells)
+;;   :config
+;;   (setopt conda-anaconda-home "/opt/homebrew/Caskroom/miniconda/base/")
 
-  ;; Enable auto-activation
-  (conda-env-autoactivate-mode 1)
+;;   ;; Enable auto-activation
+;;   (conda-env-autoactivate-mode 1)
 
-  ;; Automatically activate a Conda environment on the opening of a file
-  (add-hook 'find-file-hook (lambda ()
-                              (when (bound-and-true-p conda-project-env-path)
-                                (conda-env-activate-for-buffer))))
+;;   ;; Automatically activate a Conda environment on the opening of a file
+;;   (add-hook 'find-file-hook (lambda ()
+;;                               (when (bound-and-true-p conda-project-env-path)
+;;                                 (conda-env-activate-for-buffer))))
 
-  ;; Displaying the currently active environment on the `mode-line'
-  (add-hook 'python-mode-hook #'conda-mode-line-setup))
+;;   ;; Displaying the currently active environment on the `mode-line'
+;;   (add-hook 'python-mode-hook #'conda-mode-line-setup))
 
 (setq python-indent-offset 4)
-(setq python-indent-guess-indent-offset t)
+(setq python-indent-guess-indent-offset nil)
 (setq python-indent-guess-indent-offset-verbose nil)
 
 ;;; Reformat Python buffers using the Black formatter
 
-(use-package blacken
-  :ensure t
-  :config
+;; (use-package blacken
+;;   :ensure t
+;;   :config
 
-  ;; Hooks
-  (add-hook 'python-mode-hook #'blacken-mode)
+;;   ;; Hooks
+;;   (add-hook 'python-mode-hook #'blacken-mode)
 
-  ;; Formatting buffers
-  (defun sthenno/python-format-buffer ()
-    (interactive)
+;;   ;; Formatting buffers
+;;   (defun sthenno/python-format-buffer ()
+;;     (interactive)
 
-    ;; pip install isort
-    (python-sort-imports)
-    (blacken-buffer))
+;;     ;; pip install isort
+;;     (python-sort-imports)
+;;     (blacken-buffer))
 
-  :bind (:map python-base-mode-map
-              ("s-i" . sthenno/python-format-buffer)))
+;;   :bind (:map python-base-mode-map
+;;               ("s-i" . sthenno/python-format-buffer)))
 
 ;; JSON files
 ;; (add-hook 'json-ts-mode-hook #'(lambda ()

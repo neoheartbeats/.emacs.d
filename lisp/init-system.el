@@ -17,17 +17,16 @@
 (setq mac-option-modifier  'meta)
 (setq mac-command-modifier 'super)
 
-(bind-keys :map global-map
-           ("s-a" . mark-whole-buffer)
-           ("s-c" . kill-ring-save)
-           ("s-q" . save-buffers-kill-emacs)
-           ("s-s" . save-buffer)
-           ("s-v" . yank)
-           ("s-w" . kill-current-buffer)
-           ("s-e" . delete-window)
-           ("s-r" . restart-emacs)
-           ("s-z" . undo)
-           ("s-d" . find-file))
+(keymap-global-set "s-a" #'mark-whole-buffer)
+(keymap-global-set "s-c" #'kill-ring-save)
+(keymap-global-set "s-q" #'save-buffers-kill-emacs)
+(keymap-global-set "s-s" #'save-buffer)
+(keymap-global-set "s-v" #'yank)
+(keymap-global-set "s-w" #'kill-current-buffer)
+(keymap-global-set "s-e" #'delete-window)
+(keymap-global-set "s-r" #'restart-emacs)
+(keymap-global-set "s-z" #'undo)
+(keymap-global-set "s-d" #'find-file)
 
 ;;; To use a familier undo-redo mechanism
 
@@ -178,7 +177,7 @@ Activate again to undo this. If the window changes before then, the undo expires
   (setq mouse-drag-copy-region nil)
   (setq select-enable-primary nil)
   (setq select-enable-clipboard t)
-  (setq x-stretch-cursor t)
+  ;; (setq x-stretch-cursor t)
 
   ;; dired.el
   (setq dired-auto-revert-buffer #'dired-directory-changed-p)

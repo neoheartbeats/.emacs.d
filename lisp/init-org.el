@@ -34,7 +34,7 @@
 ;;; Use CDLaTeX to improve editing experiences
 
 ;; This is temporarily disabled and replaced by `tempel'
-;;
+
 ;; (use-package cdlatex
 ;;   :ensure t
 ;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
@@ -56,7 +56,7 @@
   (org-latex-preview 'buffer)
   (org-redisplay-inline-images))
 (bind-keys :map org-mode-map
-           ("s-p" . sthenno/org-preview-fragments))
+           ("C-c p" . sthenno/org-preview-fragments))
 
 ;; Setup for `org-latex-preview'
 (setq org-latex-packages-alist '(("T1" "fontenc" t)
@@ -76,26 +76,27 @@
                                  ("" "physics2" t)
 
                                  ;; Differentiations
-                                 ("normal" "fixdif")))
+                                 ("normal" "fixdif" t)))
 
 ;; Add additional modules required by LaTeX packages like physics2 to the preamble
-(let* ((physics2-modules '(("" "ab")
-                           ("" "diagmat")
-                           ("" "xmat")))
-       (physics2-preamble (mapconcat
-                           (lambda (m)
-                             (let ((options (car  m))
-                                   (module  (cadr m)))
-                               (if (string= options "")
-                                   (format "\\usephysicsmodule{%s}" module)
-                                 (format "\\usephysicsmodule[%s]{%s}" options module))))
-                           physics2-modules
-                           "\n")))
-  (unless (and org-latex-preview-preamble
-               (string-match
-                (regexp-quote physics2-preamble) org-latex-preview-preamble))
-    (setq org-latex-preview-preamble (concat (or org-latex-preview-preamble "")
-                                             "\n" physics2-preamble))))
+
+;; (let* ((physics2-modules '(("" "ab")
+;;                            ("" "diagmat")
+;;                            ("" "xmat")))
+;;        (physics2-preamble (mapconcat
+;;                            (lambda (m)
+;;                              (let ((options (car  m))
+;;                                    (module  (cadr m)))
+;;                                (if (string= options "")
+;;                                    (format "\\usephysicsmodule{%s}" module)
+;;                                  (format "\\usephysicsmodule[%s]{%s}" options module))))
+;;                            physics2-modules
+;;                            "\n")))
+;;   (unless (and org-latex-preview-preamble
+;;                (string-match
+;;                 (regexp-quote physics2-preamble) org-latex-preview-preamble))
+;;     (setq org-latex-preview-preamble (concat (or org-latex-preview-preamble "")
+;;                                              "\n" physics2-preamble))))
 
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
@@ -155,7 +156,7 @@
       (custom-set-faces
        `(org-checkbox ((t (:foreground ,prose-todo)))))))
   (add-hook 'org-mode-hook #'sthenno/org-modern-checkbox)
-  
+
   ;; Hooks
   (add-hook 'org-mode-hook #'org-modern-mode))
 
@@ -168,10 +169,16 @@
 (setq org-tags-column 0)
 (setq org-hide-emphasis-markers t)
 
-;; Use this with `C-<return>'
+;; Always add the checkbox when `org-insert-item' is called
+(define-advice org-insert-item
+    (:filter-args (args) sthenno/use-checkbox)
+  "Force CHECKBOX to t."
+  (list t))
+
+;; Use this with "C-<return>"
 (setq org-insert-heading-respect-content t)
 
-;; Use this with `C-S-<return>'
+;; Use this with "C-S-<return>"
 (setq org-treat-insert-todo-heading-as-state-change t)
 
 ;; Better experiences jumping through headlines
@@ -179,12 +186,11 @@
 
 ;; Fold drawers by default
 (setq org-cycle-hide-drawer-startup t)
-;; (add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
+(add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
 
 ;;; Org fragments and overlays
-;;
+
 ;; Org images
-;;
 
 (setopt org-image-align 'center
         org-image-actual-width t
@@ -199,19 +205,19 @@ An inline image is a link which follows either of these conventions:
   1. Its path is a file with an extension matching return value from
      `image-file-name-regexp' and it has no contents.
 
-  2. Its description consists in a single link of the previous type.  In
+  2. Its description consists in a single link of the previous type. In
      this case, that link must be a well-formed plain or angle link,
      i.e., it must have an explicit \"file\" or \"attachment\" type.
 
 Equip each image with the key-map `image-map'.
 
 When optional argument INCLUDE-LINKED is non-nil, also links with a text
-description part will be inlined.  This can be nice for a quick look at
+description part will be inlined. This can be nice for a quick look at
 those images, but it does not reflect what exported files will look
 like.
 
 When optional argument REFRESH is non-nil, refresh existing images
-between BEG and END.  This will create new image displays only if
+between BEG and END. This will create new image displays only if
 necessary.
 
 BEG and END define the considered part. They default to the buffer
@@ -461,11 +467,20 @@ boundaries with possible narrowing."
 
 (setq org-src-preserve-indentation t
       org-src-fontify-natively t
-      org-src-tab-acts-natively t)
+      org-src-tab-acts-natively t
+      org-src-window-setup 'current-window
+      org-src-ask-before-returning-to-edit-buffer nil)
+
+;; In addition to `org-src-fontify-natively'
+(add-to-list 'org-src-lang-modes (cons "python" 'python))
+
+(setq org-edit-src-turn-on-auto-save t)
 
 ;; Enable these languages for Org-Babel
+
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
-                               (python . t)))
+                               (python . t)
+                               (latex . t)))
 
 (provide 'init-org)

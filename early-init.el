@@ -16,8 +16,12 @@
 
 ;;; Code:
 
-;;; Defer garbage collection further back in the startup process
-(setq gc-cons-threshold most-positive-fixnum)
+;;; Turn off GC during startup
+(setq gc-cons-threshold (* 1024 1024 1024)
+      gc-cons-percentage 1.0)
+
+(setq-default emacs-startup-hook nil
+              default-frame-alist nil)
 
 ;;; Adjust display according to `file-name-handler-alist'
 
@@ -72,7 +76,10 @@
 (push '(vertical-scroll-bars) default-frame-alist)
 (push '(horizontal-scroll-bars) default-frame-alist)
 
-;; Resizing the Emacs frame can be a terribly expensive part of changing the font. By
-;; inhibiting this, we halve startup times, particularly when we use fonts that are
-;; larger than the system default (which would resize the frame)
-(setq frame-inhibit-implied-resize t)
+(push '(width  . 100) default-frame-alist)
+(push '(height . 45) default-frame-alist)
+(push '(alpha  . (90 . 90)) default-frame-alist)
+(push '(ns-transparent-titlebar . t) default-frame-alist)
+
+;;; _
+(provide 'early-init)
