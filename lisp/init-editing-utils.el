@@ -43,38 +43,37 @@
 ;;; Indentations
 
 (defun sthenno/buffer-format ()
-  "Format the current buffer with indentation, comment indentation,
-untabifying, and removing trailing whitespace. Skips formatting in
-`python-mode'."
+  "Format the current buffer using indentation."
   (interactive)
 
-  ;; Skip for Python buffers
-  (if (derived-mode-p 'python-mode)
-      (message "Indentation not supported for Python buffers.")
-    (save-excursion
+  ;; Using different formatters based on the major-mode
+  (cond ((derived-mode-p 'python-mode)
+         (require 'eglot)
+         (call-interactively #'eglot-format))
+        (t
+         (save-excursion
 
-      ;; Convert tabs to spaces first, so indentation doesn't introduce them
-      (untabify (point-min) (point-max))
+           ;; Convert tabs to spaces first, so indentation doesn't introduce them
+           (untabify (point-min) (point-max))
 
-      ;; Indent everything
-      (indent-region (point-min) (point-max))
+           ;; Indent everything
+           (indent-region (point-min) (point-max))
 
-      ;; Indent only comment lines in a single pass
-      (goto-char (point-min))
-      (while (comment-search-forward (point-max) t)
-        (comment-indent))
+           ;; Indent only comment lines in a single pass
+           (goto-char (point-min))
+           (while (comment-search-forward (point-max) t)
+             (comment-indent))
 
-      ;; Remove trailing whitespace
-      (delete-trailing-whitespace))))
+           ;; Remove trailing whitespace
+           (delete-trailing-whitespace)))))
 
-;; Bind it to a convenient key in Emacs Lisp mode
-(keymap-set emacs-lisp-mode-map "s-i" #'sthenno/buffer-format)
+;; Bind it to a convenient key in prog-mode-map
+(keymap-global-set "s-i" #'sthenno/buffer-format)
 
-;; Run the formatter automatically on save for Emacs Lisp mode
+;; Run the formatter automatically on save
 (defun sthenno/buffer-format-on-save ()
-  (add-hook 'before-save-hook #'sthenno/buffer-format nil t))
-
-(add-hook 'emacs-lisp-mode-hook #'sthenno/buffer-format-on-save)
+  (add-hook 'after-save-hook #'sthenno/buffer-format nil t))
+(add-hook 'prog-mode-hook #'sthenno/buffer-format-on-save)
 
 ;; Indentation highlights
 (use-package indent-bars
