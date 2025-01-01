@@ -94,9 +94,7 @@
 
 
 ;;; Set path for custom-file
-(setq custom-file (locate-user-emacs-file "custom.el"))
-(when (file-exists-p custom-file)
-  (load custom-file))
+(setq custom-file (make-temp-file "_foo"))
 
 ;;; Emacs packages
 (require 'package)
@@ -109,6 +107,7 @@
 
 (use-package diminish
   :ensure t
+  :demand t
   :config (diminish 'eldoc-mode))
 
 ;;; Fix PATH for macOS

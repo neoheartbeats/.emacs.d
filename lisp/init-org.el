@@ -80,23 +80,28 @@
 
 ;; Add additional modules required by LaTeX packages like physics2 to the preamble
 
-;; (let* ((physics2-modules '(("" "ab")
-;;                            ("" "diagmat")
-;;                            ("" "xmat")))
-;;        (physics2-preamble (mapconcat
-;;                            (lambda (m)
-;;                              (let ((options (car  m))
-;;                                    (module  (cadr m)))
-;;                                (if (string= options "")
-;;                                    (format "\\usephysicsmodule{%s}" module)
-;;                                  (format "\\usephysicsmodule[%s]{%s}" options module))))
-;;                            physics2-modules
-;;                            "\n")))
-;;   (unless (and org-latex-preview-preamble
-;;                (string-match
-;;                 (regexp-quote physics2-preamble) org-latex-preview-preamble))
-;;     (setq org-latex-preview-preamble (concat (or org-latex-preview-preamble "")
-;;                                              "\n" physics2-preamble))))
+(defun sthenno/org-latex-preview-preamble-setup ()
+  (require 'org-latex-preview)
+  (let* ((physics2-modules '(("" "ab")
+                             ("" "diagmat")
+                             ("" "xmat")))
+         (physics2-preamble (mapconcat
+                             (lambda (m)
+                               (let ((options (car  m))
+                                     (module  (cadr m)))
+                                 (if (string= options "")
+                                     (format "\\usephysicsmodule{%s}" module)
+                                   (format "\\usephysicsmodule[%s]{%s}" options module))))
+                             physics2-modules
+                             "\n")))
+    (unless (and org-latex-preview-preamble
+                 (string-match
+                  (regexp-quote physics2-preamble) org-latex-preview-preamble))
+      (setq org-latex-preview-preamble (concat (or org-latex-preview-preamble "")
+                                               "\n" physics2-preamble)))))
+
+(add-hook 'after-init-hook #'sthenno/org-latex-preview-preamble-setup)
+
 
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
@@ -135,7 +140,7 @@
   ;;                                 ("quote"  . ("􀈎" "􀂓"))
   ;;                                 ("export" . ("􀣙" "􀂓"))))
 
-  (setopt org-modern-todo nil)
+  ;; (setopt org-modern-todo nil)
 
   (setopt org-modern-keyword '(("title"   . "􀉛")
                                ("results" . "􂨖")
@@ -310,8 +315,8 @@ boundaries with possible narrowing."
                                     (pcase align
 
                                       ;; Apply the edge for alignments
-                                      ("center" `(space :align-to (- (0.55 . ,edge)
-                                                                     (0.55 . ,image))))
+                                      ("center" `(space :align-to (- (0.50 . ,edge)
+                                                                     (0.50 . ,image))))
                                       ("right"  `(space :align-to (- ,edge
                                                                      ,image))))))))
                               (push ov org-inline-image-overlays))))))))))))))))
@@ -344,7 +349,9 @@ boundaries with possible narrowing."
   :config
   (setopt denote-directory org-directory) ; Use `org-directory' as default
   (setopt denote-file-type 'org)
-  (setopt denote-prompts '(title))
+  (setopt denote-known-keywords '("stages" "silo" "research" "production")
+          denote-infer-keywords t)
+  (setopt denote-prompts '(title keywords))
   (setopt denote-save-buffers t
           denote-kill-buffers 'on-creation)
 
@@ -480,7 +487,7 @@ boundaries with possible narrowing."
 
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
-                               (python . t)
-                               (latex . t)))
+                               (python . t)))
 
+;;; _
 (provide 'init-org)

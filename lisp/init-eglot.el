@@ -48,7 +48,7 @@
   :ensure t
   :config
   (add-to-list 'eglot-server-programs
-               '(python-mode . ("pyright-langserver" "--stdio")))
+               '(python-mode . ("basedpyright-langserver" "--stdio")))
 
   ;; Hooks
   (add-hook 'python-mode-hook #'eglot-ensure)
