@@ -14,10 +14,10 @@
 
 ;;; Setup `treesit' for better performance for processing coding syntax
 
-;; (use-package treesit-auto
-;;   :ensure t
-;;   :demand t
-;;   :config (global-treesit-auto-mode 1))
+(use-package treesit-auto
+  :ensure t
+  :demand t
+  :config (global-treesit-auto-mode 1))
 
 ;; Remap `python-mode' to `python-ts-mode'
 (setq-default major-mode-remap-alist '((sh-mode         . bash-ts-mode)
