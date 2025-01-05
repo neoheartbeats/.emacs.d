@@ -1,7 +1,8 @@
 #!/usr/bin/env zsh
 
-# Exit immediately on error (-e), treat unset variables as errors (-u), and fail on any
-# error within piped commands (pipefail). Adjust flags according to your preference.
+# Exit immediately on error (-e), treat unset variables as errors (-u),
+# and fail on any error within piped commands (pipefail).
+# Adjust flags according to your preference.
 set -euo pipefail
 
 # 1. Initialize and update submodules recursively
