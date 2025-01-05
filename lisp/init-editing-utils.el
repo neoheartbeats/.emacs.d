@@ -146,10 +146,12 @@ and auto-paring for such entries."
 ;;   (keymap-set region-occurrences-highlighter-nav-mode-map
 ;;               "<up>"   #'region-occurrences-highlighter-prev))
 
-;;; expand-region
-(use-package expand-region
+;;; Just like expand-region
+(use-package expreg
   :ensure t
   :bind ((:map global-map
-               ("C-SPC" . er/expand-region))))
+               ("S-<up>"   . expreg-contract)
+               ("S-<down>" . expreg-expand))))
 
+;;; _
 (provide 'init-editing-utils)
