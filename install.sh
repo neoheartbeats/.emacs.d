@@ -6,7 +6,7 @@
 set -euo pipefail
 
 # 1. Initialize and update submodules recursively
-git submodule update --init --recursive
+git clone https://code.tecosaur.net/tec/org-mode.git site-lisp/org
 
 # 2. Build Org mode: use make’s -C flag to avoid manual cd/subshell
 make -C ~/.emacs.d/site-lisp/org/ autoloads
@@ -14,6 +14,7 @@ make -C ~/.emacs.d/site-lisp/org/
 
 # 3. Run Emacs batch commands to refresh, upgrade packages, and install Treesit grammars
 emacs --batch \
+      --load ~/.emacs.d/early-init.el \
       --load ~/.emacs.d/init.el \
       --eval "(progn
                 (require 'package)

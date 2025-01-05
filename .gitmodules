@@ -1,3 +1,0 @@
-[submodule "site-lisp/org"]
-	path = site-lisp/org
-	url = https://code.tecosaur.net/tec/org-mode.git
