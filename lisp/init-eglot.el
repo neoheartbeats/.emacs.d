@@ -17,15 +17,19 @@
 (use-package treesit-auto
   :ensure t
   :demand t
-  :config (global-treesit-auto-mode 1))
+  :config
+  (setopt treesit-auto-install t)
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode 1))
 
 ;; Remap `python-mode' to `python-ts-mode'
-(setq-default major-mode-remap-alist '((sh-mode         . bash-ts-mode)
-                                       (js-mode         . js-ts-mode)
-                                       (json-mode       . json-ts-mode)
-                                       (python-mode     . python-ts-mode)
-                                       (typescript-mode . typescript-ts-mode)
-                                       (yaml-mode       . yaml-ts-mode)))
+
+;; (setq-default major-mode-remap-alist '((sh-mode         . bash-ts-mode)
+;;                                        (js-mode         . js-ts-mode)
+;;                                        (json-mode       . json-ts-mode)
+;;                                        (python-mode     . python-ts-mode)
+;;                                        (typescript-mode . typescript-ts-mode)
+;;                                        (yaml-mode       . yaml-ts-mode)))
 
 ;; Append *-mode-hook to *-ts-mode-hook for modes in `major-mode-remap-list'
 (mapc #'(lambda (major-mode-remap)

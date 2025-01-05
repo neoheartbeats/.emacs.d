@@ -16,11 +16,11 @@
 
 ;;; Modus Themes
 
-(use-package modus-themes
-  :ensure t
+(use-package emacs
   :config
+  (require-theme 'modus-themes)
 
-  ;; Less is more.
+  ;; Less is more
   ;; (setopt modus-themes-bold-constructs t)
 
   ;; "On a page of text, nothing draws the eye more powerfully than a contrast between
@@ -54,10 +54,10 @@
           ;; Make the fringe invisible
           (fringe unspecified)
 
-          ;; No underlines
-          (underline-link unspecified)
-          (underline-link-visited unspecified)
-          (underline-link-symbolic unspecified)
+          ;; Subtle underlines
+          (underline-link border)
+          (underline-link-visited border)
+          (underline-link-symbolic border)
 
           ;; Make links the same color as `fg-main'
           ;; This also affects `button' faces in Modus Themes
@@ -140,6 +140,7 @@
                                            ,fg-completion-match-1
                                            ,fg-completion-match-2
                                            ,fg-completion-match-3)))
+    (set-face-attribute 'highlight-parentheses-highlight nil :inherit 'bold)
     (global-highlight-parentheses-mode 1))
   (add-hook 'after-init-hook #'sthenno/highlight-parentheses))
 
@@ -167,35 +168,36 @@
 
 ;;; Font settings
 
-;; Triplicate A Code
+(set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
 
-(set-face-attribute 'default nil :family "Monaco" :height 140)
+;; No need for italic fonts
+(set-face-attribute 'italic nil :family 'unspecified)
 
 ;; Set up font for non-ascii fontset
-(set-fontset-font t 'big5                (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'big5-hkscs          (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-1  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-15 (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-2  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-3  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-4  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-5  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-6  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-7  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-gb2312      (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-gbk         (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'kanbun              (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'bopomofo            (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'han                 (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'big5                (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'big5-hkscs          (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'chinese-cns11643-1  (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'chinese-cns11643-15 (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'chinese-cns11643-2  (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'chinese-cns11643-3  (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'chinese-cns11643-4  (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'chinese-cns11643-5  (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'chinese-cns11643-6  (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'chinese-cns11643-7  (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'chinese-gb2312      (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'chinese-gbk         (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'kanbun              (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'bopomofo            (font-spec :family "IBM Plex Sans SC"))
+(set-fontset-font t 'han                 (font-spec :family "IBM Plex Sans SC"))
 
-(set-fontset-font t 'japanese-jisx0208        (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0208-1978   (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0212        (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0213-1      (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0213-2      (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0213.2004-1 (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'jisx0201                 (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'kana                     (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'japanese-jisx0208        (font-spec :family "IBM Plex Sans JP"))
+(set-fontset-font t 'japanese-jisx0208-1978   (font-spec :family "IBM Plex Sans JP"))
+(set-fontset-font t 'japanese-jisx0212        (font-spec :family "IBM Plex Sans JP"))
+(set-fontset-font t 'japanese-jisx0213-1      (font-spec :family "IBM Plex Sans JP"))
+(set-fontset-font t 'japanese-jisx0213-2      (font-spec :family "IBM Plex Sans JP"))
+(set-fontset-font t 'japanese-jisx0213.2004-1 (font-spec :family "IBM Plex Sans JP"))
+(set-fontset-font t 'jisx0201                 (font-spec :family "IBM Plex Sans JP"))
+(set-fontset-font t 'kana                     (font-spec :family "IBM Plex Sans JP"))
 
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
 (set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'prepend)

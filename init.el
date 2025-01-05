@@ -94,17 +94,19 @@
 
 
 ;;; Set path for custom-file
-(setq custom-file (make-temp-file "_foo"))
+(setq custom-file (make-temp-file "_tmp"))
 
 ;;; Emacs packages
 (require 'package)
-
-(use-package org :load-path "site-lisp/org/lisp/")
 
 ;; Add package sources
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu-devel" . "https://elpa.gnu.org/devel/"))
 
+(unless (bound-and-true-p package--initialized)
+  (package-initialize))
+
+(use-package org :load-path "site-lisp/org/lisp/")
 (use-package diminish
   :ensure t
   :demand t

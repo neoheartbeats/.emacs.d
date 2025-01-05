@@ -102,7 +102,6 @@
 
 (add-hook 'after-init-hook #'sthenno/org-latex-preview-preamble-setup)
 
-
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
 

@@ -76,7 +76,7 @@
 (push '(vertical-scroll-bars) default-frame-alist)
 (push '(horizontal-scroll-bars) default-frame-alist)
 
-(push '(width  . 100) default-frame-alist)
+(push '(width  . 120) default-frame-alist)
 (push '(height . 45) default-frame-alist)
 (push '(alpha  . (90 . 90)) default-frame-alist)
 (push '(ns-transparent-titlebar . t) default-frame-alist)
