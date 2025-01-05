@@ -1,6 +1,6 @@
 ;;; init-editing-utils.el --- Editing helpers -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021-2024 Sthenno <sthenno@sthenno.com>
+;; Copyright (C) 2021-2025 Sthenno <sthenno@sthenno.com>
 
 ;; This file is not part of GNU Emacs.
 
