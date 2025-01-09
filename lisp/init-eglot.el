@@ -22,15 +22,6 @@
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode 1))
 
-;; Remap `python-mode' to `python-ts-mode'
-
-;; (setq-default major-mode-remap-alist '((sh-mode         . bash-ts-mode)
-;;                                        (js-mode         . js-ts-mode)
-;;                                        (json-mode       . json-ts-mode)
-;;                                        (python-mode     . python-ts-mode)
-;;                                        (typescript-mode . typescript-ts-mode)
-;;                                        (yaml-mode       . yaml-ts-mode)))
-
 ;; Append *-mode-hook to *-ts-mode-hook for modes in `major-mode-remap-list'
 (mapc #'(lambda (major-mode-remap)
           (let ((major-mode-hook
@@ -66,7 +57,7 @@
   :ensure t
   :init (conda-env-initialize-interactive-shells)
   :config
-  (setopt conda-anaconda-home "/opt/homebrew/Caskroom/miniforge/base/")
+  (setopt conda-anaconda-home "/opt/homebrew/Caskroom/miniconda/base/")
 
   ;; Enable auto-activation
   (conda-env-autoactivate-mode 1)
@@ -78,8 +69,8 @@
                ("C-c a" . conda-env-activate))))
 
 (setq-default python-indent-offset 4)
-;; (setq python-indent-guess-indent-offset nil)
-;; (setq python-indent-guess-indent-offset-verbose nil)
+(setq-default python-indent-guess-indent-offset nil)
+(setq-default python-indent-guess-indent-offset-verbose nil)
 
 ;;; GitHub Copilot
 
@@ -106,8 +97,6 @@
                ("C-x c" . sthenno/copilot-on)
                ("C-x C" . sthenno/copilot-off))
          (:map copilot-completion-map
-               ;; ("<tab>"   . copilot-accept-completion)
-               ;; ("TAB"     . copilot-accept-completion)
                ;; ("<right>" . copilot-accept-completion-by-line)
                ("<right>"  . copilot-accept-completion)
                ("<return>" . copilot-accept-completion)
