@@ -114,10 +114,10 @@
 
 ;;; Fix PATH for macOS
 
-;; (use-package exec-path-from-shell
-;;   :ensure t
-;;   :demand t
-;;   :config (exec-path-from-shell-initialize))
+(use-package exec-path-from-shell
+  :ensure t
+  :demand t
+  :config (exec-path-from-shell-initialize))
 
 ;;; Dir for init-* files
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
