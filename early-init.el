@@ -1,4 +1,4 @@
-;;; early-init.el --- pre-initialisation config -*- no-byte-compile: t; -*- lexical-binding: t; -*-
+;;; early-init.el --- pre-initialisation config -*- lexical-binding: t; no-byte-compile: t -*-
 
 ;; Copyright (C) 2021-2025 Sthenno <sthenno@sthenno.com>
 
@@ -6,80 +6,104 @@
 
 ;;; Commentary:
 
-;; Code loaded before the package system and GUI is initialized.
+;; This configuration runs before the package system and GUI initialization.
+;; It focuses on optimizing startup performance and setting up basic frame parameters.
 
-;; This file includes:
-;;   - Init garbage-collection config
-;;   - Native-Compilation specified config
-;;   - Early file-loading behaviors
-;;   - Init GUI frames config
+;; Key components:
+;; - Garbage collection optimization for startup
+;; - File handler management for faster loading
+;; - Native compilation configuration
+;; - Initial frame parameter settings
+;; - Basic UI element suppression
 
 ;;; Code:
 
-;;; Turn off GC during startup
-(setq gc-cons-threshold (* 1024 1024 1024)
-      gc-cons-percentage 1.0)
+;; Temporarily maximize garbage collection limits during startup
+;; These values are restored to more reasonable defaults after initialization
+(let ((default-gc-cons-threshold gc-cons-threshold)
+      (default-gc-cons-percentage gc-cons-percentage))
+  (setq gc-cons-threshold (* 1024 1024 1024) ; Set to 1GB
+        gc-cons-percentage 1.0)
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (setq gc-cons-threshold (* 16 1024 1024) ; Reset to 16MB
+                    gc-cons-percentage 0.1))))
 
-(setq-default emacs-startup-hook nil
-              default-frame-alist nil)
+;; Reset frame parameters for clean slate
+(setq default-frame-alist nil)
 
-;;; Adjust display according to `file-name-handler-alist'
-
-(unless (or (not (called-interactively-p))
-            (daemonp)
-            noninteractive)
+;; Temporarily disable file-name-handler-alist during startup for faster loading
+;; This significantly speeds up file operations during initialization
+(when (and (not noninteractive)
+           (not (daemonp)))
   (let ((old-file-name-handler-alist file-name-handler-alist))
-    ;; `file-name-handler-alist' is consulted on each `require', `load' and
-    ;; various path/io functions. You get a minor speed up by unsetting this.
-    ;; Some warning, however: this could cause problems on builds of Emacs where
-    ;; its site lisp files aren't byte-compiled and we're forced to load the
-    ;; *.el.gz files (e.g. on Alpine).
-    (setq-default file-name-handler-alist nil)
-    ;; ...but restore `file-name-handler-alist' later, because it is needed for
-    ;; handling encrypted or compressed files, among other things.
-    (defun sthenno/reset-file-handler-alist ()
-      (setq file-name-handler-alist
-            ;; Merge instead of overwrite because there may have bene changes to
-            ;; `file-name-handler-alist' since startup we want to preserve.
-            (delete-dups (append file-name-handler-alist
-                                 old-file-name-handler-alist))))
-    (add-hook 'emacs-startup-hook #'sthenno/reset-file-handler-alist 101)))
+    (setq file-name-handler-alist nil)
+    (add-hook 'emacs-startup-hook
+              (lambda ()
+                (setq file-name-handler-alist
+                      (delete-dups (append file-name-handler-alist
+                                           old-file-name-handler-alist))))
+              101)))
 
-;; Site files tend to use `load-file', which emits "Loading X..." messages in the echo
-;; area, which in turn triggers a redisplay. Redisplays can have a substantial effect on
-;; startup times and in this case happens so early that Emacs may flash white while
-;; starting up.
-(define-advice load-file (:override (file) silence)
+;; Suppress loading messages during startup to prevent screen flashing
+(define-advice load-file (:override (file) silence-loading)
+  "Override `load-file' to suppress loading messages during startup."
   (load file nil 'nomessage))
 
-;; Undo our `load-file' advice above, to limit the scope of any edge cases it may
-;; introduce down the road.
-(define-advice startup--load-user-init-file (:before (&rest _) nomessage-remove)
-  (advice-remove #'load-file #'load-file@silence))
+(define-advice startup--load-user-init-file (:before (&rest _) restore-load-file)
+  "Restore original `load-file' behavior before loading user init file.
+This ensures normal message behavior after startup is complete."
+  (advice-remove #'load-file #'load-file@silence-loading))
 
-;;; Customize Native-Compilation and caching
-(defvar user-cache-directory "~/.cache/emacs/"
-  "Location that files created by Emacs are placed.")
+;; Define user cache directory for various Emacs temporary files
+(defcustom user-cache-directory (expand-file-name "~/.cache/emacs/")
+  "Base directory for Emacs cache files.
+This directory is used for native compilation cache, auto-save files,
+and other temporary data that Emacs generates during operation."
+  :type 'directory
+  :group 'initialization)
 
-;; By default any warnings encountered during async native compilation pops up. As this
-;; tends to happen rather frequently with a lot of packages, it can get annoying.
-(setq native-comp-async-report-warnings-errors 'silent)
+;; Ensure cache directory exists to prevent runtime errors
+(make-directory user-cache-directory t)
 
-;;; Perform drawing the frame when initialization
+;; Configure native compilation settings when available
+(when (featurep 'native-compile)
 
-;; NOTE: `menu-bar-lines' is forced to redrawn under macOS GUI, therefore it is helpless
-;; by inhibiting it in the early stage. However, since I don't use the `menu-bar' under
-;; macOS, `menu-bar-mode' is disabled later.
+  ;; Suppress native compilation warnings to prevent disruption
+  (setq native-comp-async-report-warnings-errors 'silent)
 
-(push '(menu-bar-lines . 0) default-frame-alist)
-(push '(tool-bar-lines . 0) default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
-(push '(horizontal-scroll-bars) default-frame-alist)
+  ;; Set optimal number of compilation jobs based on available processors
+  (setq native-comp-async-jobs-number (max 1
+                                           (- (num-processors) 2))))
 
-(push '(width  . 120) default-frame-alist)
-(push '(height . 45) default-frame-alist)
-(push '(alpha  . (90 . 90)) default-frame-alist)
-(push '(ns-transparent-titlebar . t) default-frame-alist)
+;; Set default frame parameters for all frames
+;; These settings create a clean, modern UI appearance
+(setq-default default-frame-alist
+              `(
+                ;; Disable UI elements for a minimal look
+                (menu-bar-lines . 0)
+                (tool-bar-lines . 0)
+                (vertical-scroll-bars . nil)
+                (horizontal-scroll-bars . nil)
+
+                ;; Set default frame size
+                (width . 120)
+                (height . 60)
+
+                ;; Enable slight transparency
+                (alpha . (90 . 90))
+
+                ;; macOS-specific titlebar settings
+                (ns-transparent-titlebar . t)
+
+                ;; Preserve any existing frame parameters
+                ,@default-frame-alist))
+
+(setq-default initial-frame-alist default-frame-alist)
+
+;; Do `package-initialize' at "init.el"
+(setq package-enable-at-startup nil)
 
 ;;; _
 (provide 'early-init)
+;;; early-init.el ends here

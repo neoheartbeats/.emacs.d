@@ -6,131 +6,133 @@
 
 ;;; Commentary:
 
-;; This file bootstraps the configuration.
+;; This is the main initialization file that bootstraps the configuration.
+;; It handles core settings, performance optimizations, and loads module-specific
+;; configurations from the lisp/ directory.
 
 ;;; Code:
 
-;;; Speed up startup
+;;; Performance Optimizations
 
-(add-hook 'emacs-startup-hook #'(lambda ()
-                                  (setq gc-cons-percentage 0.5
-                                        gc-cons-threshold (* 128 1024 1024))))
+;; Increase memory threshold for GC during init
+(let ((default-gc-cons-percentage gc-cons-percentage))
+  (setq gc-cons-percentage 0.6)
+  (add-hook 'emacs-startup-hook #'(lambda ()
+                                    (setq gc-cons-percentage default-gc-cons-percentage)
 
-;; Garbage collect at the end of startup
-(add-hook 'after-init-hook #'garbage-collect t)
-(setq-default garbage-collection-messages nil)
+                                    ;; Collect garbage after init
+                                    (garbage-collect))
+            t))
 
-;; Prefer loading newer compiled files
-(setq load-prefer-newer t)
+;; Silence GC messages
+(setq garbage-collection-messages nil)
 
-;; Increase how much is read from processes in a single chunk (default is 4kb).
-(setq read-process-output-max (* 256 1024)) ; 256kb
+;; Process & I/O Optimizations
+(setq read-process-output-max (* 1024 1024) ; Increase to 1mb
+      process-adaptive-read-buffering nil   ; Disable adaptive buffering
+      inhibit-compacting-font-caches t      ; Don't compact font caches during GC
+      load-prefer-newer t)                  ; Prefer newer elisp files
 
-;; Process performance tuning
-(setq-default process-adaptive-read-buffering nil)
+;; Display Engine Optimizations
+(setq redisplay-skip-fontification-on-input t ; Skip fontification during input
+      fast-but-imprecise-scrolling t          ; Faster scrolling
+      idle-update-delay 1.0                   ; Reduce idle display updates
+      frame-inhibit-implied-resize t          ; Disable frame resizing
+      inhibit-message nil)                    ; Allow messages during init
 
-;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions in
-;; non-focused windows
-(setq-default cursor-in-non-selected-windows nil)
-(setq highlight-nonselected-windows nil)
+;; Better Directory Handling
+(setq auto-mode-case-fold nil           ; Case-sensitive `auto-mode-alist' lookup
+      find-file-visit-truename nil      ; Don't resolve symlinks
+      vc-follow-symlinks t)             ; Follow symlinks for version control
 
-;; More preferment rapid scrolling over unfontified regions. May cause brief spells of
-;; inaccurate fontification immediately after scrolling
-(setq fast-but-imprecise-scrolling t)
-
-;; Introduced in Emacs 30, this inhibits fontification while receiving input, which
-;; should help a little with scrolling performance.
-(setq redisplay-skip-fontification-on-input t)
-
-;; By default, Emacs updates its UI more often than it needs to
-(setq idle-update-delay 1.0)
-
-;; Don't ping things that look like domain names.
-(setq ffap-machine-p-known 'reject)
-
-;; Don't pass case-insensitive to `auto-mode-alist'.
-(setq auto-mode-case-fold nil)
-
-;; Disable bidirectional text scanning for a modest performance boost.
-(setq-default bidi-display-reordering  'left-to-right
-              bidi-paragraph-direction 'left-to-right)
-
-;; Disabling BPA makes re-display faster, but might produce incorrect reordering of
-;; bidirectional text with embedded parentheses.
+;; Bidirectional Text Handling
+(setq-default bidi-paragraph-direction 'left-to-right)
 (setq bidi-inhibit-bpa t)
 
-;; Font compacting can be very resource-intensive, especially when rendering icon fonts.
-(setq inhibit-compacting-font-caches t)
+;; Basic startup settings
+(setq inhibit-startup-screen t
+      inhibit-startup-echo-area-message user-login-name
+      inhibit-default-init t
+      initial-scratch-message nil)
 
-;;; User information
+;;; User Configuration
 (setq user-full-name "Sthenno"
       user-mail-address "sthenno@sthenno.com")
 
-;;; Basic UI setup
+;;; UI Configuration
+;; Disable unnecessary UI elements
+(dolist (mode '(tool-bar-mode scroll-bar-mode menu-bar-mode))
+  (when (fboundp mode) (funcall mode -1)))
 
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(menu-bar-mode -1)
+;; Custom Startup message
+(define-advice display-startup-echo-area-message (:override () sthenno-startup-message)
+  "Display a custom startup message in the echo area."
+  (let ((icon "􂨖")
+        (text "Left to Bloom, Bloom to Death"))
+    (message "%s %s" icon text)))
 
-;; Suppress GUI features
-(setq use-dialog-box nil
-      use-file-dialog nil)
+;;; Package Management
+;; Store customizations in temporary file
+(setq custom-file (make-temp-file "custom-tmp"))
 
-(setq-default inhibit-startup-screen t  ; This is not enough
-              inhibit-startup-message t
-              inhibit-startup-echo-area-message user-login-name
-              inhibit-startup-buffer-menu t)
-
-(advice-add #'display-startup-screen :override #'ignore) ; This is enough
-
-(setq inhibit-x-resources t)
-
-(setq initial-buffer-choice nil
-      initial-scratch-message nil)
-
-;; Clean up the title bar content
-(setq-default frame-title-format nil)
-(setq-default ns-use-proxy-icon nil)
-
-
-;;; Set path for custom-file
-(setq custom-file (make-temp-file "_tmp"))
-
-;;; Emacs packages
+;; Initialize package system
 (require 'package)
 
-;; Add package sources
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("gnu-devel" . "https://elpa.gnu.org/devel/"))
+(setq package-archives
+      '(("gnu-devel" . "https://elpa.gnu.org/devel/")
+        ("melpa" . "https://melpa.org/packages/")
+        ("gnu" . "https://elpa.gnu.org/packages/")
+        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
 (unless (bound-and-true-p package--initialized)
   (package-initialize))
 
-(use-package org :load-path "site-lisp/org/lisp/")
+;;; Core Package Configuration
+
+;; Ensure use-package is installed
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package)
+
+  ;; Configure use-package defaults
+  (setq use-package-expand-minimally t       ; Generate minimal code
+        use-package-enable-imenu-support t)) ; Better imenu integration
+
+;; Essential packages
+
+(use-package org
+  :load-path "site-lisp/org/lisp/")
+
 (use-package diminish
   :ensure t
   :demand t
-  :config (diminish 'eldoc-mode))
+  :config
+  (diminish 'eldoc-mode))
 
-;;; Fix PATH for macOS
-
-(use-package exec-path-from-shell
-  :ensure t
-  :demand t
-  :config (exec-path-from-shell-initialize))
-
-;;; Dir for init-* files
+;;; Load Configuration Modules
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
 
-;; Require init-* files
-(require 'init-system)
-(require 'init-gui-frames)
-(require 'init-org)
-(require 'init-editing-utils)
-(require 'init-projects)
-(require 'init-temp)
-(require 'init-comp)
-(require 'init-eglot)
+;; Define required modules
+(defvar sthenno/init-modules
+  '(init-system
+    init-gui-frames
+    init-org
+    init-editing-utils
+    init-projects
+    init-temp
+    init-comp
+    init-eglot)
+  "List of configuration modules to load.")
 
-;;; _
+;; Load modules safely
+(dolist (module sthenno/init-modules)
+  (condition-case err
+      (require module)
+    (error
+     (message "Failed to load module \"%s\": %s" module err))))
+
 (provide 'init)
+;;; init.el ends here

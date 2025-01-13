@@ -42,3 +42,5 @@ recentf
 /lisp/.init-system.el.~undo-tree~
 /projectile.cache
 /tree-sitter/
+/site-lisp/gptel-tools/
+/site-lisp/mcp.el/

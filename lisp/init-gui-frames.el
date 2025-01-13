@@ -84,6 +84,7 @@
           (constant string)
           (docstring string)
 
+
           ;; Faint
 
           ;; (fg-completion-match-0 "#059669")
@@ -154,7 +155,9 @@
 ;;; Increase the padding/spacing of Emacs frames
 (use-package spacious-padding
   :ensure t
-  :config (spacious-padding-mode 1))
+  :config
+  (setq spacious-padding-subtle-mode-line t)
+  (spacious-padding-mode 1))
 
 ;;; Encodings
 ;;
@@ -168,7 +171,7 @@
 
 ;;; Font settings
 
-(set-face-attribute 'default nil :family "Sthenno Mono" :height 140)
+(set-face-attribute 'default nil :family "Triplicate A Code" :height 140)
 
 ;; No need for italic fonts
 (set-face-attribute 'italic nil :family 'unspecified)
