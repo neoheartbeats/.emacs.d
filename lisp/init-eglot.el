@@ -51,31 +51,76 @@
   :bind (:map eglot-mode-map
               ("<f2>" . eglot-rename)))
 
-;;; [FIXME: This should be replaced by "uv"] Python project management using Conda
+;; Boost eglot using lsp-booster
 
-;; (use-package conda
+;; (use-package eglot-booster
+;;   :vc (:url "https://github.com/jdtsmith/eglot-booster")
 ;;   :ensure t
-;;   :init (conda-env-initialize-interactive-shells)
-;;   :config
-;;   (setopt conda-anaconda-home "/opt/homebrew/Caskroom/miniconda/base/")
+;;   :after eglot
+;;   :config (eglot-booster-mode 1))
 
-;;   ;; Enable auto-activation
-;;   (conda-env-autoactivate-mode 1)
+;;; Python
 
-;;   ;; Displaying the currently active environment on the `mode-line'
-;;   (add-hook 'python-mode-hook 'conda-mode-line-setup)
+(use-package python
+  :demand t
+  :init
+  (require 'python)
+  (setq-default python-indent-offset 4
+                python-indent-guess-indent-offset nil
+                python-indent-guess-indent-offset-verbose nil)
 
-;;   :bind ((:map python-mode-map
-;;                ("C-c a" . conda-env-activate))))
+  :config
 
-(setq-default python-indent-offset 4)
-(setq-default python-indent-guess-indent-offset nil)
-(setq-default python-indent-guess-indent-offset-verbose nil)
+  ;; Python project management
+  (defun sthenno/env-on ()
+    "Activate Python environment managed by uv based on current
+project directory.
+Looks for .venv directory in project root and activates the Python interpreter."
+    (interactive)
+    (let* ((project-root (project-root (project-current t)))
+           (venv-path (expand-file-name ".venv" project-root))
+           (python-path (expand-file-name "bin/python") venv-path))
+      (if (file-exists-p python-path)
+          (progn
+            ;; Set Python interpreter path
+            (setq python-shell-interpreter python-path)
+
+            ;; Update exec-path to include the venv's bin directory
+            (let ((venv-bin-dir (file-name-directory python-path)))
+              (setq exec-path (cons venv-bin-dir
+                                    (remove venv-bin-dir exec-path))))
+
+            ;; Update PATH environment variable
+            (setenv "PATH" (concat (file-name-directory python-path)
+                                   path-separator
+                                   (getenv "PATH")))
+
+            ;; Update VIRTUAL_ENV environment variable
+            (setenv "VIRTUAL_ENV" venv-path)
+
+            ;; Remove PYTHONHOME if it exists
+            (setenv "PYTHONHOME" nil)
+
+            (message "Activated UV Python environment at %s" venv-path))
+        (error "No UV Python environment found in %s" project-root))))
+
+  :bind ((:map python-ts-mode-map
+               ([remap forward-paragraph] . python-nav-forward-statement)
+               ([remap backward-paragraph] . python-nav-backward-statement)
+               ([remap move-beginning-of-line] . python-nav-beginning-of-statement)
+               ([remap move-end-of-line] . python-nav-end-of-statement)
+               ("s-<up>" . python-nav-beginning-of-block)
+               ("s-<down>" . python-nav-end-of-block)
+               ("C-x m" . python-nav-if-name-main)
+               ("<tab>" . python-indent-shift-right)
+               ("S-<tab>" . python-indent-shift-left))))
+
+
 
 ;;; Teminal support
 
-(use-package vterm
-  :ensure t)
+;; (use-package vterm
+;;   :ensure t)
 
 ;;; gptel: A simple LLM client for Emacs
 

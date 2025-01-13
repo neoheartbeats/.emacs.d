@@ -48,7 +48,6 @@
 
   ;; Using different formatters based on the major-mode
   (cond ((derived-mode-p 'python-mode)
-         (require 'eglot)
          (call-interactively #'eglot-format))
         (t
          (save-excursion
@@ -65,7 +64,10 @@
              (comment-indent))
 
            ;; Remove trailing whitespace
-           (delete-trailing-whitespace)))))
+           (delete-trailing-whitespace)
+
+           ;; Save buffer
+           (save-buffer)))))
 
 ;; Bind it to a convenient key in prog-mode-map
 (keymap-global-set "s-i" #'sthenno/buffer-format)
@@ -108,7 +110,6 @@ and auto-paring for such entries."
 (electric-pair-mode 1)
 
 ;;; Highlight these keywords in code comments
-
 (use-package hl-todo
   :ensure t
   :config
@@ -132,19 +133,6 @@ and auto-paring for such entries."
 
 ;; Edit multiple occurrences in the same way simultaneously using "C-;"
 (use-package iedit :ensure t)
-
-;; Highlight multiple occurrences
-
-;; (use-package region-occurrences-highlighter
-;;   :ensure t
-;;   :config
-;;   (add-hook 'prog-mode-hook #'region-occurrences-highlighter-mode)
-;;   (add-hook 'text-mode-hook #'region-occurrences-highlighter-mode)
-
-;;   (keymap-set region-occurrences-highlighter-nav-mode-map
-;;               "<down>" #'region-occurrences-highlighter-next)
-;;   (keymap-set region-occurrences-highlighter-nav-mode-map
-;;               "<up>"   #'region-occurrences-highlighter-prev))
 
 ;;; Just like expand-region
 (use-package expreg

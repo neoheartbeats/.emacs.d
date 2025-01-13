@@ -16,21 +16,13 @@
 
 ;;; Modus Themes
 
-(use-package emacs
+(use-package modus-themes
+  :ensure t
+  :demand t
   :config
-  (require-theme 'modus-themes)
 
   ;; Less is more
-  ;; (setopt modus-themes-bold-constructs t)
-
-  ;; "On a page of text, nothing draws the eye more powerfully than a contrast between
-  ;; light and dark colors."
-
-  ;; "The horse may be long out of the barn on this one, but on the web, the same rule
-  ;; of restraint applies: less color is more effective. When everything is emphasized,
-  ;; nothing is emphasized."
-
-  ;; See https://practicaltypography.com/color.html
+  (setopt modus-themes-bold-constructs t)
 
   ;; Mapping colors
   (setq modus-themes-common-palette-overrides
@@ -43,7 +35,7 @@
 
           ;; Make the mode line borderless
           (border-mode-line-active unspecified)
-          (border-mode-line-inactive bg-mode-line-inactive)
+          (border-mode-line-inactive unspecified)
 
           ;; Set color faces for `display-line-numbers-mode'
           (fg-line-number-active fg-dim)
@@ -80,19 +72,7 @@
           ;; Completions (see also `init-comp')
           (bg-completion bg-hl-line)
 
-          ;; Code syntax
-          (constant string)
-          (docstring string)
-
-
-          ;; Faint
-
-          ;; (fg-completion-match-0 "#059669")
-          ;; (fg-completion-match-1 "#6ee7b7")
-          ;; (fg-completion-match-2 "#d1fae5")
-          ;; (fg-completion-match-3 "#ecfdf5")
-
-          ;; (cursor magenta-intense)
+          (cursor magenta-intense)
 
           ;; Apply the presets
           ,@modus-themes-preset-overrides-faint))
@@ -141,7 +121,6 @@
                                            ,fg-completion-match-1
                                            ,fg-completion-match-2
                                            ,fg-completion-match-3)))
-    (set-face-attribute 'highlight-parentheses-highlight nil :inherit 'bold)
     (global-highlight-parentheses-mode 1))
   (add-hook 'after-init-hook #'sthenno/highlight-parentheses))
 
@@ -155,12 +134,9 @@
 ;;; Increase the padding/spacing of Emacs frames
 (use-package spacious-padding
   :ensure t
-  :config
-  (setq spacious-padding-subtle-mode-line t)
-  (spacious-padding-mode 1))
+  :config (spacious-padding-mode 1))
 
 ;;; Encodings
-;;
 ;; Contrary to what many Emacs users have in their configs, you don't need more
 ;; than this to make UTF-8 the default coding system:
 (set-language-environment "UTF-8")
@@ -171,7 +147,7 @@
 
 ;;; Font settings
 
-(set-face-attribute 'default nil :family "Triplicate A Code" :height 140)
+(set-face-attribute 'default nil :family "Berkeley Mono Tempestypes" :height 140)
 
 ;; No need for italic fonts
 (set-face-attribute 'italic nil :family 'unspecified)
@@ -203,7 +179,9 @@
 (set-fontset-font t 'kana                     (font-spec :family "Noto Serif CJK JP"))
 
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
-(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'prepend)
+(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'append)
+
+;; (mac-auto-operator-composition-mode 1)
 
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
@@ -212,7 +190,45 @@
 (setq truncate-string-ellipsis " …")
 
 ;;; Mode Line settings
-(setopt mode-line-compact t)
+
+;; (setopt mode-line-compact t) ; NOTE: This conflics to `mlscroll'
+
+(setq-default mode-line-format
+              (cl-nsubst-if " " (lambda (x)
+                                  (and (stringp x)
+                                       (string-blank-p x)
+                                       (> (length x) 1)))
+                            (remove 'mode-line-mule-info mode-line-format)))
+
+;; Shorten major mode names by using a set of user-defined rules
+
+(use-package cyphejor
+  :ensure t
+  :config
+  (setq cyphejor-rules '(:upcase
+                         ("bookmark"    "→")
+                         ("buffer"      "β")
+                         ("diff"        "Δ")
+                         ("dired"       "δ")
+                         ("emacs"       "ε")
+                         ("inferior"    "i" :prefix)
+                         ("interaction" "i" :prefix)
+                         ("interactive" "i" :prefix)
+                         ("lisp"        "λ" :postfix)
+                         ("menu"        "▤" :postfix)
+                         ("mode"        "")
+                         ("package"     "↓")
+                         ("python"      "π")
+                         ("shell"       "sh" :postfix)
+                         ("text"        "ξ")))
+  (cyphejor-mode 1))
+
+;; MLScroll - Modeline Scrollbar for Emacs
+
+(use-package mlscroll
+  :ensure t
+  :init (require 'which-func)
+  :config (mlscroll-mode 1))
 
 ;;; _
 (provide 'init-gui-frames)

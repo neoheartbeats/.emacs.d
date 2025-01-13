@@ -28,22 +28,33 @@
 (setq garbage-collection-messages nil)
 
 ;; Process & I/O Optimizations
-(setq read-process-output-max (* 1024 1024) ; Increase to 1mb
-      process-adaptive-read-buffering nil   ; Disable adaptive buffering
-      inhibit-compacting-font-caches t      ; Don't compact font caches during GC
-      load-prefer-newer t)                  ; Prefer newer elisp files
+(setq read-process-output-max (* 4 1024 1024) ; Increase to 4mb
+      process-adaptive-read-buffering nil     ; Disable adaptive buffering
+      inhibit-compacting-font-caches t        ; Don't compact font caches during GC
+      load-prefer-newer t)                    ; Prefer newer elisp files
 
 ;; Display Engine Optimizations
 (setq redisplay-skip-fontification-on-input t ; Skip fontification during input
       fast-but-imprecise-scrolling t          ; Faster scrolling
       idle-update-delay 1.0                   ; Reduce idle display updates
       frame-inhibit-implied-resize t          ; Disable frame resizing
-      inhibit-message nil)                    ; Allow messages during init
+      inhibit-message t)                      ; Do not display messages during init
+
+(setq jit-lock-defer-time 0)
+
+(setq-default ns-use-proxy-icon nil)    ; FIXME: Does not work on emacs-mac
+(setq frame-title-format
+      '((:eval (if (buffer-file-name)
+                   (abbreviate-file-name (buffer-file-name))
+                 "%b"))))
 
 ;; Better Directory Handling
 (setq auto-mode-case-fold nil           ; Case-sensitive `auto-mode-alist' lookup
       find-file-visit-truename nil      ; Don't resolve symlinks
       vc-follow-symlinks t)             ; Follow symlinks for version control
+
+;; Suppress warnings "Package cl is deprecated"
+(setq byte-compile-warnings '(cl-functions))
 
 ;; Bidirectional Text Handling
 (setq-default bidi-paragraph-direction 'left-to-right)
@@ -72,8 +83,11 @@
     (message "%s %s" icon text)))
 
 ;;; Package Management
-;; Store customizations in temporary file
-(setq custom-file (make-temp-file "custom-tmp"))
+
+;; Store customizations
+(setq custom-file (expand-file-name "~/.emacs.d/custom.el"))
+(cond ((file-exists-p custom-file)
+       (load custom-file)))
 
 ;; Initialize package system
 (require 'package)
@@ -89,42 +103,39 @@
 
 ;;; Core Package Configuration
 
-;; Ensure use-package is installed
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+(require 'use-package)
 
-(eval-when-compile
-  (require 'use-package)
-
-  ;; Configure use-package defaults
-  (setq use-package-expand-minimally t       ; Generate minimal code
-        use-package-enable-imenu-support t)) ; Better imenu integration
+;; Configure use-package defaults
+(setq use-package-expand-minimally t     ; Generate minimal code
+      use-package-enable-imenu-support t ; Better imenu integration
+      use-package-compute-statistics t)  ; See report using `use-package-report'
 
 ;; Essential packages
 
+(use-package dash :ensure t :demand t)
+(use-package s :ensure t :demand t)
+
 (use-package org
-  :load-path "site-lisp/org/lisp/")
+  :load-path "site-lisp/org/lisp/"
+  :demand t)
 
 (use-package diminish
   :ensure t
   :demand t
-  :config
-  (diminish 'eldoc-mode))
+  :config (diminish 'eldoc-mode))
 
 ;;; Load Configuration Modules
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
 
 ;; Define required modules
-(defvar sthenno/init-modules
-  '(init-system
-    init-gui-frames
-    init-org
-    init-editing-utils
-    init-projects
-    init-temp
-    init-comp
-    init-eglot)
+(defvar sthenno/init-modules '(init-system
+                               init-gui-frames
+                               init-org
+                               init-editing-utils
+                               init-projects
+                               init-temp
+                               init-comp
+                               init-eglot)
   "List of configuration modules to load.")
 
 ;; Load modules safely

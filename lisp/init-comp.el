@@ -23,7 +23,7 @@
 ;;
 
 ;; Prevent auto-composition of characters around point
-;; (setq composition-break-at-point t)
+(setq composition-break-at-point t)
 
 ;; Completion basics. See also `orderless'
 ;;
@@ -62,7 +62,7 @@
 
   ;; The basic completion style is specified as fallback in addition to orderless in
   ;; order to ensure that completion commands rely on dynamic completion tables
-  (setq-default completion-styles '(flex orderless)
+  (setq-default completion-styles '(orderless flex basic)
                 completion-category-overrides '((file (styles partial-completion))
 
                                                 ;; There is further configuration for
@@ -70,9 +70,8 @@
                                                 ;; `init-eglot'
                                                 (eglot      (styles orderless))
                                                 (eglot-capf (styles orderless))))
-  :config
-  (setq-default orderless-matching-styles
-                '(orderless-literal orderless-flex orderless-regexp)))
+  :config (setq-default orderless-matching-styles
+                        '(orderless-literal orderless-flex orderless-regexp)))
 
 ;; Sort candidates by `minibuffer-sort-by-history'
 (setopt completions-sort 'historical)
@@ -108,10 +107,6 @@
   (defun sthenno/vertico-on ()
     (interactive)
     (vertico-mode 1))
-
-  (defun sthenno/vertico-off ()
-    (interactive)
-    (vertico-mode -1))
 
   (add-hook 'after-init-hook #'sthenno/vertico-on)
 
@@ -413,4 +408,5 @@
               ("<up>"     . corfu-previous)
               ("<escape>" . corfu-quit)))
 
+;;; _
 (provide 'init-comp)

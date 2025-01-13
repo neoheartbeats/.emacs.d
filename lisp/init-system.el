@@ -17,11 +17,13 @@
 (setq mac-option-modifier  'meta)
 (setq mac-command-modifier 'super)
 
+;; macOS-styled keybindings
 (keymap-global-set "s-a" #'mark-whole-buffer)
 (keymap-global-set "s-c" #'kill-ring-save)
+(keymap-global-set "s-v" #'yank)
+(keymap-global-set "s-x" #'kill-region)
 (keymap-global-set "s-q" #'save-buffers-kill-emacs)
 (keymap-global-set "s-s" #'save-buffer)
-(keymap-global-set "s-v" #'yank)
 (keymap-global-set "s-w" #'kill-current-buffer)
 (keymap-global-set "s-e" #'delete-window)
 (keymap-global-set "s-r" #'restart-emacs)
@@ -30,27 +32,25 @@
 
 ;;; To use a familier undo-redo mechanism
 
-;; Note this global mode directly remaps the default keymaps
-(use-package undo-tree
+(use-package vundo
   :ensure t
-  :diminish (undo-tree-mode)
-  :config
-  (setq undo-tree-auto-save-history nil)
-  (global-undo-tree-mode 1))
+  :demand t
+  :config (keymap-global-set "C-z" #'vundo))
 
 (keymap-set emacs-lisp-mode-map "C-c C-c" #'(lambda ()
                                               (interactive)
                                               (let ((debug-on-error t))
                                                 (elisp-eval-region-or-buffer))))
 
-(global-set-key (kbd "<escape>") #'keyboard-escape-quit)
+;; Set escape key binding
+(keymap-global-set "<escape>" #'keyboard-escape-quit)
 
-;; Disable these keys
-(global-unset-key (kbd "<pinch>"))
-
-;; Do not scaling frame using mouse
-(global-unset-key (kbd "C-<wheel-up>"))
-(global-unset-key (kbd "C-<wheel-down>"))
+;; Unset pinch gesture and mouse scaling
+(keymap-global-unset "<pinch>")
+(keymap-global-unset "<mouse-1>")       ; F11
+(keymap-global-unset "<mouse-3>")       ; F12
+(keymap-global-unset "C-<wheel-up>")
+(keymap-global-unset "C-<wheel-down>")
 
 ;;; Split windows
 (defun split-window-below-focus ()
@@ -75,10 +75,9 @@ Activate again to undo this. If the window changes before then, the undo expires
     (window-configuration-to-register ?_)
     (delete-other-windows)))
 
-(bind-keys :map global-map
-           ("s-1" . delete-other-windows-reversible)
-           ("s-2" . split-window-below-focus)
-           ("s-3" . split-window-right-focus))
+(keymap-global-set "s-1" #'delete-other-windows-reversible)
+(keymap-global-set "s-2" #'split-window-below-focus)
+(keymap-global-set "s-3" #'split-window-right-focus)
 
 ;; Use C-Arrow keys to move around windows
 (windmove-default-keybindings 'control)
@@ -117,7 +116,6 @@ Activate again to undo this. If the window changes before then, the undo expires
   (setq mark-even-if-inactive nil)
   (setq ring-bell-function 'ignore)
   (setq require-final-newline t)
-  (setq vc-follow-symlinks t)
 
   (setq-default fill-column 88)
   (setq-default tab-width 4)
@@ -144,11 +142,11 @@ Activate again to undo this. If the window changes before then, the undo expires
   (setq backward-delete-char-untabify-method 'hungry)
   (setq column-number-mode nil)
   (setq line-number-mode nil)
-  
+
   (setq kill-do-not-save-duplicates t)
-  (setq kill-ring-max 500)
+  (setq kill-ring-max 1024)
   (setq kill-whole-line t)
-  
+
   (setq next-line-add-newlines nil)
   (setq save-interprogram-paste-before-kill t)
 
@@ -167,17 +165,10 @@ Activate again to undo this. If the window changes before then, the undo expires
   ;; enable all commands
   (setq disabled-command-function nil)
 
-  ;; Mouse and scrolling
-  (setq scroll-preserve-screen-position t
-        scroll-margin 0
-        scroll-conservatively 105)
-  (pixel-scroll-precision-mode 1)
-
   ;; Disable auto copyings
   (setq mouse-drag-copy-region nil)
   (setq select-enable-primary nil)
   (setq select-enable-clipboard t)
-  ;; (setq x-stretch-cursor t)
 
   ;; dired.el
   (setq dired-auto-revert-buffer #'dired-directory-changed-p)
@@ -194,7 +185,7 @@ Activate again to undo this. If the window changes before then, the undo expires
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'always)
   (setq dired-vc-rename-file t)
-  
+
   (add-hook 'dired-mode-hook #'dired-hide-details-mode)
 
   ;; `gls' is preferred on macOS
@@ -208,13 +199,13 @@ Activate again to undo this. If the window changes before then, the undo expires
 ;;; Global functions for accessibility
 
 ;; To access the `.emacs.d' root
-(defun open-emacs-config-dir ()
+(defun sthenno/open-emacs-config-dir ()
   "Prompt the user to open a file in the user's Emacs config directory."
   (interactive)
   (let ((default-directory (concat user-emacs-directory "lisp/")))
     (call-interactively 'find-file)))
 
-(global-set-key (kbd "<f12>") 'open-emacs-config-dir)
+(keymap-global-set "<f12>" #'sthenno/open-emacs-config-dir)
 
 ;; Ignore temporary buffers
 (defun sthenno/filtered-cycle-buffer (cycle-func)
@@ -226,16 +217,14 @@ Activate again to undo this. If the window changes before then, the undo expires
 
 (defun sthenno/cycle-to-next-buffer ()
   (interactive)
-  (sthenno/filtered-cycle-buffer 'next-buffer)
-  (run-hooks 'sthenno/cycle-to-next-buffer-hook))
+  (sthenno/filtered-cycle-buffer 'next-buffer))
 
 (defun sthenno/cycle-to-previous-buffer ()
   (interactive)
-  (sthenno/filtered-cycle-buffer 'previous-buffer)
-  (run-hooks 'sthenno/cycle-to-previous-buffer-hook))
+  (sthenno/filtered-cycle-buffer 'previous-buffer))
 
-(bind-keys :map global-map
-           ("<s-right>" . sthenno/cycle-to-next-buffer)
-           ("<s-left>"  . sthenno/cycle-to-previous-buffer))
+(keymap-global-set "s-<right>" #'sthenno/cycle-to-next-buffer)
+(keymap-global-set "s-<left>"  #'sthenno/cycle-to-previous-buffer)
 
+;;; _
 (provide 'init-system)

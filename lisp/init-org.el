@@ -107,7 +107,7 @@
 
 (let ((factor (- (/ (face-attribute 'default :height)
                     100.0)
-                 0.025)))
+                 0.25)))
   (plist-put org-latex-preview-appearance-options :scale factor)
   (plist-put org-latex-preview-appearance-options :zoom  factor))
 
@@ -147,13 +147,13 @@
 
   (setopt org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
 
-  (defun sthenno/org-modern-spacing ()
-    "Adjust line-spacing for `org-modern' to correct svg display."
+  ;; (defun sthenno/org-modern-spacing ()
+  ;;   "Adjust line-spacing for `org-modern' to correct svg display."
 
-    ;; FIXME: This may not set properly
-    (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.20)
-                                   (t nil))))
-  (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
+  ;;   ;; FIXME: This may not set properly
+  ;;   (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.20)
+  ;;                                  (t nil))))
+  ;; (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
 
   (defun sthenno/org-modern-checkbox ()
     (modus-themes-with-colors
@@ -165,19 +165,19 @@
   (add-hook 'org-mode-hook #'org-modern-mode))
 
 ;; External settings for `org-modern'
-(setq org-ellipsis "…")
-(set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
+(setq org-ellipsis "")                  ; …
+;; (set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
 
 (setq org-use-property-inheritance t)
 (setq org-auto-align-tags nil)
 (setq org-tags-column 0)
-(setq org-hide-emphasis-markers t)
+(setq org-hide-emphasis-markers nil)
 
 ;; Always add the checkbox when `org-insert-item' is called
-(define-advice org-insert-item
-    (:filter-args (args) sthenno/use-checkbox)
-  "Force CHECKBOX to t."
-  (list t))
+;; (define-advice org-insert-item
+;;     (:filter-args (args) sthenno/use-checkbox)
+;;   "Force CHECKBOX to t."
+;;   (list t))
 
 ;; Use this with "C-<return>"
 (setq org-insert-heading-respect-content t)
@@ -368,7 +368,7 @@ boundaries with possible narrowing."
   ;; string of `denote-rename-buffer-format' for how to modify this.
   (denote-rename-buffer-mode 1)
 
-  (setopt denote-rename-buffer-format "􀈬 %t%b")
+  (setopt denote-rename-buffer-format "[D] %t%b")
 
   ;; Do not issue any extra prompts. Always sort by the `title' file name component and
   ;; never do a reverse sort.
