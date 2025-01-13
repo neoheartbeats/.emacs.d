@@ -170,6 +170,12 @@ Activate again to undo this. If the window changes before then, the undo expires
   (setq select-enable-primary nil)
   (setq select-enable-clipboard t)
 
+  ;; Mouse and scrolling
+  (setq scroll-preserve-screen-position t
+        scroll-margin 0
+        scroll-conservatively 105)
+  (pixel-scroll-precision-mode 1)
+
   ;; dired.el
   (setq dired-auto-revert-buffer #'dired-directory-changed-p)
   (setq dired-kill-when-opening-new-dired-buffer t)
