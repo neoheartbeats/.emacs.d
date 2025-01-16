@@ -36,17 +36,18 @@
 ;; Display Engine Optimizations
 (setq redisplay-skip-fontification-on-input t ; Skip fontification during input
       fast-but-imprecise-scrolling t          ; Faster scrolling
-      idle-update-delay 1.0                   ; Reduce idle display updates
       frame-inhibit-implied-resize t          ; Disable frame resizing
       inhibit-message t)                      ; Do not display messages during init
 
-(setq jit-lock-defer-time 0)
+;; (setq jit-lock-defer-time 0)
+
+;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions in
+;; non-focused windows
+(setq-default cursor-in-non-selected-windows nil
+              highlight-nonselected-windows nil)
 
 (setq-default ns-use-proxy-icon nil)    ; FIXME: Does not work on emacs-mac
-(setq frame-title-format
-      '((:eval (if (buffer-file-name)
-                   (abbreviate-file-name (buffer-file-name))
-                 "%b"))))
+(setq-default frame-title-format "")
 
 ;; Better Directory Handling
 (setq auto-mode-case-fold nil           ; Case-sensitive `auto-mode-alist' lookup
@@ -57,8 +58,8 @@
 (setq byte-compile-warnings '(cl-functions))
 
 ;; Bidirectional Text Handling
-(setq-default bidi-paragraph-direction 'left-to-right)
-(setq bidi-inhibit-bpa t)
+(setq-default bidi-paragraph-direction 'left-to-right
+              bidi-inhibit-bpa t)
 
 ;; Basic startup settings
 (setq inhibit-startup-screen t
@@ -118,11 +119,6 @@
 (use-package org
   :load-path "site-lisp/org/lisp/"
   :demand t)
-
-(use-package diminish
-  :ensure t
-  :demand t
-  :config (diminish 'eldoc-mode))
 
 ;;; Load Configuration Modules
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))

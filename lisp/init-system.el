@@ -82,21 +82,16 @@ Activate again to undo this. If the window changes before then, the undo expires
 ;; Use C-Arrow keys to move around windows
 (windmove-default-keybindings 'control)
 
-;; Remember changes on windows
-;; Use C-c <left> and C-c <right> to undo and redo changes on windows
-(use-package winner
-  :config (winner-mode 1))
-
 ;;; Locate position history
 (use-package saveplace
   :config (save-place-mode 1))
 
 (use-package savehist
   :init
-  (setq history-length 200)
+  (setq history-length 1024)
   (setq history-delete-duplicates t)
   :config
-  (setq savehist-file (expand-file-name "savehist" user-emacs-directory))
+  (setq savehist-file (locate-user-emacs-file "savehist"))
   (setq savehist-save-minibuffer-history t)
   (savehist-mode 1))
 
@@ -203,15 +198,6 @@ Activate again to undo this. If the window changes before then, the undo expires
   (define-key input-decode-map [?\C-m] [C-m]))
 
 ;;; Global functions for accessibility
-
-;; To access the `.emacs.d' root
-(defun sthenno/open-emacs-config-dir ()
-  "Prompt the user to open a file in the user's Emacs config directory."
-  (interactive)
-  (let ((default-directory (concat user-emacs-directory "lisp/")))
-    (call-interactively 'find-file)))
-
-(keymap-global-set "<f12>" #'sthenno/open-emacs-config-dir)
 
 ;; Ignore temporary buffers
 (defun sthenno/filtered-cycle-buffer (cycle-func)

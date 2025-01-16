@@ -40,24 +40,25 @@
   :ensure t
   :demand t
   :config
-  (add-to-list 'eglot-server-programs
-               '((python-mode python-ts-mode) . ("basedpyright-langserver" "--stdio")))
-  (add-to-list 'eglot-server-programs
-               '((python-mode python-ts-mode) . ("ruff" "server")))
+  (setq eglot-server-programs
+        `(((python-mode python-ts-mode) . ("basedpyright-langserver" "--stdio"))))
 
   ;; Hooks
-  (add-hook 'python-mode-hook 'eglot-ensure)
+  (add-hook 'python-ts-mode-hook 'eglot-ensure)
 
   :bind (:map eglot-mode-map
               ("<f2>" . eglot-rename)))
 
 ;; Boost eglot using lsp-booster
 
-;; (use-package eglot-booster
-;;   :vc (:url "https://github.com/jdtsmith/eglot-booster")
-;;   :ensure t
-;;   :after eglot
-;;   :config (eglot-booster-mode 1))
+(use-package eglot-booster
+  :vc (eglot-booster
+       :url "https://github.com/jdtsmith/eglot-booster"
+       :branch "main")
+  :ensure t
+  :after eglot
+  :init (add-to-list 'exec-path (locate-user-emacs-file "bin/"))
+  :config (eglot-booster-mode 1))
 
 ;;; Python
 
@@ -72,14 +73,14 @@
   :config
 
   ;; Python project management
-  (defun sthenno/env-on ()
+  (defun sthenno/python-venv ()
     "Activate Python environment managed by uv based on current
 project directory.
 Looks for .venv directory in project root and activates the Python interpreter."
     (interactive)
     (let* ((project-root (project-root (project-current t)))
            (venv-path (expand-file-name ".venv" project-root))
-           (python-path (expand-file-name "bin/python") venv-path))
+           (python-path (expand-file-name "bin/python" venv-path)))
       (if (file-exists-p python-path)
           (progn
             ;; Set Python interpreter path
@@ -102,139 +103,62 @@ Looks for .venv directory in project root and activates the Python interpreter."
             (setenv "PYTHONHOME" nil)
 
             (message "Activated UV Python environment at %s" venv-path))
-        (error "No UV Python environment found in %s" project-root))))
+        (message "No UV Python environment found in %s" project-root))))
+
+  (add-hook 'python-ts-mode-hook 'sthenno/python-venv)
 
   :bind ((:map python-ts-mode-map
-               ([remap forward-paragraph] . python-nav-forward-statement)
-               ([remap backward-paragraph] . python-nav-backward-statement)
-               ([remap move-beginning-of-line] . python-nav-beginning-of-statement)
-               ([remap move-end-of-line] . python-nav-end-of-statement)
+               ;;  ([remap forward-paragraph] . python-nav-forward-statement)
+               ;; ([remap backward-paragraph] . python-nav-backward-statement)
+               ;; ([remap move-beginning-of-line] . python-nav-beginning-of-statement)
+               ;; ([remap move-end-of-line] . python-nav-end-of-statement)
                ("s-<up>" . python-nav-beginning-of-block)
                ("s-<down>" . python-nav-end-of-block)
                ("C-x m" . python-nav-if-name-main)
-               ("<tab>" . python-indent-shift-right)
-               ("S-<tab>" . python-indent-shift-left))))
+               ;; ("<tab>" . python-indent-shift-right)
+               ;; ("S-<tab>" . python-indent-shift-left)
+               )))
 
+;;; Flymake
 
+(use-package flymake
+  :config
+  (setq flymake-no-changes-timeout nil)
+  (setq flymake-start-on-save-buffer t)
+  (setq flymake-mode-line-lighter "FM")
+  (setq flymake-indicator-type 'margins)
+  :hook (prog-mode . flymake-mode)
+  :bind ((:map flymake-mode-map
+               ("s-<down>" . flymake-goto-next-error)
+               ("s-<up>"   . flymake-goto-prev-error))))
+
+(use-package flymake-ruff
+  :ensure t
+  :config (add-hook 'python-ts-mode-hook 'flymake-ruff-load))
+
+(use-package ruff-format
+  :ensure t
+  :config (add-hook 'python-ts-mode-hook 'ruff-format-on-save-mode))
 
 ;;; Teminal support
 
-;; (use-package vterm
-;;   :ensure t)
-
-;;; gptel: A simple LLM client for Emacs
-
-;; NOTE: Since support "mcp" in Emacs is highly experimental, LLM related functions are
-;; temporarily disabled.
-
-;; (use-package gptel
-;;   :load-path "~/.emacs.d/site-lisp/gptel-tools/"
-;;   :config
-
-;;   ;; LLM request options
-;;   (setq gptel-api-key "sk-tmp")         ; Enough for LiteLLM
-;;   (setq gptel-backend
-;;         (gptel-make-openai "sthenno"    ; Name
-;;           :stream t                     ; Stream responses
-;;           :protocol "http"              ; Use http for local requests
-;;           :host "192.168.100.127:8000"  ; Server location
-;;           :models '(sthenno)))
-;;   (setq gptel-model 'sthenno)
-;;   (setq gptel-stream t)
-;;   (setq gptel-max-tokens 8192)
-;;   (setq gptel-temperature 0.70)
-
-;;   ;; Chat UI options
-;;   (setq gptel-default-mode 'org-mode)
-
-;;   ;; Scroll automatically as the response is inserted
-;;   (add-hook 'gptel-post-stream-hook #'gptel-auto-scroll)
-
-;;   ;; Let the cursor to move to the next prompt after the response is inserted
-;;   (add-hook 'gptel-post-response-functions #'gptel-end-of-response)
-
-;;   ;; Agentic system
-;;   (setq gptel-use-tools t)
-
-;;   (defun sthenno/mcp-init ()
-;;     (interactive)
-;;     (require 'mpc)
-;;     (mcp-connect-server
-;;      "filesystem" "npx" '("-y" "@modelcontextprotocol/server-filesystem"
-;;                           "/Users/sthenno/.emacs.d/")
-;;      :initial-callback
-;;      #'(lambda (connection)
-;;          (message "%s connection" (jsonrpc-name connection)))
-;;      :tools-callback
-;;      #'(lambda (connection tools)
-;;          (message "%s tools: %s" (jsonrpc-name connection) tools))
-;;      :prompts-callback
-;;      #'(lambda (connection prompts)
-;;          (message "%s prompts: %s" (jsonrpc-name connection) prompts))
-;;      :resources-callback
-;;      #'(lambda (connection resources)
-;;          (message "%s resources: %s" (jsonrpc-name connection) resources)))
-
-;;     (gptel-make-tool
-;;      :function (lambda (path filename content)
-;;                  (let ((full-path (expand-file-name filename path)))
-;;                    (with-temp-buffer
-;;                      (insert content)
-;;                      (write-file full-path))
-;;                    (format "Created file %s in %s" filename path)))
-;;      :name "create_file"
-;;      :description "Create a new file with the specified content"
-;;      :args (list '(:name "path"
-;;                          :type "string"
-;;                          :description "The directory where to create the file")
-;;                  '(:name "filename"
-;;                          :type "string"
-;;                          :description "The name of the file to create")
-;;                  '(:name "content"
-;;                          :type "string"
-;;                          :description "The content to write to the file"))
-;;      :category "filesystem")
-;;     )
-
-;;   (sthenno/mcp-init)
-
-;;   :bind ((:map global-map
-;;                ("s-p" . gptel))
-;;          (:map org-mode-map
-;;                ("s-<return>" . gptel-send))))
-
-;;; Model Context Protocol Emacs sdk
-
-;; (require 'mcp)
+(use-package vterm :ensure t)
 
 ;;; GitHub Copilot
 
-;; (use-package copilot
-;;   :vc (copilot
-;;        :url "https://github.com/copilot-emacs/copilot.el"
-;;        :branch "main")
-;;   :init (setq copilot-node-executable "/opt/homebrew/bin/node")
-;;   :config
+(use-package copilot
+  :vc (copilot
+       :url "https://github.com/copilot-emacs/copilot.el"
+       :branch "main")
+  :ensure t
+  :init (setq copilot-node-executable "/opt/homebrew/bin/node")
+  :bind ((:map prog-mode-map
+               ("C-x c" . copilot-mode))
+         (:map copilot-completion-map
+               ("TAB"      . copilot-accept-completion)
+               ("s-."      . copilot-accept-completion)
+               ("<return>" . copilot-accept-completion)
+               ("<escape>" . copilot-clear-overlay))))
 
-;;   ;; Toggling `copilot-mode'
-;;   (defun sthenno/copilot-on ()
-;;     (interactive)
-;;     (copilot-mode 1))
-
-;;   (defun sthenno/copilot-off ()
-;;     (interactive)
-;;     (copilot-mode -1))
-
-;;   ;; Hooks
-;;   (add-hook 'python-mode-hook #'sthenno/copilot-on)
-
-;;   :bind ((:map prog-mode-map
-;;                ("C-x c" . sthenno/copilot-on)
-;;                ("C-x C" . sthenno/copilot-off))
-;;          (:map copilot-completion-map
-;;                ("<right>"  . copilot-accept-completion-by-line)
-;;                ("<return>" . copilot-accept-completion)
-;;                ("<escape>" . copilot-clear-overlay))))
-
-;;; _
 (provide 'init-eglot)
+;;; init-eglot.el ends here.

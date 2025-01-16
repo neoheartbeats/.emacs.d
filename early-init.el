@@ -67,14 +67,13 @@ and other temporary data that Emacs generates during operation."
 (make-directory user-cache-directory t)
 
 ;; Configure native compilation settings when available
-(when (featurep 'native-compile)
 
-  ;; Suppress native compilation warnings to prevent disruption
-  (setq native-comp-async-report-warnings-errors 'silent)
+;; Suppress native compilation warnings to prevent disruption
+(setq native-comp-async-report-warnings-errors 'silent)
 
-  ;; Set optimal number of compilation jobs based on available processors
-  (setq native-comp-async-jobs-number (max 1
-                                           (- (num-processors) 2))))
+;; Set optimal number of compilation jobs based on available processors
+(setq native-comp-async-jobs-number (max 1
+                                         (- (num-processors) 2)))
 
 ;; Set default frame parameters for all frames
 ;; These settings create a clean, modern UI appearance
@@ -90,6 +89,8 @@ and other temporary data that Emacs generates during operation."
                 (width . 120)
                 (height . 60)
 
+                (alpha-background . 60)
+
                 ;; macOS-specific titlebar settings
                 (ns-transparent-titlebar . t)
 
@@ -101,6 +102,8 @@ and other temporary data that Emacs generates during operation."
 ;; Do `package-initialize' at "init.el"
 (setq package-enable-at-startup nil)
 
-;;; _
+;; Hide mode-line in this early stage
+(setq-default mode-line-format nil)
+
 (provide 'early-init)
 ;;; early-init.el ends here

@@ -24,8 +24,8 @@
   (interactive)
   (delete-region (line-beginning-position) (point)))
 
-(keymap-global-set "s-<backspace>" #'sthenno/delete-current-line)
-(keymap-global-set "C-<backspace>" #'sthenno/delete-to-beginning-of-line)
+(keymap-global-set "C-<backspace>" #'sthenno/delete-current-line)
+(keymap-global-set "s-<backspace>" #'sthenno/delete-to-beginning-of-line)
 
 (keymap-global-set "M-<down>" #'forward-paragraph)
 (keymap-global-set "M-<up>"   #'backward-paragraph)
@@ -35,10 +35,14 @@
 
 ;;; Display line numbers
 
-(setq-default display-line-numbers-width 4)
+;; (setq-default display-line-numbers-width )
 
-(add-hook 'prog-mode-hook  #'display-line-numbers-mode)
-(add-hook 'dired-mode-hook #'display-line-numbers-mode)
+(setopt display-line-numbers-grow-only t)
+
+;; (add-hook 'prog-mode-hook  #'display-line-numbers-mode)
+;; (add-hook 'dired-mode-hook #'display-line-numbers-mode)
+
+(global-display-line-numbers-mode 1)
 
 ;;; Indentations
 
@@ -47,8 +51,10 @@
   (interactive)
 
   ;; Using different formatters based on the major-mode
-  (cond ((derived-mode-p 'python-mode)
-         (call-interactively #'eglot-format))
+  (cond ((or (derived-mode-p 'python-mode)
+             (derived-mode-p 'python-ts-mode))
+         ;; (call-interactively #'eglot-format)
+         )
         (t
          (save-excursion
 
@@ -74,6 +80,7 @@
 
 ;; Run the formatter automatically on save
 (defun sthenno/buffer-format-on-save ()
+  "Format buffer on save."
   (add-hook 'after-save-hook #'sthenno/buffer-format nil t))
 (add-hook 'prog-mode-hook #'sthenno/buffer-format-on-save)
 
@@ -96,12 +103,12 @@
         indent-bars-display-on-blank-lines t)
 
   ;; Hooks
-  (add-hook 'python-mode-hook #'indent-bars-mode))
+  (add-hook 'python-ts-mode-hook #'indent-bars-mode))
 
 ;;; Inhibit passing these delimiters
 (defun sthenno/inhibit-specific-delimiters ()
-  "Remove the following from current `syntax-table'. This disables syntax highlighting
-and auto-paring for such entries."
+  "Remove some specific delimiters from current `syntax-table'.
+This disables syntax highlighting and auto-paring for such entries."
   (modify-syntax-entry ?< "." org-mode-syntax-table)
   (modify-syntax-entry ?> "." org-mode-syntax-table))
 (add-hook 'org-mode-hook #'sthenno/inhibit-specific-delimiters)
@@ -110,19 +117,34 @@ and auto-paring for such entries."
 (electric-pair-mode 1)
 
 ;;; Highlight these keywords in code comments
-(use-package hl-todo
-  :ensure t
-  :config
-  (defun sthenno/hl-todo-faces-setup ()
-    (modus-themes-with-colors
-      (setq hl-todo-keyword-faces
-            `(("TODO"  . ,prose-todo)
-              ("FIXME" . ,err)
-              ("XXXX*" . ,err)
-              ("NOTE"  . ,fg-changed)
-              ("HACK"  . ,fg-changed))))
-    (global-hl-todo-mode 1))
-  (add-hook 'after-init-hook #'sthenno/hl-todo-faces-setup))
+
+;; (use-package hl-todo
+;;   :ensure t
+;;   :config
+;;   (defun sthenno/ef-themes-hl-todo-faces ()
+;;     "Configure `hl-todo-keyword-faces' with Ef themes colors.
+;; The exact color values are taken from the active Ef theme."
+;;     (ef-themes-with-colors
+;;       (setq hl-todo-keyword-faces
+;;             `(("HOLD" . ,yellow)
+;;               ("TODO" . ,red)
+;;               ("NEXT" . ,blue)
+;;               ("THEM" . ,magenta)
+;;               ("PROG" . ,cyan-warmer)
+;;               ("OKAY" . ,green-warmer)
+;;               ("DONT" . ,yellow-warmer)
+;;               ("FAIL" . ,red-warmer)
+;;               ("BUG" . ,red-warmer)
+;;               ("DONE" . ,green)
+;;               ("NOTE" . ,blue-warmer)
+;;               ("KLUDGE" . ,cyan)
+;;               ("HACK" . ,cyan)
+;;               ("TEMP" . ,red)
+;;               ("FIXME" . ,red-warmer)
+;;               ("XXX+" . ,red-warmer)
+;;               ("REVIEW" . ,red)
+;;               ("DEPRECATED" . ,yellow)))))
+;;   (add-hook 'ef-themes-post-load-hook #'sthenno/ef-themes-hl-todo-faces))
 
 ;;; Deletions
 
@@ -138,8 +160,7 @@ and auto-paring for such entries."
 (use-package expreg
   :ensure t
   :bind ((:map global-map
-               ("S-<up>"   . expreg-contract)
-               ("S-<down>" . expreg-expand))))
+               ("C-<space>" . expreg-expand))))
 
-;;; _
 (provide 'init-editing-utils)
+;;; init-editing-utils.el ends here.

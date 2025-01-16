@@ -155,11 +155,11 @@
   ;;                                  (t nil))))
   ;; (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
 
-  (defun sthenno/org-modern-checkbox ()
-    (modus-themes-with-colors
-      (custom-set-faces
-       `(org-checkbox ((t (:foreground ,prose-todo)))))))
-  (add-hook 'org-mode-hook #'sthenno/org-modern-checkbox)
+  ;; (defun sthenno/org-modern-checkbox ()
+  ;;   (modus-themes-with-colors
+  ;;     (custom-set-faces
+  ;;      `(org-checkbox ((t (:foreground ,prose-todo)))))))
+  ;; (add-hook 'org-mode-hook #'sthenno/org-modern-checkbox)
 
   ;; Hooks
   (add-hook 'org-mode-hook #'org-modern-mode))

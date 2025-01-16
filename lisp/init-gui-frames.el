@@ -21,18 +21,9 @@
   :demand t
   :config
 
-  ;; Less is more
-  (setopt modus-themes-bold-constructs t)
-
   ;; Mapping colors
   (setq modus-themes-common-palette-overrides
         `(
-          ;; Make the mode-line borderless and stand out less
-          (bg-mode-line-active bg-dim)
-          (fg-mode-line-active fg-dim)
-          (bg-mode-line-inactive bg-main)
-          (fg-mode-line-inactive fg-dim)
-
           ;; Make the mode line borderless
           (border-mode-line-active unspecified)
           (border-mode-line-inactive unspecified)
@@ -44,7 +35,7 @@
           (bg-line-number-inactive unspecified)
 
           ;; Make the fringe invisible
-          (fringe unspecified)
+          ;; (fringe unspecified)
 
           ;; Subtle underlines
           (underline-link border)
@@ -62,7 +53,7 @@
 
           ;; Matching parenthesis
           ;; (fg-paren-match green-faint)
-          (bg-paren-match unspecified)
+          ;; (bg-paren-match unspecified)
 
           ;; Make code blocks more minimal
           (bg-prose-block-contents unspecified)
@@ -72,25 +63,28 @@
           ;; Completions (see also `init-comp')
           (bg-completion bg-hl-line)
 
-          (cursor magenta-intense)
-
           ;; Apply the presets
           ,@modus-themes-preset-overrides-faint))
 
   ;; Load the enable the theme
   (modus-themes-load-theme 'modus-vivendi))
 
-(global-hl-line-mode 1)
+(modus-themes-with-colors
+  (custom-set-faces
+   `(region ((t (:extend nil))))
+   `(mode-line ((t (:background ,fg-dim :height 0.1))))
+   `(mode-line-inactive ((t (:background ,fg-dim :height 0.1))))
+   `(header-line ((t (:foreground ,fg-dim :background ,bg-mode-line-active))))))
 
-;; Do not extend `region' background past the end of the line
-(custom-set-faces
- '(region ((t :extend nil))))
+(setq-default mode-line-format '(""))
+
+(setq global-hl-line-sticky-flag t)
+(global-hl-line-mode 1)
 
 ;;; Parentheses
 
 (use-package paren
   :config
-  (setopt show-paren-delay 0.05)
   (custom-set-faces
    '(show-paren-match ((t :inherit 'bold))))
   (show-paren-mode 1))
@@ -98,31 +92,16 @@
 ;; Dim parenthesis for s-expressions
 (use-package paren-face
   :ensure t
+  :demand t
   :config
-  (defun sthenno/paren-face (&rest _)
-    (modus-themes-with-colors
-      (custom-set-faces
-
-       ;; Why why why why don't I dim you a lot, forever?
-       `(parenthesis ((t (:foreground "#535353"))))))
-    (global-paren-face-mode 1))
-  (add-hook 'after-init-hook #'sthenno/paren-face))
+  (custom-set-faces                    ; Why why why why don't I dim you a lot, forever?
+   '(parenthesis ((t (:foreground "#535353")))))
+  (global-paren-face-mode 1))
 
 ;; Hightlight parentheses dynamically surrounding point
 (use-package highlight-parentheses
   :ensure t
-  :diminish
-  :config
-  (setopt highlight-parentheses-delay 0.05)
-
-  (defun sthenno/highlight-parentheses (&rest _)
-    (modus-themes-with-colors
-      (setq highlight-parentheses-colors `(,fg-completion-match-0
-                                           ,fg-completion-match-1
-                                           ,fg-completion-match-2
-                                           ,fg-completion-match-3)))
-    (global-highlight-parentheses-mode 1))
-  (add-hook 'after-init-hook #'sthenno/highlight-parentheses))
+  :config (global-highlight-parentheses-mode 1))
 
 ;;; Cursor faces
 
@@ -131,23 +110,17 @@
 
 (blink-cursor-mode -1)
 
-;;; Increase the padding/spacing of Emacs frames
-(use-package spacious-padding
-  :ensure t
-  :config (spacious-padding-mode 1))
-
 ;;; Encodings
 ;; Contrary to what many Emacs users have in their configs, you don't need more
 ;; than this to make UTF-8 the default coding system:
 (set-language-environment "UTF-8")
 ;; ...but `set-language-environment' also sets `default-input-method', which is
 ;; a step too opinionated.
-
 (setq default-input-method nil)
 
 ;;; Font settings
 
-(set-face-attribute 'default nil :family "Berkeley Mono Tempestypes" :height 140)
+(set-face-attribute 'default nil :family "Triplicate OT" :height 140)
 
 ;; No need for italic fonts
 (set-face-attribute 'italic nil :family 'unspecified)
@@ -178,10 +151,8 @@
 (set-fontset-font t 'jisx0201                 (font-spec :family "Noto Serif CJK JP"))
 (set-fontset-font t 'kana                     (font-spec :family "Noto Serif CJK JP"))
 
-(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
+(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" nil 'append))
 (set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'append)
-
-;; (mac-auto-operator-composition-mode 1)
 
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
@@ -189,46 +160,5 @@
 ;; Ellipsis symbol
 (setq truncate-string-ellipsis " …")
 
-;;; Mode Line settings
-
-;; (setopt mode-line-compact t) ; NOTE: This conflics to `mlscroll'
-
-(setq-default mode-line-format
-              (cl-nsubst-if " " (lambda (x)
-                                  (and (stringp x)
-                                       (string-blank-p x)
-                                       (> (length x) 1)))
-                            (remove 'mode-line-mule-info mode-line-format)))
-
-;; Shorten major mode names by using a set of user-defined rules
-
-(use-package cyphejor
-  :ensure t
-  :config
-  (setq cyphejor-rules '(:upcase
-                         ("bookmark"    "→")
-                         ("buffer"      "β")
-                         ("diff"        "Δ")
-                         ("dired"       "δ")
-                         ("emacs"       "ε")
-                         ("inferior"    "i" :prefix)
-                         ("interaction" "i" :prefix)
-                         ("interactive" "i" :prefix)
-                         ("lisp"        "λ" :postfix)
-                         ("menu"        "▤" :postfix)
-                         ("mode"        "")
-                         ("package"     "↓")
-                         ("python"      "π")
-                         ("shell"       "sh" :postfix)
-                         ("text"        "ξ")))
-  (cyphejor-mode 1))
-
-;; MLScroll - Modeline Scrollbar for Emacs
-
-(use-package mlscroll
-  :ensure t
-  :init (require 'which-func)
-  :config (mlscroll-mode 1))
-
-;;; _
 (provide 'init-gui-frames)
+;;; init-gui-frames.el ends here.
