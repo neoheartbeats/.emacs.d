@@ -123,7 +123,7 @@ Looks for .venv directory in project root and activates the Python interpreter."
 
 (use-package flymake
   :config
-  (setq flymake-no-changes-timeout nil)
+  ;; (setq flymake-no-changes-timeout nil)
   (setq flymake-start-on-save-buffer t)
   (setq flymake-mode-line-lighter "FM")
   (setq flymake-indicator-type 'margins)
@@ -156,8 +156,8 @@ Looks for .venv directory in project root and activates the Python interpreter."
                ("C-x c" . copilot-mode))
          (:map copilot-completion-map
                ("TAB"      . copilot-accept-completion)
-               ("s-."      . copilot-accept-completion)
-               ("<return>" . copilot-accept-completion)
+               ("<tab>"    . copilot-accept-completion)
+               ("<right>" . copilot-accept-completion)
                ("<escape>" . copilot-clear-overlay))))
 
 (provide 'init-eglot)

@@ -126,40 +126,41 @@
 (use-package org-modern
   :ensure t
   :config
-  (setopt org-modern-star 'fold
-          ;; org-modern-fold-stars '(("◉" . "○"))
-          org-modern-hide-stars 'leading)
+  (setopt org-modern-star 'replace
+          org-modern-replace-stars '("§")
+          org-modern-hide-stars "§")    ; Use this with `org-num-mode'
+  (add-hook 'org-mode-hook #'org-num-mode)
 
   (setopt org-modern-list '((?- . "•")))
   (setopt org-modern-checkbox '((?X  . "􀃰")
                                 (?-  . "􀃞")
                                 (?\s . "􀂒")))
 
-  ;; (setopt org-modern-block-name '(("src"    . ("􀃤" "􀂓"))
-  ;;                                 ("quote"  . ("􀈎" "􀂓"))
-  ;;                                 ("export" . ("􀣙" "􀂓"))))
-
-  ;; (setopt org-modern-todo nil)
-
-  (setopt org-modern-keyword '(("title"   . "􀉛")
-                               ("results" . "􂨖")
-                               (t . t)))
 
   (setopt org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
 
-  ;; (defun sthenno/org-modern-spacing ()
-  ;;   "Adjust line-spacing for `org-modern' to correct svg display."
+  (setopt org-modern-block-fringe nil)
 
-  ;;   ;; FIXME: This may not set properly
-  ;;   (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.20)
-  ;;                                  (t nil))))
-  ;; (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
+  (modus-themes-with-colors
+    (custom-set-faces
+     `(org-modern-block-name ((t (
+                                  :height 0.8
+                                  :foreground ,blue-faint
+                                  :background ,bg-main
+                                  :box t))))))
 
-  ;; (defun sthenno/org-modern-checkbox ()
-  ;;   (modus-themes-with-colors
-  ;;     (custom-set-faces
-  ;;      `(org-checkbox ((t (:foreground ,prose-todo)))))))
-  ;; (add-hook 'org-mode-hook #'sthenno/org-modern-checkbox)
+  (setq org-modern-block-name
+        '((t . t)
+          ("src" .  ("In[*]:=" "_"))))
+
+  (defun sthenno/org-modern-spacing ()
+    "Adjust line-spacing for `org-modern' to correct svg display."
+
+    ;; FIXME: This may not set properly
+    (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.20)
+                                   (t nil))))
+  (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
+
 
   ;; Hooks
   (add-hook 'org-mode-hook #'org-modern-mode))

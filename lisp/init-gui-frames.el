@@ -34,9 +34,6 @@
           (fg-line-number-inactive "#535353")
           (bg-line-number-inactive unspecified)
 
-          ;; Make the fringe invisible
-          ;; (fringe unspecified)
-
           ;; Subtle underlines
           (underline-link border)
           (underline-link-visited border)
@@ -52,11 +49,11 @@
           (prose-done "#535353")
 
           ;; Matching parenthesis
-          ;; (fg-paren-match green-faint)
-          ;; (bg-paren-match unspecified)
+          (fg-paren-match fg-main)
+          (bg-paren-match unspecified)
 
           ;; Make code blocks more minimal
-          (bg-prose-block-contents unspecified)
+          (bg-prose-block-contents  unspecified)
           (bg-prose-block-delimiter unspecified)
           (fg-prose-block-delimiter fg-dim)
 
