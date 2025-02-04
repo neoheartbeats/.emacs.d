@@ -71,7 +71,7 @@
    `(region ((t (:extend nil))))
    `(mode-line ((t (:background ,fg-dim :height 0.1))))
    `(mode-line-inactive ((t (:background ,fg-dim :height 0.1))))
-   `(header-line ((t (:foreground ,fg-dim :background ,bg-mode-line-active))))))
+   `(header-line ((t (:foreground "grey20" :background "grey90"))))))
 
 (setq-default mode-line-format '(""))
 
