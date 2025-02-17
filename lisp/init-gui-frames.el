@@ -69,11 +69,11 @@
 (modus-themes-with-colors
   (custom-set-faces
    `(region ((t (:extend nil))))
-   `(mode-line ((t (:background ,fg-dim :height 0.1))))
-   `(mode-line-inactive ((t (:background ,fg-dim :height 0.1))))
+   `(mode-line ((t (:foreground "grey20" :background "grey90"))))
+   `(mode-line-inactive ((t (:background ,fg-dim))))
    `(header-line ((t (:foreground "grey20" :background "grey90"))))))
 
-(setq-default mode-line-format '(""))
+;; (setq-default mode-line-format '(""))
 
 (setq global-hl-line-sticky-flag t)
 (global-hl-line-mode 1)

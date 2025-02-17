@@ -103,7 +103,8 @@ and other temporary data that Emacs generates during operation."
 (setq package-enable-at-startup nil)
 
 ;; Hide mode-line in this early stage
-(setq-default mode-line-format nil)
+
+;;(setq-default mode-line-format nil)
 
 (provide 'early-init)
 ;;; early-init.el ends here
