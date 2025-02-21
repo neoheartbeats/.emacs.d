@@ -163,7 +163,7 @@
 (set-fontset-font t 'kana                     (font-spec :family "Noto Serif CJK JP"))
 
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji") nil 'append)
-(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'prepend)
+(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'append)
 
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1 :weight 'thin)

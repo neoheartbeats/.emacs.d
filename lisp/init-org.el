@@ -128,26 +128,19 @@
   :config
   (setopt org-modern-star 'replace
           org-modern-replace-stars '("§")
-          org-modern-hide-stars "§")    ; Use this with `org-num-mode'
-  (add-hook 'org-mode-hook #'org-num-mode)
-
+          org-modern-hide-stars "§")
   (setopt org-modern-list '((?- . "•")))
   (setopt org-modern-checkbox '((?X  . "􀃰")
                                 (?-  . "􀃞")
                                 (?\s . "􀂒")))
-
-
   (setopt org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
-
   (setopt org-modern-block-fringe nil)
-
-  (modus-themes-with-colors
-    (custom-set-faces
-     `(org-modern-block-name ((t (
-                                  :height 0.8
-                                  :foreground ,blue-faint
-                                  :background ,bg-main
-                                  :box t))))))
+  ;; (modus-themes-with-colors
+  ;;   (custom-set-faces
+  ;;    `(org-modern-block-name ((t ( :height 0.8
+  ;;                                  :foreground ,blue-faint
+  ;;                                  :background ,bg-main
+  ;;                                  :box t))))))
 
   (setq org-modern-block-name
         '((t . t)
