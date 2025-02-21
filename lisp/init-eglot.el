@@ -121,16 +121,16 @@ Looks for .venv directory in project root and activates the Python interpreter."
 
 ;;; Flymake
 
-(use-package flymake
-  :config
-  ;; (setq flymake-no-changes-timeout nil)
-  (setq flymake-start-on-save-buffer t)
-  (setq flymake-mode-line-lighter "FM")
-  (setq flymake-indicator-type 'margins)
-  :hook (prog-mode . flymake-mode)
-  :bind ((:map flymake-mode-map
-               ("s-<down>" . flymake-goto-next-error)
-               ("s-<up>"   . flymake-goto-prev-error))))
+;; (use-package flymake
+;;   :config
+;;   ;; (setq flymake-no-changes-timeout nil)
+;;   (setq flymake-start-on-save-buffer t)
+;;   (setq flymake-mode-line-lighter "FM")
+;;   (setq flymake-indicator-type 'margins)
+;;   :hook (prog-mode . flymake-mode)
+;;   :bind ((:map flymake-mode-map
+;;                ("s-<down>" . flymake-goto-next-error)
+;;                ("s-<up>"   . flymake-goto-prev-error))))
 
 (use-package flymake-ruff
   :ensure t
@@ -142,23 +142,23 @@ Looks for .venv directory in project root and activates the Python interpreter."
 
 ;;; Teminal support
 
-(use-package vterm :ensure t)
+;; (use-package vterm :ensure t)
 
 ;;; GitHub Copilot
 
-(use-package copilot
-  :vc (copilot
-       :url "https://github.com/copilot-emacs/copilot.el"
-       :branch "main")
-  :ensure t
-  :init (setq copilot-node-executable "/opt/homebrew/bin/node")
-  :bind ((:map prog-mode-map
-               ("C-x c" . copilot-mode))
-         (:map copilot-completion-map
-               ("TAB"      . copilot-accept-completion)
-               ("<tab>"    . copilot-accept-completion)
-               ("<right>" . copilot-accept-completion)
-               ("<escape>" . copilot-clear-overlay))))
+;; (use-package copilot
+;;   :vc (copilot
+;;        :url "https://github.com/copilot-emacs/copilot.el"
+;;        :branch "main")
+;;   :ensure t
+;;   :init (setq copilot-node-executable "/opt/homebrew/bin/node")
+;;   :bind ((:map prog-mode-map
+;;                ("C-x c" . copilot-mode))
+;;          (:map copilot-completion-map
+;;                ("TAB"      . copilot-accept-completion)
+;;                ("<tab>"    . copilot-accept-completion)
+;;                ("<right>" . copilot-accept-completion)
+;;                ("<escape>" . copilot-clear-overlay))))
 
 (provide 'init-eglot)
 ;;; init-eglot.el ends here.

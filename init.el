@@ -93,32 +93,20 @@
 ;; Initialize package system
 (require 'package)
 
-(setq package-archives
-      '(("gnu-devel" . "https://elpa.gnu.org/devel/")
-        ("melpa" . "https://melpa.org/packages/")
-        ("gnu" . "https://elpa.gnu.org/packages/")
-        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+(setq package-archives '(("gnu-devel" . "https://elpa.gnu.org/devel/")
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("gnu" . "https://elpa.gnu.org/packages/")
+                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
 (unless (bound-and-true-p package--initialized)
   (package-initialize))
 
 ;;; Core Package Configuration
 
-(require 'use-package)
-
-;; Configure use-package defaults
-(setq use-package-expand-minimally t     ; Generate minimal code
-      use-package-enable-imenu-support t ; Better imenu integration
-      use-package-compute-statistics t)  ; See report using `use-package-report'
-
 ;; Essential packages
 
-(use-package dash :ensure t :demand t)
-(use-package s :ensure t :demand t)
-
-(use-package org
-  :load-path "site-lisp/org/lisp/"
-  :demand t)
+(use-package org :load-path "site-lisp/org/lisp/" :demand t)
+(use-package diminish :ensure t :demand t)
 
 ;;; Load Configuration Modules
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))

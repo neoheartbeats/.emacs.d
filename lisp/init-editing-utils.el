@@ -35,13 +35,7 @@
 
 ;;; Display line numbers
 
-;; (setq-default display-line-numbers-width )
-
-(setopt display-line-numbers-grow-only t)
-
-;; (add-hook 'prog-mode-hook  #'display-line-numbers-mode)
-;; (add-hook 'dired-mode-hook #'display-line-numbers-mode)
-
+(setq-default display-line-numbers-width 4)
 (global-display-line-numbers-mode 1)
 
 ;;; Indentations
@@ -54,7 +48,7 @@
   (cond ((or (derived-mode-p 'python-mode)
              (derived-mode-p 'python-ts-mode))
          ;; (call-interactively #'eglot-format)
-         )
+         nil)
         (t
          (save-excursion
 
@@ -116,36 +110,6 @@ This disables syntax highlighting and auto-paring for such entries."
 ;; Automatic pairing parenthesis
 (electric-pair-mode 1)
 
-;;; Highlight these keywords in code comments
-
-;; (use-package hl-todo
-;;   :ensure t
-;;   :config
-;;   (defun sthenno/ef-themes-hl-todo-faces ()
-;;     "Configure `hl-todo-keyword-faces' with Ef themes colors.
-;; The exact color values are taken from the active Ef theme."
-;;     (ef-themes-with-colors
-;;       (setq hl-todo-keyword-faces
-;;             `(("HOLD" . ,yellow)
-;;               ("TODO" . ,red)
-;;               ("NEXT" . ,blue)
-;;               ("THEM" . ,magenta)
-;;               ("PROG" . ,cyan-warmer)
-;;               ("OKAY" . ,green-warmer)
-;;               ("DONT" . ,yellow-warmer)
-;;               ("FAIL" . ,red-warmer)
-;;               ("BUG" . ,red-warmer)
-;;               ("DONE" . ,green)
-;;               ("NOTE" . ,blue-warmer)
-;;               ("KLUDGE" . ,cyan)
-;;               ("HACK" . ,cyan)
-;;               ("TEMP" . ,red)
-;;               ("FIXME" . ,red-warmer)
-;;               ("XXX+" . ,red-warmer)
-;;               ("REVIEW" . ,red)
-;;               ("DEPRECATED" . ,yellow)))))
-;;   (add-hook 'ef-themes-post-load-hook #'sthenno/ef-themes-hl-todo-faces))
-
 ;;; Deletions
 
 ;; Delete selection if you insert
@@ -156,11 +120,12 @@ This disables syntax highlighting and auto-paring for such entries."
 ;; Edit multiple occurrences in the same way simultaneously using "C-;"
 (use-package iedit :ensure t)
 
-;;; Just like expand-region
-(use-package expreg
+;; Expand region, use it with shift-selection
+(use-package expand-region
   :ensure t
+  :config (setq expand-region-smart-cursor t)
   :bind ((:map global-map
-               ("C-<space>" . expreg-expand))))
+               ("S-SPC" . er/expand-region))))
 
 (provide 'init-editing-utils)
 ;;; init-editing-utils.el ends here.

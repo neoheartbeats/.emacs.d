@@ -23,7 +23,8 @@
 
   ;; Mapping colors
   (setq modus-themes-common-palette-overrides
-        `(
+        `((cursor red)
+
           ;; Make the mode line borderless
           (border-mode-line-active unspecified)
           (border-mode-line-inactive unspecified)
@@ -49,7 +50,7 @@
           (prose-done "#535353")
 
           ;; Matching parenthesis
-          (fg-paren-match fg-main)
+          (fg-paren-match green)
           (bg-paren-match unspecified)
 
           ;; Make code blocks more minimal
@@ -66,17 +67,25 @@
   ;; Load the enable the theme
   (modus-themes-load-theme 'modus-vivendi))
 
-(modus-themes-with-colors
-  (custom-set-faces
-   `(region ((t (:extend nil))))
-   `(mode-line ((t (:foreground "grey20" :background "grey90"))))
-   `(mode-line-inactive ((t (:background ,fg-dim))))
-   `(header-line ((t (:foreground "grey20" :background "grey90"))))))
-
-;; (setq-default mode-line-format '(""))
+(custom-set-faces
+ '(region ((t (:extend nil)))))
 
 (setq global-hl-line-sticky-flag t)
 (global-hl-line-mode 1)
+
+;;; Add paddings
+
+(use-package spacious-padding
+  :ensure t
+  :config (spacious-padding-mode 1))
+
+;;; Mode line
+
+(setq-default mode-line-compact t)
+
+;; Diminish some built-in modes
+
+(use-package eldoc :diminish)
 
 ;;; Parentheses
 
@@ -91,15 +100,17 @@
   :ensure t
   :demand t
   :config
-  (custom-set-faces                    ; Why why why why don't I dim you a lot, forever?
+  (custom-set-faces
    '(parenthesis ((t (:foreground "#535353")))))
   (global-paren-face-mode 1))
 
 ;; Hightlight parentheses dynamically surrounding point
 (use-package highlight-parentheses
   :ensure t
+  :diminish
   :config (global-highlight-parentheses-mode 1))
 
+
 ;;; Cursor faces
 
 (setopt cursor-type '(bar . 1))
@@ -107,20 +118,23 @@
 
 (blink-cursor-mode -1)
 
+
 ;;; Encodings
-;; Contrary to what many Emacs users have in their configs, you don't need more
-;; than this to make UTF-8 the default coding system:
+;; Contrary to what many Emacs users have in their configs, you don't need more than
+;; this to make UTF-8 the default coding system:
 (set-language-environment "UTF-8")
-;; ...but `set-language-environment' also sets `default-input-method', which is
-;; a step too opinionated.
+;; ...but `set-language-environment' also sets `default-input-method', which is a step
+;; too opinionated.
 (setq default-input-method nil)
 
+
 ;;; Font settings
 
-(set-face-attribute 'default nil :family "Triplicate OT" :height 140)
+(set-face-attribute 'default nil :family "Tempestypes" :height 140 :weight 'light)
+(set-face-attribute 'bold nil :family "Tempestypes" :weight 'regular)
 
 ;; No need for italic fonts
-(set-face-attribute 'italic nil :family 'unspecified)
+(set-face-italic 'italic nil)
 
 ;; Set up font for non-ascii fontset
 (set-fontset-font t 'big5                (font-spec :family "Noto Serif CJK SC"))
@@ -148,11 +162,11 @@
 (set-fontset-font t 'jisx0201                 (font-spec :family "Noto Serif CJK JP"))
 (set-fontset-font t 'kana                     (font-spec :family "Noto Serif CJK JP"))
 
-(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" nil 'append))
-(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'append)
+(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji") nil 'append)
+(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'prepend)
 
 ;; Make `fill-column-indicator' thinner
-(set-face-attribute 'fill-column-indicator nil :height 0.1)
+(set-face-attribute 'fill-column-indicator nil :height 0.1 :weight 'thin)
 
 ;; Ellipsis symbol
 (setq truncate-string-ellipsis " …")
