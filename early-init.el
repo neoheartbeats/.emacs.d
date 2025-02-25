@@ -89,7 +89,7 @@ and other temporary data that Emacs generates during operation."
                 (width . 120)
                 (height . 60)
 
-                ;; (alpha-background . 60)
+                (alpha-background . 60)
 
                 ;; macOS-specific titlebar settings
                 (ns-transparent-titlebar . t)
