@@ -39,4 +39,5 @@
   (yas-global-mode 1))
 
 (provide 'init-temp)
-;;; init-temp.el ends here.
+
+;;; init-temp.el ends here

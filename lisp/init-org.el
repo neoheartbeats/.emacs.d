@@ -159,8 +159,8 @@
   (add-hook 'org-mode-hook #'org-modern-mode))
 
 ;; External settings for `org-modern'
-(setq org-ellipsis "")                  ; …
-;; (set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
+(setq org-ellipsis " …")                ; …
+(set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
 
 (setq org-use-property-inheritance t)
 (setq org-auto-align-tags nil)
@@ -482,5 +482,6 @@ boundaries with possible narrowing."
                              '((emacs-lisp . t)
                                (python . t)))
 
-;;; _
 (provide 'init-org)
+
+;;; init-org.el ends here

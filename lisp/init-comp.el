@@ -408,5 +408,6 @@
               ("<up>"     . corfu-previous)
               ("<escape>" . corfu-quit)))
 
-;;; _
 (provide 'init-comp)
+
+;;; init-comp.el ends here

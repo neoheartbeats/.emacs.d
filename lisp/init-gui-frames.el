@@ -73,6 +73,16 @@
 (setq global-hl-line-sticky-flag t)
 (global-hl-line-mode 1)
 
+;; (use-package col-highlight
+;;   :load-path "~/.emacs.d/site-lisp/col-highlight/"
+;;   :config
+;;   (custom-set-faces
+;;    '(col-highlight ((t (:background "#1e1e1e")))))
+;;   (add-hook 'text-mode-hook #'(lambda ()
+;;                                 (column-highlight-mode 1)))
+;;   (add-hook 'prog-mode-hook #'(lambda
+;;                                 (column-highlight-mode 1))))
+
 ;;; Add paddings
 
 (use-package spacious-padding
@@ -165,6 +175,49 @@
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji") nil 'append)
 (set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'append)
 
+;; Define the ligation dictionary
+;; Define the ligation dictionary
+(defun sthenno/ligation-setup ()
+  (let ((composition-table (make-char-table nil)))
+    (dolist
+        (char-regexp-replacement
+         `((33  . ".\\(?:\\(==\\|!==\\|!=\\|!===\\)\\|[!=]\\)")
+           (35  . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+           (40  . ".\\(?:(\\*\\|[(*]\\)")
+           (41  . ".\\(?:\\*)\\|[)*]\\)")
+           (42  . ".\\(?:\\*/\\|\\*+\\|\\*>\\|<\\*>\\|<\\*\\|=\\*\\|\\+=\\)")
+           (43  . ".\\(?:\\+\\+\\|\\+\\+\\+\\)")
+           (45  . ,(concat ".\\(?:-->\\|->\\|->>\\|--\\|---\\|->-\\|<-\\|<--\\|"
+                           "<---\\|<<-\\|-<\\|-<<\\|<->\\|<-->\\|<--->\\|"
+                           "<---->\\||-\\|-\\|[<>|~-]\\)"))
+           (46  . ".\\(?:\\.[.<]\\|<\\.\\|<\\.[>]\\|\\.>\\|[.:<-]\\)")
+           (47  . ".\\(?:\\*/\\|//\\|/\\\\\\|\\\\/\\|/>\\|</\\|</>\\|[*/>]\\)")
+           (58  . ".\\(?::::\\|::\\|:=\\|<:\\|=:\\|:>\\|[:]\\)")
+           (60  . ,(concat ".\\(?:<!--\\|<!---\\|<--\\|<---\\|<----\\|<<-\\|<-\\|"
+                           "<=\\|<==\\|<===\\|<====\\|<<=\\|=<\\|=<<\\|<=>\\|"
+                           "<==>\\|<===>\\|<====>\\|<>\\|<\\*\\|<\\*>\\|<|\\|"
+                           "<|>\\|<\\.\\|<\\.[>]\\|[<|.-]\\)"))
+           (61  . ,(concat ".\\(?:=>\\|=>>\\|==>\\|===>\\|=>-\\|==\\|===\\|!==\\|"
+                           "!===\\|<=>\\|<==>\\|<===>\\|<====>\\|=<\\|=<<\\|"
+                           "=<=\\|=\\*\\|[=>]\\)"))
+           (62  . ,(concat ".\\(?:->\\|->>\\|-->\\|--->\\|->-\\|>>\\|>-\\|>>-\\|"
+                           ">=\\|>==\\|>===\\|>>=\\|\\*>\\||>\\|\\.>\\|"
+                           "[>=.-|]\\)"))
+           (63  . ".\\(?:\\?\\?\\|[?]\\)")
+           (91  . ".\\(?:\\[|\\|[\\[]\\)")
+           (92  . ".\\(?:\\\\\\\\\\|\\\\/\\|[\\\\]\\)")
+           (93  . ".\\(?:|]\\|[\\]]\\)")
+           (95  . ".\\(?:__\\|[_]\\)")
+           (123 . ".\\(?:{|\\|[{]\\)")
+           (124 . ".\\(?:<|>\\||>\\|<|\\||]\\|\\[|\\|{|\\||\\}\\||\\-\\|\\-|\\|[|]\\)")
+           (125 . ".\\(?:|\\}\\|[}]\\)")
+           (126 . ".\\(?:<~~\\|~~>\\|[~]\\)")))
+      (set-char-table-range composition-table (car char-regexp-replacement)
+                            `([,(cdr char-regexp-replacement) 0 font-shape-gstring])))
+    (set-char-table-parent composition-table composition-function-table)
+    (setq composition-function-table composition-table)))
+(add-hook 'after-init-hook #'sthenno/ligation-setup)
+
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1 :weight 'thin)
 
@@ -172,4 +225,5 @@
 (setq truncate-string-ellipsis " …")
 
 (provide 'init-gui-frames)
-;;; init-gui-frames.el ends here.
+
+;;; init-gui-frames.el ends here

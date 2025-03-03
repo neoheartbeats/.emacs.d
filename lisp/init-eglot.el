@@ -140,25 +140,90 @@ Looks for .venv directory in project root and activates the Python interpreter."
   :ensure t
   :config (add-hook 'python-ts-mode-hook 'ruff-format-on-save-mode))
 
+;;; AI
+
+(use-package gptel
+  :ensure t
+  :config
+  (setq gptel-default-mode #'org-mode)
+
+  ;; System messages
+  (setq gptel-directives
+        '((default . "You are Sthenno. You are a helpful assistant living in Emacs. Respond concisely.")))
+
+  ;; Generation options
+  (setq gptel-max-tokens 1024
+        gptel-temperature 0.70)
+
+  ;; Use the mode-line to display status info
+  (setq gptel-use-header-line nil)
+
+  ;; Use OpenAI as the default backend
+  ;;
+  (defun sthenno/gptel-openai-backend--host (protocol host key)
+    "Make a function to initialize an OpenAI backend using the given HOST."
+    `(lambda (model)
+       (gptel-make-openai model
+         :protocol ,protocol
+         :host ,host
+         :key ,key
+         :stream t
+         :models `(,model))))
+
+  (defun sthenno/gptel-backend--localhost (model)
+    "Initialize an OpenAI backend using localhost and the given MODEL."
+    (funcall (sthenno/gptel-openai-backend--host "http" "192.168.100.127:8000" "sk-tmp")
+             model))
+
+  ;; Setup the model
+  (let* ((model "miscii-14b-0218")
+         (backend (sthenno/gptel-backend--localhost model)))
+    (setq gptel-model model
+          gptel-backend backend))
+
+  ;; UI
+  ;;
+  ;; Scroll automatically as the response is inserted
+  (add-hook 'gptel-post-stream-hook #'gptel-auto-scroll)
+
+  ;; Move to the next prompt after the response is inserted
+  (add-hook 'gptel-post-response-functions #'gptel-end-of-response)
+
+  ;; Functions of the `gptel' buffer
+  (defun sthenno/gptel-to-buffer ()
+    "Open the gptel buffer."
+    (interactive)
+    (let ((buff "*LLM*"))
+      (gptel buff)
+      (turn-on-visual-line-mode)
+      (diminish 'visual-line-mode)
+      (switch-to-buffer buff)))
+
+  :bind ((:map global-map
+               ("s-p" . sthenno/gptel-to-buffer))
+         (:map gptel-mode-map
+               ("s-<return>" . gptel-send))))
+
 ;;; Teminal support
 
 ;; (use-package vterm :ensure t)
 
 ;;; GitHub Copilot
 
-;; (use-package copilot
-;;   :vc (copilot
-;;        :url "https://github.com/copilot-emacs/copilot.el"
-;;        :branch "main")
-;;   :ensure t
-;;   :init (setq copilot-node-executable "/opt/homebrew/bin/node")
-;;   :bind ((:map prog-mode-map
-;;                ("C-x c" . copilot-mode))
-;;          (:map copilot-completion-map
-;;                ("TAB"      . copilot-accept-completion)
-;;                ("<tab>"    . copilot-accept-completion)
-;;                ("<right>" . copilot-accept-completion)
-;;                ("<escape>" . copilot-clear-overlay))))
+(use-package copilot
+  :vc (copilot
+       :url "https://github.com/copilot-emacs/copilot.el"
+       :branch "main")
+  :ensure t
+  :init (setq copilot-node-executable "/opt/homebrew/bin/node")
+  :bind ((:map prog-mode-map
+               ("C-x c" . copilot-mode))
+         (:map copilot-completion-map
+               ("TAB"      . copilot-accept-completion)
+               ("<tab>"    . copilot-accept-completion)
+               ("<right>" . copilot-accept-completion)
+               ("<escape>" . copilot-clear-overlay))))
 
 (provide 'init-eglot)
-;;; init-eglot.el ends here.
+
+;;; init-eglot.el ends here

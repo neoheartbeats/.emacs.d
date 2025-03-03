@@ -30,16 +30,17 @@
 (keymap-global-set "M-<down>" #'forward-paragraph)
 (keymap-global-set "M-<up>"   #'backward-paragraph)
 
-;;; Fill columns
+;; Fill columns
+;;
 (global-display-fill-column-indicator-mode 1)
 
-;;; Display line numbers
-
+;; Display line numbers
+;;
 (setq-default display-line-numbers-width 4)
 (global-display-line-numbers-mode 1)
 
-;;; Indentations
-
+;; Indentations
+;;
 (defun sthenno/buffer-format ()
   "Format the current buffer using indentation."
   (interactive)
@@ -128,4 +129,5 @@ This disables syntax highlighting and auto-paring for such entries."
                ("S-SPC" . er/expand-region))))
 
 (provide 'init-editing-utils)
-;;; init-editing-utils.el ends here.
+
+;;; init-editing-utils.el ends here

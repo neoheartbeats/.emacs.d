@@ -1,4 +1,4 @@
-;;; init-system.e.el --- Configs specific to macOS -*- lexical-binding: t; -*-
+;;; init-system.el --- Configs specific to macOS -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2025 Sthenno <sthenno@sthenno.com>
 
@@ -29,13 +29,6 @@
 (keymap-global-set "s-r" #'restart-emacs)
 (keymap-global-set "s-z" #'undo)
 (keymap-global-set "s-d" #'find-file)
-
-;;; To use a familier undo-redo mechanism
-
-(use-package vundo
-  :ensure t
-  :demand t
-  :config (keymap-global-set "C-z" #'vundo))
 
 (keymap-set emacs-lisp-mode-map "C-c C-c" #'(lambda ()
                                               (interactive)
@@ -107,7 +100,6 @@ Activate again to undo this. If the window changes before then, the undo expires
   :init
   (setq use-short-answers t)
 
-  (setq auto-hscroll-mode 'current-line)
   (setq mark-even-if-inactive nil)
   (setq ring-bell-function 'ignore)
   (setq require-final-newline t)
@@ -115,13 +107,6 @@ Activate again to undo this. If the window changes before then, the undo expires
   (setq-default fill-column 88)
   (setq-default tab-width 4)
   (setq-default indent-tabs-mode nil)
-
-  ;; Still need time to figure out if this has any side-effects
-  (setq auto-save-default nil)
-  (setq save-silently t)
-
-  ;; Real auto-save
-  (auto-save-visited-mode -1)
 
   ;; advice.el
   (setq ad-redefinition-action 'accept)
@@ -154,7 +139,6 @@ Activate again to undo this. If the window changes before then, the undo expires
   ;; bytecomp.el
   (setq byte-compile-verbose nil)
 
-  ;; warnings.el
   (setq warning-minimum-log-level :error)
 
   ;; enable all commands
@@ -170,6 +154,12 @@ Activate again to undo this. If the window changes before then, the undo expires
         scroll-margin 0
         scroll-conservatively 105)
   (pixel-scroll-precision-mode 1)
+
+  ;; Long lines
+  (setq-default truncate-lines t)
+  (setq auto-hscroll-mode 'current-line)
+  (global-visual-wrap-prefix-mode 1)
+
 
   ;; dired.el
   (setq dired-auto-revert-buffer #'dired-directory-changed-p)
@@ -218,5 +208,6 @@ Activate again to undo this. If the window changes before then, the undo expires
 (keymap-global-set "s-<right>" #'sthenno/cycle-to-next-buffer)
 (keymap-global-set "s-<left>"  #'sthenno/cycle-to-previous-buffer)
 
-;;; _
 (provide 'init-system)
+
+;;; init-system.el ends here

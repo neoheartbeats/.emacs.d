@@ -30,5 +30,6 @@
   :bind (:map global-map
               ("M-/" . xref-find-references)))
 
-;;; _
 (provide 'init-projects)
+
+;;; init-projects.el ends here
