@@ -176,7 +176,7 @@ Looks for .venv directory in project root and activates the Python interpreter."
              model))
 
   ;; Setup the model
-  (let* ((model "miscii-14b-0218")
+  (let* ((model "tempestissimo-14b-0309")
          (backend (sthenno/gptel-backend--localhost model)))
     (setq gptel-model model
           gptel-backend backend))
@@ -189,6 +189,13 @@ Looks for .venv directory in project root and activates the Python interpreter."
   ;; Move to the next prompt after the response is inserted
   (add-hook 'gptel-post-response-functions #'gptel-end-of-response)
 
+  ;; Org mode specific options
+  ;;
+  ;; Use the lineage of the current heading as the context for gptel in Org buffers.
+  (setq gptel-org-branching-context t)
+  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "@user\n")
+  (setf (alist-get 'org-mode gptel-response-prefix-alist) "@assistant\n")
+
   ;; Functions of the `gptel' buffer
   (defun sthenno/gptel-to-buffer ()
     "Open the gptel buffer."
@@ -200,7 +207,8 @@ Looks for .venv directory in project root and activates the Python interpreter."
       (switch-to-buffer buff)))
 
   :bind ((:map global-map
-               ("s-p" . sthenno/gptel-to-buffer))
+               ("s-p" . sthenno/gptel-to-buffer)
+               ("s-<return>" . gptel-send))
          (:map gptel-mode-map
                ("s-<return>" . gptel-send))))
 
@@ -223,6 +231,14 @@ Looks for .venv directory in project root and activates the Python interpreter."
                ("<tab>"    . copilot-accept-completion)
                ("<right>" . copilot-accept-completion)
                ("<escape>" . copilot-clear-overlay))))
+
+
+;;; Experimental
+(use-package lean4-mode
+  :commands lean4-mode
+  :vc (
+       :url "https://github.com/leanprover-community/lean4-mode.git"
+       :rev :last-release))
 
 (provide 'init-eglot)
 

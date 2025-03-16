@@ -26,7 +26,7 @@
       org-startup-with-latex-preview t)
 
 ;; Fold titles by default
-;; (setq org-startup-folded 'content)
+(setq org-startup-folded 'content)
 
 ;;; Install AUCTeX
 (use-package tex :ensure auctex)
@@ -63,6 +63,7 @@
                                  ("" "amsmath"   t)
                                  ("" "amssymb"   t)
                                  ("" "siunitx"   t)
+                                 ("" "ctexart" t)
 
                                  ;; Font packages
                                  ("libertinus" "newtx" t)
@@ -98,7 +99,9 @@
                  (string-match
                   (regexp-quote physics2-preamble) org-latex-preview-preamble))
       (setq org-latex-preview-preamble (concat (or org-latex-preview-preamble "")
-                                               "\n" physics2-preamble)))))
+                                               "\n" physics2-preamble
+                                               "\\DeclareMathOperator*{\\argmax}{arg\\,max}"
+                                               "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))))
 
 (add-hook 'after-init-hook #'sthenno/org-latex-preview-preamble-setup)
 
@@ -196,30 +199,7 @@
         org-display-remote-inline-images 'cache)
 
 (defun sthenno/org-display-inline-images (&optional include-linked refresh beg end)
-  "Display inline images.
-
-An inline image is a link which follows either of these conventions:
-
-  1. Its path is a file with an extension matching return value from
-     `image-file-name-regexp' and it has no contents.
-
-  2. Its description consists in a single link of the previous type. In
-     this case, that link must be a well-formed plain or angle link,
-     i.e., it must have an explicit \"file\" or \"attachment\" type.
-
-Equip each image with the key-map `image-map'.
-
-When optional argument INCLUDE-LINKED is non-nil, also links with a text
-description part will be inlined. This can be nice for a quick look at
-those images, but it does not reflect what exported files will look
-like.
-
-When optional argument REFRESH is non-nil, refresh existing images
-between BEG and END. This will create new image displays only if
-necessary.
-
-BEG and END define the considered part. They default to the buffer
-boundaries with possible narrowing."
+  "Display inline images."
   (interactive "P")
   (when (display-graphic-p)
     (when refresh
@@ -234,7 +214,7 @@ boundaries with possible narrowing."
                                              org-link-abbrev-alist)))
                (file-types-re
                 (format "\\[\\[\\(?:file%s:\\|attachment:\\|[./~]\\)\\|\\]
-\\[\\(<?\\(?:file\\|attachment\\):\\)"
+                            \\[\\(<?\\(?:file\\|attachment\\):\\)"
                         (if (not link-abbrevs) ""
                           (concat "\\|" (regexp-opt link-abbrevs))))))
           (while (re-search-forward file-types-re end t)
@@ -333,12 +313,7 @@ boundaries with possible narrowing."
 ;;; The Zettlekasten note-taking system by Denote
 (use-package denote
   :ensure t
-  :init
-
-  ;; Hooks
-  (add-hook 'emacs-startup-hook #'denote-journal-extras-new-or-existing-entry)
-  (add-hook 'dired-mode-hook #'denote-dired-mode)
-
+  :demand t
   :config
   (setopt denote-directory org-directory) ; Use `org-directory' as default
   (setopt denote-file-type 'org)
@@ -412,6 +387,27 @@ boundaries with possible narrowing."
 
   ;; Org subtrees
   (setopt denote-org-store-link-to-heading 'context)
+
+  ;; Init
+  (defun sthenno/denote-open-entry-today ()
+    (interactive)
+    (require 'denote-journal-extras)
+    (let* ((internal-date (current-time))
+           (files (denote-journal-extras--entry-today internal-date)))
+      (if (file-exists-p (car files))
+          (progn
+            (find-file (denote-journal-extras-path-to-new-or-existing-entry))
+            (end-of-buffer)
+            (save-buffer))
+        (progn
+          (denote-journal-extras-new-or-existing-entry)
+          (find-file (car files))
+          (end-of-buffer)
+          (save-buffer)))))
+
+  ;; Hooks
+  (add-hook 'emacs-startup-hook #'sthenno/denote-open-entry-today)
+  (add-hook 'dired-mode-hook #'denote-dired-mode)
 
   :bind ((:map global-map
                ("C-c o" . denote-open-or-create)

@@ -176,7 +176,6 @@
 (set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'append)
 
 ;; Define the ligation dictionary
-;; Define the ligation dictionary
 (defun sthenno/ligation-setup ()
   (let ((composition-table (make-char-table nil)))
     (dolist

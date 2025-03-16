@@ -45,3 +45,5 @@ recentf
 /site-lisp/gptel-tools/
 /site-lisp/mcp.el/
 /projectile-bookmarks.eld
+/.lsp-session-v1
+/.swp
