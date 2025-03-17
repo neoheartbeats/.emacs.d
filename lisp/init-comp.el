@@ -44,7 +44,7 @@
       echo-keystrokes-help t)        ; Display help info for keystrokes in the echo area
 
 ;; Support opening new minibuffers from inside existing minibuffers
-(setq-default enable-recursive-minibuffers t)
+;; (setq-default enable-recursive-minibuffers t)
 
 ;; Hide undefined commands in M-x
 (setq read-extended-command-predicate #'command-completion-default-include-p)
@@ -62,7 +62,7 @@
 
   ;; The basic completion style is specified as fallback in addition to orderless in
   ;; order to ensure that completion commands rely on dynamic completion tables
-  (setq-default completion-styles '(orderless flex basic)
+  (setq-default completion-styles '(orderless partial-completion basic)
                 completion-category-overrides '((file (styles partial-completion))
 
                                                 ;; There is further configuration for
@@ -104,42 +104,19 @@
                                                args)))
 
   ;; Hooks
-  (defun sthenno/vertico-on ()
-    (interactive)
-    (vertico-mode 1))
-
-  (add-hook 'after-init-hook #'sthenno/vertico-on)
+  (add-hook 'after-init-hook #'vertico-mode)
 
   :config
-  (setq vertico-count 10)
+  (setq vertico-count 15)
   (setq vertico-resize t)
   (setq vertico-scroll-margin 4)
   (setq vertico-cycle nil)
 
   ;; Add some simple indicator symbols here to make things clear
-  (setq vertico-count-format (cons "◈ %-6s ◈ " "%s of %s"))
+  (setq vertico-count-format (cons "[ %-6s ] " "%s of %s"))
 
   ;; Do not render italic fonts
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
-
-  ;; Multiform
-  ;;
-  (defun sthenno/vertico-muiltiform-on ()
-    (interactive)
-    (vertico-multiform-mode 1))
-
-  (defun sthenno/vertico-muiltiform-off ()
-    (interactive)
-    (vertico-multiform-mode -1))
-
-  (sthenno/vertico-muiltiform-on)
-
-  (add-to-list
-   'vertico-multiform-categories
-   '(file (sthenno/vertico-transform-functions . sthenno/vertico-highlight-directory)
-          (vertico-cycle . t)))
-
-  (add-to-list 'vertico-multiform-categories '(buffer (vertico-cycle . t)))
 
   ;; Correct file path when changed (tidy shadowed file names)
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
@@ -265,18 +242,23 @@
   (defun sthenno/capf-elisp ()
     (setq-local completion-at-point-functions
                 `(,(cape-capf-super
-                    #'elisp-completion-at-point
+                    (cape-capf-predicate
+                     #'elisp-completion-at-point
+                     #'(lambda (cand)
+                         (or (not (keywordp cand))
+                             (eq (char-after (car completion-in-region--data)) ?:))))
                     #'cape-dabbrev)
                   cape-file)
-                cape-dabbrev-min-length 4))
+                cape-dabbrev-min-length 2))
   (add-hook 'emacs-lisp-mode-hook #'sthenno/capf-elisp)
 
   (defun sthenno/capf-text ()
     (setq-local completion-at-point-functions
                 `(,(cape-capf-super
                     (cape-capf-prefix-length #'cape-dict 4)
-                    #'cape-elisp-block
-                    #'cape-dabbrev)
+                    #'cape-dabbrev
+                    #'cape-keyword)
+                  cape-elisp-block
                   cape-file)
                 cape-dabbrev-min-length 2))
   (add-hook 'text-mode-hook #'sthenno/capf-text)
@@ -318,13 +300,10 @@
   (setq corfu-auto t
         corfu-auto-delay 0.125          ; Making this to 0 is too expensive
         corfu-auto-prefix 2)
-
   (setq corfu-count 8
         corfu-scroll-margin 4)
-
   (setq corfu-min-width 20
         corfu-max-width 40)
-
   (setq corfu-quit-at-boundary t
         corfu-separator ?\s             ; Use space
         corfu-quit-no-match 'separator  ; Don't quit if there is `corfu-separator'

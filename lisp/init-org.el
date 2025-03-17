@@ -19,25 +19,23 @@
 ;;; Code:
 
 ;;; Setup default directory
-(setq org-directory "~/Developer/sthenno-notebook/")
+(setq org-directory user-note-directory)
 
 ;;; Org Mode buffer init behaviors
-(setq org-startup-with-inline-images t
+(setq org-startup-with-link-previews t
       org-startup-with-latex-preview t)
 
 ;; Fold titles by default
-(setq org-startup-folded 'content)
+;; (setq org-startup-folded 'content)
 
 ;;; Install AUCTeX
 (use-package tex :ensure auctex)
 
 ;;; Use CDLaTeX to improve editing experiences
-
-;; This is temporarily disabled and replaced by `tempel'
-
-;; (use-package cdlatex
-;;   :ensure t
-;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+(use-package cdlatex
+  :ensure t
+  :diminish (org-cdlatex-mode)
+  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 ;; Default LaTeX preview image directory
 (setq org-preview-latex-image-directory
@@ -49,12 +47,11 @@
 (add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
 
 ;; Preview functions
-
 (defun sthenno/org-preview-fragments ()
   (interactive)
   (call-interactively 'org-latex-preview-clear-cache)
   (org-latex-preview 'buffer)
-  (org-redisplay-inline-images))
+  (org-link-preview-refresh))
 (bind-keys :map org-mode-map
            ("C-c p" . sthenno/org-preview-fragments))
 
@@ -63,7 +60,6 @@
                                  ("" "amsmath"   t)
                                  ("" "amssymb"   t)
                                  ("" "siunitx"   t)
-                                 ("" "ctexart" t)
 
                                  ;; Font packages
                                  ("libertinus" "newtx" t)
@@ -102,7 +98,6 @@
                                                "\n" physics2-preamble
                                                "\\DeclareMathOperator*{\\argmax}{arg\\,max}"
                                                "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))))
-
 (add-hook 'after-init-hook #'sthenno/org-latex-preview-preamble-setup)
 
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
@@ -114,7 +109,7 @@
   (plist-put org-latex-preview-appearance-options :scale factor)
   (plist-put org-latex-preview-appearance-options :zoom  factor))
 
-(setopt org-latex-preview-process-default 'dvisvgm)
+(setq org-latex-preview-process-default 'dvisvgm)
 (let ((dvisvgm (alist-get 'dvisvgm org-latex-preview-process-alist))
       (libgs "/opt/homebrew/opt/ghostscript/lib/libgs.dylib"))
   (plist-put dvisvgm :image-converter
@@ -126,55 +121,36 @@
                         " --bbox=preview -v4 -o %B-%%9p.svg %f"))))
 
 ;;; Modern Org Mode theme
-(use-package org-modern
-  :ensure t
-  :config
-  (setopt org-modern-star 'replace
-          org-modern-replace-stars '("§")
-          org-modern-hide-stars "§")
-  (setopt org-modern-list '((?- . "•")))
-  (setopt org-modern-checkbox '((?X  . "􀃰")
-                                (?-  . "􀃞")
-                                (?\s . "􀂒")))
-  (setopt org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
-  (setopt org-modern-block-fringe nil)
-  ;; (modus-themes-with-colors
-  ;;   (custom-set-faces
-  ;;    `(org-modern-block-name ((t ( :height 0.8
-  ;;                                  :foreground ,blue-faint
-  ;;                                  :background ,bg-main
-  ;;                                  :box t))))))
+;; (use-package org-modern
+;;   :ensure t
+;;   :config
+;;   (setq org-modern-list '((?- . "•")))
+;;   ;; (setq org-modern-checkbox '((?X  . "􀃰")
+;;   ;;                             (?-  . "􀃞")
+;;   ;;                             (?\s . "􀂒")))
+;;   (setq org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
+;;   (setq org-modern-block-fringe nil)
+;;   (setq org-modern-block-name
+;;         '((t . t)
+;;           ;; ("src" .  ("In[*]:" "_"))
+;;           ))
+;;   ;; Hooks
+;;   (add-hook 'org-mode-hook #'org-modern-mode))
 
-  (setq org-modern-block-name
-        '((t . t)
-          ("src" .  ("In[*]:=" "_"))))
-
-  (defun sthenno/org-modern-spacing ()
-    "Adjust line-spacing for `org-modern' to correct svg display."
-
-    ;; FIXME: This may not set properly
-    (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.20)
-                                   (t nil))))
-  (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
-
-
-  ;; Hooks
-  (add-hook 'org-mode-hook #'org-modern-mode))
+;; (defun sthenno/org-modern-spacing ()
+;;   "Adjust line-spacing for `org-modern' to correct svg display."
+;;   (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.20)
+;;                                  (t nil))))
+;; (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
 
 ;; External settings for `org-modern'
-(setq org-ellipsis " …")                ; …
+(setq org-ellipsis "…")
 (set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
 
 (setq org-use-property-inheritance t)
 (setq org-auto-align-tags nil)
 (setq org-tags-column 0)
-(setq org-hide-emphasis-markers nil)
-
-;; Always add the checkbox when `org-insert-item' is called
-;; (define-advice org-insert-item
-;;     (:filter-args (args) sthenno/use-checkbox)
-;;   "Force CHECKBOX to t."
-;;   (list t))
+(setq org-hide-emphasis-markers t)
 
 ;; Use this with "C-<return>"
 (setq org-insert-heading-respect-content t)
@@ -193,117 +169,16 @@
 
 ;; Org images
 
-(setopt org-image-align 'center
-        org-image-actual-width t
-        org-image-max-width 0.4
-        org-display-remote-inline-images 'cache)
-
-(defun sthenno/org-display-inline-images (&optional include-linked refresh beg end)
-  "Display inline images."
-  (interactive "P")
-  (when (display-graphic-p)
-    (when refresh
-      (org-remove-inline-images beg end)
-      (when (fboundp 'clear-image-cache) (clear-image-cache)))
-    (let ((end (or end (point-max))))
-      (org-with-point-at (or beg (point-min))
-        (let* ((case-fold-search t)
-               (file-extension-re (image-file-name-regexp))
-               (link-abbrevs (mapcar #'car
-                                     (append org-link-abbrev-alist-local
-                                             org-link-abbrev-alist)))
-               (file-types-re
-                (format "\\[\\[\\(?:file%s:\\|attachment:\\|[./~]\\)\\|\\]
-                            \\[\\(<?\\(?:file\\|attachment\\):\\)"
-                        (if (not link-abbrevs) ""
-                          (concat "\\|" (regexp-opt link-abbrevs))))))
-          (while (re-search-forward file-types-re end t)
-            (let* ((link (org-element-lineage
-                          (save-match-data (org-element-context))
-                          'link t))
-                   (linktype (org-element-property :type link))
-                   (inner-start (match-beginning 1))
-                   (path
-                    (cond
-                     ((not link) nil)
-                     ((or (not (org-element-contents-begin link))
-                          include-linked)
-                      (and (or (equal "file" linktype)
-                               (equal "attachment" linktype))
-                           (org-element-property :path link)))
-                     ((not inner-start) nil)
-                     (t
-                      (org-with-point-at inner-start
-                        (and (looking-at
-                              (if (char-equal ?< (char-after inner-start))
-                                  org-link-angle-re
-                                org-link-plain-re))
-                             (= (org-element-contents-end link)
-                                (match-end 0))
-                             (progn
-                               (setq linktype (match-string 1))
-                               (match-string 2))))))))
-              (when (and path (string-match-p file-extension-re path))
-                (let ((file (if (equal "attachment" linktype)
-                                (progn
-                                  (require 'org-attach)
-                                  (ignore-errors (org-attach-expand path)))
-                              (expand-file-name path))))
-                  (when file (setq file (substitute-in-file-name file)))
-                  (when (and file (file-exists-p file))
-                    (let ((width (org-display-inline-image--width link))
-                          (align (org-image--align link))
-                          (old (get-char-property-and-overlay
-                                (org-element-begin link)
-                                'org-image-overlay)))
-                      (if (and (car-safe old) refresh)
-                          (image-flush (overlay-get (cdr old) 'display))
-                        (let ((image (org--create-inline-image file width)))
-                          (when image
-                            (let ((ov (make-overlay
-                                       (org-element-begin link)
-                                       (progn
-                                         (goto-char
-                                          (org-element-end link))
-                                         (unless (eolp) (skip-chars-backward " \t"))
-                                         (point)))))
-                              (image-flush image)
-                              (overlay-put ov 'display image)
-                              (overlay-put ov 'face 'default)
-                              (overlay-put ov 'org-image-overlay t)
-                              (overlay-put
-                               ov 'modification-hooks
-                               (list 'org-display-inline-remove-overlay))
-                              (when (boundp 'image-map)
-                                (overlay-put ov 'keymap image-map))
-                              (when align
-
-                                ;; Use fill-column to indicate the right-edge to display
-                                (let ((edge fill-column))
-                                  (overlay-put
-                                   ov 'before-string
-                                   (propertize
-                                    " " 'face 'default
-                                    'display
-                                    (pcase align
-
-                                      ;; Apply the edge for alignments
-                                      ("center" `(space :align-to (- (0.50 . ,edge)
-                                                                     (0.50 . ,image))))
-                                      ("right"  `(space :align-to (- ,edge
-                                                                     ,image))))))))
-                              (push ov org-inline-image-overlays))))))))))))))))
-(advice-add #'org-display-inline-images :override #'sthenno/org-display-inline-images)
-
+(setq org-image-align 'left
+      org-image-actual-width '(420)
+      org-image-max-width 'fill-column)
 (setq org-yank-dnd-method 'file-link)
 (setq org-yank-image-save-method (expand-file-name "images/" org-directory))
 
 ;;; Org Hyperlinks
-
 (setq org-return-follows-link t)
 
 ;;; Open file links in current window
-
 (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 
 ;;; Using shift-<arrow-keys> to select text
@@ -313,21 +188,17 @@
 ;;; The Zettlekasten note-taking system by Denote
 (use-package denote
   :ensure t
-  :demand t
   :config
-  (setopt denote-directory org-directory) ; Use `org-directory' as default
-  (setopt denote-file-type 'org)
-  (setopt denote-known-keywords '("stages" "silo" "research" "production")
-          denote-infer-keywords t)
-  (setopt denote-prompts '(title keywords))
-  (setopt denote-save-buffers t
-          denote-kill-buffers 'on-creation)
+  (setq denote-directory org-directory) ; Use `org-directory' as default
+  (setq denote-file-type 'org)
+  (setq denote-known-keywords '("silos" "papers" "production" "static" "marked")
+        denote-infer-keywords t)
+  (setq denote-prompts '(title keywords))
+  (setq denote-history-completion-in-prompts t)
+  (setq denote-save-buffers t
+        denote-kill-buffers t)
 
-  ;; Denote for journals
-  (setopt denote-journal-extras-directory
-          (expand-file-name "stages/" denote-directory)) ; Sub-directory for journal files
-  (setopt denote-journal-extras-keyword "stages")        ; Stages are journals
-  (setopt denote-journal-extras-title-format "%F")       ; Use ISO 8601 for titles
+  (setq denote-open-link-function 'find-file)
 
   ;; Do not include date, tags and ids in note files
   (setopt denote-org-front-matter "#+title: %1$s\n\n")
@@ -337,7 +208,7 @@
   ;; string of `denote-rename-buffer-format' for how to modify this.
   (denote-rename-buffer-mode 1)
 
-  (setopt denote-rename-buffer-format "[D] %t%b")
+  (setq denote-rename-buffer-format "[D] %T%b")
 
   ;; Do not issue any extra prompts. Always sort by the `title' file name component and
   ;; never do a reverse sort.
@@ -345,78 +216,123 @@
   (setq denote-sort-dired-default-sort-component 'title)
   (setq denote-sort-dired-default-reverse-sort t)
 
-  ;; Creating and linking notes
-  (defun sthenno/denote-link-or-create ()
-    "Improved note creation and linking for Denote."
-    (interactive)
-    (let ((denote-prompts nil)
-          (denote-kill-buffers nil))
-      (cond
-       ((use-region-p)
-        (let* ((denote-ignore-region-in-denote-command t)
-               (path (buffer-substring-no-properties (region-beginning)
-                                                     (region-end)))
-               (regexp (format "--%s" path))
-               (target (car (denote-directory-files regexp :omit-current))))
-          (if target
-              (progn
-                (denote-link target
-                             (denote-filetype-heuristics (buffer-file-name))
-                             (denote--link-get-description target))
-                (save-buffer)
-                (message "Note linked to: %s" target))
-            (progn
-              (save-window-excursion
-                (setq target (denote path '("notes"))))
-              (denote-link target
-                           (denote-filetype-heuristics (buffer-file-name))
-                           (denote--link-get-description target))
-              (save-buffer)
-              (find-file target)
-              (message "Note created at: %s" target)))))
-       ((and (not (use-region-p))
-             (org-at-heading-p))
-        (denote-org-extras-extract-org-subtree)
-        (save-buffer))
-       (t
-        (call-interactively #'denote-link-or-create))))
-    (run-hooks 'sthenno/denote-link-or-create-hook))
-
   ;; The `denote-rename-buffer-mode' can now show if a file has backlinks
-  (setopt denote-rename-buffer-backlinks-indicator " 􀄾")
-
-  ;; Org subtrees
-  (setopt denote-org-store-link-to-heading 'context)
-
-  ;; Init
-  (defun sthenno/denote-open-entry-today ()
-    (interactive)
-    (require 'denote-journal-extras)
-    (let* ((internal-date (current-time))
-           (files (denote-journal-extras--entry-today internal-date)))
-      (if (file-exists-p (car files))
-          (progn
-            (find-file (denote-journal-extras-path-to-new-or-existing-entry))
-            (end-of-buffer)
-            (save-buffer))
-        (progn
-          (denote-journal-extras-new-or-existing-entry)
-          (find-file (car files))
-          (end-of-buffer)
-          (save-buffer)))))
+  (setq denote-rename-buffer-backlinks-indicator "↔")
 
   ;; Hooks
-  (add-hook 'emacs-startup-hook #'sthenno/denote-open-entry-today)
   (add-hook 'dired-mode-hook #'denote-dired-mode)
 
   :bind ((:map global-map
-               ("C-c o" . denote-open-or-create)
-               ("C-c d" . denote-journal-extras-new-or-existing-entry))
+               ("s-o" . denote-open-or-create))
          (:map org-mode-map
-               ("s-l" . sthenno/denote-link-or-create)
-               ("s-i" . denote-insert-link)
-               ("s-b" . denote-backlinks)
-               ("s-r" . denote-region))))
+               ("s-l" . denote-link-or-create)
+               ("s-i" . denote-insert-link))))
+
+(use-package denote-journal
+  :ensure t
+  :config
+  (setq denote-journal-title-format 'day-date-month-year)
+  (setq denote-journal-directory (expand-file-name "stages/" user-note-directory))
+  (setq denote-journal-keyword '("stages")) ; Stages are journals
+
+  :bind ((:map global-map
+               ("C-c d" . denote-journal-new-or-existing-entry))))
+
+(use-package denote-org
+  :ensure t
+  :config
+  ;; Org subtrees
+  (setq denote-org-store-link-to-heading 'context))
+
+;; Do not include date, tags and ids in note files
+;; (setq denote-org-front-matter "#+title: %1$s\n\n"))
+
+;; Bookmarks
+;; (setq bookmark-use-annotations nil)
+
+;; (setq bookmark-bmenu-type-column-width 2)
+;; (setq bookmark-bmenu-toggle-filenames nil)
+;; (setq bookmark-menu-length 45)
+
+;; (setq bookmark-default-file
+;;       (expand-file-name ".bookmarks.bmk" org-directory))
+;; (setq bookmark-watch-bookmark-file 'silent)
+
+;; (defvar parameters
+;;   '(window-parameters . ((no-other-window . t)
+;;                          (no-delete-other-windows . t))))
+;; (setq fit-window-to-buffer-horizontally t)
+;; (setq window-resize-pixelwise t)
+
+;; (defun sthenno/bookmark-bmenu-on-left ()
+;;   (let ((buffer (bookmark-bmenu-get-buffer)))
+;;     (display-buffer-in-side-window
+;;      buffer `((side . left) (slot . -1)
+;;               (window-width . fit-window-to-buffer)
+;;               (window-width . 0.25)
+;;               (window-height . 20)
+;;               (preserve-size . (nil . t))
+;;               (dedicated . t) ,parameters))))
+
+;; (defun sthenno/denote-buffer-on-buttom ()
+;;   (let ((buffer (bookmark-bmenu-get-buffer)))
+;;     (display-buffer-in-side-window
+;;      buffer `((side . left) (slot . 1)
+;;               ;; (window-width . fit-window-to-buffer)
+;;               ;; (window-width . 0.25)
+;;               (preserve-size . (nil . t))
+;;               (dedicated . t) ,parameters))))
+
+(defun sthenno/denote-mark-buffer ()
+  (interactive)
+  (let* ((marked-text "marked")
+         (file (buffer-file-name (current-buffer)))
+         (buff (buffer-name (current-buffer)))
+         (keys (denote-extract-keywords-from-path file))
+         (marked-keys (cons marked-text keys))
+         (denote-rename-confirmations nil))
+    (denote-rename-file file 'keep-current marked-keys 'keep-current nil)))
+
+;; (defun sthenno/bookmark-set-buffer-name ()
+;;   (interactive)
+;;   (let ((name (buffer-name (current-buffer))))
+;;     (bookmark-set name nil)))
+
+;;; windows
+;; (setq
+;;  display-buffer-alist
+;;  `(("\\*Buffer List\\*" display-buffer-in-side-window
+;;     (side . top) (slot . 0) (window-height . fit-window-to-buffer)
+;;     (preserve-size . (nil . t)) ,parameters)
+;;    ("\\*Tags List\\*" display-buffer-in-side-window
+;;     (side . right) (slot . 0) (window-width . fit-window-to-buffer)
+;;     (preserve-size . (t . nil)) ,parameters)
+;;    ("\\*\\(?:help\\|grep\\|Completions\\)\\*"
+;;     display-buffer-in-side-window
+;;     (side . bottom) (slot . -1) (preserve-size . (nil . t))
+;;     ,parameters)
+;;    ("\\*\\(?:shell\\|compilation\\)\\*" display-buffer-in-side-window
+;;     (side . bottom) (slot . 1) (preserve-size . (nil . t))
+;;     ,parameters)))
+
+;; (setq window-sides-slots '(2 0 1 1))
+
+;; (setq display-buffer-alist
+;;       '(((lambda (buf _)
+;;            (with-current-buffer buf
+;;              (and buffer-file-name
+;;                   (boundp 'denote-directory)
+;;                   (string-prefix-p (expand-file-name denote-directory)
+;;                                    (file-name-directory buffer-file-name)))))
+;;          (display-buffer-reuse-window
+;;           display-buffer-same-window)
+;;          (reusable-frames . nil)
+;;          (inhibit-same-window . nil)
+;;          (frame-predicate . (lambda (frame)
+;;                               (string-match-p "Notes" (frame-parameter frame 'name)))))))
+
+
+;;; Keys
 
 (defun sthenno/get-sorted-note-files (directory)
   "Return a list of note files in DIRECTORY, sorted by name."

@@ -23,7 +23,7 @@
 
   ;; Mapping colors
   (setq modus-themes-common-palette-overrides
-        `((cursor red)
+        `((cursor green)
 
           ;; Make the mode line borderless
           (border-mode-line-active unspecified)
@@ -73,18 +73,7 @@
 (setq global-hl-line-sticky-flag t)
 (global-hl-line-mode 1)
 
-;; (use-package col-highlight
-;;   :load-path "~/.emacs.d/site-lisp/col-highlight/"
-;;   :config
-;;   (custom-set-faces
-;;    '(col-highlight ((t (:background "#1e1e1e")))))
-;;   (add-hook 'text-mode-hook #'(lambda ()
-;;                                 (column-highlight-mode 1)))
-;;   (add-hook 'prog-mode-hook #'(lambda
-;;                                 (column-highlight-mode 1))))
-
 ;;; Add paddings
-
 (use-package spacious-padding
   :ensure t
   :config (spacious-padding-mode 1))
@@ -120,7 +109,6 @@
   :diminish
   :config (global-highlight-parentheses-mode 1))
 
-
 ;;; Cursor faces
 
 (setopt cursor-type '(bar . 1))
@@ -128,16 +116,16 @@
 
 (blink-cursor-mode -1)
 
-
 ;;; Encodings
 ;; Contrary to what many Emacs users have in their configs, you don't need more than
 ;; this to make UTF-8 the default coding system:
-(set-language-environment "UTF-8")
+(set-language-environment 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-keyboard-coding-system 'utf-8-unix)
 ;; ...but `set-language-environment' also sets `default-input-method', which is a step
 ;; too opinionated.
 (setq default-input-method nil)
 
-
 ;;; Font settings
 
 (set-face-attribute 'default nil :family "Tempestypes" :height 140 :weight 'light)
@@ -146,76 +134,14 @@
 ;; No need for italic fonts
 (set-face-italic 'italic nil)
 
+;; Set up font for symbols
+(setq use-default-font-for-symbols nil)
+(set-fontset-font t 'symbol (font-spec :family "Tempestypes") nil 'prepend)
+
 ;; Set up font for non-ascii fontset
-(set-fontset-font t 'big5                (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'big5-hkscs          (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-1  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-15 (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-2  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-3  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-4  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-5  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-6  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-7  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-gb2312      (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-gbk         (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'kanbun              (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'bopomofo            (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'han                 (font-spec :family "Noto Serif CJK SC"))
-
-(set-fontset-font t 'japanese-jisx0208        (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0208-1978   (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0212        (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0213-1      (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0213-2      (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0213.2004-1 (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'jisx0201                 (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'kana                     (font-spec :family "Noto Serif CJK JP"))
-
-(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji") nil 'append)
-(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'append)
-
-;; Define the ligation dictionary
-(defun sthenno/ligation-setup ()
-  (let ((composition-table (make-char-table nil)))
-    (dolist
-        (char-regexp-replacement
-         `((33  . ".\\(?:\\(==\\|!==\\|!=\\|!===\\)\\|[!=]\\)")
-           (35  . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
-           (40  . ".\\(?:(\\*\\|[(*]\\)")
-           (41  . ".\\(?:\\*)\\|[)*]\\)")
-           (42  . ".\\(?:\\*/\\|\\*+\\|\\*>\\|<\\*>\\|<\\*\\|=\\*\\|\\+=\\)")
-           (43  . ".\\(?:\\+\\+\\|\\+\\+\\+\\)")
-           (45  . ,(concat ".\\(?:-->\\|->\\|->>\\|--\\|---\\|->-\\|<-\\|<--\\|"
-                           "<---\\|<<-\\|-<\\|-<<\\|<->\\|<-->\\|<--->\\|"
-                           "<---->\\||-\\|-\\|[<>|~-]\\)"))
-           (46  . ".\\(?:\\.[.<]\\|<\\.\\|<\\.[>]\\|\\.>\\|[.:<-]\\)")
-           (47  . ".\\(?:\\*/\\|//\\|/\\\\\\|\\\\/\\|/>\\|</\\|</>\\|[*/>]\\)")
-           (58  . ".\\(?::::\\|::\\|:=\\|<:\\|=:\\|:>\\|[:]\\)")
-           (60  . ,(concat ".\\(?:<!--\\|<!---\\|<--\\|<---\\|<----\\|<<-\\|<-\\|"
-                           "<=\\|<==\\|<===\\|<====\\|<<=\\|=<\\|=<<\\|<=>\\|"
-                           "<==>\\|<===>\\|<====>\\|<>\\|<\\*\\|<\\*>\\|<|\\|"
-                           "<|>\\|<\\.\\|<\\.[>]\\|[<|.-]\\)"))
-           (61  . ,(concat ".\\(?:=>\\|=>>\\|==>\\|===>\\|=>-\\|==\\|===\\|!==\\|"
-                           "!===\\|<=>\\|<==>\\|<===>\\|<====>\\|=<\\|=<<\\|"
-                           "=<=\\|=\\*\\|[=>]\\)"))
-           (62  . ,(concat ".\\(?:->\\|->>\\|-->\\|--->\\|->-\\|>>\\|>-\\|>>-\\|"
-                           ">=\\|>==\\|>===\\|>>=\\|\\*>\\||>\\|\\.>\\|"
-                           "[>=.-|]\\)"))
-           (63  . ".\\(?:\\?\\?\\|[?]\\)")
-           (91  . ".\\(?:\\[|\\|[\\[]\\)")
-           (92  . ".\\(?:\\\\\\\\\\|\\\\/\\|[\\\\]\\)")
-           (93  . ".\\(?:|]\\|[\\]]\\)")
-           (95  . ".\\(?:__\\|[_]\\)")
-           (123 . ".\\(?:{|\\|[{]\\)")
-           (124 . ".\\(?:<|>\\||>\\|<|\\||]\\|\\[|\\|{|\\||\\}\\||\\-\\|\\-|\\|[|]\\)")
-           (125 . ".\\(?:|\\}\\|[}]\\)")
-           (126 . ".\\(?:<~~\\|~~>\\|[~]\\)")))
-      (set-char-table-range composition-table (car char-regexp-replacement)
-                            `([,(cdr char-regexp-replacement) 0 font-shape-gstring])))
-    (set-char-table-parent composition-table composition-function-table)
-    (setq composition-function-table composition-table)))
-(add-hook 'after-init-hook #'sthenno/ligation-setup)
+(set-fontset-font t 'han   (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'kana  (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
 
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1 :weight 'thin)

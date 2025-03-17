@@ -102,9 +102,7 @@
 
 ;; Enable incremental syntax highlighting even during active editing
 (setq jit-lock-defer-multiline t)
-
 (setq jit-lock-antiblink-grace 0.5)     ; Reduce blinking during rapid scrolling
-
 (when (fboundp 'jit-lock-register)
   (setq jit-lock-stealth-nice 0.1))     ; Lower allocates more CPU time
 
@@ -137,34 +135,36 @@
       inhibit-default-init t
       initial-scratch-message nil)
 
-
 ;;; User configurations
 
 (setq user-full-name user-login-name
       user-mail-address "sthenno@sthenno.com")
 
-
 ;;; UI configurations
 
 ;; Disable unnecessary UI elements
 (dolist (mode '(scroll-bar-mode menu-bar-mode)) ; tool-bar-mode
-  (when (fboundp mode) (funcall mode -1)))
+  (when (fboundp mode)
+    (funcall mode -1)))
 
 ;; Custom Startup message
 (define-advice display-startup-echo-area-message
     (:override () sthenno-startup-message)
   "Display a custom startup message in the echo area."
-  (let ((icon "􂨖")
-        (text "Left to Bloom, Bloom to Death"))
-    (message "%s %s" icon text)))
+  (let ((text "Left to Bloom, Bloom to Death"))
+    (message "%s" text)))
 
-
+;; Open today's journal at startup
+(setq initial-buffer-choice #'(lambda ()
+                                (when (fboundp 'denote-journal-new-or-existing-entry)
+                                  (denote-journal-new-or-existing-entry))))
+
 ;;; Package Management
 
 ;; Store customizations
-(setq custom-file (expand-file-name "~/.emacs.d/custom.el"))
-(cond ((file-exists-p custom-file)
-       (load custom-file)))
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(when (file-exists-p custom-file)
+  (load custom-file))
 
 ;; Initialize package system
 (require 'package)

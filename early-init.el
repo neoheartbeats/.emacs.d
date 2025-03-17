@@ -61,6 +61,11 @@ and other temporary data that Emacs generates during operation."
   :type 'directory
   :group 'initialization)
 
+(defcustom user-note-directory (expand-file-name "~/Developer/stellanotes/")
+  "Base directory for Emacs note files."
+  :type 'directory
+  :group 'initialization)
+
 ;; Ensure cache directory exists to prevent runtime errors
 (make-directory user-cache-directory t)
 
