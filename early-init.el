@@ -61,7 +61,7 @@ and other temporary data that Emacs generates during operation."
   :type 'directory
   :group 'initialization)
 
-(defcustom user-note-directory (expand-file-name "~/Developer/stellanotes/")
+(defcustom user-note-directory (expand-file-name "~/org/")
   "Base directory for Emacs note files."
   :type 'directory
   :group 'initialization)
@@ -90,8 +90,8 @@ and other temporary data that Emacs generates during operation."
                                     ;; Set default frame size
                                     (width . 120)
                                     (height . 60)
-
-                                    (alpha-background . 60)
+                                    
+                                    ;; (alpha-background . 60)
 
                                     ;; macOS-specific titlebar settings
                                     (ns-transparent-titlebar . t)))

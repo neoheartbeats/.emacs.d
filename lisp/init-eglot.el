@@ -232,14 +232,6 @@ Looks for .venv directory in project root and activates the Python interpreter."
                ("<right>" . copilot-accept-completion)
                ("<escape>" . copilot-clear-overlay))))
 
-
-;;; Experimental
-(use-package lean4-mode
-  :commands lean4-mode
-  :vc (
-       :url "https://github.com/leanprover-community/lean4-mode.git"
-       :rev :last-release))
-
 (provide 'init-eglot)
 
 ;;; init-eglot.el ends here

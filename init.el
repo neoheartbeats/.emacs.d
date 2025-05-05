@@ -58,54 +58,6 @@
 ;; Suppress messages during initialization for cleaner startup
 (setq inhibit-message t)
 
-;;; JIT (Just-In-Time) configuration - Performance Optimizations
-
-(setq jit-lock-defer-time nil)          ; inhibit delay for high responsiveness
-(setq jit-lock-chunk-size (* 128 1024)) ; Process larger chunks at once
-
-;; Set background fontification parameters optimized for large files
-;;
-(setq jit-lock-stealth-time 2)       ; Start background processing after 2s of idle time
-(setq jit-lock-stealth-nice 0.2)     ; Allocate more CPU time to background processing
-(setq jit-lock-stealth-load 200)     ; Allow higher CPU load for background processing
-
-(setq jit-lock-stealth-verbose nil)     ; Disable messages during stealth fontification
-
-;; Adjust context-based fontification for performance
-;;
-(setq jit-lock-contextually t)          ; Enable contextual analysis
-(setq jit-lock-context-time 0.5)        ; Context analysis during longer idle periods
-(setq jit-lock-context-distance 5000)   ; Extended context distance for better accuracy
-
-;; Enhance performance for large buffers by disabling syntax-based fontification
-;;
-(defun sthenno/adjust-jit-lock-for-large-files ()
-  "Adjust JIT-lock parameters based on file size for optimal performance."
-  (let ((size (buffer-size)))
-    (cond
-     ((> size (* 50 1024 1024))         ; 50MB
-      (setq-local jit-lock-defer-time 0.5)
-      (setq-local jit-lock-contextually nil)
-      (setq-local font-lock-maximum-decoration 0))
-     ((> size (* 20 1024 1024))         ; 20MB
-      (setq-local jit-lock-defer-time 0.2)
-      (setq-local jit-lock-chunk-size 5000)
-      (setq-local font-lock-maximum-decoration 1))
-     ((> size (* 5 1024 1024))          ; 5MB
-      (setq-local jit-lock-defer-time 0.1)
-      (setq-local font-lock-maximum-decoration 2))
-     (t                                 ; Normal files
-      (setq-local jit-lock-defer-time nil)
-      (setq-local jit-lock-chunk-size (* 128 1024))
-      (setq-local font-lock-maximum-decoration 3)))))
-(add-hook 'find-file-hook #'sthenno/adjust-jit-lock-for-large-files)
-
-;; Enable incremental syntax highlighting even during active editing
-(setq jit-lock-defer-multiline t)
-(setq jit-lock-antiblink-grace 0.5)     ; Reduce blinking during rapid scrolling
-(when (fboundp 'jit-lock-register)
-  (setq jit-lock-stealth-nice 0.1))     ; Lower allocates more CPU time
-
 
 ;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions in
 ;; non-focused windows

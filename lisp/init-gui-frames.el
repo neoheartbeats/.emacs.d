@@ -128,20 +128,21 @@
 
 ;;; Font settings
 
-(set-face-attribute 'default nil :family "Tempestypes" :height 140 :weight 'light)
-(set-face-attribute 'bold nil :family "Tempestypes" :weight 'regular)
+(set-face-attribute 'default nil :family "Tempestypes" :height 140)
+;; (set-face-attribute 'bold nil :family "Tempestypes" :weight 'regular)
 
 ;; No need for italic fonts
 (set-face-italic 'italic nil)
 
 ;; Set up font for symbols
-(setq use-default-font-for-symbols nil)
-(set-fontset-font t 'symbol (font-spec :family "Tempestypes") nil 'prepend)
+;; (setq use-default-font-for-symbols nil)
+;; (set-fontset-font t 'symbol (font-spec :family "Tempestypes") nil 'prepend)
 
 ;; Set up font for non-ascii fontset
 (set-fontset-font t 'han   (font-spec :family "Noto Serif CJK SC"))
 (set-fontset-font t 'kana  (font-spec :family "Noto Serif CJK JP"))
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
+(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'prepend)
 
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1 :weight 'thin)

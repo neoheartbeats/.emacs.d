@@ -121,27 +121,27 @@
                         " --bbox=preview -v4 -o %B-%%9p.svg %f"))))
 
 ;;; Modern Org Mode theme
-;; (use-package org-modern
-;;   :ensure t
-;;   :config
-;;   (setq org-modern-list '((?- . "•")))
-;;   ;; (setq org-modern-checkbox '((?X  . "􀃰")
-;;   ;;                             (?-  . "􀃞")
-;;   ;;                             (?\s . "􀂒")))
-;;   (setq org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
-;;   (setq org-modern-block-fringe nil)
-;;   (setq org-modern-block-name
-;;         '((t . t)
-;;           ;; ("src" .  ("In[*]:" "_"))
-;;           ))
-;;   ;; Hooks
-;;   (add-hook 'org-mode-hook #'org-modern-mode))
+(use-package org-modern
+  :ensure t
+  :config
+  (setq org-modern-list '((?- . "•")))
+  (setq org-modern-checkbox '((?X  . "􀃰")
+                              (?-  . "􀃞")
+                              (?\s . "􀂒")))
+  (setq org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
+  (setq org-modern-block-fringe nil)
+  (setq org-modern-block-name
+        '((t . t)
+          ;; ("src" .  ("In[*]:" "_"))
+          ))
+  ;; Hooks
+  (add-hook 'org-mode-hook #'org-modern-mode))
 
-;; (defun sthenno/org-modern-spacing ()
-;;   "Adjust line-spacing for `org-modern' to correct svg display."
-;;   (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.20)
-;;                                  (t nil))))
-;; (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
+(defun sthenno/org-modern-spacing ()
+  "Adjust line-spacing for `org-modern' to correct svg display."
+  (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.20)
+                                 (t nil))))
+(add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
 
 ;; External settings for `org-modern'
 (setq org-ellipsis "…")
