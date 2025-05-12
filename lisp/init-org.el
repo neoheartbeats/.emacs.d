@@ -103,11 +103,11 @@
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
 
-(let ((factor (- (/ (face-attribute 'default :height)
-                    100.0)
-                 0.25)))
-  (plist-put org-latex-preview-appearance-options :scale factor)
-  (plist-put org-latex-preview-appearance-options :zoom  factor))
+;; (let ((factor (- (/ (face-attribute 'default :height)
+;;                     100.0)
+;;                  0.25)))
+;;   (plist-put org-latex-preview-appearance-options :scale factor)
+;;   (plist-put org-latex-preview-appearance-options :zoom  factor))
 
 (setq org-latex-preview-process-default 'dvisvgm)
 (let ((dvisvgm (alist-get 'dvisvgm org-latex-preview-process-alist))
@@ -132,7 +132,7 @@
   (setq org-modern-block-fringe nil)
   (setq org-modern-block-name
         '((t . t)
-          ;; ("src" .  ("In[*]:" "_"))
+          ("src" .  ("􀃥" "_"))
           ))
   ;; Hooks
   (add-hook 'org-mode-hook #'org-modern-mode))
@@ -231,7 +231,7 @@
 (use-package denote-journal
   :ensure t
   :config
-  (setq denote-journal-title-format 'day-date-month-year)
+  (setq denote-journal-title-format "%Y-%m-%d") ; Format yyyy-mm-dd
   (setq denote-journal-directory (expand-file-name "stages/" user-note-directory))
   (setq denote-journal-keyword '("stages")) ; Stages are journals
 

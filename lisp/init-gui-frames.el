@@ -23,8 +23,7 @@
 
   ;; Mapping colors
   (setq modus-themes-common-palette-overrides
-        `((cursor green)
-
+        `(
           ;; Make the mode line borderless
           (border-mode-line-active unspecified)
           (border-mode-line-inactive unspecified)
@@ -128,14 +127,13 @@
 
 ;;; Font settings
 
-(set-face-attribute 'default nil :family "Tempestypes" :height 140)
-;; (set-face-attribute 'bold nil :family "Tempestypes" :weight 'regular)
+(set-face-attribute 'default nil :family "Triplicate A Code" :height 140)
 
 ;; No need for italic fonts
 (set-face-italic 'italic nil)
 
 ;; Set up font for symbols
-;; (setq use-default-font-for-symbols nil)
+(setq use-default-font-for-symbols nil)
 ;; (set-fontset-font t 'symbol (font-spec :family "Tempestypes") nil 'prepend)
 
 ;; Set up font for non-ascii fontset
