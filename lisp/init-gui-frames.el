@@ -18,7 +18,6 @@
 
 (use-package modus-themes
   :ensure t
-  :demand t
   :config
 
   ;; Mapping colors
@@ -65,6 +64,12 @@
 
   ;; Load the enable the theme
   (modus-themes-load-theme 'modus-vivendi))
+
+;; (use-package ef-themes
+;;   :ensure t
+;;   :config
+;;   (mapc #'disable-theme custom-enabled-themes)
+;;   (load-theme 'ef-bio :no-confirm))
 
 (custom-set-faces
  '(region ((t (:extend nil)))))
@@ -127,7 +132,7 @@
 
 ;;; Font settings
 
-(set-face-attribute 'default nil :family "Triplicate A Code" :height 140)
+(set-face-attribute 'default nil :family "Tempestypes" :height 140)
 
 ;; No need for italic fonts
 (set-face-italic 'italic nil)

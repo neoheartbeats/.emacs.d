@@ -103,11 +103,11 @@
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
 
-;; (let ((factor (- (/ (face-attribute 'default :height)
-;;                     100.0)
-;;                  0.25)))
-;;   (plist-put org-latex-preview-appearance-options :scale factor)
-;;   (plist-put org-latex-preview-appearance-options :zoom  factor))
+(let ((factor (- (/ (face-attribute 'default :height)
+                    100.0)
+                 0.25)))
+  (plist-put org-latex-preview-appearance-options :scale factor)
+  (plist-put org-latex-preview-appearance-options :zoom  factor))
 
 (setq org-latex-preview-process-default 'dvisvgm)
 (let ((dvisvgm (alist-get 'dvisvgm org-latex-preview-process-alist))
@@ -392,7 +392,13 @@
 
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
-                               (python . t)))
+                               (python . t)
+                               (shell . t)
+                               (latex . t)))
+
+;; Specific `org-babel-python-command'
+(setq org-babel-perl-command
+      (expand-file-name "/functions/.venv/bin/python" org-directory))
 
 (provide 'init-org)
 

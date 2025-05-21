@@ -76,34 +76,32 @@
   (defun sthenno/python-venv ()
     "Activate Python environment managed by uv based on current
 project directory.
-Looks for .venv directory in project root and activates the Python interpreter."
+Looks for ‘.venv’ directory in project root and activates the Python interpreter."
     (interactive)
-    (let* ((project-root (project-root (project-current t)))
-           (venv-path (expand-file-name ".venv" project-root))
+    (let* ((pr (project-root (project-current t)))
+           (venv-path (expand-file-name ".venv" pr))
            (python-path (expand-file-name "bin/python" venv-path)))
       (if (file-exists-p python-path)
           (progn
             ;; Set Python interpreter path
             (setq python-shell-interpreter python-path)
 
-            ;; Update exec-path to include the venv's bin directory
+            ;; Update `exec-path' to include the venv’s bin directory
             (let ((venv-bin-dir (file-name-directory python-path)))
               (setq exec-path (cons venv-bin-dir
                                     (remove venv-bin-dir exec-path))))
 
-            ;; Update PATH environment variable
+            ;; Update PATH environment
             (setenv "PATH" (concat (file-name-directory python-path)
                                    path-separator
                                    (getenv "PATH")))
-
-            ;; Update VIRTUAL_ENV environment variable
             (setenv "VIRTUAL_ENV" venv-path)
 
             ;; Remove PYTHONHOME if it exists
             (setenv "PYTHONHOME" nil)
 
             (message "Activated UV Python environment at %s" venv-path))
-        (message "No UV Python environment found in %s" project-root))))
+        (message "No UV Python environment found in %s" pr))))
 
   (add-hook 'python-ts-mode-hook 'sthenno/python-venv)
 
@@ -149,7 +147,7 @@ Looks for .venv directory in project root and activates the Python interpreter."
 
   ;; System messages
   (setq gptel-directives
-        '((default . "You are Sthenno. You are a helpful assistant living in Emacs. Respond concisely.")))
+        '((default . "You are a helpful assistant living in Emacs. Respond concisely.")))
 
   ;; Generation options
   (setq gptel-max-tokens 1024
@@ -160,26 +158,17 @@ Looks for .venv directory in project root and activates the Python interpreter."
 
   ;; Use OpenAI as the default backend
   ;;
-  (defun sthenno/gptel-openai-backend--host (protocol host key)
-    "Make a function to initialize an OpenAI backend using the given HOST."
-    `(lambda (model)
-       (gptel-make-openai model
-         :protocol ,protocol
-         :host ,host
-         :key ,key
-         :stream t
-         :models `(,model))))
-
-  (defun sthenno/gptel-backend--localhost (model)
-    "Initialize an OpenAI backend using localhost and the given MODEL."
-    (funcall (sthenno/gptel-openai-backend--host "http" "192.168.100.127:8000" "sk-tmp")
-             model))
-
-  ;; Setup the model
-  (let* ((model "tempestissimo-14b-0309")
-         (backend (sthenno/gptel-backend--localhost model)))
-    (setq gptel-model model
-          gptel-backend backend))
+  (setq gptel-model 'claude37_sonnet
+        gptel-backend (gptel-make-openai "idealab"
+                        :protocol "https"
+                        :host "idealab.alibaba-inc.com/api/openai"
+                        :stream t
+                        :key (gptel-api-key-from-auth-source "idealab.alibaba-inc.com")
+                        :models '(qwen-max-latest
+                                  claude37_sonnet
+                                  o3-0416-global
+                                  o4-mini-0416-global
+                                  gemini-2.5-pro-preview-05-06)))
 
   ;; UI
   ;;
@@ -193,14 +182,14 @@ Looks for .venv directory in project root and activates the Python interpreter."
   ;;
   ;; Use the lineage of the current heading as the context for gptel in Org buffers.
   (setq gptel-org-branching-context t)
-  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "@user\n")
-  (setf (alist-get 'org-mode gptel-response-prefix-alist) "@assistant\n")
+  ;; (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "@user\n")
+  ;; (setf (alist-get 'org-mode gptel-response-prefix-alist) "@assistant\n")
 
   ;; Functions of the `gptel' buffer
   (defun sthenno/gptel-to-buffer ()
     "Open the gptel buffer."
     (interactive)
-    (let ((buff "*LLM*"))
+    (let ((buff "*gptel*"))
       (gptel buff)
       (turn-on-visual-line-mode)
       (diminish 'visual-line-mode)
@@ -218,19 +207,19 @@ Looks for .venv directory in project root and activates the Python interpreter."
 
 ;;; GitHub Copilot
 
-(use-package copilot
-  :vc (copilot
-       :url "https://github.com/copilot-emacs/copilot.el"
-       :branch "main")
-  :ensure t
-  :init (setq copilot-node-executable "/opt/homebrew/bin/node")
-  :bind ((:map prog-mode-map
-               ("C-x c" . copilot-mode))
-         (:map copilot-completion-map
-               ("TAB"      . copilot-accept-completion)
-               ("<tab>"    . copilot-accept-completion)
-               ("<right>" . copilot-accept-completion)
-               ("<escape>" . copilot-clear-overlay))))
+;; (use-package copilot
+;;   :vc (copilot
+;;        :url "https://github.com/copilot-emacs/copilot.el"
+;;        :branch "main")
+;;   :ensure t
+;;   :init (setq copilot-node-executable "/opt/homebrew/bin/node")
+;;   :bind ((:map prog-mode-map
+;;                ("C-x c" . copilot-mode))
+;;          (:map copilot-completion-map
+;;                ("TAB"      . copilot-accept-completion)
+;;                ("<tab>"    . copilot-accept-completion)
+;;                ("<right>" . copilot-accept-completion)
+;;                ("<escape>" . copilot-clear-overlay))))
 
 (provide 'init-eglot)
 
