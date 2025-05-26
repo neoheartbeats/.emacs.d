@@ -158,17 +158,20 @@ Looks for ‘.venv’ directory in project root and activates the Python interpr
 
   ;; Use OpenAI as the default backend
   ;;
-  (setq gptel-model 'claude37_sonnet
+  (setq gptel-model 'claude_opus4
         gptel-backend (gptel-make-openai "idealab"
                         :protocol "https"
                         :host "idealab.alibaba-inc.com/api/openai"
                         :stream t
                         :key (gptel-api-key-from-auth-source "idealab.alibaba-inc.com")
-                        :models '(qwen-max-latest
+                        :models '(Qwen3-32B
                                   claude37_sonnet
+                                  claude_opus4
+                                  claude_sonnet4
                                   o3-0416-global
                                   o4-mini-0416-global
-                                  gemini-2.5-pro-preview-05-06)))
+                                  gemini-2.5-pro-preview-05-06
+                                  gemini-2.5-flash-preview-05-20)))
 
   ;; UI
   ;;
@@ -182,14 +185,14 @@ Looks for ‘.venv’ directory in project root and activates the Python interpr
   ;;
   ;; Use the lineage of the current heading as the context for gptel in Org buffers.
   (setq gptel-org-branching-context t)
-  ;; (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "@user\n")
-  ;; (setf (alist-get 'org-mode gptel-response-prefix-alist) "@assistant\n")
+  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "=In[*]≔= ")
+  (setf (alist-get 'org-mode gptel-response-prefix-alist) "=Out[*]≔= ")
 
   ;; Functions of the `gptel' buffer
   (defun sthenno/gptel-to-buffer ()
     "Open the gptel buffer."
     (interactive)
-    (let ((buff "*gptel*"))
+    (let ((buff (concat "*" (symbol-name gptel-model) "*")))
       (gptel buff)
       (turn-on-visual-line-mode)
       (diminish 'visual-line-mode)
