@@ -65,12 +65,6 @@
   ;; Load the enable the theme
   (modus-themes-load-theme 'modus-vivendi))
 
-;; (use-package ef-themes
-;;   :ensure t
-;;   :config
-;;   (mapc #'disable-theme custom-enabled-themes)
-;;   (load-theme 'ef-bio :no-confirm))
-
 (custom-set-faces
  '(region ((t (:extend nil)))))
 
@@ -121,7 +115,8 @@
 (blink-cursor-mode -1)
 
 ;;; Encodings
-;; Contrary to what many Emacs users have in their configs, you don't need more than
+
+;; Contrary to what many Emacs users have in their configs, you don‘t need more than
 ;; this to make UTF-8 the default coding system:
 (set-language-environment 'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -137,15 +132,50 @@
 ;; No need for italic fonts
 (set-face-italic 'italic nil)
 
-;; Set up font for symbols
-(setq use-default-font-for-symbols nil)
-;; (set-fontset-font t 'symbol (font-spec :family "Tempestypes") nil 'prepend)
-
 ;; Set up font for non-ascii fontset
-(set-fontset-font t 'han   (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'kana  (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'big5                (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'big5-hkscs          (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-1  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-15 (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-2  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-3  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-4  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-5  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-6  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-cns11643-7  (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-gb2312      (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'chinese-gbk         (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'kanbun              (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'bopomofo            (font-spec :family "Noto Serif CJK SC"))
+(set-fontset-font t 'han                 (font-spec :family "Noto Serif CJK SC"))
+
+(set-fontset-font t 'japanese-jisx0208        (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'japanese-jisx0208-1978   (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'japanese-jisx0212        (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'japanese-jisx0213-1      (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'japanese-jisx0213-2      (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'japanese-jisx0213.2004-1 (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'jisx0201                 (font-spec :family "Noto Serif CJK JP"))
+(set-fontset-font t 'kana                     (font-spec :family "Noto Serif CJK JP"))
+
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
 (set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'prepend)
+
+;; Typographic ligatures
+(use-package ligature
+  :ensure t
+  :config
+  (ligature-set-ligatures
+   't '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"
+        "<---->" "<!--"
+        "<==" "<===" "<=" "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
+        "<====>" "<!---"
+        "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "===" "!=="
+        ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:"
+        "<******>" "++" "+++"))
+
+  ;; Enables ligature checks globally in all buffers
+  (global-ligature-mode 1))
 
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1 :weight 'thin)

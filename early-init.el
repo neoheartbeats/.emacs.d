@@ -88,10 +88,11 @@ and other temporary data that Emacs generates during operation."
                                     (horizontal-scroll-bars . nil)
 
                                     ;; Set default frame size
-                                    (width . 120)
+                                    (width . 125)
                                     (height . 60)
-                                    
+
                                     ;; (alpha-background . 60)
+                                    (alpha . (85 . 85))
 
                                     ;; macOS-specific titlebar settings
                                     (ns-transparent-titlebar . t)))
