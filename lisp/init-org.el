@@ -392,12 +392,10 @@
 
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
-                               (python . t)
-                               (shell . t)
-                               (latex . t)))
+                               (python . t)))
 
 ;; Specific `org-babel-python-command'
-(setq org-babel-perl-command
+(setq org-babel-python-command
       (expand-file-name "/functions/.venv/bin/python" org-directory))
 
 (provide 'init-org)
