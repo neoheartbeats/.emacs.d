@@ -120,10 +120,15 @@
                         ;; on my client.
                         " --bbox=preview -v4 -o %B-%%9p.svg %f"))))
 
-;;; Modern Org Mode theme
+;;; Modern Org mode theme
 (use-package org-modern
   :ensure t
   :config
+  (setq org-modern-star 'replace)
+  (let ((stars "􀄩"))
+    (setq org-modern-replace-stars stars)
+    (setq org-modern-hide-stars stars))
+  (setq org-modern-horizontal-rule nil)
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '((?X  . "􀃰")
                               (?-  . "􀃞")
@@ -132,8 +137,7 @@
   (setq org-modern-block-fringe nil)
   (setq org-modern-block-name
         '((t . t)
-          ("src" .  ("􀃥" "_"))
-          ))
+          ("src" .  ("􀃥" "􀃥"))))
   ;; Hooks
   (add-hook 'org-mode-hook #'org-modern-mode))
 
@@ -144,8 +148,8 @@
 (add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
 
 ;; External settings for `org-modern'
-(setq org-ellipsis "…")
-(set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
+(setq org-ellipsis " …")
+;; (set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
 
 (setq org-use-property-inheritance t)
 (setq org-auto-align-tags nil)
@@ -378,6 +382,8 @@
 (setq org-confirm-babel-evaluate nil)
 
 (setq org-src-preserve-indentation t
+      org-edit-src-content-indentation 0
+      org-edit-src-persistent-message nil
       org-src-fontify-natively t
       org-src-tab-acts-natively t
       org-src-window-setup 'current-window
@@ -388,6 +394,9 @@
 
 (setq org-edit-src-turn-on-auto-save t)
 
+(keymap-set org-mode-map "C-'" #'org-edit-special)
+(keymap-set org-src-mode-map "C-'" #'org-edit-src-exit)
+
 ;; Enable these languages for Org-Babel
 
 (org-babel-do-load-languages 'org-babel-load-languages
@@ -396,7 +405,7 @@
 
 ;; Specific `org-babel-python-command'
 (setq org-babel-python-command
-      (expand-file-name "/functions/.venv/bin/python" org-directory))
+      (expand-file-name "functions/.venv/bin/python" org-directory))
 
 (provide 'init-org)
 

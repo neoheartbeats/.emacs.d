@@ -23,7 +23,7 @@
 ;;
 
 ;; Prevent auto-composition of characters around point
-(setq composition-break-at-point t)
+;; (setq composition-break-at-point t)
 
 ;; Completion basics. See also `orderless'
 ;;
@@ -44,7 +44,7 @@
       echo-keystrokes-help t)        ; Display help info for keystrokes in the echo area
 
 ;; Support opening new minibuffers from inside existing minibuffers
-;; (setq-default enable-recursive-minibuffers t)
+(setq-default enable-recursive-minibuffers t)
 
 ;; Hide undefined commands in M-x
 (setq read-extended-command-predicate #'command-completion-default-include-p)
@@ -62,7 +62,8 @@
 
   ;; The basic completion style is specified as fallback in addition to orderless in
   ;; order to ensure that completion commands rely on dynamic completion tables
-  (setq-default completion-styles '(orderless partial-completion basic)
+  (setq-default completion-styles '(orderless basic)
+                completion-category-defaults nil
                 completion-category-overrides '((file (styles partial-completion))
 
                                                 ;; There is further configuration for
@@ -70,8 +71,17 @@
                                                 ;; `init-eglot'
                                                 (eglot      (styles orderless))
                                                 (eglot-capf (styles orderless))))
-  :config (setq-default orderless-matching-styles
-                        '(orderless-literal orderless-flex orderless-regexp)))
+  :config
+  (orderless-define-completion-style orderless-literal-only
+    (orderless-style-dispatchers nil)
+    (orderless-matching-styles '(orderless-literal)))
+  (defun sthenno/completion-style-corfu ()
+    (interactive)
+    (setq-local completion-styles '(orderless-literal-only basic)
+                completion-category-overrides nil
+                completion-category-defaults nil))
+  (setq-default orderless-matching-styles
+                '(orderless-literal orderless-flex)))
 
 ;; Sort candidates by `minibuffer-sort-by-history'
 (setopt completions-sort 'historical)
@@ -214,10 +224,10 @@
 
   ;; Ignore these for `dabbrev'
   (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
-
-  (add-to-list 'dabbrev-ignored-buffer-modes #'doc-view-mode)
-  (add-to-list 'dabbrev-ignored-buffer-modes #'pdf-view-mode)
-  (add-to-list 'dabbrev-ignored-buffer-modes #'tags-table-mode))
+  (add-to-list 'dabbrev-ignored-buffer-modes 'authinfo-mode)
+  (add-to-list 'dabbrev-ignored-buffer-modes 'doc-view-mode)
+  (add-to-list 'dabbrev-ignored-buffer-modes 'pdf-view-mode)
+  (add-to-list 'dabbrev-ignored-buffer-modes 'tags-table-mode))
 
 ;; Add extensions for the completion backend
 (use-package cape
@@ -298,21 +308,21 @@
                                        (global-corfu-mode 1)))
   :config
   (setq corfu-auto t
-        corfu-auto-delay 0.125          ; Making this to 0 is too expensive
-        corfu-auto-prefix 2)
+        corfu-auto-delay 0.05           ; Making this to 0 is too expensive
+        corfu-auto-prefix 1)
   (setq corfu-count 8
         corfu-scroll-margin 4)
   (setq corfu-min-width 20
         corfu-max-width 40)
-  (setq corfu-quit-at-boundary t
+  (setq corfu-quit-at-boundary 'separator
         corfu-separator ?\s             ; Use space
         corfu-quit-no-match 'separator  ; Don't quit if there is `corfu-separator'
                                         ; inserted
         corfu-preview-current 'insert   ; Preview first candidate. Insert on input if
                                         ; only one
         corfu-on-exact-match 'quit)
-
-  (setq corfu-cycle nil)
+  (setq corfu-cycle t)
+  (setq corfu-preselect 'directory)
 
   ;; Performance optimization
   ;;
@@ -320,40 +330,38 @@
     (setq-local corfu-auto nil)
     (corfu-mode 1)
     (keymap-set corfu-map "RET" #'corfu-send))
-
   (add-hook 'eshell-mode-hook #'sthenno/corfu-eshell-setup)
+
+  (add-hook 'corfu-mode-hook #'sthenno/completion-style-corfu)
 
   ;; Use special key to insert
   ;;
-  ;; Like first, but select the prompt if it is a directory
-  ;; (setq corfu-preselect 'directory)
-
   ;; Use convenient keys to insert candidates of `corfu--candidates'. Since the first
   ;; candidate is usually pre-selected, it is better to trigger `corfu--insert'
   ;; depending on different conditions.
   ;;
-  (defun sthenno/corfu-insert-key (key)
-    "Insert selected candidate in `corfu--candidates' and KEY."
+  ;; (defun sthenno/corfu-insert-key (key)
+  ;;   "Insert selected candidate in `corfu--candidates' and KEY."
 
-    ;; Check if `corfu--insert'
-    (let ((c (cond ((equal key "SPC") ?\s)
-                   (t (aref key 0)))))
-      (if (> corfu--index 0)
-          (progn
-            (corfu--insert 'finished)
+  ;;   ;; Check if `corfu--insert'
+  ;;   (let ((c (cond ((equal key "SPC") ?\s)
+  ;;                  (t (aref key 0)))))
+  ;;     (if (> corfu--index 0)
+  ;;         (progn
+  ;;           (corfu--insert 'finished)
 
-            ;; Check if insert key
-            (let ((p (or (not (char-after))
-                         (= (char-after) ?\s)
-                         (= (char-after) ?\n))))
-              (if p (insert c)
-                nil)))
-        (insert c))))
+  ;;           ;; Check if insert key
+  ;;           (let ((p (or (not (char-after))
+  ;;                        (= (char-after) ?\s)
+  ;;                        (= (char-after) ?\n))))
+  ;;             (if p (insert c)
+  ;;               nil)))
+  ;;       (insert c))))
 
-  (dolist (k '("SPC" "." "," ":" ")" "}" "]" "'"))
-    (keymap-set corfu-map k #'(lambda ()
-                                (interactive)
-                                (sthenno/corfu-insert-key k))))
+  ;; (dolist (k '("SPC" "." "," ":" ")" "}" "]" "'"))
+  ;;   (keymap-set corfu-map k #'(lambda ()
+  ;;                               (interactive)
+  ;;                               (sthenno/corfu-insert-key k))))
   (keymap-set corfu-map "RET" #'corfu-insert)
 
   ;; Combined sorting
@@ -384,6 +392,8 @@
 
   :bind (:map corfu-map
               ("<down>"   . corfu-next)
+              ("TAB"      . corfu-next)
+              ([tab]      . corfu-next)
               ("<up>"     . corfu-previous)
               ("<escape>" . corfu-quit)))
 

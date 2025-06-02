@@ -127,12 +127,10 @@ Looks for ‘.venv’ directory in project root and activates the Python interpr
 
 (use-package flymake-ruff
   :ensure t
-  :defer t
   :config (add-hook 'python-ts-mode-hook 'flymake-ruff-load))
 
 (use-package ruff-format
   :ensure t
-  :defer t
   :config (add-hook 'python-ts-mode-hook 'ruff-format-on-save-mode))
 
 ;;; AI
@@ -145,11 +143,15 @@ Looks for ‘.venv’ directory in project root and activates the Python interpr
 
   ;; System messages
   (setq gptel-directives
-        '((default . "You are a helpful assistant living in Emacs. Respond concisely.")))
+        '((default . "You are a helpful assistant living in Emacs.")
+          (org     . "You are a helpful assistant living in Emacs’ Org mode.")))
+
+  (when (eq gptel-default-mode 'org-mode)
+    (setq-local gptel--system-message (alist-get 'org gptel-directives)))
 
   ;; Generation options
   (setq gptel-max-tokens 8192
-        gptel-temperature 0.70)
+        gptel-temperature 0.40)
 
   ;; Use the mode-line to display status info
   (setq gptel-use-header-line nil)
@@ -177,7 +179,9 @@ Looks for ‘.venv’ directory in project root and activates the Python interpr
   (add-hook 'gptel-post-stream-hook #'gptel-auto-scroll)
 
   ;; Move to the next prompt after the response is inserted
-  (add-hook 'gptel-post-response-functions #'gptel-end-of-response)
+  ;; (add-hook 'gptel-post-response-functions #'gptel-end-of-response)
+  (add-hook 'gptel-post-response-hook #'(lambda (&optional _ _ arg)
+                                          (goto-char (point-max))))
 
   ;; Org mode specific options
   ;;
@@ -186,40 +190,32 @@ Looks for ‘.venv’ directory in project root and activates the Python interpr
 
   ;; [TODO] Ignore the independent context
   ;;
-  ;; (let ((prefix-in  (if (bound-and-true-p org-modern-horizontal-rule)
-  ;;                       "-----\n=In[*]≔= "
-  ;;                     "=In[*]≔= "))
-  ;;       (prefix-out (if (bound-and-true-p org-modern-horizontal-rule)
-  ;;                       "-----\n=Out[*]≔= "
-  ;;                     "=Out[*]≔= ")))
-  ;;   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) prefix-in)
-  ;;   (setf (alist-get 'org-mode gptel-response-prefix-alist) prefix-out))
-
-  (setf (alist-get 'org-mode gptel-prompt-prefix-alist)   "* In[*]≔\n")
-  (setf (alist-get 'org-mode gptel-response-prefix-alist) "* Out[*]≔\n")
+  (let ((suffix "[*]≔\n")
+        (prefix (if (bound-and-true-p org-modern-horizontal-rule)
+                    '((in  . "-----\n*** In")
+                      (out . "-----\n*** Out"))
+                  '((in  . "*** In")
+                    (out . "*** Out")))))
+    (cl-macrolet ((set-prefix (alist type)
+                    `(setf (alist-get 'org-mode ,alist)
+                           (concat (alist-get ',type prefix) suffix))))
+      (set-prefix gptel-prompt-prefix-alist in)
+      (set-prefix gptel-response-prefix-alist out)))
 
   ;; Dynamically index `gptel' cells
-  (defun sthenno/gpel-index-cells-indexed-p ()
+  (defun sthenno/gptel-index-cells ()
     (interactive)
     (save-excursion
       (goto-char (point-min))
-      (while (re-search-forward "\\(In\\|Out\\)\\[\\([0-9]+\\)\\]" nil t)
-        (replace-match "\\1[*]" nil nil))
-      (or (re-search-forward "In\\[\\*\\]≔" nil t)
-          (re-search-forward "Out\\[\\*\\]≔" nil t))))
-
-  (defun sthenno/gpel-index-cells ()
-    (interactive)
-    (when (sthenno/gpel-index-cells-indexed-p)
-      (sthenno/gpel-index-cells-indexed-p))
-    (save-excursion
+      (while (re-search-forward "\\(In\\|Out\\)\\[[0-9]+\\]≔" nil t)
+        (replace-match "\\1[*]≔"))
       (goto-char (point-min))
-      (let ((cnt 1))
-        (while (re-search-forward "In\\[\\*\\]≔" nil t)
-          (replace-match (format "In[%d]≔" cnt))
-          (when (re-search-forward "Out\\[\\*\\]≔" nil t)
-            (replace-match (format "Out[%d]≔" cnt)))
-          (setq cnt (1+ cnt))))))
+      (cl-loop for n from 1
+               while (re-search-forward "In\\[\\*\\]≔" nil t)
+               do (progn
+                    (replace-match (format "In[%d]≔" n))
+                    (when (re-search-forward "Out\\[\\*\\]≔" nil t)
+                      (replace-match (format "Out[%d]≔" n)))))))
 
   (defun gptel--handle-wait (fsm)
     "Fire the request contained in state machine FSM's info."
@@ -269,7 +265,6 @@ the request succeeded)."
           (goto-char start-marker)
           (when (and (member (plist-get info :http-status) '("200" "100"))
                      gptel-pre-response-hook)
-            (sthenno/gpel-index-cells)
             (run-hooks 'gptel-pre-response-hook))))))
 
   (defun gptel--handle-post-insert (fsm)
@@ -282,10 +277,11 @@ No state transition here since that's handled by the process sentinels."
            (start-marker (plist-get info :position))
            (tracking-marker (or (plist-get info :tracking-marker)
                                 start-marker))
+
            ;; start-marker may have been moved if :buffer was read-only
            (gptel-buffer (marker-buffer start-marker)))
       (with-current-buffer gptel-buffer
-        (if (not tracking-marker)       ;Empty response
+        (if (not tracking-marker)       ; Empty response
             (when gptel-mode (gptel--update-status " Empty response" 'success))
           (pulse-momentary-highlight-region start-marker tracking-marker)
           (when gptel-mode
@@ -293,6 +289,7 @@ No state transition here since that's handled by the process sentinels."
                             (insert gptel-response-separator
                                     (gptel-prompt-prefix-string)))
             (gptel--update-status  " 􂮢 Ready" 'success))))
+
       ;; Run hook in visible window to set window-point, BUG #269
       (if-let* ((gptel-window (get-buffer-window gptel-buffer 'visible)))
           (with-selected-window gptel-window
@@ -312,17 +309,20 @@ No state transition here since that's handled by the process sentinels."
                (setf (nth 1 header-line-format)
                      (thread-first
                        msg
-                       (buttonize (lambda (_) (gptel--inspect-fsm)))
+                       (buttonize (lambda (_)
+                                    (gptel--inspect-fsm)))
                        (propertize 'face face 'mouse-face 'highlight))))
         (if (member msg '(" 􂙎 少女输入中…" " 􀕻 少女祈祷中…"))
             (setq mode-line-process (propertize msg 'face face))
           (setq mode-line-process
                 '(:eval (concat " "
                                 (buttonize (gptel--model-name gptel-model)
-                                           (lambda (&rest _) (gptel-menu))))))
+                                           (lambda (&rest _)
+                                             (gptel-menu))))))
           (message (propertize msg 'face face))))
-      (sthenno/gpel-index-cells)
+      (run-hooks 'sthenno/gptel--update-status-hook) ; [XXX] Add a hook here
       (force-mode-line-update)))
+  (add-hook 'sthenno/gptel--update-status-hook #'sthenno/gptel-index-cells)
 
   (defun sthenno/gptel-send (&optional arg)
     "Submit this prompt to the current LLM backend.
@@ -341,13 +341,13 @@ waiting for the response."
     (interactive "P")
     (if (and arg (require 'gptel-transient nil t))
         (call-interactively #'gptel-menu)
+      (goto-char (point-max))
       (message "􀕻 正在联系 %s…" (gptel--model-name gptel-model))
       (gptel--sanitize-model)
       (gptel-request nil
-                     :stream gptel-stream
-                     :fsm (gptel-make-fsm :handlers gptel-send--handlers))
+        :stream gptel-stream
+        :fsm (gptel-make-fsm :handlers gptel-send--handlers))
       (gptel--update-status " 􀕻 少女祈祷中…" 'org-formula)))
-
 
   ;; Functions of the `gptel' buffer
   (defun sthenno/gptel-to-buffer ()
@@ -357,15 +357,14 @@ waiting for the response."
       (gptel buff)
       (turn-on-visual-line-mode)
       (diminish 'visual-line-mode)
-      (switch-to-buffer buff)))
+      (switch-to-buffer buff)
+      (setq-local gptel-org-branching-context nil)))
 
   :bind ((:map global-map
                ("s-p" . sthenno/gptel-to-buffer)
                ("s-<return>" . sthenno/gptel-send))
          (:map gptel-mode-map
-               ("s-<return>" . sthenno/gptel-send)
-               ("M-[" . gptel-beginning-of-response)
-               ("M-]" . gptel-end-of-response))))
+               ("s-<return>" . sthenno/gptel-send))))
 
 ;;; Teminal support
 

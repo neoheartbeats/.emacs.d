@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: python-graphics
+# key: python-graphics
+# --
+#+begin_src python :session t :results graphics file output :file $1 :async t
+$0
+#+end_src

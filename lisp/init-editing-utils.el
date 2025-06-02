@@ -34,7 +34,6 @@
 ;;
 (global-display-fill-column-indicator-mode 1)
 
-
 ;; Display line numbers
 ;;
 (setq-default display-line-numbers-width 4)
@@ -49,16 +48,11 @@
 
   ;; Using different formatters based on the major-mode
   (cond ((or (derived-mode-p 'python-mode)
-             (derived-mode-p 'python-ts-mode))
-         ;; (call-interactively #'eglot-format)
-         nil)
+             (derived-mode-p 'python-ts-mode)))
         (t
          (save-excursion
-
-           ;; Convert tabs to spaces first, so indentation doesn't introduce them
+           ;; Convert tabs to spaces first, so indentation doesn’t introduce them
            (untabify (point-min) (point-max))
-
-           ;; Indent everything
            (indent-region (point-min) (point-max))
 
            ;; Indent only comment lines in a single pass
@@ -66,10 +60,8 @@
            (while (comment-search-forward (point-max) t)
              (comment-indent))
 
-           ;; Remove trailing whitespace
+           ;; Remove trailing whitespaces
            (delete-trailing-whitespace)
-
-           ;; Save buffer
            (save-buffer)))))
 
 ;; Bind it to a convenient key in prog-mode-map
@@ -85,14 +77,10 @@
 (use-package indent-bars
   :ensure t
   :config
-  (require 'indent-bars-ts)
-
   (setq indent-bars-no-descend-lists t  ; no extra bars in continued func arg lists
         indent-bars-treesit-support t
         indent-bars-treesit-ignore-blank-lines-types '("module"))
-
   (setq indent-bars-prefer-character t)
-
   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
         indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
         indent-bars-highlight-current-depth '(:blend 0.8)
@@ -113,12 +101,8 @@ This disables syntax highlighting and auto-paring for such entries."
 ;; Automatic pairing parenthesis
 (electric-pair-mode 1)
 
-;;; Deletions
-
 ;; Delete selection if you insert
 (delete-selection-mode 1)
-
-;;; Multiple occurrences
 
 ;; Edit multiple occurrences in the same way simultaneously using "C-;"
 (use-package iedit :ensure t)

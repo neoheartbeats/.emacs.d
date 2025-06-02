@@ -19,10 +19,8 @@
 (use-package modus-themes
   :ensure t
   :config
-
-  ;; Mapping colors
   (setq modus-themes-common-palette-overrides
-        `(
+        '(
           ;; Make the mode line borderless
           (border-mode-line-active unspecified)
           (border-mode-line-inactive unspecified)
@@ -57,10 +55,7 @@
           (fg-prose-block-delimiter fg-dim)
 
           ;; Completions (see also `init-comp')
-          (bg-completion bg-hl-line)
-
-          ;; Apply the presets
-          ,@modus-themes-preset-overrides-faint))
+          (bg-completion bg-hl-line)))
 
   ;; Load the enable the theme
   (modus-themes-load-theme 'modus-vivendi))
@@ -164,18 +159,20 @@
 ;; Typographic ligatures
 (use-package ligature
   :ensure t
-  :config
-  (ligature-set-ligatures
-   't '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"
-        "<---->" "<!--"
-        "<==" "<===" "<=" "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
-        "<====>" "<!---"
-        "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "===" "!=="
-        ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:"
-        "<******>" "++" "+++"))
+  :config (let* ((ligs '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"
+                         "<---->" "<!--"
+                         "<==" "<===" "<=" "=>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
+                         "<====>" "<!---"
+                         "::" ":::" "==" "!=" "===" "!=="
+                         ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:"
+                         "<******>" "++" "+++"))
+                 (ligs-dict (append '("__" "--") ligs))
+                 (ligs-text (append '("__")      ligs)))
+            (ligature-set-ligatures 'prog-mode ligs-dict)
+            (ligature-set-ligatures 'text-mode ligs-text)
 
-  ;; Enables ligature checks globally in all buffers
-  (global-ligature-mode 1))
+            ;; Enables ligature checks globally in all buffers
+            (global-ligature-mode 1)))
 
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1 :weight 'thin)

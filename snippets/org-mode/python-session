@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: python
+# key: python
+# --
+#+begin_src python :session t :results ${1:$$(yas-completing-prompt ":results " '("output" "graphics" "table" "pp"))} :async t
+$0
+#+end_src
