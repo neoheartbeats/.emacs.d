@@ -166,20 +166,23 @@ interpreter."
         gptel-temperature 0.70)
 
   (add-hook 'gptel-mode-hook #'(lambda ()
-                                 (setq-local gptel-max-tokens (* 4 1024))))
+                                 (setq-local gptel-max-tokens (* 4 1024))
+
+                                 ;; Scroll automatically as the response is inserted
+                                 (add-hook 'gptel-post-stream-hook #'gptel-auto-scroll
+                                           90 t)
+                                 ;; Move to the next prompt after the response is
+                                 ;; inserted
+                                 (add-hook 'gptel-post-response-hook
+                                           #'(lambda (&optional _ _ arg)
+                                               (goto-char (point-max)))
+                                           90 t)))
 
   ;; Use the mode-line to display status info
   (setq gptel-use-header-line nil)
 
-  ;; Ui
+  ;; UI
   ;;
-  ;; Scroll automatically as the response is inserted
-  (add-hook 'gptel-post-stream-hook #'gptel-auto-scroll)
-
-  ;; Move to the next prompt after the response is inserted
-  ;; (add-hook 'gptel-post-response-functions #'gptel-end-of-response)
-  (add-hook 'gptel-post-response-hook #'(lambda (&optional _ _ arg)
-                                          (goto-char (point-max))))
 
   ;; Org mode specific options
   ;;
@@ -215,7 +218,8 @@ interpreter."
                     (when (re-search-forward "Out\\[\\*\\]≔" nil t)
                       (replace-match (format "Out[%d]≔" n)))))))
 
-  (defun gptel--handle-wait (fsm)
+  (define-advice gptel--handle-wait
+      (:override (fsm) sthenno/gptel--handle-wait)
     "Fire the request contained in state machine FSM's info."
     ;; Reset some flags in info.  This is necessary when reusing fsm's context for
     ;; a second network request: gptel tests for the presence of these flags to
@@ -233,7 +237,8 @@ interpreter."
     (with-current-buffer (plist-get (gptel-fsm-info fsm) :buffer)
       (gptel--update-status " 􀕻 少女祈祷中…" 'org-formula)))
 
-  (defun gptel--handle-pre-insert (fsm)
+  (define-advice gptel--handle-pre-insert
+      (:override (fsm) sthenno/gptel--handle-pre-insert)
     "Tasks before inserting the LLM response for state FSM.
 
 Handle read-only buffers and run pre-response hooks (but only if
@@ -265,7 +270,8 @@ the request succeeded)."
                      gptel-pre-response-hook)
             (run-hooks 'gptel-pre-response-hook))))))
 
-  (defun gptel--handle-post-insert (fsm)
+  (define-advice gptel--handle-post-insert
+      (:override (fsm) sthenno/gptel--handle-post-insert)
     "Tasks after successfully inserting the LLM response with state FSM.
 
 Indicate gptel status, pulse the inserted text and run post-response hooks.
@@ -299,7 +305,8 @@ No state transition here since that's handled by the process sentinels."
            'gptel-post-response-functions
            (marker-position start-marker) (marker-position tracking-marker))))))
 
-  (defun gptel--update-status (&optional msg face)
+  (define-advice gptel--update-status
+      (:override (fsm) sthenno/gptel--update-status)
     "Update status MSG in FACE."
     (when gptel-mode
       (if gptel-use-header-line
@@ -318,7 +325,7 @@ No state transition here since that's handled by the process sentinels."
                                            (lambda (&rest _)
                                              (gptel-menu))))))
           (message (propertize msg 'face face))))
-      (run-hooks 'sthenno/gptel--update-status-hook) ; [XXX] Add a hook here
+      (run-hooks 'sthenno/gptel--update-status-hook)
       (force-mode-line-update)))
   (add-hook 'sthenno/gptel--update-status-hook #'sthenno/gptel-index-cells)
 
@@ -344,8 +351,8 @@ waiting for the response."
       (message "􀕻 正在联系 %s…" (gptel--model-name gptel-model))
       (gptel--sanitize-model)
       (gptel-request nil
-        :stream gptel-stream
-        :fsm (gptel-make-fsm :handlers gptel-send--handlers))
+                     :stream gptel-stream
+                     :fsm (gptel-make-fsm :handlers gptel-send--handlers))
       (gptel--update-status " 􀕻 少女祈祷中…" 'org-formula)))
 
   ;; Functions of the `gptel' buffer
