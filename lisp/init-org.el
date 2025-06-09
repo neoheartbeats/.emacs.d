@@ -196,16 +196,13 @@
 (use-package denote
   :ensure t
   :config
-  (setq denote-directory org-directory) ; Use `org-directory' as default
+  (setq denote-directory org-directory)
   (setq denote-file-type 'org)
-  (setq denote-known-keywords '("silos" "papers" "production" "static" "marked")
+  (setq denote-known-keywords '("silos" "papers" "production" "statics" "marked")
         denote-infer-keywords t)
-  (setq denote-prompts '(title keywords))
-  (setq denote-history-completion-in-prompts t)
   (setq denote-save-buffers t
         denote-kill-buffers t)
-
-  (setq denote-open-link-function 'find-file)
+  (setq denote-open-link-function #'find-file)
 
   ;; Do not include date, tags and ids in note files
   (setopt denote-org-front-matter "#+title: %1$s\n\n")
@@ -215,7 +212,11 @@
   ;; string of `denote-rename-buffer-format' for how to modify this.
   (denote-rename-buffer-mode 1)
 
-  (setq denote-rename-buffer-format "[D] %T%b")
+  (setq denote-buffer-name-prefix   "􁓯 ")
+  (setq denote-rename-buffer-format "%D%b")
+
+  ;; The `denote-rename-buffer-mode' can now show if a file has backlinks
+  (setq denote-rename-buffer-backlinks-indicator " ↔ ")
 
   ;; Do not issue any extra prompts. Always sort by the `title' file name component and
   ;; never do a reverse sort.
@@ -223,23 +224,20 @@
   (setq denote-sort-dired-default-sort-component 'title)
   (setq denote-sort-dired-default-reverse-sort t)
 
-  ;; The `denote-rename-buffer-mode' can now show if a file has backlinks
-  (setq denote-rename-buffer-backlinks-indicator "↔")
-
   ;; Hooks
   (add-hook 'dired-mode-hook #'denote-dired-mode)
 
   :bind ((:map global-map
                ("s-o" . denote-open-or-create))
          (:map org-mode-map
-               ("s-l" . denote-link-or-create)
-               ("s-i" . denote-insert-link))))
+               ("s-i" . denote-link-or-create)
+               ("s-l" . denote-insert-link))))
 
 (use-package denote-journal
   :ensure t
   :config
   (setq denote-journal-title-format "%Y-%m-%d") ; Format yyyy-mm-dd
-  (setq denote-journal-directory (expand-file-name "stages/" user-note-directory))
+  (setq denote-journal-directory (expand-file-name "stages/" denote-directory))
   (setq denote-journal-keyword '("stages")) ; Stages are journals
 
   :bind ((:map global-map
