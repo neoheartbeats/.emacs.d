@@ -126,9 +126,8 @@
   :config
   (setq org-modern-star 'replace)
   (let ((stars "􀄩"))
-    (setq org-modern-replace-stars stars)
-    (setq org-modern-hide-stars stars))
-  (setq org-modern-horizontal-rule nil)
+    (setq org-modern-replace-stars stars
+          org-modern-hide-stars stars))
   (setq org-modern-list '((?- . "•")))
   (setq org-modern-checkbox '((?X  . "􀃰")
                               (?-  . "􀃞")
