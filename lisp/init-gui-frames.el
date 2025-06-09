@@ -19,8 +19,10 @@
 (use-package modus-themes
   :ensure t
   :config
+
+  ;; Mapping colors
   (setq modus-themes-common-palette-overrides
-        '(
+        `(
           ;; Make the mode line borderless
           (border-mode-line-active unspecified)
           (border-mode-line-inactive unspecified)
@@ -55,7 +57,10 @@
           (fg-prose-block-delimiter fg-dim)
 
           ;; Completions (see also `init-comp')
-          (bg-completion bg-hl-line)))
+          (bg-completion bg-hl-line)
+
+          ;; Apply the presets
+          ,@modus-themes-preset-overrides-faint))
 
   ;; Load the enable the theme
   (modus-themes-load-theme 'modus-vivendi))

@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: python-graphics
-# key: python-graphics
+# key: plt
 # --
-#+begin_src python :session t :results graphics file output :file $1 :async t
+#+begin_src python :results graphics file output :file tmp.png
 $0
 #+end_src
