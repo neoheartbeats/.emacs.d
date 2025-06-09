@@ -71,10 +71,11 @@
   (defun sthenno/python-venv ()
     "Activate Python environment managed by uv based on current
 project directory.
+
 Looks for ‘.venv’ directory in project root and activates the Python interpreter."
     (interactive)
-    (let* ((pr (project-root (project-current t)))
-           (venv-path (expand-file-name ".venv" pr))
+    (let* ((project-root (project-root (project-current t)))
+           (venv-path (expand-file-name ".venv" project-root))
            (python-path (expand-file-name "bin/python" venv-path)))
       (if (file-exists-p python-path)
           (progn
@@ -95,8 +96,8 @@ Looks for ‘.venv’ directory in project root and activates the Python interpr
             ;; Remove PYTHONHOME if it exists
             (setenv "PYTHONHOME" nil)
 
-            (message "Activated UV Python environment at %s" venv-path))
-        (message "No UV Python environment found in %s" pr))))
+            (message "Activated uv Python environment at %s" venv-path))
+        (message "No uv Python environment found in %s" project-root))))
 
   (add-hook 'python-ts-mode-hook 'sthenno/python-venv)
 
@@ -141,39 +142,43 @@ Looks for ‘.venv’ directory in project root and activates the Python interpr
   :config
   (setq gptel-default-mode #'org-mode)
 
+  ;; Use OpenAI as the default backend
+  ;;
+  (defun sthenno/gptel-setup-idealab ()
+    (setq gptel-model 'claude_opus4
+          gptel-backend (gptel-make-openai "idealab"
+                          :protocol "https"
+                          :host "idealab.alibaba-inc.com/api/openai"
+                          :stream t
+                          :key (gptel-api-key-from-auth-source "idealab.alibaba-inc.com")
+                          :models '(claude_opus4
+                                    claude_sonnet4
+                                    o3-0416-global
+                                    o4-mini-0416-global
+                                    gemini-2.5-pro-preview-05-06
+                                    gemini-2.5-flash-preview-05-20))))
+  (sthenno/gptel-setup-idealab)
+
   ;; System messages
   (setq gptel-directives
-        '((default . "You are a helpful assistant living in Emacs.")
-          (org     . "You are a helpful assistant living in Emacs’ Org mode.")))
-
-  (when (eq gptel-default-mode 'org-mode)
-    (setq-local gptel--system-message (alist-get 'org gptel-directives)))
+        `((default . ,(if (eq gptel-model 'sthenno)
+                          (concat "You an AI assistant named Sthenno. "
+                                  "The user is your architect, "
+                                  "or more formally, your instructor.")
+                        (concat "You are a large language model living in Emacs "
+                                "and a helpful assistant. Respond concisely")))))
 
   ;; Generation options
-  (setq gptel-max-tokens 8192
-        gptel-temperature 0.40)
+  (setq gptel-max-tokens 1024
+        gptel-temperature 0.70)
+
+  (add-hook 'gptel-mode-hook #'(lambda ()
+                                 (setq-local gptel-max-tokens (* 4 1024))))
 
   ;; Use the mode-line to display status info
   (setq gptel-use-header-line nil)
 
-  ;; Use OpenAI as the default backend
-  ;;
-  (setq gptel-model 'claude_opus4
-        gptel-backend (gptel-make-openai "idealab"
-                        :protocol "https"
-                        :host "idealab.alibaba-inc.com/api/openai"
-                        :stream t
-                        :key (gptel-api-key-from-auth-source "idealab.alibaba-inc.com")
-                        :models '(Qwen3-235B-A22B
-                                  Qwen3-32B
-                                  claude_opus4
-                                  claude_sonnet4
-                                  o3-0416-global
-                                  o4-mini-0416-global
-                                  gemini-2.5-pro-preview-05-06
-                                  gemini-2.5-flash-preview-05-20)))
-
-  ;; UI
+  ;; Ui
   ;;
   ;; Scroll automatically as the response is inserted
   (add-hook 'gptel-post-stream-hook #'gptel-auto-scroll)
@@ -355,8 +360,6 @@ waiting for the response."
     (interactive)
     (let ((buff (concat "*" (gptel-backend-name gptel-backend) "*")))
       (gptel buff)
-      (turn-on-visual-line-mode)
-      (diminish 'visual-line-mode)
       (switch-to-buffer buff)
       (setq-local gptel-org-branching-context nil)))
 

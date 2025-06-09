@@ -149,17 +149,10 @@ Activate again to undo this. If the window changes before then, the undo expires
   (setq select-enable-primary nil)
   (setq select-enable-clipboard t)
 
-  ;; Mouse and scrolling
-  (setq scroll-preserve-screen-position t
-        scroll-margin 0
-        scroll-conservatively 105)
-  (pixel-scroll-precision-mode 1)
-
   ;; Long lines
   (setq-default truncate-lines t)
   (setq auto-hscroll-mode 'current-line)
   (global-visual-wrap-prefix-mode 1)
-
 
   ;; dired.el
   (setq dired-auto-revert-buffer #'dired-directory-changed-p)
@@ -182,10 +175,7 @@ Activate again to undo this. If the window changes before then, the undo expires
   ;; `gls' is preferred on macOS
   (setq insert-directory-program "/opt/homebrew/bin/gls")
 
-  :config
-
-  ;; Default is RET
-  (define-key input-decode-map [?\C-m] [C-m]))
+  :config (define-key input-decode-map [?\C-m] [C-m])) ; Default is RET
 
 ;;; Global functions for accessibility
 
@@ -207,6 +197,13 @@ Activate again to undo this. If the window changes before then, the undo expires
 
 (keymap-global-set "s-<right>" #'sthenno/cycle-to-next-buffer)
 (keymap-global-set "s-<left>"  #'sthenno/cycle-to-previous-buffer)
+
+;; Mouse and scrolling
+(use-package ultra-scroll
+  :vc (:url "https://github.com/jdtsmith/ultra-scroll")
+  :init (setq scroll-margin 0
+              scroll-conservatively 105)
+  :config (ultra-scroll-mode 1))
 
 (provide 'init-system)
 

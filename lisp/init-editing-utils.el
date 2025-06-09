@@ -37,7 +37,6 @@
 ;; Display line numbers
 ;;
 (setq-default display-line-numbers-width 4)
-;; (global-display-line-numbers-mode 1)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
 ;; Indentations
@@ -88,7 +87,10 @@
         indent-bars-display-on-blank-lines t)
 
   ;; Hooks
-  (add-hook 'python-ts-mode-hook #'indent-bars-mode))
+  (add-hook 'python-ts-mode-hook  #'(lambda ()
+                                      (indent-bars-mode 1)))
+  (add-hook 'bash-ts-mode-hook    #'(lambda ()
+                                      (indent-bars-mode 1))))
 
 ;;; Inhibit passing these delimiters
 (defun sthenno/inhibit-specific-delimiters ()
