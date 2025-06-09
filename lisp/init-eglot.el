@@ -179,7 +179,7 @@ interpreter."
                                            90 t)))
 
   ;; Use the mode-line to display status info
-  (setq gptel-use-header-line nil)
+  ;; (setq gptel-use-header-line nil)
 
   ;; UI
   ;;
@@ -306,7 +306,7 @@ No state transition here since that's handled by the process sentinels."
            (marker-position start-marker) (marker-position tracking-marker))))))
 
   (define-advice gptel--update-status
-      (:override (fsm) sthenno/gptel--update-status)
+      (:override (&optional msg face) sthenno/gptel--update-status)
     "Update status MSG in FACE."
     (when gptel-mode
       (if gptel-use-header-line
@@ -351,8 +351,8 @@ waiting for the response."
       (message "􀕻 正在联系 %s…" (gptel--model-name gptel-model))
       (gptel--sanitize-model)
       (gptel-request nil
-                     :stream gptel-stream
-                     :fsm (gptel-make-fsm :handlers gptel-send--handlers))
+        :stream gptel-stream
+        :fsm (gptel-make-fsm :handlers gptel-send--handlers))
       (gptel--update-status " 􀕻 少女祈祷中…" 'org-formula)))
 
   ;; Functions of the `gptel' buffer
