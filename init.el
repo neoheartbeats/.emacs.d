@@ -49,14 +49,11 @@
 ;; Skip fontification during input to improve input responsiveness
 (setq redisplay-skip-fontification-on-input t)
 
-;; Enable faster scrolling by allowing minor visual inaccuracies
+;; Enable faster scrolling by allowing mod visual inaccuracies
 (setq fast-but-imprecise-scrolling t)
 
 ;; Prevent automatic frame resizing for better performance
 (setq frame-inhibit-implied-resize t)
-
-;; Suppress messages during initialization for cleaner startup
-(setq inhibit-message t)
 
 
 ;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions in
@@ -95,7 +92,7 @@
 ;;; UI configurations
 
 ;; Disable unnecessary UI elements
-(dolist (mode '(scroll-bar-mode menu-bar-mode)) ; tool-bar-mode
+(dolist (mode '(scroll-bar-mode menu-bar-mode tool-bar-mode))
   (when (fboundp mode)
     (funcall mode -1)))
 
@@ -103,8 +100,9 @@
 (define-advice display-startup-echo-area-message
     (:override () sthenno-startup-message)
   "Display a custom startup message in the echo area."
-  (let ((text "Left to Bloom, Bloom to Death"))
-    (message "%s" text)))
+  (let ((icon (propertize "􀋮" 'face 'error))
+        (text "Funding for this program was made possible by viewers like you."))
+    (message "%s %s" icon text)))
 
 ;; Open today's journal at startup
 (setq initial-buffer-choice #'(lambda ()
@@ -155,11 +153,11 @@
   "List of configuration modules to load.")
 
 ;; Load modules safely
-(dolist (module sthenno/init-modules)
+(dolist (mod sthenno/init-modules)
   (condition-case err
-      (require module)
+      (require mod)
     (error
-     (message "Failed to load module \"%s\": %s" module err))))
+     (message "Failed to load mod \"%s\": %s" mod err))))
 
 (provide 'init)
 

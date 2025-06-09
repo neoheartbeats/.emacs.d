@@ -12,15 +12,12 @@
 ;;
 
 (setq project-prompter #'project-prompt-project-name)
-;; (keymap-global-set "s-o" #'project-find-file)
 
 ;;; Git client using Magit
+
 (use-package magit
   :ensure t
-  :defer t
-  :config
-  ;; (setq magit-section-visibility-indicator '(" 􀰌"))
-  (setq magit-diff-refine-hunk t)
+  :config (setq magit-diff-refine-hunk t)
   :bind ("C-x g" . magit-status))
 
 ;;; Xref

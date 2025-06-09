@@ -133,12 +133,16 @@
                               (?-  . "􀃞")
                               (?\s . "􀂒")))
   (setq org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
-  (setq org-modern-block-fringe nil)
   (setq org-modern-block-name
-        '((t . t)
-          ("src" .  ("􀃥" "􀃥"))))
+        '(("src"   . ("􀃥" "􀃥"))
+          ("quote" . ("􁈏" "􁈐"))
+          (t . t)))
+  (setq org-modern-keyword '(("title"   . "􁓔")
+                             ("results" . "􀎛")
+                             (t . t)))
   ;; Hooks
-  (add-hook 'org-mode-hook #'org-modern-mode))
+  (add-hook 'org-mode-hook #'(lambda ()
+                               (org-modern-mode 1))))
 
 (defun sthenno/org-modern-spacing ()
   "Adjust line-spacing for `org-modern' to correct svg display."
@@ -162,7 +166,7 @@
 (setq org-treat-insert-todo-heading-as-state-change t)
 
 ;; Better experiences jumping through headlines
-(setq org-special-ctrl-a/e t)
+;; (setq org-special-ctrl-a/e t)
 
 ;; Fold drawers by default
 (setq org-cycle-hide-drawer-startup t)
@@ -243,133 +247,34 @@
 
 (use-package denote-org
   :ensure t
-  :config
-  ;; Org subtrees
-  (setq denote-org-store-link-to-heading 'context))
+  :config (setq denote-org-store-link-to-heading 'context))
 
-;; Do not include date, tags and ids in note files
-;; (setq denote-org-front-matter "#+title: %1$s\n\n"))
-
-;; Bookmarks
-;; (setq bookmark-use-annotations nil)
-
-;; (setq bookmark-bmenu-type-column-width 2)
-;; (setq bookmark-bmenu-toggle-filenames nil)
-;; (setq bookmark-menu-length 45)
-
-;; (setq bookmark-default-file
-;;       (expand-file-name ".bookmarks.bmk" org-directory))
-;; (setq bookmark-watch-bookmark-file 'silent)
-
-;; (defvar parameters
-;;   '(window-parameters . ((no-other-window . t)
-;;                          (no-delete-other-windows . t))))
-;; (setq fit-window-to-buffer-horizontally t)
-;; (setq window-resize-pixelwise t)
-
-;; (defun sthenno/bookmark-bmenu-on-left ()
-;;   (let ((buffer (bookmark-bmenu-get-buffer)))
-;;     (display-buffer-in-side-window
-;;      buffer `((side . left) (slot . -1)
-;;               (window-width . fit-window-to-buffer)
-;;               (window-width . 0.25)
-;;               (window-height . 20)
-;;               (preserve-size . (nil . t))
-;;               (dedicated . t) ,parameters))))
-
-;; (defun sthenno/denote-buffer-on-buttom ()
-;;   (let ((buffer (bookmark-bmenu-get-buffer)))
-;;     (display-buffer-in-side-window
-;;      buffer `((side . left) (slot . 1)
-;;               ;; (window-width . fit-window-to-buffer)
-;;               ;; (window-width . 0.25)
-;;               (preserve-size . (nil . t))
-;;               (dedicated . t) ,parameters))))
-
-(defun sthenno/denote-mark-buffer ()
-  (interactive)
-  (let* ((marked-text "marked")
-         (file (buffer-file-name (current-buffer)))
-         (buff (buffer-name (current-buffer)))
-         (keys (denote-extract-keywords-from-path file))
-         (marked-keys (cons marked-text keys))
-         (denote-rename-confirmations nil))
-    (denote-rename-file file 'keep-current marked-keys 'keep-current nil)))
-
-;; (defun sthenno/bookmark-set-buffer-name ()
-;;   (interactive)
-;;   (let ((name (buffer-name (current-buffer))))
-;;     (bookmark-set name nil)))
-
-;;; windows
-;; (setq
-;;  display-buffer-alist
-;;  `(("\\*Buffer List\\*" display-buffer-in-side-window
-;;     (side . top) (slot . 0) (window-height . fit-window-to-buffer)
-;;     (preserve-size . (nil . t)) ,parameters)
-;;    ("\\*Tags List\\*" display-buffer-in-side-window
-;;     (side . right) (slot . 0) (window-width . fit-window-to-buffer)
-;;     (preserve-size . (t . nil)) ,parameters)
-;;    ("\\*\\(?:help\\|grep\\|Completions\\)\\*"
-;;     display-buffer-in-side-window
-;;     (side . bottom) (slot . -1) (preserve-size . (nil . t))
-;;     ,parameters)
-;;    ("\\*\\(?:shell\\|compilation\\)\\*" display-buffer-in-side-window
-;;     (side . bottom) (slot . 1) (preserve-size . (nil . t))
-;;     ,parameters)))
-
-;; (setq window-sides-slots '(2 0 1 1))
-
-;; (setq display-buffer-alist
-;;       '(((lambda (buf _)
-;;            (with-current-buffer buf
-;;              (and buffer-file-name
-;;                   (boundp 'denote-directory)
-;;                   (string-prefix-p (expand-file-name denote-directory)
-;;                                    (file-name-directory buffer-file-name)))))
-;;          (display-buffer-reuse-window
-;;           display-buffer-same-window)
-;;          (reusable-frames . nil)
-;;          (inhibit-same-window . nil)
-;;          (frame-predicate . (lambda (frame)
-;;                               (string-match-p "Notes" (frame-parameter frame 'name)))))))
-
-
-;;; Keys
-
-(defun sthenno/get-sorted-note-files (directory)
-  "Return a list of note files in DIRECTORY, sorted by name."
-  (sort (seq-filter 'denote-file-is-note-p
-                    (directory-files directory t "\\`[^.]"))
-        'string<))
-
-(defun sthenno/denote-open-adjacent-file (direction)
-  "Open the adjacent note file in the given DIRECTION (-1 for previous, +1 for next)."
+(defun sthenno/denote-open-stages-file (direction)
+  "Open the denote note file in the given DIRECTION."
   (let* ((current-file (buffer-file-name))
          (directory (file-name-directory current-file))
          (sorted-files (sthenno/get-sorted-note-files directory))
          (current-file-index (cl-position current-file sorted-files :test 'string=)))
     (if (null current-file-index)
         (message "Current file is not a note file.")
-      (let ((adjacent-index (+ current-file-index direction)))
-        (if (or (< adjacent-index 0)
-                (>= adjacent-index (length sorted-files)))
-            (message "No adjacent note file.")
-          (find-file (nth adjacent-index sorted-files)))))))
+      (let ((idx (+ current-file-index direction)))
+        (if (or (< idx 0)
+                (>= idx (length sorted-files)))
+            (message "No denote note file.")
+          (find-file (nth idx sorted-files)))))))
 
 (defun sthenno/denote-open-previous-file ()
   "Open the previous note file in the current directory."
   (interactive)
-  (sthenno/denote-open-adjacent-file -1))
+  (sthenno/denote-open-stages-file -1))
 
 (defun sthenno/denote-open-next-file ()
   "Open the next note file in the current directory."
   (interactive)
-  (sthenno/denote-open-adjacent-file +1))
+  (sthenno/denote-open-stages-file 1))
 
-(bind-keys :map org-mode-map
-           ("s-<up>"   . sthenno/denote-open-previous-file)
-           ("s-<down>" . sthenno/denote-open-next-file))
+(keymap-set org-mode-map "s-<up>"   #'sthenno/denote-open-previous-file)
+(keymap-set org-mode-map "s-<down>" #'sthenno/denote-open-next-file)
 
 ;;; Load languages for Org Babel
 
@@ -395,6 +300,13 @@
 
 (keymap-set org-mode-map "C-'" #'org-edit-special)
 (keymap-set org-src-mode-map "C-'" #'org-edit-src-exit)
+
+;; Prefer lower-case drawers
+(setq org-babel-results-keyword "results")
+
+;; Using `S-<RET>' instead
+(setq org-babel-no-eval-on-ctrl-c-ctrl-c t)
+(keymap-set org-mode-map "S-<return>" #'org-babel-execute-maybe)
 
 ;; Enable these languages for Org-Babel
 

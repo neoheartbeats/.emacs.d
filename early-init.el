@@ -28,6 +28,11 @@
                                  (setq gc-cons-threshold threshold
                                        gc-cons-percentage percentage))))
 
+;; Suppress messages during initialization for cleaner startup
+(setq-default inhibit-message t)
+(add-hook 'after-init-hook #'(lambda ()
+                               (setq inhibit-message nil)))
+
 ;; Reset frame parameters for clean slate
 (setq default-frame-alist nil)
 

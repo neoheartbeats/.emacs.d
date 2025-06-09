@@ -72,7 +72,8 @@
     "Activate Python environment managed by uv based on current
 project directory.
 
-Looks for ‘.venv’ directory in project root and activates the Python interpreter."
+Looks for `.venv' directory in project root and activates the Python
+interpreter."
     (interactive)
     (let* ((project-root (project-root (project-current t)))
            (venv-path (expand-file-name ".venv" project-root))
@@ -98,20 +99,12 @@ Looks for ‘.venv’ directory in project root and activates the Python interpr
 
             (message "Activated uv Python environment at %s" venv-path))
         (message "No uv Python environment found in %s" project-root))))
-
   (add-hook 'python-ts-mode-hook 'sthenno/python-venv)
 
   :bind ((:map python-ts-mode-map
-               ;;  ([remap forward-paragraph] . python-nav-forward-statement)
-               ;; ([remap backward-paragraph] . python-nav-backward-statement)
-               ;; ([remap move-beginning-of-line] . python-nav-beginning-of-statement)
-               ;; ([remap move-end-of-line] . python-nav-end-of-statement)
                ("s-<up>" . python-nav-beginning-of-block)
                ("s-<down>" . python-nav-end-of-block)
-               ("C-x m" . python-nav-if-name-main)
-               ;; ("<tab>" . python-indent-shift-right)
-               ;; ("S-<tab>" . python-indent-shift-left)
-               )))
+               ("C-x m" . python-nav-if-name-main))))
 
 ;;; Flymake
 
@@ -346,7 +339,8 @@ waiting for the response."
     (interactive "P")
     (if (and arg (require 'gptel-transient nil t))
         (call-interactively #'gptel-menu)
-      (goto-char (point-max))
+      (when (derived-mode-p 'gptel-mode)
+        (goto-char (point-max)))
       (message "􀕻 正在联系 %s…" (gptel--model-name gptel-model))
       (gptel--sanitize-model)
       (gptel-request nil
