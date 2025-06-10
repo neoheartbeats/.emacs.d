@@ -247,11 +247,18 @@
   :ensure t
   :config (setq denote-org-store-link-to-heading 'context))
 
+;; Helper functions
+(defun sthenno/denote-get-sorted-note-files (directory)
+  "Return a list of note files in DIRECTORY, sorted by name."
+  (sort (seq-filter 'denote-file-is-note-p
+                    (directory-files directory t "\\`[^.]"))
+        'string<))
+
 (defun sthenno/denote-open-stages-file (direction)
   "Open the denote note file in the given DIRECTION."
   (let* ((current-file (buffer-file-name))
          (directory (file-name-directory current-file))
-         (sorted-files (sthenno/get-sorted-note-files directory))
+         (sorted-files (sthenno/denote-get-sorted-note-files directory))
          (current-file-index (cl-position current-file sorted-files :test 'string=)))
     (if (null current-file-index)
         (message "Current file is not a note file.")
@@ -302,7 +309,7 @@
 ;; Prefer lower-case drawers
 (setq org-babel-results-keyword "results")
 
-;; Using `S-<RET>' instead
+;; Using `S-<return>' instead
 (setq org-babel-no-eval-on-ctrl-c-ctrl-c t)
 (keymap-set org-mode-map "S-<return>" #'org-babel-execute-maybe)
 

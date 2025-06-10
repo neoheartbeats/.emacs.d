@@ -49,7 +49,7 @@
 ;; Skip fontification during input to improve input responsiveness
 (setq redisplay-skip-fontification-on-input t)
 
-;; Enable faster scrolling by allowing mod visual inaccuracies
+;; Enable faster scrolling by allowing minor visual inaccuracies
 (setq fast-but-imprecise-scrolling t)
 
 ;; Prevent automatic frame resizing for better performance
@@ -104,10 +104,11 @@
         (text "Funding for this program was made possible by viewers like you."))
     (message "%s %s" icon text)))
 
-;; Open today's journal at startup
+;; Open today’s journal at startup
 (setq initial-buffer-choice #'(lambda ()
                                 (when (fboundp 'denote-journal-new-or-existing-entry)
-                                  (denote-journal-new-or-existing-entry))))
+                                  (call-interactively
+                                   #'denote-journal-new-or-existing-entry))))
 
 ;;; Package Management
 
