@@ -131,9 +131,10 @@
 ;; Core package configurations
 ;;
 ;; Essential packages
-(use-package exec-path-from-shell
-  :ensure t
-  :init (exec-path-from-shell-initialize))
+
+;; (use-package exec-path-from-shell
+;;   :ensure t
+;;   :init (exec-path-from-shell-initialize))
 
 (use-package org :load-path "site-lisp/org/lisp/" :demand t)
 (use-package diminish :ensure t :demand t)

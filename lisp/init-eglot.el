@@ -138,18 +138,17 @@ interpreter."
   ;; Use OpenAI as the default backend
   ;;
   (defun sthenno/gptel-setup-idealab ()
-    (setq gptel-model 'claude_opus4
+    (setq gptel-model 'claude_sonnet4
           gptel-backend (gptel-make-openai "idealab"
                           :protocol "https"
                           :host "idealab.alibaba-inc.com/api/openai"
                           :stream t
-                          :key (gptel-api-key-from-auth-source "idealab.alibaba-inc.com")
+                          :key
+                          (gptel-api-key-from-auth-source "idealab.alibaba-inc.com")
                           :models '(claude_opus4
                                     claude_sonnet4
                                     o3-0416-global
-                                    o4-mini-0416-global
-                                    gemini-2.5-pro-preview-05-06
-                                    gemini-2.5-flash-preview-05-20))))
+                                    o4-mini-0416-global))))
   (sthenno/gptel-setup-idealab)
 
   ;; System messages
@@ -159,14 +158,15 @@ interpreter."
                                   "The user is your architect, "
                                   "or more formally, your instructor.")
                         (concat "You are a large language model living in Emacs "
-                                "and a helpful assistant. Respond concisely")))))
+                                "and a helpful assistant. Respond concisely.")))))
 
   ;; Generation options
   (setq gptel-max-tokens 1024
         gptel-temperature 0.70)
 
   (add-hook 'gptel-mode-hook #'(lambda ()
-                                 (setq-local gptel-max-tokens (* 4 1024))
+                                 (setq-local gptel-max-tokens (* 8 1024)
+                                             gptel-org-branching-context nil)
 
                                  ;; Scroll automatically as the response is inserted
                                  (add-hook 'gptel-post-stream-hook #'gptel-auto-scroll
@@ -178,8 +178,49 @@ interpreter."
                                                (goto-char (point-max)))
                                            90 t)))
 
+  ;; FIXME: Tool use
+  ;;
+
+  ;; (setq gptel-tools
+  ;;       `(,(gptel-make-tool :name "read_file"
+  ;;                           :function (lambda (filepath)
+  ;;                                       (unless (file-exists-p filepath)
+  ;;                                         (error
+  ;;                                          "error: file %s does not exist." filepath))
+  ;;                                       (with-temp-buffer
+  ;;                                         (insert-file-contents filepath)
+  ;;                                         (buffer-string)))
+  ;;                           :description "Read the contents of a file"
+  ;;                           :args `((
+  ;;                                    :name "filepath"
+  ;;                                    :type string
+  ;;                                    :description "The path to the file to be read"))
+  ;;                           :category "filesystem")
+  ;;         ,(gptel-make-tool :name "create_file"
+  ;;                           :function
+  ;;                           (lambda (path filename content)
+  ;;                             (let ((full-path (expand-file-name filename path)))
+  ;;                               (with-temp-buffer
+  ;;                                 (insert content)
+  ;;                                 (write-file full-path))
+  ;;                               (format "Created file %s in %s" filename path)))
+  ;;                           :description "Create a new file with the specified content"
+  ;;                           :args `((
+  ;;                                    :name "path"
+  ;;                                    :type string
+  ;;                                    :description "The directory where to create the file")
+  ;;                                   (
+  ;;                                    :name "filename"
+  ;;                                    :type string
+  ;;                                    :description "The name of the file to create")
+  ;;                                   (
+  ;;                                    :name "content"
+  ;;                                    :type string
+  ;;                                    :description "The content to write to the file"))
+  ;;                           :category "filesystem")))
+
   ;; Use the mode-line to display status info
-  ;; (setq gptel-use-header-line nil)
+  (setq gptel-use-header-line nil)
 
   ;; UI
   ;;
@@ -292,7 +333,7 @@ No state transition here since that's handled by the process sentinels."
             (save-excursion (goto-char tracking-marker)
                             (insert gptel-response-separator
                                     (gptel-prompt-prefix-string)))
-            (gptel--update-status  " 􂮢 Ready" 'success))))
+            (gptel--update-status  " 􂮢 预备" 'success))))
 
       ;; Run hook in visible window to set window-point, BUG #269
       (if-let* ((gptel-window (get-buffer-window gptel-buffer 'visible)))
@@ -304,6 +345,78 @@ No state transition here since that's handled by the process sentinels."
           (run-hook-with-args
            'gptel-post-response-functions
            (marker-position start-marker) (marker-position tracking-marker))))))
+
+  (define-advice gptel--handle-tool-use
+      (:override (fsm) sthenno/gptel--handle-tool-use)
+    "Run tool calls captured in FSM, and advance the state machine with the results."
+    (when-let* ((info (gptel-fsm-info fsm))
+                (backend (plist-get info :backend))
+                ;; This function might run many times, so only act on the remaining tool calls.
+                (tool-use (cl-remove-if (lambda (tc)
+                                          (plist-get tc :result))
+                                        (plist-get info :tool-use)))
+                (ntools (length tool-use))
+                (tool-idx 0))
+      (with-current-buffer (plist-get info :buffer)
+        (when gptel-mode
+          (gptel--update-status
+           (format " 􃂔 少女电话中…" ) 'mode-line-emphasis))
+
+        (let ((result-alist) (pending-calls))
+          (mapc                         ; Construct function calls
+           (lambda (tool-call)
+             (letrec ((args (plist-get tool-call :args))
+                      (name (plist-get tool-call :name))
+                      (arg-values nil)
+                      (tool-spec
+                       (cl-find-if
+                        (lambda (ts)
+                          (equal (gptel-tool-name ts) name))
+                        (plist-get info :tools)))
+                      (process-tool-result
+                       (lambda (result)
+                         (plist-put info :tool-success t)
+                         (let ((result (gptel--to-string result)))
+                           (plist-put tool-call :result result)
+                           (push (list tool-spec args result) result-alist))
+                         (cl-incf tool-idx)
+                         (when (>= tool-idx ntools) ; All tools have run
+                           (gptel--inject-prompt
+                            backend (plist-get info :data)
+                            (gptel--parse-tool-results
+                             backend (plist-get info :tool-use)))
+                           (funcall (plist-get info :callback)
+                                    (cons 'tool-result result-alist) info)
+                           (gptel--fsm-transition fsm)))))
+               (if (null tool-spec)
+                   (message "Unknown tool called by model: %s" name)
+                 (setq arg-values
+                       (mapcar
+                        (lambda (arg)
+                          (let ((key (intern (concat ":" (plist-get arg :name)))))
+                            (plist-get args key)))
+                        (gptel-tool-args tool-spec)))
+                 ;; Check if tool requires confirmation
+                 (if (and gptel-confirm-tool-calls (or (eq gptel-confirm-tool-calls t)
+                                                       (gptel-tool-confirm tool-spec)))
+                     (push (list tool-spec arg-values process-tool-result)
+                           pending-calls)
+                   ;; If not, run the tool
+                   (if (gptel-tool-async tool-spec)
+                       (apply (gptel-tool-function tool-spec)
+                              process-tool-result arg-values)
+                     (let ((result
+                            (condition-case errdata
+                                (apply (gptel-tool-function tool-spec) arg-values)
+                              (error (mapconcat #'gptel--to-string errdata " ")))))
+                       (funcall process-tool-result result)))))))
+           tool-use)
+          (when pending-calls
+            (setq gptel--fsm-last fsm)
+            (when gptel-mode (gptel--update-status
+                              (format " Run tools?" ) 'mode-line-emphasis))
+            (funcall (plist-get info :callback)
+                     (cons 'tool-call pending-calls) info))))))
 
   (define-advice gptel--update-status
       (:override (&optional msg face) sthenno/gptel--update-status)
@@ -317,7 +430,7 @@ No state transition here since that's handled by the process sentinels."
                        (buttonize (lambda (_)
                                     (gptel--inspect-fsm)))
                        (propertize 'face face 'mouse-face 'highlight))))
-        (if (member msg '(" 􂙎 少女输入中…" " 􀕻 少女祈祷中…"))
+        (if (member msg '(" 􂙎 少女输入中…" " 􀕻 少女祈祷中…" " 􃂔 少女电话中…"))
             (setq mode-line-process (propertize msg 'face face))
           (setq mode-line-process
                 '(:eval (concat " "
@@ -346,7 +459,7 @@ waiting for the response."
     (interactive "P")
     (if (and arg (require 'gptel-transient nil t))
         (call-interactively #'gptel-menu)
-      (when (derived-mode-p 'gptel-mode)
+      (when gptel-mode
         (goto-char (point-max)))
       (message "􀕻 正在联系 %s…" (gptel--model-name gptel-model))
       (gptel--sanitize-model)
@@ -361,34 +474,13 @@ waiting for the response."
     (interactive)
     (let ((buff (concat "*" (gptel-backend-name gptel-backend) "*")))
       (gptel buff)
-      (switch-to-buffer buff)
-      (setq-local gptel-org-branching-context nil)))
+      (switch-to-buffer buff)))
 
   :bind ((:map global-map
                ("s-p" . sthenno/gptel-to-buffer)
                ("s-<return>" . sthenno/gptel-send))
          (:map gptel-mode-map
                ("s-<return>" . sthenno/gptel-send))))
-
-;;; Teminal support
-
-;; (use-package vterm :ensure t)
-
-;;; GitHub Copilot
-
-;; (use-package copilot
-;;   :vc (copilot
-;;        :url "https://github.com/copilot-emacs/copilot.el"
-;;        :branch "main")
-;;   :ensure t
-;;   :init (setq copilot-node-executable "/opt/homebrew/bin/node")
-;;   :bind ((:map prog-mode-map
-;;                ("C-x c" . copilot-mode))
-;;          (:map copilot-completion-map
-;;                ("TAB"      . copilot-accept-completion)
-;;                ("<tab>"    . copilot-accept-completion)
-;;                ("<right>" . copilot-accept-completion)
-;;                ("<escape>" . copilot-clear-overlay))))
 
 (provide 'init-eglot)
 

@@ -315,9 +315,9 @@
 
 ;; Enable these languages for Org-Babel
 
-(org-babel-do-load-languages 'org-babel-load-languages
-                             '((emacs-lisp . t)
-                               (python . t)))
+(org-babel-do-load-languages 'org-babel-load-languages '((emacs-lisp . t)
+                                                         (python . t)
+                                                         (shell . t)))
 
 ;; Specific `org-babel-python-command'
 (setq org-babel-python-command
