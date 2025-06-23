@@ -70,9 +70,6 @@
 (setq find-file-visit-truename nil)     ; Don't resolve symlinks
 (setq vc-follow-symlinks t)             ; Follow symlinks for version control
 
-;; Suppress warnings "Package cl is deprecated"
-(setq byte-compile-warnings '(cl-functions))
-
 ;; Bidirectional Text Handling
 (setq-default bidi-paragraph-direction 'left-to-right
               bidi-inhibit-bpa t)
