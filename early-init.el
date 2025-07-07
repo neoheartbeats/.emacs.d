@@ -66,13 +66,8 @@ and other temporary data that Emacs generates during operation."
   :type 'directory
   :group 'initialization)
 
-(defcustom user-note-directory (expand-file-name "~/org/")
-  "Base directory for Emacs note files."
-  :type 'directory
-  :group 'initialization)
-
 ;; Ensure cache directory exists to prevent runtime errors
-(make-directory user-cache-directory t)
+;; (make-directory user-cache-directory t)
 
 ;; Configure native compilation settings when available
 
@@ -97,7 +92,7 @@ and other temporary data that Emacs generates during operation."
                                     (height . 60)
 
                                     ;; (alpha-background . 60)
-                                    (alpha . (85 . 85))
+                                    (alpha . (90 . 90))
 
                                     ;; macOS-specific titlebar settings
                                     (ns-transparent-titlebar . t)))

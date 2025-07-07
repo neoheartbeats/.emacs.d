@@ -80,6 +80,12 @@
 
 (setq-default mode-line-compact t)
 
+;; Display current function
+
+;; (add-hook 'after-init-hook #'(lambda ()
+;;                                (which-function-mode 1)))
+;; (setq which-func-update-delay 0.125)
+
 ;; Diminish some built-in modes
 
 (use-package eldoc :diminish)
@@ -128,40 +134,19 @@
 ;;; Font settings
 
 (set-face-attribute 'default nil :family "Tempestypes" :height 140)
+;; Line spacing
+;; (setq-default line-spacing 0.25)
 
 ;; No need for italic fonts
-(set-face-italic 'italic nil)
+;; (set-face-italic 'italic nil)
 
 ;; Set up font for non-ascii fontset
-(set-fontset-font t 'big5                (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'big5-hkscs          (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-1  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-15 (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-2  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-3  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-4  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-5  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-6  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-cns11643-7  (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-gb2312      (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'chinese-gbk         (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'kanbun              (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'bopomofo            (font-spec :family "Noto Serif CJK SC"))
-(set-fontset-font t 'han                 (font-spec :family "Noto Serif CJK SC"))
-
-(set-fontset-font t 'japanese-jisx0208        (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0208-1978   (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0212        (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0213-1      (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0213-2      (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'japanese-jisx0213.2004-1 (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'jisx0201                 (font-spec :family "Noto Serif CJK JP"))
-(set-fontset-font t 'kana                     (font-spec :family "Noto Serif CJK JP"))
-
+(set-fontset-font t 'han (font-spec :family "Songti SC"))
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
-(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'prepend)
+(set-fontset-font t 'ucs (font-spec :family "SF Pro") nil 'prepend)
 
 ;; Typographic ligatures
+
 (use-package ligature
   :ensure t
   :config (let* ((ligs '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"

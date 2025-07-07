@@ -12,6 +12,7 @@
 ;;
 
 (setq project-prompter #'project-prompt-project-name)
+;; (setq project-mode-line t)
 
 ;;; Git client using Magit
 

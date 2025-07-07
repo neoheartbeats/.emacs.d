@@ -110,20 +110,27 @@
 ;;; Package Management
 
 ;; Store customizations
-(setq custom-file (locate-user-emacs-file "custom.el"))
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file))
 
 ;; Initialize package system
 (require 'package)
 
-(setq package-archives '(("gnu-devel" . "https://elpa.gnu.org/devel/")
+(setq package-vc-allow-build-commands t
+      package-install-upgrade-built-in t
+      package-archives '(("gnu-devel" . "https://elpa.gnu.org/devel/")
                          ("melpa" . "https://melpa.org/packages/")
                          ("gnu" . "https://elpa.gnu.org/packages/")
                          ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-
 (unless (bound-and-true-p package--initialized)
   (package-initialize))
+
+(require 'use-package)
+
+(setq use-package-enable-imenu-support t
+      use-package-compute-statistics t
+      use-package-vc-prefer-newest t)
 
 ;; Core package configurations
 ;;

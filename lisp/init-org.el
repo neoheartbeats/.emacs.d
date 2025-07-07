@@ -19,7 +19,7 @@
 ;;; Code:
 
 ;;; Setup default directory
-(setq org-directory user-note-directory)
+(setq org-directory "~/org/")
 
 ;;; Org Mode buffer init behaviors
 (setq org-startup-with-link-previews t
@@ -38,13 +38,12 @@
   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 ;; Default LaTeX preview image directory
-(setq org-preview-latex-image-directory
-      (expand-file-name "ltximg/" user-cache-directory))
+(setq
+ org-preview-latex-image-directory (expand-file-name "ltximg/" user-emacs-directory)
+ org-persist-directory (expand-file-name "org-persist/" user-emacs-directory))
 
-(setq org-persist-directory (expand-file-name "org-persist" user-cache-directory))
-
-;;; Experimental: `org-latex-preview'
-(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
+(add-hook 'org-mode-hook #'(lambda ()
+                             (org-latex-preview-auto-mode 1)))
 
 ;; Preview functions
 (defun sthenno/org-preview-fragments ()
@@ -77,28 +76,27 @@
 
 ;; Add additional modules required by LaTeX packages like physics2 to the preamble
 
-(defun sthenno/org-latex-preview-preamble-setup ()
-  (require 'org-latex-preview)
-  (let* ((physics2-modules '(("" "ab")
-                             ("" "diagmat")
-                             ("" "xmat")))
-         (physics2-preamble (mapconcat
-                             (lambda (m)
-                               (let ((options (car  m))
-                                     (module  (cadr m)))
-                                 (if (string= options "")
-                                     (format "\\usephysicsmodule{%s}" module)
-                                   (format "\\usephysicsmodule[%s]{%s}" options module))))
-                             physics2-modules
-                             "\n")))
-    (unless (and org-latex-preview-preamble
-                 (string-match
-                  (regexp-quote physics2-preamble) org-latex-preview-preamble))
-      (setq org-latex-preview-preamble (concat (or org-latex-preview-preamble "")
-                                               "\n" physics2-preamble
-                                               "\\DeclareMathOperator*{\\argmax}{arg\\,max}"
-                                               "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))))
-(add-hook 'after-init-hook #'sthenno/org-latex-preview-preamble-setup)
+;; (defun sthenno/org-latex-preview-preamble-setup ()
+;;   (let* ((physics2-modules '(("" "ab")
+;;                              ("" "diagmat")
+;;                              ("" "xmat")))
+;;          (physics2-preamble (mapconcat
+;;                              (lambda (m)
+;;                                (let ((options (car  m))
+;;                                      (module  (cadr m)))
+;;                                  (if (string= options "")
+;;                                      (format "\\usephysicsmodule{%s}" module)
+;;                                    (format "\\usephysicsmodule[%s]{%s}" options module))))
+;;                              physics2-modules
+;;                              "\n"))
+;;          (default-preamble (bound-and-true-p org-latex-preview-preamble)))
+;;     (when default-preamble
+;;       (setq org-latex-preview-preamble
+;;             (concat default-preamble
+;;                     "\n" physics2-preamble
+;;                     "\\DeclareMathOperator*{\\argmax}{arg\\,max}"
+;;                     "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))))
+;; (add-hook 'after-init-hook #'sthenno/org-latex-preview-preamble-setup)
 
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
@@ -109,16 +107,16 @@
   (plist-put org-latex-preview-appearance-options :scale factor)
   (plist-put org-latex-preview-appearance-options :zoom  factor))
 
-(setq org-latex-preview-process-default 'dvisvgm)
-(let ((dvisvgm (alist-get 'dvisvgm org-latex-preview-process-alist))
-      (libgs "/opt/homebrew/opt/ghostscript/lib/libgs.dylib"))
-  (plist-put dvisvgm :image-converter
-             `(,(concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts"
-                        " --libgs=" libgs
+;; (setq org-latex-preview-process-default 'dvisvgm)
+;; (let ((dvisvgm (alist-get 'dvisvgm org-latex-preview-process-alist))
+;;       (libgs "/opt/homebrew/opt/ghostscript/lib/libgs.dylib"))
+;;   (plist-put dvisvgm :image-converter
+;;              `(,(concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts"
+;;                         " --libgs=" libgs
 
-                        ;; Default is "-v3" here, but it does not seem to work correctly
-                        ;; on my client.
-                        " --bbox=preview -v4 -o %B-%%9p.svg %f"))))
+;;                         ;; Default is "-v3" here, but it does not seem to work correctly
+;;                         ;; on my client.
+;;                         " --bbox=preview -v4 -o %B-%%9p.svg %f"))))
 
 ;;; Modern Org mode theme
 (use-package org-modern
@@ -144,16 +142,8 @@
   (add-hook 'org-mode-hook #'(lambda ()
                                (org-modern-mode 1))))
 
-(defun sthenno/org-modern-spacing ()
-  "Adjust line-spacing for `org-modern' to correct svg display."
-  (setq-local line-spacing (cond ((eq major-mode #'org-mode) 0.20)
-                                 (t nil))))
-(add-hook 'org-mode-hook #'sthenno/org-modern-spacing)
-
 ;; External settings for `org-modern'
 (setq org-ellipsis " …")
-;; (set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
-
 (setq org-use-property-inheritance t)
 (setq org-auto-align-tags nil)
 (setq org-tags-column 0)
@@ -166,7 +156,7 @@
 (setq org-treat-insert-todo-heading-as-state-change t)
 
 ;; Better experiences jumping through headlines
-;; (setq org-special-ctrl-a/e t)
+(setq org-special-ctrl-a/e t)
 
 ;; Fold drawers by default
 (setq org-cycle-hide-drawer-startup t)
@@ -316,8 +306,7 @@
 ;; Enable these languages for Org-Babel
 
 (org-babel-do-load-languages 'org-babel-load-languages '((emacs-lisp . t)
-                                                         (python . t)
-                                                         (shell . t)))
+                                                         (python . t)))
 
 ;; Specific `org-babel-python-command'
 (setq org-babel-python-command

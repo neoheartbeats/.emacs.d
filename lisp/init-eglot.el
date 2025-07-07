@@ -137,35 +137,46 @@ interpreter."
 
   ;; Use OpenAI as the default backend
   ;;
-  (defun sthenno/gptel-setup-idealab ()
-    (setq gptel-model 'claude_sonnet4
-          gptel-backend (gptel-make-openai "idealab"
-                          :protocol "https"
-                          :host "idealab.alibaba-inc.com/api/openai"
+  ;; (defun sthenno/gptel-setup-idealab ()
+  ;;   (setq gptel-model 'claude_sonnet4
+  ;;         gptel-backend (gptel-make-openai "idealab"
+  ;;                         :protocol "https"
+  ;;                         :host "idealab.alibaba-inc.com/api/openai"
+  ;;                         :stream t
+  ;;                         :key
+  ;;                         (gptel-api-key-from-auth-source "idealab.alibaba-inc.com")
+  ;;                         :models '(claude_opus4
+  ;;                                   claude_sonnet4
+  ;;                                   o3-0416-global
+  ;;                                   o4-mini-0416-global))))
+
+  (defun sthenno/gptel-setup-local ()
+    (setq gptel-model 'sthenno
+          gptel-backend (gptel-make-openai "local"
+                          :protocol "http"
+                          :host "localhost:30003"
+                          :endpoint "/v1/chat/completions"
                           :stream t
-                          :key
-                          (gptel-api-key-from-auth-source "idealab.alibaba-inc.com")
-                          :models '(claude_opus4
-                                    claude_sonnet4
-                                    o3-0416-global
-                                    o4-mini-0416-global))))
-  (sthenno/gptel-setup-idealab)
+                          :key "tmp"
+                          :models '(sthenno))))
+  (sthenno/gptel-setup-local)
 
   ;; System messages
-  (setq gptel-directives
-        `((default . ,(if (eq gptel-model 'sthenno)
-                          (concat "You an AI assistant named Sthenno. "
-                                  "The user is your architect, "
-                                  "or more formally, your instructor.")
-                        (concat "You are a large language model living in Emacs "
-                                "and a helpful assistant. Respond concisely.")))))
+  ;;
+  ;; (setq gptel-directives
+  ;;       `((default . ,(if (eq gptel-model 'sthenno)
+  ;;                         (concat "You an AI assistant named Sthenno. "
+  ;;                                 "The user is your architect, "
+  ;;                                 "or more formally, your instructor.")
+  ;;                       (concat "You are a large language model living in Emacs "
+  ;;                               "and a helpful assistant. Respond concisely.")))))
 
   ;; Generation options
   (setq gptel-max-tokens 1024
         gptel-temperature 0.70)
 
   (add-hook 'gptel-mode-hook #'(lambda ()
-                                 (setq-local gptel-max-tokens (* 8 1024)
+                                 (setq-local gptel-max-tokens (* 4 1024)
                                              gptel-org-branching-context nil)
 
                                  ;; Scroll automatically as the response is inserted

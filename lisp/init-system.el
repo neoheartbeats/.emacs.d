@@ -169,8 +169,10 @@ Activate again to undo this. If the window changes before then, the undo expires
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'always)
   (setq dired-vc-rename-file t)
+  (setq dired-movement-style 'cycle-files)
 
-  (add-hook 'dired-mode-hook #'dired-hide-details-mode)
+  (add-hook 'dired-mode-hook #'(lambda ()
+                                 (dired-hide-details-mode 1)))
 
   ;; `gls' is preferred on macOS
   (setq insert-directory-program "/opt/homebrew/bin/gls")

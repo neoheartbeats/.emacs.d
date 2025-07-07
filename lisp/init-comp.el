@@ -40,7 +40,7 @@
 (setq tab-first-completion nil)
 
 ;; minibuffer
-(setq echo-keystrokes 0.05           ; Display the key pressed immediately
+(setq echo-keystrokes 0.125          ; Display the key pressed immediately
       echo-keystrokes-help t)        ; Display help info for keystrokes in the echo area
 
 ;; Support opening new minibuffers from inside existing minibuffers
@@ -150,7 +150,7 @@
 (use-package consult
   :ensure t
   :init
-  (setq register-preview-delay 0.05
+  (setq register-preview-delay 0.125
         register-preview-function #'consult-register-format)
 
   (setq xref-show-xrefs-function #'consult-xref
@@ -270,7 +270,7 @@
                     #'cape-keyword)
                   cape-elisp-block
                   cape-file)
-                cape-dabbrev-min-length 2))
+                cape-dabbrev-min-length 3))
   (add-hook 'text-mode-hook #'sthenno/capf-text)
 
   :config
@@ -308,7 +308,7 @@
                                        (global-corfu-mode 1)))
   :config
   (setq corfu-auto t
-        corfu-auto-delay 0.05           ; Making this to 0 is too expensive
+        corfu-auto-delay 0.125          ; Making this to 0 is too expensive
         corfu-auto-prefix 1)
   (setq corfu-count 8
         corfu-scroll-margin 4)
@@ -382,7 +382,7 @@
   (add-to-list 'savehist-additional-variables 'corfu-history)
 
   ;; Popup candidates info
-  (setq corfu-popupinfo-delay '(0.25 . 0.05))
+  (setq corfu-popupinfo-delay '(0.25 . 0.125))
   (setq corfu-popupinfo-hide nil)
   (setq corfu-popupinfo-max-width 80
         corfu-popupinfo-min-width 20)
