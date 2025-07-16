@@ -26,11 +26,8 @@
 ;; Disable adaptive buffering for more predictable performance
 (setq process-adaptive-read-buffering nil)
 
-;; Prevent font cache compaction during GC for better responsiveness
-(setq inhibit-compacting-font-caches t)
-
 ;; Always load newer elisp files to ensure using latest version
-(setq load-prefer-newer t)
+;; (setq load-prefer-newer t)
 
 ;; File management settings
 ;;
@@ -54,6 +51,12 @@
 
 ;; Prevent automatic frame resizing for better performance
 (setq frame-inhibit-implied-resize t)
+
+;; Don't ping things that look like domain names.
+(setq ffap-machine-p-known 'reject)
+
+;; Remove command line options that aren't relevant to our current OS
+(setq command-line-x-option-alist nil)
 
 
 ;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions in
@@ -126,22 +129,25 @@
 (unless (bound-and-true-p package--initialized)
   (package-initialize))
 
-(require 'use-package)
-
-(setq use-package-enable-imenu-support t
-      use-package-compute-statistics t
-      use-package-vc-prefer-newest t)
+(eval-when-compile
+  (eval-after-load 'advice
+    `(setq ad-redefinition-action 'accept))
+  (setq use-package-verbose nil
+        use-package-compute-statistics nil
+        use-package-minimum-reported-time 0.01
+        use-package-expand-minimally t
+        use-package-enable-imenu-support t)
+  (when init-file-debug
+    (setq use-package-expand-minimally nil
+          use-package-verbose t
+          use-package-compute-statistics t
+          debug-on-error t))
+  (require 'use-package))
 
 ;; Core package configurations
 ;;
 ;; Essential packages
-
-;; (use-package exec-path-from-shell
-;;   :ensure t
-;;   :init (exec-path-from-shell-initialize))
-
-(use-package org :load-path "site-lisp/org/lisp/" :demand t)
-(use-package diminish :ensure t :demand t)
+(use-package org :load-path "site-lisp/org/lisp/")
 
 ;; Load configuration modules
 ;;

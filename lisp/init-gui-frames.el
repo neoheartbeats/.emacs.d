@@ -138,7 +138,7 @@
 ;; (setq-default line-spacing 0.25)
 
 ;; No need for italic fonts
-;; (set-face-italic 'italic nil)
+(set-face-italic 'italic nil)
 
 ;; Set up font for non-ascii fontset
 (set-fontset-font t 'han (font-spec :family "Songti SC"))

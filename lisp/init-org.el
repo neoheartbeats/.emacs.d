@@ -32,10 +32,11 @@
 (use-package tex :ensure auctex)
 
 ;;; Use CDLaTeX to improve editing experiences
-(use-package cdlatex
-  :ensure t
-  :diminish (org-cdlatex-mode)
-  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+
+;; (use-package cdlatex
+;;   :ensure t
+;;   :diminish (org-cdlatex-mode)
+;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 ;; Default LaTeX preview image directory
 (setq
@@ -51,61 +52,53 @@
   (call-interactively 'org-latex-preview-clear-cache)
   (org-latex-preview 'buffer)
   (org-link-preview-refresh))
-(bind-keys :map org-mode-map
-           ("C-c p" . sthenno/org-preview-fragments))
+(keymap-set org-mode-map "C-p" #'sthenno/org-preview-fragments)
 
-;; Setup for `org-latex-preview'
-(setq org-latex-packages-alist '(("T1" "fontenc" t)
-                                 ("" "amsmath"   t)
-                                 ("" "amssymb"   t)
-                                 ("" "siunitx"   t)
+(setopt org-latex-packages-alist '(("" "siunitx"   t)
+                                   ("" "mlmodern" t)
 
-                                 ;; Font packages
-                                 ("libertinus" "newtx" t)
+                                   ;; Load this after all math to give access to bold math
+                                   ;; See https://ctan.org/pkg/newtx
+                                   ("" "bm" t)
 
-                                 ;; Load this after all math to give access to bold math
-                                 ;; See https://ctan.org/pkg/newtx
-                                 ("" "bm" t)
-
-                                 ;; Package physics2 requires to be loaded after font
-                                 ;; packages. See https://ctan.org/pkg/physics2
-                                 ("" "physics2" t)
-
-                                 ;; Differentiations
-                                 ("normal" "fixdif" t)))
+                                   ;; Package physics2 requires to be loaded after font
+                                   ;; packages. See https://ctan.org/pkg/physics2
+                                   ("" "physics2" t)))
 
 ;; Add additional modules required by LaTeX packages like physics2 to the preamble
-
-;; (defun sthenno/org-latex-preview-preamble-setup ()
-;;   (let* ((physics2-modules '(("" "ab")
-;;                              ("" "diagmat")
-;;                              ("" "xmat")))
-;;          (physics2-preamble (mapconcat
-;;                              (lambda (m)
-;;                                (let ((options (car  m))
-;;                                      (module  (cadr m)))
-;;                                  (if (string= options "")
-;;                                      (format "\\usephysicsmodule{%s}" module)
-;;                                    (format "\\usephysicsmodule[%s]{%s}" options module))))
-;;                              physics2-modules
-;;                              "\n"))
-;;          (default-preamble (bound-and-true-p org-latex-preview-preamble)))
-;;     (when default-preamble
-;;       (setq org-latex-preview-preamble
-;;             (concat default-preamble
-;;                     "\n" physics2-preamble
-;;                     "\\DeclareMathOperator*{\\argmax}{arg\\,max}"
-;;                     "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))))
-;; (add-hook 'after-init-hook #'sthenno/org-latex-preview-preamble-setup)
+(let* ((physics2-modules '(("" "ab")
+                           ("" "diagmat")
+                           ("" "xmat")))
+       (physics2-preamble (concat (mapconcat
+                                   (lambda (m)
+                                     (let ((options (car  m))
+                                           (module  (cadr m)))
+                                       (if (string= options "")
+                                           (format "\\usephysicsmodule{%s}" module)
+                                         (format "\\usephysicsmodule[%s]{%s}" options module))))
+                                   physics2-modules
+                                   "\n")
+                                  "\n"))
+       (default-preamble "\\documentclass{article}
+\[DEFAULT-PACKAGES]
+\[PACKAGES]
+\\usepackage{xcolor}"))
+  (setopt org-latex-preview-preamble
+          (concat default-preamble
+                  "\n" physics2-preamble
+                  "\\DeclareMathOperator*{\\argmax}{arg\\,max}\n"
+                  "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))
 
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
+(setq org-pretty-entities t
+      org-pretty-entities-include-sub-superscripts nil)
 
-(let ((factor (- (/ (face-attribute 'default :height)
-                    100.0)
-                 0.25)))
-  (plist-put org-latex-preview-appearance-options :scale factor)
-  (plist-put org-latex-preview-appearance-options :zoom  factor))
+;; (let ((factor (- (/ (face-attribute 'default :height)
+;;                     100.0)
+;;                  0.025)))
+;;   (plist-put org-latex-preview-appearance-options :scale factor)
+;;   (plist-put org-latex-preview-appearance-options :zoom  factor))
 
 ;; (setq org-latex-preview-process-default 'dvisvgm)
 ;; (let ((dvisvgm (alist-get 'dvisvgm org-latex-preview-process-alist))
@@ -113,10 +106,7 @@
 ;;   (plist-put dvisvgm :image-converter
 ;;              `(,(concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts"
 ;;                         " --libgs=" libgs
-
-;;                         ;; Default is "-v3" here, but it does not seem to work correctly
-;;                         ;; on my client.
-;;                         " --bbox=preview -v4 -o %B-%%9p.svg %f"))))
+;;                         " --bbox=preview -v3 -o %B-%%9p.svg %f"))))
 
 ;;; Modern Org mode theme
 (use-package org-modern
@@ -304,13 +294,11 @@
 (keymap-set org-mode-map "S-<return>" #'org-babel-execute-maybe)
 
 ;; Enable these languages for Org-Babel
-
 (org-babel-do-load-languages 'org-babel-load-languages '((emacs-lisp . t)
                                                          (python . t)))
 
 ;; Specific `org-babel-python-command'
-(setq org-babel-python-command
-      (expand-file-name "functions/.venv/bin/python" org-directory))
+(setq org-babel-python-command "/Users/sthenno/Tempestissimo/tempestissimo/.venv/bin/python")
 
 (provide 'init-org)
 
