@@ -81,12 +81,24 @@ Activate again to undo this. If the window changes before then, the undo expires
 
 (use-package savehist
   :init
-  (setq history-length 1024)
+  (setq history-length 128)
   (setq history-delete-duplicates t)
   :config
   (setq savehist-file (locate-user-emacs-file "savehist"))
   (setq savehist-save-minibuffer-history t)
   (savehist-mode 1))
+
+(use-package recentf
+  :init (add-hook 'after-init-hook #'(lambda ()
+                                       (recentf-mode 1)))
+  :config
+  (setq recentf-max-saved-items 100)
+  (setq recentf-save-file-modes nil)
+  (setq recentf-keep nil)
+  (setq recentf-auto-cleanup nil)
+  (setq recentf-initialize-file-name-history nil)
+  (setq recentf-filename-handlers nil)
+  (setq recentf-show-file-shortcuts-flag nil))
 
 (use-package autorevert
   :config
@@ -124,7 +136,7 @@ Activate again to undo this. If the window changes before then, the undo expires
   (setq line-number-mode nil)
 
   (setq kill-do-not-save-duplicates t)
-  (setq kill-ring-max 1024)
+  (setq kill-ring-max 512)
   (setq kill-whole-line t)
 
   (setq next-line-add-newlines nil)
@@ -170,7 +182,6 @@ Activate again to undo this. If the window changes before then, the undo expires
   (setq dired-recursive-deletes 'always)
   (setq dired-vc-rename-file t)
   (setq dired-movement-style 'cycle-files)
-
   (add-hook 'dired-mode-hook #'(lambda ()
                                  (dired-hide-details-mode 1)))
 

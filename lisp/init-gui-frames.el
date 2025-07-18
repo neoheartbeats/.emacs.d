@@ -16,8 +16,8 @@
 
 ;;; Modus Themes
 
+(setq custom-safe-themes t)
 (use-package modus-themes
-  :ensure t
   :config
 
   ;; Mapping colors
@@ -76,22 +76,29 @@
   :ensure t
   :config (spacious-padding-mode 1))
 
-;;; Mode line
+;;; Pulse highlight line on demand or after running select functions
+(use-package pulsar
+  :ensure t
+  :config
+  (setq pulsar-pulse t)
+  (setq pulsar-delay 0.125)
+  (setq pulsar-iterations 5)
+  (setq pulsar-face 'pulsar-green)
+  (setq pulsar-highlight-face 'pulsar-yellow)
+  (setq pulsar-pulse-on-window-change t)
+  (with-eval-after-load 'consult
+    (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line)
+    (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
+    (add-hook 'consult-after-jump-hook #'pulsar-reveal-entry))
+  (pulsar-global-mode 1))
 
+;;; Mode line
 (setq-default mode-line-compact t)
 
-;; Display current function
-
-;; (add-hook 'after-init-hook #'(lambda ()
-;;                                (which-function-mode 1)))
-;; (setq which-func-update-delay 0.125)
-
 ;; Diminish some built-in modes
-
 (use-package eldoc :diminish)
 
 ;;; Parentheses
-
 (use-package paren
   :config
   (custom-set-faces
@@ -104,7 +111,7 @@
   :demand t
   :config
   (custom-set-faces
-   '(parenthesis ((t (:foreground "#535353")))))
+   '(parenthesis ((t (:foreground "#989898")))))
   (global-paren-face-mode 1))
 
 ;; Hightlight parentheses dynamically surrounding point

@@ -40,25 +40,33 @@
 (setq tab-first-completion nil)
 
 ;; minibuffer
-(setq echo-keystrokes 0.125          ; Display the key pressed immediately
-      echo-keystrokes-help t)        ; Display help info for keystrokes in the echo area
+(setq echo-keystrokes 0.05)             ; Display the key pressed immediately
+(setq resize-mini-windows t)
+
+;; Help buffer
+(setq help-window-select t)
 
 ;; Support opening new minibuffers from inside existing minibuffers
-(setq-default enable-recursive-minibuffers t)
+(setq enable-recursive-minibuffers t)
+(setq read-minibuffer-restore-windows nil)
 
 ;; Hide undefined commands in M-x
 (setq read-extended-command-predicate #'command-completion-default-include-p)
+(setq minibuffer-default-prompt-format " [%s]"
+      minibuffer-completion-auto-choose t
+      minibuffer-visible-completions nil)
 
 ;; Do not allow the cursor in the minibuffer prompt
 (setopt minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
-(add-hook 'minibuffer-setup-hook #'(lambda ()
-                                     (cursor-intangible-mode 1)))
+(setq crm-prompt (format "%s %%p" (propertize "[%d]" 'face 'shadow)))
+(file-name-shadow-mode 1)
 
 ;;; Use the `orderless' completion style
 (use-package orderless
   :ensure t
   :init
+  (setq completion-pcm-leading-wildcard t) ; Emacs 31: make `partial-completion' behave like `substring'
 
   ;; The basic completion style is specified as fallback in addition to orderless in
   ;; order to ensure that completion commands rely on dynamic completion tables
@@ -81,10 +89,13 @@
                 completion-category-overrides nil
                 completion-category-defaults nil))
   (setq-default orderless-matching-styles
-                '(orderless-literal orderless-flex)))
+                '(orderless-literal orderless-prefixes)))
 
 ;; Sort candidates by `minibuffer-sort-by-history'
-(setopt completions-sort 'historical)
+(setq completions-sort 'historical
+      completion-auto-help nil
+      completion-show-help nil
+      completion-show-inline-help nil)
 
 ;; Ignore cases for completions
 (setq-default completion-ignore-case t)
@@ -157,6 +168,11 @@
         xref-show-definitions-function #'consult-xref)
 
   :config
+  (setq completion-in-region-function #'consult-completion-in-region)
+  (setq consult-async-min-input 3
+        consult-async-input-debounce 0.50
+        consult-async-input-throttle 0.75)
+  (setq consult-narrow-key nil)
 
   ;; Use `consult-ripgrep' instead of `project-find-regexp' in `project'
   (keymap-substitute project-prefix-map #'project-find-regexp #'consult-ripgrep)
@@ -173,10 +189,6 @@
   (consult-customize consult-buffer
                      :prompt "Buffer → ")
 
-  ;; (consult-customize consult-line
-  ;;                    :add-history (seq-some #'thing-at-point '(region symbol))
-  ;;                    :initial (thing-at-point 'symbol))
-
   ;; Shorten recent files in `consult-buffer'
   (defun sthenno/consult--source-recentf-items ()
     (let ((ht (consult--buffer-file-hash))
@@ -190,30 +202,30 @@
                  (file-name-nondirectory file)
                  'multi-category `(file . ,file))
                 items)))))
-
   (plist-put consult--source-recent-file
              :items #'sthenno/consult--source-recentf-items)
 
   :bind ((:map global-map
                ("s-b" . consult-buffer)
+               ("C-x b" . consult-buffer)
                ("C-s" . consult-line)
-               ("C-f" . consult-line-multi)
                ("s-;" . consult-goto-line)
                ("C-v" . consult-yank-pop)
                ("s-m" . consult-imenu-multi)
                ("s-n" . consult-recent-file)
                ("M-i" . consult-info)
                ("M-s" . consult-ripgrep))
-         (:map org-mode-map
-               ("s-m" . consult-org-heading)
-               ("M-a" . consult-org-agenda))))
+         (:map consult-narrow-map
+               ("?" . consult-narrow-help))))
 
 ;;; Dabbrev settings
 (use-package dabbrev
   :config
 
   ;; Better letter cases
-  (setq dabbrev-case-distinction t
+  (setq dabbrev-case-distinction 'case-replace
+        dabbrev-case-replace 'case-replace
+        dabbrev-case-fold-search nil
         dabbrev-upcase-means-case-search t)
 
   (defun sthenno/dabbrev-elisp ()
@@ -308,7 +320,7 @@
                                        (global-corfu-mode 1)))
   :config
   (setq corfu-auto t
-        corfu-auto-delay 0.125          ; Making this to 0 is too expensive
+        corfu-auto-delay 0.05           ; Making this to 0 is too expensive
         corfu-auto-prefix 1)
   (setq corfu-count 8
         corfu-scroll-margin 4)
@@ -320,7 +332,7 @@
                                         ; inserted
         corfu-preview-current 'insert   ; Preview first candidate. Insert on input if
                                         ; only one
-        corfu-on-exact-match 'quit)
+        corfu-on-exact-match 'insert)
   (setq corfu-cycle t)
   (setq corfu-preselect 'directory)
 
@@ -333,35 +345,6 @@
   (add-hook 'eshell-mode-hook #'sthenno/corfu-eshell-setup)
 
   (add-hook 'corfu-mode-hook #'sthenno/completion-style-corfu)
-
-  ;; Use special key to insert
-  ;;
-  ;; Use convenient keys to insert candidates of `corfu--candidates'. Since the first
-  ;; candidate is usually pre-selected, it is better to trigger `corfu--insert'
-  ;; depending on different conditions.
-  ;;
-  ;; (defun sthenno/corfu-insert-key (key)
-  ;;   "Insert selected candidate in `corfu--candidates' and KEY."
-
-  ;;   ;; Check if `corfu--insert'
-  ;;   (let ((c (cond ((equal key "SPC") ?\s)
-  ;;                  (t (aref key 0)))))
-  ;;     (if (> corfu--index 0)
-  ;;         (progn
-  ;;           (corfu--insert 'finished)
-
-  ;;           ;; Check if insert key
-  ;;           (let ((p (or (not (char-after))
-  ;;                        (= (char-after) ?\s)
-  ;;                        (= (char-after) ?\n))))
-  ;;             (if p (insert c)
-  ;;               nil)))
-  ;;       (insert c))))
-
-  ;; (dolist (k '("SPC" "." "," ":" ")" "}" "]" "'"))
-  ;;   (keymap-set corfu-map k #'(lambda ()
-  ;;                               (interactive)
-  ;;                               (sthenno/corfu-insert-key k))))
   (keymap-set corfu-map "RET" #'corfu-insert)
 
   ;; Combined sorting
@@ -382,18 +365,16 @@
   (add-to-list 'savehist-additional-variables 'corfu-history)
 
   ;; Popup candidates info
-  (setq corfu-popupinfo-delay '(0.25 . 0.125))
+  (setq corfu-popupinfo-delay '(0.5 . 0.25))
   (setq corfu-popupinfo-hide nil)
   (setq corfu-popupinfo-max-width 80
         corfu-popupinfo-min-width 20)
-
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (corfu-popupinfo-mode 1)))
-
   :bind (:map corfu-map
               ("<down>"   . corfu-next)
-              ("TAB"      . corfu-next)
-              ([tab]      . corfu-next)
+              ("TAB"      . corfu-complete)
+              ([tab]      . corfu-complete)
               ("<up>"     . corfu-previous)
               ("<escape>" . corfu-quit)))
 

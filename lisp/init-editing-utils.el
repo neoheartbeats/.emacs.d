@@ -31,13 +31,12 @@
 (keymap-global-set "M-<up>"   #'backward-paragraph)
 
 ;; Fill columns
-;;
 (global-display-fill-column-indicator-mode 1)
 
 ;; Display line numbers
-;;
 (setq-default display-line-numbers-width 4)
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+(add-hook 'prog-mode-hook  #'display-line-numbers-mode)
+(add-hook 'dired-mode-hook #'display-line-numbers-mode)
 
 ;; Indentations
 ;;

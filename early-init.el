@@ -22,8 +22,8 @@
 ;; These values are restored to more reasonable defaults after initialization
 (let ((threshold (* 128 1024 1024))     ; 128MB
       (percentage 0.6))
-  (setq-default gc-cons-threshold (* 512 1024 1024) ; Set to 512MB
-                gc-cons-percentage 1.0)
+  (setq-default gc-cons-threshold most-positive-fixnum
+                gc-cons-percentage 0.5)
   (add-hook 'after-init-hook #'(lambda ()
                                  (setq gc-cons-threshold threshold
                                        gc-cons-percentage percentage))))
@@ -48,37 +48,6 @@
                         (delete-dups (append file-name-handler-alist
                                              old-file-name-handler-alist)))))))
 
-;; Suppress loading messages during startup to prevent screen flashing
-;; (define-advice load-file (:override (file) silence-loading)
-;;   "Override `load-file' to suppress loading messages during startup."
-;;   (load file nil 'nomessage))
-
-;; (define-advice startup--load-user-init-file (:before (&rest _) restore-load-file)
-;;   "Restore original `load-file' behavior before loading user init file.
-;; This ensures normal message behavior after startup is complete."
-;;   (advice-remove #'load-file #'load-file@silence-loading))
-
-;; Define user cache directory for various Emacs temporary files
-
-;; (defcustom user-cache-directory (expand-file-name "cache-files" user-emacs-directory)
-;;   "Base directory for Emacs cache files.
-;; This directory is used for native compilation cache, auto-save files,
-;; and other temporary data that Emacs generates during operation."
-;;   :type 'directory
-;;   :group 'initialization)
-
-;; Ensure cache directory exists to prevent runtime errors
-;; (make-directory user-cache-directory t)
-
-;; Configure native compilation settings when available
-
-;; Suppress native compilation warnings to prevent disruption
-;; (setq native-comp-async-report-warnings-errors 'silent)
-
-;; Set optimal number of compilation jobs based on available processors
-;; (setq native-comp-async-jobs-number (max 1
-;;                                          (- (num-processors) 2)))
-
 ;; Set default frame parameters for all frames
 ;; These settings create a clean, modern UI appearance
 (setq-default default-frame-alist '(
@@ -100,8 +69,10 @@
 
 (setq-default initial-frame-alist default-frame-alist)
 
-;; Do `package-initialize' at `init'
 (setq package-enable-at-startup nil)
+
+(add-to-list 'features 'org)
+(add-to-list 'features 'org-loaddefs)
 
 (provide 'early-init)
 

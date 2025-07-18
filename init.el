@@ -85,7 +85,6 @@
       initial-scratch-message nil)
 
 ;;; User configurations
-
 (setq user-full-name user-login-name
       user-mail-address "sthenno@sthenno.com")
 
@@ -104,23 +103,11 @@
         (text "Funding for this program was made possible by viewers like you."))
     (message "%s %s" icon text)))
 
-;; Open today’s journal at startup
-(setq initial-buffer-choice #'(lambda ()
-                                (when (fboundp 'denote-journal-new-or-existing-entry)
-                                  (call-interactively
-                                   #'denote-journal-new-or-existing-entry))))
-
 ;;; Package Management
-
-;; Store customizations
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(when (file-exists-p custom-file)
-  (load custom-file))
-
 ;; Initialize package system
 (require 'package)
-
 (setq package-vc-allow-build-commands t
+      package-vc-register-as-project nil
       package-install-upgrade-built-in t
       package-archives '(("gnu-devel" . "https://elpa.gnu.org/devel/")
                          ("melpa" . "https://melpa.org/packages/")
@@ -129,47 +116,31 @@
 (unless (bound-and-true-p package--initialized)
   (package-initialize))
 
-(eval-when-compile
-  (eval-after-load 'advice
-    `(setq ad-redefinition-action 'accept))
-  (setq use-package-verbose nil
-        use-package-compute-statistics nil
-        use-package-minimum-reported-time 0.01
-        use-package-expand-minimally t
-        use-package-enable-imenu-support t)
-  (when init-file-debug
-    (setq use-package-expand-minimally nil
-          use-package-verbose t
-          use-package-compute-statistics t
-          debug-on-error t))
-  (require 'use-package))
+;; Load the patched `org'
+(progn
+  (add-to-list 'load-path "/Users/sthenno/.emacs.d/site-lisp/org/lisp/")
+  (setq features (delq 'org features))
+  (require 'org))
 
-;; Core package configurations
-;;
-;; Essential packages
-(use-package org :load-path "site-lisp/org/lisp/")
+;; Declare interactive functions used at startup to inform the byte-compiler
+(let ((startup-buffer 'denote-journal-new-or-existing-entry))
+  (declare-function startup-buffer "denote-journal" t)
+  (setq initial-buffer-choice startup-buffer))
+
+;; Store customizations
+(setq custom-file (make-temp-file "tmp"))
 
 ;; Load configuration modules
-;;
-(add-to-list 'load-path (locate-user-emacs-file "lisp/"))
-
-;; Define required modules
-(defvar sthenno/init-modules '(init-system
-                               init-gui-frames
-                               init-org
-                               init-editing-utils
-                               init-projects
-                               init-temp
-                               init-comp
-                               init-eglot)
-  "List of configuration modules to load.")
-
-;; Load modules safely
-(dolist (mod sthenno/init-modules)
-  (condition-case err
-      (require mod)
-    (error
-     (message "Failed to load mod \"%s\": %s" mod err))))
+(progn
+  (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
+  (defconst sthenno/init-modules
+    '(system gui-frames org editing-utils projects temp comp eglot)
+    "List of configuration modules to load.")
+  (dolist (mod sthenno/init-modules)
+    (let ((mod-sym (intern (format "init-%s" mod))))
+      (condition-case-unless-debug err
+          (require mod-sym)
+        (message "Error loading module %S: %s" mod-sym (error-message-string err))))))
 
 (provide 'init)
 
