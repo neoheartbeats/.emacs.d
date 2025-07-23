@@ -128,7 +128,7 @@
 (blink-cursor-mode -1)
 
 ;;; Encodings
-
+;;
 ;; Contrary to what many Emacs users have in their configs, you don‘t need more than
 ;; this to make UTF-8 the default coding system:
 (set-language-environment 'utf-8)
@@ -141,8 +141,6 @@
 ;;; Font settings
 
 (set-face-attribute 'default nil :family "Tempestypes" :height 140)
-;; Line spacing
-;; (setq-default line-spacing 0.25)
 
 ;; No need for italic fonts
 (set-face-italic 'italic nil)
@@ -153,7 +151,6 @@
 (set-fontset-font t 'ucs (font-spec :family "SF Pro") nil 'prepend)
 
 ;; Typographic ligatures
-
 (use-package ligature
   :ensure t
   :config (let* ((ligs '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"
