@@ -274,16 +274,73 @@
                 cape-dabbrev-min-length 2))
   (add-hook 'emacs-lisp-mode-hook #'sthenno/capf-elisp)
 
-  (defun sthenno/capf-text ()
-    (setq-local completion-at-point-functions
-                `(,(cape-capf-super
-                    (cape-capf-prefix-length #'cape-dict 4)
-                    #'cape-dabbrev
-                    #'cape-keyword)
-                  cape-elisp-block
-                  cape-file)
-                cape-dabbrev-min-length 3))
-  (add-hook 'text-mode-hook #'sthenno/capf-text)
+  (with-eval-after-load 'denote-org
+
+    ;; Setup campletion-at-point functions for `denote' at Org.
+    (defvar sthenno/denote-org-link-completions nil
+      "Cache of (TITLE . ID) alist for Denote notes, used for Org link completion.")
+
+    (defun sthenno/denote-org-link-refresh ()
+      "Refresh the cache of Denote note titles and IDs for link completion.
+Uses Denote’s APIs to get all notes in `denote-directory', then caches
+their titles and identifiers. The cache is persisted across sessions
+using `org-persist'."
+      (setq sthenno/denote-org-link-completions
+            (let ((files (denote-directory-files nil nil t)))
+              (mapcar (lambda (file)
+                        (let* ((ft    (denote-filetype-heuristics file))
+                               (title (denote-retrieve-title-or-filename file ft))
+                               (id    (denote-retrieve-filename-identifier file)))
+                          (cons title id)))
+                      files)))
+      sthenno/denote-org-link-completions)
+
+    (defun sthenno/denote-org-link-get-candidates ()
+      "Return the list of note title candidates for completion, loading cache
+if needed."
+      (or sthenno/denote-org-link-completions
+          (sthenno/denote-org-link-refresh)))
+
+    (defun sthenno/denote-completion-at-point ()
+      "Completion-at-point function for inserting Denote links in Org mode.
+Triggers only inside an open Org link “([[...]])”, completing to
+“[[denote:ID][Title]]”."
+      (let* ((pos (point))
+             (open-pos  (save-excursion (search-backward "[[" nil t)))
+             (close-pos (save-excursion (search-backward "]]" nil t))))
+        (when (and open-pos
+                   (or (not close-pos)
+                       (< close-pos open-pos))
+                   (save-excursion
+                     (goto-char (+ open-pos 2))
+                     (not (search-forward "]" pos t))))
+          (let* ((beg (copy-marker (+ open-pos 2)))
+                 (end (copy-marker pos t))
+                 (cands (sthenno/denote-org-link-get-candidates)))
+            (when cands
+              (list beg end (mapcar #'car cands)
+                    :annotation-function (lambda (title)
+                                           (when-let ((id (cdr (assoc title cands))))
+                                             (format " D [%s]"
+                                                     (if (fboundp 'denote-id-to-date)
+                                                         (denote-id-to-date id)
+                                                       ""))))
+                    :exit-function (lambda (selection _status)
+                                     (when selection
+                                       (let ((id (cdr (assoc selection cands))))
+                                         (when id
+                                           (delete-region beg end)
+                                           (insert (format "denote:%s][%s" id selection))))))))))))
+    (defun sthenno/capf-text ()
+      (setq-local completion-at-point-functions
+                  `(,(cape-capf-super
+                      (cape-capf-prefix-length #'cape-dict 4)
+                      #'sthenno/denote-completion-at-point)
+                    cape-elisp-block
+                    cape-file
+                    cape-dabbrev)
+                  cape-dabbrev-min-length 5))
+    (add-hook 'text-mode-hook #'sthenno/capf-text))
 
   :config
   (defun sthenno/cape--symbol-annotation (sym)
@@ -337,7 +394,6 @@
   (setq corfu-preselect 'directory)
 
   ;; Performance optimization
-  ;;
   (defun sthenno/corfu-eshell-setup ()
     (setq-local corfu-auto nil)
     (corfu-mode 1)

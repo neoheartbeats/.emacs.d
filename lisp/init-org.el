@@ -43,63 +43,6 @@
  org-preview-latex-image-directory (expand-file-name "ltximg/" user-emacs-directory)
  org-persist-directory (expand-file-name "org-persist/" user-emacs-directory))
 
-(add-hook 'org-mode-hook #'(lambda ()
-                             (org-latex-preview-auto-mode 1)))
-
-;; Preview functions
-(defun sthenno/org-preview-fragments ()
-  (interactive)
-  (call-interactively 'org-latex-preview-clear-cache)
-  (org-latex-preview 'buffer)
-  (org-link-preview-refresh))
-(keymap-set org-mode-map "C-p" #'sthenno/org-preview-fragments)
-
-(setopt org-latex-packages-alist '(("" "siunitx"   t)
-                                   ("" "mlmodern" t)
-
-                                   ;; Load this after all math to give access to bold math
-                                   ;; See https://ctan.org/pkg/newtx
-                                   ("" "bm" t)
-
-                                   ;; Package physics2 requires to be loaded after font
-                                   ;; packages. See https://ctan.org/pkg/physics2
-                                   ("" "physics2" t)))
-
-;; Add additional modules required by LaTeX packages like physics2 to the preamble
-(let* ((physics2-modules '(("" "ab")
-                           ("" "diagmat")
-                           ("" "xmat")))
-       (physics2-preamble (concat (mapconcat
-                                   (lambda (m)
-                                     (let ((options (car  m))
-                                           (module  (cadr m)))
-                                       (if (string= options "")
-                                           (format "\\usephysicsmodule{%s}" module)
-                                         (format "\\usephysicsmodule[%s]{%s}" options module))))
-                                   physics2-modules
-                                   "\n")
-                                  "\n"))
-       (default-preamble "\\documentclass{article}
-\[DEFAULT-PACKAGES]
-\[PACKAGES]
-\\usepackage{xcolor}"))
-  (setopt org-latex-preview-preamble
-          (concat default-preamble
-                  "\n" physics2-preamble
-                  "\\DeclareMathOperator*{\\argmax}{arg\\,max}\n"
-                  "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))
-
-(setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
-(setq org-use-sub-superscripts '{})
-(setq org-pretty-entities t
-      org-pretty-entities-include-sub-superscripts nil)
-
-;; (let ((factor (- (/ (face-attribute 'default :height)
-;;                     100.0)
-;;                  0.025)))
-;;   (plist-put org-latex-preview-appearance-options :scale factor)
-;;   (plist-put org-latex-preview-appearance-options :zoom  factor))
-
 ;; (setq org-latex-preview-process-default 'dvisvgm)
 ;; (let ((dvisvgm (alist-get 'dvisvgm org-latex-preview-process-alist))
 ;;       (libgs "/opt/homebrew/opt/ghostscript/lib/libgs.dylib"))
@@ -107,6 +50,65 @@
 ;;              `(,(concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts"
 ;;                         " --libgs=" libgs
 ;;                         " --bbox=preview -v3 -o %B-%%9p.svg %f"))))
+
+;; (add-hook 'org-mode-hook #'(lambda ()
+;;                              (org-latex-preview-auto-mode 1)))
+
+;; Preview functions
+
+;; (defun sthenno/org-preview-fragments ()
+;;   (interactive)
+;;   (call-interactively 'org-latex-preview-clear-cache)
+;;   (org-latex-preview 'buffer)
+;;   (org-link-preview-refresh))
+;; (keymap-set org-mode-map "C-p" #'sthenno/org-preview-fragments)
+
+;; (setopt org-latex-packages-alist '(("" "siunitx"   t)
+;;                                    ("" "mlmodern" t)
+
+;;                                    ;; Load this after all math to give access to bold math
+;;                                    ;; See https://ctan.org/pkg/newtx
+;;                                    ("" "bm" t)
+
+;;                                    ;; Package physics2 requires to be loaded after font
+;;                                    ;; packages. See https://ctan.org/pkg/physics2
+;;                                    ("" "physics2" t)))
+
+;; Add additional modules required by LaTeX packages like physics2 to the preamble
+
+;; (let* ((physics2-modules '(("" "ab")
+;;                            ("" "diagmat")
+;;                            ("" "xmat")))
+;;        (physics2-preamble (concat (mapconcat
+;;                                    (lambda (m)
+;;                                      (let ((options (car  m))
+;;                                            (module  (cadr m)))
+;;                                        (if (string= options "")
+;;                                            (format "\\usephysicsmodule{%s}" module)
+;;                                          (format "\\usephysicsmodule[%s]{%s}" options module))))
+;;                                    physics2-modules
+;;                                    "\n")
+;;                                   "\n"))
+;;        (default-preamble "\\documentclass{article}
+;; \[DEFAULT-PACKAGES]
+;; \[PACKAGES]
+;; \\usepackage{xcolor}"))
+;;   (setopt org-latex-preview-preamble
+;;           (concat default-preamble
+;;                   "\n" physics2-preamble
+;;                   "\\DeclareMathOperator*{\\argmax}{arg\\,max}\n"
+;;                   "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))
+
+(setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
+(setq org-use-sub-superscripts '{})
+;; (setq org-pretty-entities t
+;;       org-pretty-entities-include-sub-superscripts nil)
+
+;; (let ((factor (- (/ (face-attribute 'default :height)
+;;                     100.0)
+;;                  0.025)))
+;;   (plist-put org-latex-preview-appearance-options :scale factor)
+;;   (plist-put org-latex-preview-appearance-options :zoom  factor))
 
 ;;; Modern Org mode theme
 (use-package org-modern
@@ -125,9 +127,11 @@
         '(("src"   . ("􀃥" "􀃥"))
           ("quote" . ("􁈏" "􁈐"))
           (t . t)))
-  (setq org-modern-keyword '(("title"   . "􁓔")
+  (setq org-modern-keyword '(("title"   . "􀫘")
                              ("results" . "􀎛")
                              (t . t)))
+  (setq org-modern-table t)
+
   ;; Hooks
   (add-hook 'org-mode-hook #'(lambda ()
                                (org-modern-mode 1))))
@@ -146,7 +150,7 @@
 (setq org-treat-insert-todo-heading-as-state-change t)
 
 ;; Better experiences jumping through headlines
-(setq org-special-ctrl-a/e t)
+;; (setq org-special-ctrl-a/e t)
 
 ;; Fold drawers by default
 (setq org-cycle-hide-drawer-startup t)
@@ -178,7 +182,7 @@
   :config
   (setq denote-directory org-directory)
   (setq denote-file-type 'org)
-  (setq denote-known-keywords '("silos" "papers" "production" "statics" "marked")
+  (setq denote-known-keywords '("silos" "papers" "develop" "production" "marked")
         denote-infer-keywords t)
   (setq denote-save-buffers t
         denote-kill-buffers t)
@@ -192,7 +196,7 @@
   ;; string of `denote-rename-buffer-format' for how to modify this.
   (denote-rename-buffer-mode 1)
 
-  (setq denote-buffer-name-prefix   "􁓯 ")
+  (setq denote-buffer-name-prefix   "􀫘 ")
   (setq denote-rename-buffer-format "%D%b")
 
   ;; The `denote-rename-buffer-mode' can now show if a file has backlinks
@@ -200,34 +204,26 @@
 
   ;; Do not issue any extra prompts. Always sort by the `title' file name component and
   ;; never do a reverse sort.
-  (setq denote-sort-dired-extra-prompts nil)
-  (setq denote-sort-dired-default-sort-component 'title)
-  (setq denote-sort-dired-default-reverse-sort t)
+  (setq denote-sort-dired-extra-prompts nil
+        denote-sort-dired-default-sort-component 'title
+        denote-sort-dired-default-reverse-sort t)
 
   ;; Hooks
-  (add-hook 'dired-mode-hook #'denote-dired-mode)
-
-  :bind ((:map global-map
-               ("s-o" . denote-open-or-create))
-         (:map org-mode-map
-               ("s-i" . denote-link-or-create)
-               ("s-l" . denote-insert-link))))
+  (add-hook 'dired-mode-hook #'denote-dired-mode))
 
 (use-package denote-journal
   :ensure t
   :config
-  (setq denote-journal-title-format "%Y-%m-%d") ; Format yyyy-mm-dd
-  (setq denote-journal-directory (expand-file-name "stages/" denote-directory))
-  (setq denote-journal-keyword '("stages")) ; Stages are journals
-
-  :bind ((:map global-map
-               ("C-c d" . denote-journal-new-or-existing-entry))))
+  (setq denote-journal-title-format "%Y-%m-%d" ; Format yyyy-mm-dd
+        denote-journal-directory (expand-file-name "stages/" denote-directory)
+        denote-journal-keyword '("stages")) ; Stages are journals
+  (keymap-global-set "C-c d" #'denote-journal-new-or-existing-entry))
 
 (use-package denote-org
   :ensure t
   :config (setq denote-org-store-link-to-heading 'context))
 
-;; Helper functions
+;;; Helper functions
 (defun sthenno/denote-get-sorted-note-files (directory)
   "Return a list of note files in DIRECTORY, sorted by name."
   (sort (seq-filter 'denote-file-is-note-p
@@ -281,17 +277,17 @@
 ;; In addition to `org-src-fontify-natively'
 (add-to-list 'org-src-lang-modes (cons "python" 'python))
 
-(setq org-edit-src-turn-on-auto-save t)
+;; (setq org-edit-src-turn-on-auto-save t)
 
-(keymap-set org-mode-map "C-'" #'org-edit-special)
-(keymap-set org-src-mode-map "C-'" #'org-edit-src-exit)
+;; (keymap-set org-mode-map "C-'" #'org-edit-special)
+;; (keymap-set org-src-mode-map "C-'" #'org-edit-src-exit)
 
 ;; Prefer lower-case drawers
 (setq org-babel-results-keyword "results")
 
 ;; Using `S-<return>' instead
-(setq org-babel-no-eval-on-ctrl-c-ctrl-c t)
-(keymap-set org-mode-map "S-<return>" #'org-babel-execute-maybe)
+;; (setq org-babel-no-eval-on-ctrl-c-ctrl-c t)
+;; (keymap-set org-mode-map "S-<return>" #'org-babel-execute-maybe)
 
 ;; Enable these languages for Org-Babel
 (org-babel-do-load-languages 'org-babel-load-languages '((emacs-lisp . t)
@@ -299,6 +295,12 @@
 
 ;; Specific `org-babel-python-command'
 (setq org-babel-python-command "/Users/sthenno/Tempestissimo/tempestissimo/.venv/bin/python")
+
+;;; Org-Table
+(setq org-table-use-standard-references t)
+
+;;; Export
+(setq org-export-allow-bind-keywords t)
 
 (provide 'init-org)
 

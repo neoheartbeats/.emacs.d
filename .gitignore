@@ -31,15 +31,7 @@ recentf
 /package-quickstart.elc
 /ede-projects.el
 /sthenno-emacs.org
-/.early-init.el.~undo-tree~
-/.init.el.~undo-tree~
-/lisp/.init-editing-utils.el.~undo-tree~
-/.custom.el.~undo-tree~
-/lisp/.init-gui-frames.el.~undo-tree~
-/lisp/.init-org.el.~undo-tree~
-/lisp/.init-comp.el.~undo-tree~
-/lisp/.init-eglot.el.~undo-tree~
-/lisp/.init-system.el.~undo-tree~
+*.~undo-tree~
 /projectile.cache
 /tree-sitter/
 /site-lisp/gptel-tools/
