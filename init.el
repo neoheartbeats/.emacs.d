@@ -11,8 +11,8 @@
 ;; configurations from the lisp/ directory.
 
 ;;; Code:
+;;
 
-
 ;;; Large File Handling - Performance Optimizations
 
 ;; Process & I/O Optimizations
@@ -25,9 +25,6 @@
 
 ;; Disable adaptive buffering for more predictable performance
 (setq process-adaptive-read-buffering nil)
-
-;; Always load newer elisp files to ensure using latest version
-;; (setq load-prefer-newer t)
 
 ;; File management settings
 ;;
@@ -58,15 +55,12 @@
 ;; Remove command line options that aren't relevant to our current OS
 (setq command-line-x-option-alist nil)
 
-
 ;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions in
 ;; non-focused windows
 ;;
 (setq-default cursor-in-non-selected-windows nil)
 (setq-default highlight-nonselected-windows nil)
-
 (setq-default ns-use-proxy-icon nil)
-(setq-default frame-title-format "")
 
 ;; Better Directory Handling
 (setq auto-mode-case-fold nil)          ; Case-sensitive `auto-mode-alist' lookup
@@ -96,12 +90,13 @@
     (funcall mode -1)))
 
 ;; Custom Startup message
-(define-advice display-startup-echo-area-message
-    (:override () sthenno-startup-message)
-  "Display a custom startup message in the echo area."
-  (let ((icon (propertize "􀋮" 'face 'error))
-        (text "Funding for this program was made possible by viewers like you."))
-    (message "%s %s" icon text)))
+
+;; (define-advice display-startup-echo-area-message
+;;     (:override () sthenno-startup-message)
+;;   "Display a custom startup message in the echo area."
+;;   (let ((icon (propertize "􀎛" 'face 'success))
+;;         (text "Funding for this program was made possible by viewers like you."))
+;;     (message "%s %s" icon text)))
 
 ;;; Package Management
 ;; Initialize package system
@@ -117,10 +112,10 @@
   (package-initialize))
 
 ;; Load the patched `org'
-(progn
-  (add-to-list 'load-path "/Users/sthenno/.emacs.d/site-lisp/org/lisp/")
-  (setq features (delq 'org features))
-  (require 'org))
+;; (progn
+;;   (add-to-list 'load-path "/Users/sthenno/.emacs.d/site-lisp/org/lisp/")
+;;   (setq features (delq 'org features))
+;;   (require 'org))
 
 ;; Declare interactive functions used at startup to inform the byte-compiler
 (let ((startup-buffer 'denote-journal-new-or-existing-entry))
@@ -131,16 +126,15 @@
 (setq custom-file (make-temp-file "tmp"))
 
 ;; Load configuration modules
-(progn
-  (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
-  (defconst sthenno/init-modules
-    '(system gui-frames org editing-utils projects temp comp eglot)
-    "List of configuration modules to load.")
-  (dolist (mod sthenno/init-modules)
-    (let ((mod-sym (intern (format "init-%s" mod))))
-      (condition-case-unless-debug err
-          (require mod-sym)
-        (message "Error loading module %S: %s" mod-sym (error-message-string err))))))
+(add-to-list 'load-path (locate-user-emacs-file "lisp/"))
+(require 'init-system)
+(require 'init-gui-frames)
+(require 'init-org)
+(require 'init-editing-utils)
+(require 'init-projects)
+(require 'init-temp)
+(require 'init-comp)
+(require 'init-eglot)
 
 (provide 'init)
 

@@ -16,7 +16,6 @@
 
 ;;; Modus Themes
 
-(setq custom-safe-themes t)
 (use-package modus-themes
   :config
 
@@ -80,12 +79,10 @@
 (use-package pulsar
   :ensure t
   :config
-  (setq pulsar-pulse t)
-  (setq pulsar-delay 0.125)
-  (setq pulsar-iterations 5)
-  (setq pulsar-face 'pulsar-green)
-  (setq pulsar-highlight-face 'pulsar-yellow)
-  (setq pulsar-pulse-on-window-change t)
+  (setq pulsar-pulse t
+        pulsar-pulse-on-window-change t
+        pulsar-delay 0.125
+        pulsar-iterations 7.5)
   (with-eval-after-load 'consult
     (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line)
     (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
@@ -121,7 +118,6 @@
   :config (global-highlight-parentheses-mode 1))
 
 ;;; Cursor faces
-
 (setopt cursor-type '(bar . 1))
 (setopt mouse-highlight nil)
 
@@ -139,7 +135,6 @@
 (setq default-input-method nil)
 
 ;;; Font settings
-
 (set-face-attribute 'default nil :family "Tempestypes" :height 140)
 
 ;; No need for italic fonts
@@ -147,26 +142,27 @@
 
 ;; Set up font for non-ascii fontset
 (set-fontset-font t 'han (font-spec :family "Songti SC"))
-(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
 (set-fontset-font t 'ucs (font-spec :family "SF Pro") nil 'prepend)
 
 ;; Typographic ligatures
+
 (use-package ligature
   :ensure t
-  :config (let* ((ligs '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"
-                         "<---->" "<!--"
-                         "<==" "<===" "<=" "=>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
-                         "<====>" "<!---"
-                         "::" ":::" "==" "!=" "===" "!=="
-                         ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:"
-                         "<******>" "++" "+++"))
-                 (ligs-dict (append '("__" "--") ligs))
-                 (ligs-text (append '("__")      ligs)))
-            (ligature-set-ligatures 'prog-mode ligs-dict)
-            (ligature-set-ligatures 'text-mode ligs-text)
+  :config
+  (let* ((ligs '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"
+                 "<---->" "<!--"
+                 "<==" "<===" "<=" "=>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
+                 "<====>" "<!---"
+                 "::" ":::" "==" "!=" "===" "!=="
+                 ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:"
+                 "<******>" "++" "+++"))
+         (ligs-dict (append '("__" "--") ligs))
+         (ligs-text (append '("__")      ligs)))
+    (ligature-set-ligatures 'prog-mode ligs-dict)
+    (ligature-set-ligatures 'text-mode ligs-text)
 
-            ;; Enables ligature checks globally in all buffers
-            (global-ligature-mode 1)))
+    ;; Enables ligature checks globally in all buffers
+    (global-ligature-mode 1)))
 
 ;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1 :weight 'thin)

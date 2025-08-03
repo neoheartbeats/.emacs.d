@@ -186,9 +186,10 @@ Activate again to undo this. If the window changes before then, the undo expires
                                  (dired-hide-details-mode 1)))
 
   ;; `gls' is preferred on macOS
-  (setq insert-directory-program "/opt/homebrew/bin/gls")
+  (setq insert-directory-program "/opt/homebrew/bin/gls"))
 
-  :config (define-key input-decode-map [?\C-m] [C-m])) ; Default is RET
+;;; Default is RET
+;; (define-key input-decode-map [?\C-m] [C-m])
 
 ;;; Global functions for accessibility
 

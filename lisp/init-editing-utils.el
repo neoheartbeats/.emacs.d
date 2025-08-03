@@ -115,6 +115,28 @@ This disables syntax highlighting and auto-paring for such entries."
   :bind ((:map global-map
                ("S-SPC" . er/expand-region))))
 
+;;; Files
+(defun sthenno/convert-image-to-png (file)
+  "Convert FILE to PNG format using macOS `sips' tool.
+The converted file will be saved in the same directory with a .png extension."
+  (let* ((input (expand-file-name file))
+         (output (concat (file-name-sans-extension input) ".png")))
+    (if (executable-find "sips")
+        (progn
+          (shell-command (format "sips -s format png %s --out %s"
+                                 (shell-quote-argument input)
+                                 (shell-quote-argument output)))
+          (message "Converted “%s” to “%s”" input output)
+          output)
+      (message "Error: “sips” not found on your system! Are you even using macOS?"))))
+
+(defun sthenno/convert-image-to-png-current-buffer ()
+  (interactive)
+  (let* ((input (buffer-file-name))
+         (output (sthenno/convert-image-to-png input)))
+    (delete-file (expand-file-name input))
+    (find-file (expand-file-name output))))
+
 (provide 'init-editing-utils)
 
 ;;; init-editing-utils.el ends here
