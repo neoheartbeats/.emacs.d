@@ -91,12 +91,12 @@
 
 ;; Custom Startup message
 
-;; (define-advice display-startup-echo-area-message
-;;     (:override () sthenno-startup-message)
-;;   "Display a custom startup message in the echo area."
-;;   (let ((icon (propertize "􀎛" 'face 'success))
-;;         (text "Funding for this program was made possible by viewers like you."))
-;;     (message "%s %s" icon text)))
+(define-advice display-startup-echo-area-message
+    (:override () sthenno-startup-message)
+  "Display a custom startup message in the echo area."
+  (let ((icon (propertize "􀎛" 'face 'default))
+        (text "Funding for this program was made possible by viewers like you."))
+    (message "%s %s" icon text)))
 
 ;;; Package Management
 ;; Initialize package system

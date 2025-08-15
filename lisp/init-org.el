@@ -19,17 +19,18 @@
 ;;; Code:
 
 ;;; Setup default directory
-(setq org-directory "~/org/")
+(setq org-directory "/Users/sthenno/Tempestissimo/soulin/")
 
 ;;; Org Mode buffer init behaviors
-(setq org-startup-with-link-previews t
-      org-startup-with-latex-preview t)
+(setq org-startup-with-link-previews t)
+(setq org-startup-with-inline-images t)
+(setq org-startup-with-latex-preview nil)
 
 ;; Fold titles by default
 ;; (setq org-startup-folded 'content)
 
 ;;; Install AUCTeX
-(use-package tex :ensure auctex)
+;; (use-package tex :ensure auctex)
 
 ;;; Use CDLaTeX to improve editing experiences
 
@@ -129,9 +130,7 @@
           (t . t)))
   (setq org-modern-keyword '(("title"   . "􀫘")
                              ("results" . "􀎛")
-                             (t . t)))
-  (setq org-modern-table t)
-
+                             (t . "‣ ")))
   ;; Hooks
   (add-hook 'org-mode-hook #'(lambda ()
                                (org-modern-mode 1))))
@@ -182,25 +181,22 @@
   :config
   (setq denote-directory org-directory)
   (setq denote-file-type 'org)
-  (setq denote-known-keywords '("silos" "papers" "develop" "production" "marked")
+  (setq denote-known-keywords '("stages" "silos" "production" "technology" "papers")
         denote-infer-keywords t)
   (setq denote-save-buffers t
         denote-kill-buffers t)
   (setq denote-open-link-function #'find-file)
 
   ;; Do not include date, tags and ids in note files
-  (setopt denote-org-front-matter "#+title: %1$s\n\n")
+  (setq denote-date-format "%FT%T%z")   ; ISO 8601 (RFC3339)
+  (setq denote-org-front-matter "#+title: %1$s\n\n")
 
-  ;; Automatically rename Denote buffers when opening them so that instead of their long
-  ;; file name they have a literal "[D]" followed by the file's title.  Read the doc
-  ;; string of `denote-rename-buffer-format' for how to modify this.
   (denote-rename-buffer-mode 1)
-
-  (setq denote-buffer-name-prefix   "􀫘 ")
-  (setq denote-rename-buffer-format "%D%b")
+  (setq denote-buffer-name-prefix "[Soulin] ")
+  (setq denote-rename-buffer-format "%D [%k]")
 
   ;; The `denote-rename-buffer-mode' can now show if a file has backlinks
-  (setq denote-rename-buffer-backlinks-indicator " ↔ ")
+  ;; (setq denote-rename-buffer-backlinks-indicator " ↔ ")
 
   ;; Do not issue any extra prompts. Always sort by the `title' file name component and
   ;; never do a reverse sort.
@@ -214,7 +210,7 @@
 (use-package denote-journal
   :ensure t
   :config
-  (setq denote-journal-title-format "%Y-%m-%d" ; Format yyyy-mm-dd
+  (setq denote-journal-title-format "%FT%T%z" ; ISO 8601 (RFC3339)
         denote-journal-directory (expand-file-name "stages/" denote-directory)
         denote-journal-keyword '("stages")) ; Stages are journals
   (keymap-global-set "C-c d" #'denote-journal-new-or-existing-entry))
@@ -222,6 +218,13 @@
 (use-package denote-org
   :ensure t
   :config (setq denote-org-store-link-to-heading 'context))
+
+(use-package consult-denote
+  :ensure t
+  :after consult
+  :bind (("s-n" . consult-denote-find)
+         ("s-o" . consult-denote-grep))
+  :config (consult-denote-mode 1))
 
 ;;; Helper functions
 (defun sthenno/denote-get-sorted-note-files (directory)

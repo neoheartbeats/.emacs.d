@@ -72,24 +72,25 @@
 (add-hook 'prog-mode-hook #'sthenno/buffer-format-on-save)
 
 ;; Indentation highlights
-(use-package indent-bars
-  :ensure t
-  :config
-  (setq indent-bars-no-descend-lists t  ; no extra bars in continued func arg lists
-        indent-bars-treesit-support t
-        indent-bars-treesit-ignore-blank-lines-types '("module"))
-  (setq indent-bars-prefer-character t)
-  (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
-        indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-        indent-bars-highlight-current-depth '(:blend 0.8)
-        indent-bars-starting-column 0
-        indent-bars-display-on-blank-lines t)
 
-  ;; Hooks
-  (add-hook 'python-ts-mode-hook  #'(lambda ()
-                                      (indent-bars-mode 1)))
-  (add-hook 'bash-ts-mode-hook    #'(lambda ()
-                                      (indent-bars-mode 1))))
+;; (use-package indent-bars
+;;   :ensure t
+;;   :config
+;;   (setq indent-bars-no-descend-lists t  ; no extra bars in continued func arg lists
+;;         indent-bars-treesit-support t
+;;         indent-bars-treesit-ignore-blank-lines-types '("module"))
+;;   (setq indent-bars-prefer-character t)
+;;   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
+;;         indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+;;         indent-bars-highlight-current-depth '(:blend 0.8)
+;;         indent-bars-starting-column 0
+;;         indent-bars-display-on-blank-lines t)
+
+;;   ;; Hooks
+;;   (add-hook 'python-ts-mode-hook  #'(lambda ()
+;;                                       (indent-bars-mode 1)))
+;;   (add-hook 'bash-ts-mode-hook    #'(lambda ()
+;;                                       (indent-bars-mode 1))))
 
 ;;; Inhibit passing these delimiters
 (defun sthenno/inhibit-specific-delimiters ()

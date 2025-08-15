@@ -63,8 +63,8 @@
 
                                     ;; (alpha-background . 60)
                                     (alpha . (90 . 90))
-
                                     (title . "")
+
                                     ;; macOS-specific titlebar settings
                                     (ns-transparent-titlebar . t)))
 

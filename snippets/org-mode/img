@@ -2,7 +2,5 @@
 # name: img
 # key: img
 # --
-#+attr_org: :width $1
-[[~/Developer/sthenno-notes/images/$2]]
-
-$0
+#+attr_org: :width $1px
+[[$0]]
