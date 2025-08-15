@@ -17,11 +17,13 @@
 ;;; Modus Themes
 
 (use-package modus-themes
+  :ensure t
   :config
 
   ;; Mapping colors
   (setq modus-themes-common-palette-overrides
-        `(
+        `((cursor magenta-intense)
+
           ;; Make the mode line borderless
           (border-mode-line-active unspecified)
           (border-mode-line-inactive unspecified)
@@ -82,7 +84,7 @@
   (setq pulsar-pulse t
         pulsar-pulse-on-window-change t
         pulsar-delay 0.125
-        pulsar-iterations 7.5)
+        pulsar-iterations 3.5)
   (with-eval-after-load 'consult
     (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line)
     (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
@@ -91,9 +93,6 @@
 
 ;;; Mode line
 (setq-default mode-line-compact t)
-
-;; Diminish some built-in modes
-(use-package eldoc :diminish)
 
 ;;; Parentheses
 (use-package paren
@@ -105,7 +104,6 @@
 ;; Dim parenthesis for s-expressions
 (use-package paren-face
   :ensure t
-  :demand t
   :config
   (custom-set-faces
    '(parenthesis ((t (:foreground "#989898")))))
@@ -141,33 +139,43 @@
 (set-face-italic 'italic nil)
 
 ;; Set up font for non-ascii fontset
-(set-fontset-font t 'han (font-spec :family "Songti SC"))
-(set-fontset-font t 'ucs (font-spec :family "SF Pro") nil 'prepend)
+(let ((font "PingFang SC"))
+  (set-fontset-font t 'big5       (font-spec :family font))
+  (set-fontset-font t 'big5-hkscs (font-spec :family font))
 
-;; Typographic ligatures
+  ;; Chinese
+  (set-fontset-font t 'chinese-cns11643-1  (font-spec :family font))
+  (set-fontset-font t 'chinese-cns11643-15 (font-spec :family font))
+  (set-fontset-font t 'chinese-cns11643-2  (font-spec :family font))
+  (set-fontset-font t 'chinese-cns11643-3  (font-spec :family font))
+  (set-fontset-font t 'chinese-cns11643-4  (font-spec :family font))
+  (set-fontset-font t 'chinese-cns11643-5  (font-spec :family font))
+  (set-fontset-font t 'chinese-cns11643-6  (font-spec :family font))
+  (set-fontset-font t 'chinese-cns11643-7  (font-spec :family font))
+  (set-fontset-font t 'chinese-gb2312      (font-spec :family font))
+  (set-fontset-font t 'chinese-gbk         (font-spec :family font))
+  (set-fontset-font t 'kanbun              (font-spec :family font))
+  (set-fontset-font t 'bopomofo            (font-spec :family font))
+  (set-fontset-font t 'han                 (font-spec :family font))
 
-(use-package ligature
-  :ensure t
-  :config
-  (let* ((ligs '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"
-                 "<---->" "<!--"
-                 "<==" "<===" "<=" "=>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
-                 "<====>" "<!---"
-                 "::" ":::" "==" "!=" "===" "!=="
-                 ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:"
-                 "<******>" "++" "+++"))
-         (ligs-dict (append '("__" "--") ligs))
-         (ligs-text (append '("__")      ligs)))
-    (ligature-set-ligatures 'prog-mode ligs-dict)
-    (ligature-set-ligatures 'text-mode ligs-text)
+  ;; Japanese
+  (set-fontset-font t 'japanese-jisx0208        (font-spec :family font))
+  (set-fontset-font t 'japanese-jisx0208-1978   (font-spec :family font))
+  (set-fontset-font t 'japanese-jisx0212        (font-spec :family font))
+  (set-fontset-font t 'japanese-jisx0213-1      (font-spec :family font))
+  (set-fontset-font t 'japanese-jisx0213-2      (font-spec :family font))
+  (set-fontset-font t 'japanese-jisx0213.2004-1 (font-spec :family font))
+  (set-fontset-font t 'jisx0201                 (font-spec :family font))
+  (set-fontset-font t 'kana                     (font-spec :family font)))
 
-    ;; Enables ligature checks globally in all buffers
-    (global-ligature-mode 1)))
+;; Unicode
+(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
+(set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'prepend)
 
-;; Make `fill-column-indicator' thinner
+;;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1 :weight 'thin)
 
-;; Ellipsis symbol
+;;; Ellipsis symbol
 (setq truncate-string-ellipsis " …")
 
 (provide 'init-gui-frames)
