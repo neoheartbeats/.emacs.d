@@ -171,6 +171,24 @@
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
 (set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'prepend)
 
+;; Typographic ligatures
+(use-package ligature
+  :ensure t
+  :config (let* ((ligs '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"
+                         "<---->" "<!--"
+                         "<==" "<===" "<=" "=>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
+                         "<====>" "<!---"
+                         "::" ":::" "==" "!=" "===" "!=="
+                         ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:"
+                         "<******>" "++" "+++"))
+                 (ligs-dict (append '("__" "--") ligs))
+                 (ligs-text (append '("__")      ligs)))
+            (ligature-set-ligatures 'prog-mode ligs-dict)
+            (ligature-set-ligatures 'text-mode ligs-text)
+
+            ;; Enables ligature checks globally in all buffers
+            (global-ligature-mode 1)))
+
 ;;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1 :weight 'thin)
 
