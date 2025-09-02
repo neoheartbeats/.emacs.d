@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: cs-hcomment
+# key: csh
+# --
+"""
+    Course     : CMPSC 131, Fall 2025
+    File       : $1.py 
+
+
+    Name       : Jiayu Wang
+    GitHub User:   neoheartbeats
+    Collaboration Statement: $0
+"""

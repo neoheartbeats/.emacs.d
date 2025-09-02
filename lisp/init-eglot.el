@@ -41,11 +41,12 @@
   ;; Hooks
   (add-hook 'python-ts-mode-hook 'eglot-ensure)
 
-  :bind (:map eglot-mode-map
-              ("<f2>" . eglot-rename)))
+  :bind ((:map eglot-mode-map
+               ("<f2>" . eglot-rename))
+         (:map python-base-mode-map
+               ("C-c e" . eglot))))
 
 ;; Boost eglot using lsp-booster
-
 (use-package eglot-booster
   :vc (eglot-booster
        :url "https://github.com/jdtsmith/eglot-booster"
@@ -57,6 +58,7 @@
 
 ;;; Python
 
+;; The built-in `python' environment
 (use-package python
   :init (setq-default python-indent-offset 4
                       python-indent-guess-indent-offset nil
@@ -64,49 +66,52 @@
   :config
 
   ;; Python project management
-  (defun sthenno/python-venv ()
-    "Activate Python environment managed by uv based on current
-project directory.
+  ;;
+  ;; TODO: This function need to be updated.
+  ;; (defun sthenno/python-venv ()
+  ;;       "Activate Python environment managed by uv based on current
+  ;; project directory.
 
-Looks for `.venv' directory in project root and activates the Python
-interpreter."
-    (interactive)
-    (let* ((project-root (project-root (project-current t)))
-           (venv-path (expand-file-name ".venv" project-root))
-           (python-path (expand-file-name "bin/python" venv-path)))
-      (if (file-exists-p python-path)
-          (progn
-            ;; Set Python interpreter path
-            (setq python-shell-interpreter python-path)
+  ;; Looks for `.venv' directory in project root and activates the Python
+  ;; interpreter."
+  ;;       (interactive)
+  ;;       (let* ((project-root (project-root (project-current t)))
+  ;;              (venv-path (expand-file-name ".venv" project-root))
+  ;;              (python-path (expand-file-name "bin/python" venv-path)))
+  ;;         (if (file-exists-p python-path)
+  ;;             (progn
 
-            ;; Update `exec-path' to include the venv’s bin directory
-            (let ((venv-bin-dir (file-name-directory python-path)))
-              (setq exec-path (cons venv-bin-dir
-                                    (remove venv-bin-dir exec-path))))
+  ;;               ;; Set Python interpreter path
+  ;;               (setq python-shell-interpreter python-path)
 
-            ;; Update PATH environment
-            (setenv "PATH" (concat (file-name-directory python-path)
-                                   path-separator
-                                   (getenv "PATH")))
-            (setenv "VIRTUAL_ENV" venv-path)
+  ;;               ;; Update `exec-path' to include the venv’s bin directory
+  ;;               (let ((venv-bin-dir (file-name-directory python-path)))
+  ;;                 (setq exec-path (cons venv-bin-dir
+  ;;                                       (remove venv-bin-dir exec-path))))
 
-            ;; Remove PYTHONHOME if it exists
-            (setenv "PYTHONHOME" nil)
+  ;;               ;; Update PATH environment
+  ;;               (setenv "PATH" (concat (file-name-directory python-path)
+  ;;                                      path-separator
+  ;;                                      (getenv "PATH")))
+  ;;               (setenv "VIRTUAL_ENV" venv-path)
 
-            (message "Activated uv Python environment at %s" venv-path))
-        (message "No uv Python environment found in %s" project-root))))
-  (add-hook 'python-ts-mode-hook 'sthenno/python-venv)
+  ;;               ;; Remove PYTHONHOME if it exists
+  ;;               (setenv "PYTHONHOME" nil)
 
-  :bind ((:map python-ts-mode-map
-               ("s-<up>" . python-nav-beginning-of-block)
-               ("s-<down>" . python-nav-end-of-block)
-               ("C-x m" . python-nav-if-name-main))))
+  ;;               (message "Activated uv Python environment at %s" venv-path))
+  ;;           (message "No uv Python environment found in %s" project-root))))
+  ;; (add-hook 'python-ts-mode-hook 'sthenno/python-venv)
+
+  :bind (:map python-ts-mode-map
+              ("s-<up>"   . python-nav-beginning-of-block)
+              ("s-<down>" . python-nav-end-of-block)
+              ("C-x m"    . python-nav-if-name-main)))
 
 ;;; Flymake
 
 ;; (use-package flymake
 ;;   :config
-;;   ;; (setq flymake-no-changes-timeout nil)
+;;   (setq flymake-no-changes-timeout nil)
 ;;   (setq flymake-start-on-save-buffer t)
 ;;   (setq flymake-mode-line-lighter "FM")
 ;;   (setq flymake-indicator-type 'margins)
@@ -121,7 +126,8 @@ interpreter."
 
 (use-package ruff-format
   :ensure t
-  :config (add-hook 'python-ts-mode-hook 'ruff-format-on-save-mode))
+  ;; :config (add-hook 'python-ts-mode-hook 'ruff-format-on-save-mode)
+  )
 
 ;;; AI
 

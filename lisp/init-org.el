@@ -30,7 +30,7 @@
 ;; (setq org-startup-folded 'content)
 
 ;;; Install AUCTeX
-;; (use-package tex :ensure auctex)
+(use-package tex :ensure auctex)
 
 ;;; Use CDLaTeX to improve editing experiences
 
@@ -149,7 +149,7 @@
 (setq org-treat-insert-todo-heading-as-state-change t)
 
 ;; Better experiences jumping through headlines
-;; (setq org-special-ctrl-a/e t)
+(setq org-special-ctrl-a/e t)
 
 ;; Fold drawers by default
 (setq org-cycle-hide-drawer-startup t)
@@ -188,7 +188,6 @@
   (setq denote-open-link-function #'find-file)
 
   ;; Do not include date, tags and ids in note files
-  (setq denote-date-format "%FT%T%z")   ; ISO 8601 (RFC3339)
   (setq denote-org-front-matter "#+title: %1$s\n\n")
 
   (denote-rename-buffer-mode 1)
@@ -207,58 +206,51 @@
   ;; Hooks
   (add-hook 'dired-mode-hook #'denote-dired-mode))
 
+(use-package denote-org
+  :ensure t
+  :config
+  (setq denote-org-store-link-to-heading 'context)
+  (defun sthenno/denote-org-path-sorted-notes (directory)
+    "Return a list of note files in DIRECTORY, sorted by name."
+    (sort (seq-filter 'denote-file-is-note-p
+                      (directory-files directory t "\\.org$"))
+          'string<)))
+
 (use-package denote-journal
   :ensure t
   :config
-  (setq denote-journal-title-format "%FT%T%z" ; ISO 8601 (RFC3339)
+  (setq denote-journal-title-format "%e %B %Y"
         denote-journal-directory (expand-file-name "stages/" denote-directory)
         denote-journal-keyword '("stages")) ; Stages are journals
+
+  ;; Helper functions
+  (defun sthenno/denote-journal-find-stages-file-date (length)
+    "Open the denote note file in the given LENGTH."
+    (let* ((buff (buffer-file-name))
+           (sorted-files (sthenno/denote-org-path-sorted-notes denote-journal-directory))
+           (current-file-index (cl-position buff sorted-files :test 'string=)))
+      (if (null current-file-index)
+          (message "Current file is not a note file.")
+        (let ((idx (+ current-file-index length)))
+          (if (or (< idx 0)
+                  (>= idx (length sorted-files)))
+              (message "No denote note file.")
+            (find-file (nth idx sorted-files)))))))
+
+  (defun sthenno/denote-journal-entry-previous ()
+    "Open the previous note file in the current directory."
+    (interactive)
+    (sthenno/denote-journal-find-stages-file-date -1))
+
+  (defun sthenno/denote-journal-entry-next ()
+    "Open the next note file in the current directory."
+    (interactive)
+    (sthenno/denote-journal-find-stages-file-date 1))
+
+  (keymap-set org-mode-map "s-<up>" #'sthenno/denote-journal-entry-previous)
+  (keymap-set org-mode-map "s-<down>" #'sthenno/denote-journal-entry-next)
+
   (keymap-global-set "C-c d" #'denote-journal-new-or-existing-entry))
-
-(use-package denote-org
-  :ensure t
-  :config (setq denote-org-store-link-to-heading 'context))
-
-(use-package consult-denote
-  :ensure t
-  :after consult
-  :bind (("s-n" . consult-denote-find)
-         ("s-o" . consult-denote-grep))
-  :config (consult-denote-mode 1))
-
-;;; Helper functions
-(defun sthenno/denote-get-sorted-note-files (directory)
-  "Return a list of note files in DIRECTORY, sorted by name."
-  (sort (seq-filter 'denote-file-is-note-p
-                    (directory-files directory t "\\`[^.]"))
-        'string<))
-
-(defun sthenno/denote-open-stages-file (direction)
-  "Open the denote note file in the given DIRECTION."
-  (let* ((current-file (buffer-file-name))
-         (directory (file-name-directory current-file))
-         (sorted-files (sthenno/denote-get-sorted-note-files directory))
-         (current-file-index (cl-position current-file sorted-files :test 'string=)))
-    (if (null current-file-index)
-        (message "Current file is not a note file.")
-      (let ((idx (+ current-file-index direction)))
-        (if (or (< idx 0)
-                (>= idx (length sorted-files)))
-            (message "No denote note file.")
-          (find-file (nth idx sorted-files)))))))
-
-(defun sthenno/denote-open-previous-file ()
-  "Open the previous note file in the current directory."
-  (interactive)
-  (sthenno/denote-open-stages-file -1))
-
-(defun sthenno/denote-open-next-file ()
-  "Open the next note file in the current directory."
-  (interactive)
-  (sthenno/denote-open-stages-file 1))
-
-(keymap-set org-mode-map "s-<up>"   #'sthenno/denote-open-previous-file)
-(keymap-set org-mode-map "s-<down>" #'sthenno/denote-open-next-file)
 
 ;;; Load languages for Org Babel
 

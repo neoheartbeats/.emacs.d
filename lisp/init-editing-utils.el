@@ -66,31 +66,32 @@
 (keymap-global-set "s-i" #'sthenno/buffer-format)
 
 ;; Run the formatter automatically on save
+;;
+;; TODO: `sthenno/buffer-format-on-save-mode'
 (defun sthenno/buffer-format-on-save ()
   "Format buffer on save."
   (add-hook 'after-save-hook #'sthenno/buffer-format nil t))
 (add-hook 'prog-mode-hook #'sthenno/buffer-format-on-save)
 
 ;; Indentation highlights
+(use-package indent-bars
+  :ensure t
+  :config
+  (setq indent-bars-no-descend-lists t  ; no extra bars in continued func arg lists
+        indent-bars-treesit-support t
+        indent-bars-treesit-ignore-blank-lines-types '("module"))
+  (setq indent-bars-prefer-character t)
+  (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
+        indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+        indent-bars-highlight-current-depth '(:blend 0.8)
+        indent-bars-starting-column 0
+        indent-bars-display-on-blank-lines t)
 
-;; (use-package indent-bars
-;;   :ensure t
-;;   :config
-;;   (setq indent-bars-no-descend-lists t  ; no extra bars in continued func arg lists
-;;         indent-bars-treesit-support t
-;;         indent-bars-treesit-ignore-blank-lines-types '("module"))
-;;   (setq indent-bars-prefer-character t)
-;;   (setq indent-bars-color '(highlight :face-bg t :blend 0.4)
-;;         indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-;;         indent-bars-highlight-current-depth '(:blend 0.8)
-;;         indent-bars-starting-column 0
-;;         indent-bars-display-on-blank-lines t)
-
-;;   ;; Hooks
-;;   (add-hook 'python-ts-mode-hook  #'(lambda ()
-;;                                       (indent-bars-mode 1)))
-;;   (add-hook 'bash-ts-mode-hook    #'(lambda ()
-;;                                       (indent-bars-mode 1))))
+  ;; Hooks
+  (add-hook 'python-ts-mode-hook  #'(lambda ()
+                                      (indent-bars-mode 1)))
+  (add-hook 'bash-ts-mode-hook    #'(lambda ()
+                                      (indent-bars-mode 1))))
 
 ;;; Inhibit passing these delimiters
 (defun sthenno/inhibit-specific-delimiters ()
@@ -105,6 +106,17 @@ This disables syntax highlighting and auto-paring for such entries."
 
 ;; Delete selection if you insert
 (delete-selection-mode 1)
+
+;; Highlight TODO and similar keywords in comments and strings
+(use-package hl-todo
+  :ensure t
+  :config (global-hl-todo-mode))
+
+;; Search and jump hl-todo keywords in buffers with consult
+(use-package consult-todo
+  :ensure t
+  :after (consult)
+  :config (keymap-global-set "s-t" #'consult-todo))
 
 ;; Edit multiple occurrences in the same way simultaneously using "C-;"
 (use-package iedit :ensure t)
@@ -132,6 +144,7 @@ The converted file will be saved in the same directory with a .png extension."
       (message "Error: “sips” not found on your system! Are you even using macOS?"))))
 
 (defun sthenno/convert-image-to-png-current-buffer ()
+  "Convert image to “png” format in the current buffer."
   (interactive)
   (let* ((input (buffer-file-name))
          (output (sthenno/convert-image-to-png input)))
