@@ -17,14 +17,16 @@
 ;; - Note-taking system using `denote'
 
 ;;; Code:
+;;
 
 ;;; Setup default directory
 (setq org-directory "/Users/sthenno/Tempestissimo/soulin/")
+(setopt org-persist-directory (locate-user-emacs-file "org-persist/"))
 
 ;;; Org Mode buffer init behaviors
 (setq org-startup-with-link-previews t)
 (setq org-startup-with-inline-images t)
-(setq org-startup-with-latex-preview nil)
+(setq org-startup-with-latex-preview t)
 
 ;; Fold titles by default
 ;; (setq org-startup-folded 'content)
@@ -32,84 +34,79 @@
 ;;; Install AUCTeX
 (use-package tex :ensure auctex)
 
-;;; Use CDLaTeX to improve editing experiences
-
+;; Use CDLaTeX to improve editing experiences
 ;; (use-package cdlatex
 ;;   :ensure t
-;;   :diminish (org-cdlatex-mode)
 ;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
-;; Default LaTeX preview image directory
-(setq
- org-preview-latex-image-directory (expand-file-name "ltximg/" user-emacs-directory)
- org-persist-directory (expand-file-name "org-persist/" user-emacs-directory))
+;; Add “libgs” to `org-latex-preview-process-alist'
+(setq org-latex-preview-process-default 'dvisvgm)
+(let ((dvisvgm (alist-get 'dvisvgm org-latex-preview-process-alist))
+      (libgs "/opt/homebrew/opt/ghostscript/lib/libgs.dylib"))
+  (plist-put dvisvgm :image-converter
+             `(,(concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts"
+                        " --libgs=" libgs
+                        " --bbox=preview -v4 -o %B-%%9p.svg %f"))))
 
-;; (setq org-latex-preview-process-default 'dvisvgm)
-;; (let ((dvisvgm (alist-get 'dvisvgm org-latex-preview-process-alist))
-;;       (libgs "/opt/homebrew/opt/ghostscript/lib/libgs.dylib"))
-;;   (plist-put dvisvgm :image-converter
-;;              `(,(concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts"
-;;                         " --libgs=" libgs
-;;                         " --bbox=preview -v3 -o %B-%%9p.svg %f"))))
-
-;; (add-hook 'org-mode-hook #'(lambda ()
-;;                              (org-latex-preview-auto-mode 1)))
+;; Enable `org-latex-preview-mode'
+(add-hook 'org-mode-hook #'(lambda ()
+                             (org-latex-preview-mode 1)))
 
 ;; Preview functions
+(defun sthenno/org-preview-fragments ()
+  (interactive)
+  (call-interactively 'org-latex-preview-clear-cache)
+  (org-latex-preview 'buffer)
+  (org-link-preview-refresh))
+(keymap-set org-mode-map "C-p" #'sthenno/org-preview-fragments)
 
-;; (defun sthenno/org-preview-fragments ()
-;;   (interactive)
-;;   (call-interactively 'org-latex-preview-clear-cache)
-;;   (org-latex-preview 'buffer)
-;;   (org-link-preview-refresh))
-;; (keymap-set org-mode-map "C-p" #'sthenno/org-preview-fragments)
+(setopt org-latex-packages-alist '(("" "siunitx"   t)
 
-;; (setopt org-latex-packages-alist '(("" "siunitx"   t)
-;;                                    ("" "mlmodern" t)
+                                   ;; https://ctan.org/pkg/newtx
+                                   ("libertinus" "newtx" t)
 
-;;                                    ;; Load this after all math to give access to bold math
-;;                                    ;; See https://ctan.org/pkg/newtx
-;;                                    ("" "bm" t)
+                                   ;; Load this after all math to give access to bold math
+                                   ("" "bm" t)
 
-;;                                    ;; Package physics2 requires to be loaded after font
-;;                                    ;; packages. See https://ctan.org/pkg/physics2
-;;                                    ("" "physics2" t)))
+                                   ;; Package physics2 requires to be loaded after font
+                                   ;; packages. See https://ctan.org/pkg/physics2
+                                   ("" "physics2" t)))
 
 ;; Add additional modules required by LaTeX packages like physics2 to the preamble
-
-;; (let* ((physics2-modules '(("" "ab")
-;;                            ("" "diagmat")
-;;                            ("" "xmat")))
-;;        (physics2-preamble (concat (mapconcat
-;;                                    (lambda (m)
-;;                                      (let ((options (car  m))
-;;                                            (module  (cadr m)))
-;;                                        (if (string= options "")
-;;                                            (format "\\usephysicsmodule{%s}" module)
-;;                                          (format "\\usephysicsmodule[%s]{%s}" options module))))
-;;                                    physics2-modules
-;;                                    "\n")
-;;                                   "\n"))
-;;        (default-preamble "\\documentclass{article}
-;; \[DEFAULT-PACKAGES]
-;; \[PACKAGES]
-;; \\usepackage{xcolor}"))
-;;   (setopt org-latex-preview-preamble
-;;           (concat default-preamble
-;;                   "\n" physics2-preamble
-;;                   "\\DeclareMathOperator*{\\argmax}{arg\\,max}\n"
-;;                   "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))
+(let* ((physics2-modules '(("" "ab")
+                           ("" "diagmat")
+                           ("" "xmat")))
+       (physics2-preamble (concat (mapconcat
+                                   (lambda (m)
+                                     (let ((options (car  m))
+                                           (module  (cadr m)))
+                                       (if (string= options "")
+                                           (format "\\usephysicsmodule{%s}" module)
+                                         (format "\\usephysicsmodule[%s]{%s}" options module))))
+                                   physics2-modules
+                                   "\n")
+                                  "\n"))
+       (default-preamble "\\documentclass{article}
+\[DEFAULT-PACKAGES]
+\[PACKAGES]
+\\usepackage{xcolor}"))
+  (setopt org-latex-preview-preamble
+          (concat default-preamble
+                  "\n" physics2-preamble
+                  "\\DeclareMathOperator*{\\argmax}{arg\\,max}\n"
+                  "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))
 
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
+
 ;; (setq org-pretty-entities t
 ;;       org-pretty-entities-include-sub-superscripts nil)
 
-;; (let ((factor (- (/ (face-attribute 'default :height)
-;;                     100.0)
-;;                  0.025)))
-;;   (plist-put org-latex-preview-appearance-options :scale factor)
-;;   (plist-put org-latex-preview-appearance-options :zoom  factor))
+(let ((factor (- (/ (face-attribute 'default :height)
+                    100.0)
+                 0.025)))
+  (plist-put org-latex-preview-appearance-options :scale factor)
+  (plist-put org-latex-preview-appearance-options :zoom  factor))
 
 ;;; Modern Org mode theme
 (use-package org-modern
@@ -273,9 +270,6 @@
 (add-to-list 'org-src-lang-modes (cons "python" 'python))
 
 ;; (setq org-edit-src-turn-on-auto-save t)
-
-;; (keymap-set org-mode-map "C-'" #'org-edit-special)
-;; (keymap-set org-src-mode-map "C-'" #'org-edit-src-exit)
 
 ;; Prefer lower-case drawers
 (setq org-babel-results-keyword "results")

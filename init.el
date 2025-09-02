@@ -112,10 +112,11 @@
   (package-initialize))
 
 ;; Load the patched `org'
-;; (progn
-;;   (add-to-list 'load-path "/Users/sthenno/.emacs.d/site-lisp/org/lisp/")
-;;   (setq features (delq 'org features))
-;;   (require 'org))
+(progn
+  (add-to-list 'load-path "/Users/sthenno/.emacs.d/site-lisp/org/lisp/")
+  (setq features (delq 'org features))
+  (require 'org)
+  (require 'org-latex-preview))
 
 ;; Declare interactive functions used at startup to inform the byte-compiler
 (let ((startup-buffer 'denote-journal-new-or-existing-entry))

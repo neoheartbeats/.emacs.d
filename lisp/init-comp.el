@@ -377,8 +377,8 @@ Triggers only inside an open Org link “([[...]])”, completing to
                                        (global-corfu-mode 1)))
   :config
   (setq corfu-auto t
-        corfu-auto-delay 0.05           ; Making this to 0 is too expensive
-        corfu-auto-prefix 1)
+        corfu-auto-delay 0.125          ; Making this to 0 is too expensive
+        corfu-auto-prefix 2)
   (setq corfu-count 8
         corfu-scroll-margin 4)
   (setq corfu-min-width 20
