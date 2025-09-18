@@ -15,7 +15,6 @@
 ;;; Code:
 
 ;;; Modus Themes
-
 (use-package modus-themes
   :ensure t
   :config
@@ -76,19 +75,16 @@
   :config (spacious-padding-mode 1))
 
 ;;; Pulse highlight line on demand or after running select functions
-
-;; (use-package pulsar
-;;   :ensure t
-;;   :config
-;;   (setq pulsar-pulse t
-;;         pulsar-pulse-on-window-change t
-;;         pulsar-delay 0.125
-;;         pulsar-iterations 3.5)
-;;   (with-eval-after-load 'consult
-;;     (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line)
-;;     (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
-;;     (add-hook 'consult-after-jump-hook #'pulsar-reveal-entry))
-;;   (pulsar-global-mode 1))
+(use-package pulsar
+  :ensure t
+  :config
+  (setq pulsar-pulse t
+        pulsar-pulse-on-window-change t)
+  (with-eval-after-load 'consult
+    (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line)
+    (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
+    (add-hook 'consult-after-jump-hook #'pulsar-reveal-entry))
+  (pulsar-global-mode 1))
 
 ;;; Mode line
 (setq-default mode-line-compact t)
@@ -171,7 +167,7 @@
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
 (set-fontset-font t 'ucs   (font-spec :family "SF Pro") nil 'prepend)
 
-;; Typographic ligatures
+;;; Typographic ligatures
 (use-package ligature
   :ensure t
   :config (let* ((ligs '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"

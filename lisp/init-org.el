@@ -35,9 +35,9 @@
 (use-package tex :ensure auctex)
 
 ;; Use CDLaTeX to improve editing experiences
-;; (use-package cdlatex
-;;   :ensure t
-;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+(use-package cdlatex
+  :ensure t
+  :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 ;; Add “libgs” to `org-latex-preview-process-alist'
 (setq org-latex-preview-process-default 'dvisvgm)
@@ -70,10 +70,14 @@
 
                                    ;; Package physics2 requires to be loaded after font
                                    ;; packages. See https://ctan.org/pkg/physics2
-                                   ("" "physics2" t)))
+                                   ("" "physics2" t)
+
+                                   ;; Typeset the differential operators
+                                   ("normal" "fixdif" t)))
 
 ;; Add additional modules required by LaTeX packages like physics2 to the preamble
 (let* ((physics2-modules '(("" "ab")
+                           ("" "ab.braket")
                            ("" "diagmat")
                            ("" "xmat")))
        (physics2-preamble (concat (mapconcat
@@ -97,8 +101,7 @@
                   "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))
 
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
-(setq org-use-sub-superscripts '{})
-
+;; (setq org-use-sub-superscripts '{})
 ;; (setq org-pretty-entities t
 ;;       org-pretty-entities-include-sub-superscripts nil)
 

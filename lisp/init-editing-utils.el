@@ -31,7 +31,9 @@
 (keymap-global-set "M-<up>"   #'backward-paragraph)
 
 ;; Fill columns
-(global-display-fill-column-indicator-mode 1)
+;; (global-display-fill-column-indicator-mode 1)
+(add-hook 'prog-mode-hook #'(lambda ()
+                              (display-fill-column-indicator-mode 1)))
 
 ;; Display line numbers
 (setq-default display-line-numbers-width 4)
@@ -88,10 +90,10 @@
         indent-bars-display-on-blank-lines t)
 
   ;; Hooks
-  (add-hook 'python-ts-mode-hook  #'(lambda ()
-                                      (indent-bars-mode 1)))
-  (add-hook 'bash-ts-mode-hook    #'(lambda ()
-                                      (indent-bars-mode 1))))
+  (add-hook 'python-ts-mode-hook #'(lambda ()
+                                     (indent-bars-mode 1)))
+  (add-hook 'bash-ts-mode-hook #'(lambda ()
+                                   (indent-bars-mode 1))))
 
 ;;; Inhibit passing these delimiters
 (defun sthenno/inhibit-specific-delimiters ()
@@ -108,15 +110,15 @@ This disables syntax highlighting and auto-paring for such entries."
 (delete-selection-mode 1)
 
 ;; Highlight TODO and similar keywords in comments and strings
-(use-package hl-todo
-  :ensure t
-  :config (global-hl-todo-mode))
+;; (use-package hl-todo
+;;   :ensure t
+;;   :config (global-hl-todo-mode))
 
 ;; Search and jump hl-todo keywords in buffers with consult
-(use-package consult-todo
-  :ensure t
-  :after (consult)
-  :config (keymap-global-set "s-t" #'consult-todo))
+;; (use-package consult-todo
+;;   :ensure t
+;;   :after (consult)
+;;   :config (keymap-global-set "s-t" #'consult-todo))
 
 ;; Edit multiple occurrences in the same way simultaneously using "C-;"
 (use-package iedit :ensure t)

@@ -126,8 +126,7 @@
 
 (use-package ruff-format
   :ensure t
-  ;; :config (add-hook 'python-ts-mode-hook 'ruff-format-on-save-mode)
-  )
+  :config (add-hook 'python-ts-mode-hook 'ruff-format-on-save-mode))
 
 ;;; AI
 
@@ -152,16 +151,16 @@
 ;;   ;;                                   o3-0416-global
 ;;   ;;                                   o4-mini-0416-global))))
 
-;;   (defun sthenno/gptel-setup-local ()
-;;     (setq gptel-model 'sthenno
-;;           gptel-backend (gptel-make-openai "local"
-;;                           :protocol "http"
-;;                           :host "localhost:30003"
-;;                           :endpoint "/v1/chat/completions"
-;;                           :stream t
-;;                           :key "tmp"
-;;                           :models '(sthenno))))
-;;   (sthenno/gptel-setup-local)
+;;   ;; (defun sthenno/gptel-setup-local ()
+;;   ;;   (setq gptel-model 'sthenno
+;;   ;;         gptel-backend (gptel-make-openai "local"
+;;   ;;                                          :protocol "http"
+;;   ;;                                          :host "localhost:30003"
+;;   ;;                                          :endpoint "/v1/chat/completions"
+;;   ;;                                          :stream t
+;;   ;;                                          :key "tmp"
+;;   ;;                                          :models '(sthenno))))
+;;   ;; (sthenno/gptel-setup-local)
 
 ;;   ;; System messages
 ;;   ;;
