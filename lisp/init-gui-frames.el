@@ -57,8 +57,7 @@
           (bg-completion bg-hl-line)
 
           ;; Apply the presets
-          ;; ,@modus-themes-preset-overrides-faint
-          ))
+          ,@modus-themes-preset-overrides-faint))
 
   ;; Load the enable the theme
   (modus-themes-load-theme 'modus-vivendi))

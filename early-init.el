@@ -62,7 +62,7 @@
                                     (height . 60)
 
                                     ;; (alpha-background . 60)
-                                    (alpha . (90 . 90))
+                                    ;; (alpha . (90 . 90))
                                     (title . "")
 
                                     ;; macOS-specific titlebar settings

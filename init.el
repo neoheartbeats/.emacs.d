@@ -111,6 +111,12 @@
 (unless (bound-and-true-p package--initialized)
   (package-initialize))
 
+;; Append PATH from shell
+(use-package exec-path-from-shell
+  :ensure t
+  :init (when (memq window-system '(mac ns x))
+          (exec-path-from-shell-initialize)))
+
 ;; Load the patched `org'
 (progn
   (add-to-list 'load-path "/Users/sthenno/.emacs.d/site-lisp/org/lisp/")
