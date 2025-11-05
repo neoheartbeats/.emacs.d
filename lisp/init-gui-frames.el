@@ -41,20 +41,20 @@
           (fg-link-visited unspecified)
 
           ;; Prose colors
-          (prose-todo info)
-          (prose-done "#535353")
+          ;; (prose-todo info)
+          ;; (prose-done "#535353")
 
           ;; Matching parenthesis
-          (fg-paren-match green)
-          (bg-paren-match unspecified)
+          ;; (fg-paren-match green)
+          ;; (bg-paren-match unspecified)
 
           ;; Make code blocks more minimal
-          (bg-prose-block-contents  unspecified)
-          (bg-prose-block-delimiter unspecified)
-          (fg-prose-block-delimiter fg-dim)
+          ;; (bg-prose-block-contents  unspecified)
+          ;; (bg-prose-block-delimiter unspecified)
+          ;; (fg-prose-block-delimiter fg-dim)
 
           ;; Completions (see also `init-comp')
-          (bg-completion bg-hl-line)
+          ;; (bg-completion bg-hl-line)
 
           ;; Apply the presets
           ,@modus-themes-preset-overrides-faint))

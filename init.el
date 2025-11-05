@@ -90,12 +90,11 @@
     (funcall mode -1)))
 
 ;; Custom Startup message
-
 (define-advice display-startup-echo-area-message
     (:override () sthenno-startup-message)
   "Display a custom startup message in the echo area."
   (let ((icon (propertize "􀎛" 'face 'default))
-        (text "Funding for this program was made possible by viewers like you."))
+        (text "循此苦旅，終抵群星。"))
     (message "%s %s" icon text)))
 
 ;;; Package Management
@@ -105,11 +104,12 @@
       package-vc-register-as-project nil
       package-install-upgrade-built-in t
       package-archives '(("gnu-devel" . "https://elpa.gnu.org/devel/")
-                         ("melpa" . "https://melpa.org/packages/")
                          ("gnu" . "https://elpa.gnu.org/packages/")
-                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-(unless (bound-and-true-p package--initialized)
-  (package-initialize))
+                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+                         ("melpa" . "https://melpa.org/packages/")))
+(package-activate-all)
+;; (unless (bound-and-true-p package--initialized)
+;;   (package-initialize))
 
 ;; Append PATH from shell
 (use-package exec-path-from-shell
@@ -121,8 +121,7 @@
 (progn
   (add-to-list 'load-path "/Users/sthenno/.emacs.d/site-lisp/org/lisp/")
   (setq features (delq 'org features))
-  (require 'org)
-  (require 'org-latex-preview))
+  (require 'org))
 
 ;; Declare interactive functions used at startup to inform the byte-compiler
 (let ((startup-buffer 'denote-journal-new-or-existing-entry))

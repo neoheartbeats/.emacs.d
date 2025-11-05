@@ -32,7 +32,7 @@
 ;; (setq org-startup-folded 'content)
 
 ;;; Install AUCTeX
-(use-package tex :ensure auctex)
+;; (use-package tex :ensure auctex)
 
 ;; Use CDLaTeX to improve editing experiences
 (use-package cdlatex
@@ -101,7 +101,7 @@
                   "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))
 
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
-;; (setq org-use-sub-superscripts '{})
+(setq org-use-sub-superscripts '{})
 ;; (setq org-pretty-entities t
 ;;       org-pretty-entities-include-sub-superscripts nil)
 
@@ -115,6 +115,7 @@
 (use-package org-modern
   :ensure t
   :config
+  (setq org-modern-label-border 0.25)
   (setq org-modern-star 'replace)
   (let ((stars "􀄩"))
     (setq org-modern-replace-stars stars
@@ -123,6 +124,7 @@
   (setq org-modern-checkbox '((?X  . "􀃰")
                               (?-  . "􀃞")
                               (?\s . "􀂒")))
+  ;; (setq org-modern-todo nil)
   (setq org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
   (setq org-modern-block-name
         '(("src"   . ("􀃥" "􀃥"))
@@ -289,7 +291,7 @@
 (setq org-babel-python-command "/Users/sthenno/Tempestissimo/tempestissimo/.venv/bin/python")
 
 ;;; Org-Table
-(setq org-table-use-standard-references t)
+;; (setq org-table-use-standard-references t)
 
 ;;; Export
 (setq org-export-allow-bind-keywords t)
