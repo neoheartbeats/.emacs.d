@@ -74,16 +74,16 @@
   :config (spacious-padding-mode 1))
 
 ;;; Pulse highlight line on demand or after running select functions
-(use-package pulsar
-  :ensure t
-  :config
-  (setq pulsar-pulse t
-        pulsar-pulse-on-window-change t)
-  (with-eval-after-load 'consult
-    (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line)
-    (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
-    (add-hook 'consult-after-jump-hook #'pulsar-reveal-entry))
-  (pulsar-global-mode 1))
+;; (use-package pulsar
+;;   :ensure t
+;;   :config
+;;   (setq pulsar-pulse t
+;;         pulsar-pulse-on-window-change t)
+;;   (with-eval-after-load 'consult
+;;     (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line)
+;;     (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
+;;     (add-hook 'consult-after-jump-hook #'pulsar-reveal-entry))
+;;   (pulsar-global-mode 1))
 
 ;;; Mode line
 (setq-default mode-line-compact t)
@@ -133,7 +133,7 @@
 (set-face-italic 'italic nil)
 
 ;; Set up font for non-ascii fontset
-(let ((font "PingFang SC"))
+(let ((font "LXGW Marker Gothic"))
   (set-fontset-font t 'big5       (font-spec :family font))
   (set-fontset-font t 'big5-hkscs (font-spec :family font))
 
@@ -177,7 +177,7 @@
                          ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:"
                          "<******>" "++" "+++"))
                  (ligs-dict (append '("__" "--") ligs))
-                 (ligs-text (append '("__")      ligs)))
+                 (ligs-text (append '("__" "- [ ]" "- [X]" ) ligs)))
             (ligature-set-ligatures 'prog-mode ligs-dict)
             (ligature-set-ligatures 'text-mode ligs-text)
 

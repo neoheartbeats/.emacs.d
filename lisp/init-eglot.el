@@ -162,13 +162,21 @@
   ;;                                          :models '(sthenno))))
   ;; (sthenno/gptel-setup-local)
 
+  ;; (defun sthenno/gptel-setup-openai ()
+  ;;   (setq gptel-model 'ft:gpt-4.1-2025-04-14:lingxin:exp-0723-002:BwRgAyL5:ckpt-step-194
+  ;;         gptel-backend (gptel-make-openai "exp-default"
+  ;;                         :models '(ft:gpt-4.1-2025-04-14:lingxin:exp-0723-002:BwRgAyL5:ckpt-step-194)
+  ;;                         :stream t
+  ;;                         :key (gptel-api-key-from-auth-source "api.openai.com")))
+  ;;   (setq gptel-directives "You are Sthenno. 你是一位名叫 Sthenno 的虚拟助手，用户则是你的设计者。你的回复简短，时而刻薄。"))
+  ;; (sthenno/gptel-setup-openai)
+
   (defun sthenno/gptel-setup-openai ()
-    (setq gptel-model 'ft:gpt-4.1-2025-04-14:lingxin:exp-0723-002:BwRgAyL5:ckpt-step-194
-          gptel-backend (gptel-make-openai "exp-default"
-                          :models '(ft:gpt-4.1-2025-04-14:lingxin:exp-0723-002:BwRgAyL5:ckpt-step-194)
+    (setq gptel-model 'gpt-4.1
+          gptel-backend (gptel-make-openai "gpt-4.1"
+                          :models '(gpt-4.1)
                           :stream t
-                          :key (gptel-api-key-from-auth-source "api.openai.com")))
-    (setq gptel-directives "You are Sthenno. 你是一位名叫 Sthenno 的虚拟助手，用户则是你的设计者。你的回复简短，时而刻薄。"))
+                          :key (gptel-api-key-from-auth-source "api.openai.com"))))
   (sthenno/gptel-setup-openai)
 
   ;; Generation options

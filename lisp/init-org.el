@@ -32,7 +32,7 @@
 ;; (setq org-startup-folded 'content)
 
 ;;; Install AUCTeX
-;; (use-package tex :ensure auctex)
+(use-package tex :ensure auctex)
 
 ;; Use CDLaTeX to improve editing experiences
 (use-package cdlatex
@@ -60,20 +60,20 @@
   (org-link-preview-refresh))
 (keymap-set org-mode-map "C-p" #'sthenno/org-preview-fragments)
 
-(setopt org-latex-packages-alist '(("" "siunitx"   t)
+(setq org-latex-packages-alist '(("" "siunitx"   t)
 
-                                   ;; https://ctan.org/pkg/newtx
-                                   ("libertinus" "newtx" t)
+                                 ;; https://ctan.org/pkg/newtx
+                                 ("libertinus" "newtx" t)
 
-                                   ;; Load this after all math to give access to bold math
-                                   ("" "bm" t)
+                                 ;; Load this after all math to give access to bold math
+                                 ("" "bm" t)
 
-                                   ;; Package physics2 requires to be loaded after font
-                                   ;; packages. See https://ctan.org/pkg/physics2
-                                   ("" "physics2" t)
+                                 ;; Package physics2 requires to be loaded after font
+                                 ;; packages. See https://ctan.org/pkg/physics2
+                                 ("" "physics2" t)
 
-                                   ;; Typeset the differential operators
-                                   ("normal" "fixdif" t)))
+                                 ;; Typeset the differential operators
+                                 ("normal" "fixdif" t)))
 
 ;; Add additional modules required by LaTeX packages like physics2 to the preamble
 (let* ((physics2-modules '(("" "ab")
@@ -94,11 +94,11 @@
 \[DEFAULT-PACKAGES]
 \[PACKAGES]
 \\usepackage{xcolor}"))
-  (setopt org-latex-preview-preamble
-          (concat default-preamble
-                  "\n" physics2-preamble
-                  "\\DeclareMathOperator*{\\argmax}{arg\\,max}\n"
-                  "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))
+  (setq org-latex-preview-preamble
+        (concat default-preamble
+                "\n" physics2-preamble
+                "\\DeclareMathOperator*{\\argmax}{arg\\,max}\n"
+                "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))
 
 (setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
 (setq org-use-sub-superscripts '{})
@@ -117,14 +117,16 @@
   :config
   (setq org-modern-label-border 0.25)
   (setq org-modern-star 'replace)
-  (let ((stars "􀄩"))
+  (let ((stars "•"))
     (setq org-modern-replace-stars stars
           org-modern-hide-stars stars))
-  (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X  . "􀃰")
-                              (?-  . "􀃞")
-                              (?\s . "􀂒")))
-  ;; (setq org-modern-todo nil)
+  ;; (setq org-modern-list '((?- . "•")))
+  (setq org-modern-list nil)
+  ;; (setq org-modern-checkbox '((?X  . "􀃰")
+  ;;                             (?-  . "􀃞")
+  ;;                             (?\s . "􀂒")))
+  (setq org-modern-checkbox nil)
+  (setq org-modern-todo nil)
   (setq org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
   (setq org-modern-block-name
         '(("src"   . ("􀃥" "􀃥"))
@@ -142,7 +144,8 @@
 (setq org-use-property-inheritance t)
 (setq org-auto-align-tags nil)
 (setq org-tags-column 0)
-(setq org-hide-emphasis-markers t)
+(setq org-hide-emphasis-markers t
+      org-hide-macro-markers t)
 
 ;; Use this with "C-<return>"
 (setq org-insert-heading-respect-content t)

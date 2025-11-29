@@ -40,6 +40,9 @@
 (add-hook 'prog-mode-hook  #'display-line-numbers-mode)
 (add-hook 'dired-mode-hook #'display-line-numbers-mode)
 
+;; Sematic Highlight for Elisp
+;; (setq elisp-fontify-semantically t)
+
 ;; Indentations
 ;;
 (defun sthenno/buffer-format ()
