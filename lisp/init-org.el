@@ -20,8 +20,9 @@
 ;;
 
 ;;; Setup default directory
-(setq org-directory "/Users/sthenno/Tempestissimo/soulin/")
-(setopt org-persist-directory (locate-user-emacs-file "org-persist/"))
+;; (setq org-directory "/Users/sthenno/Tempestissimo/soulin/")
+(setq org-directory "/Users/sthenno/安安素描本/")
+(setq org-persist-directory (locate-user-emacs-file "org-persist/"))
 
 ;;; Org Mode buffer init behaviors
 (setq org-startup-with-link-previews t)
@@ -116,10 +117,10 @@
   :ensure t
   :config
   (setq org-modern-label-border 0.25)
-  (setq org-modern-star 'replace)
-  (let ((stars "•"))
-    (setq org-modern-replace-stars stars
-          org-modern-hide-stars stars))
+  ;; (setq org-modern-star 'replace)
+  ;; (let ((stars "•"))
+  ;;   (setq org-modern-replace-stars stars
+  ;;         org-modern-hide-stars stars))
   ;; (setq org-modern-list '((?- . "•")))
   (setq org-modern-list nil)
   ;; (setq org-modern-checkbox '((?X  . "􀃰")
@@ -167,8 +168,9 @@
 (setq org-image-align 'left
       org-image-actual-width '(420)
       org-image-max-width 'fill-column)
-(setq org-yank-dnd-method 'file-link)
-(setq org-yank-image-save-method (expand-file-name "images/" org-directory))
+
+;; (setq org-yank-dnd-method 'file-link)
+;; (setq org-yank-image-save-method (expand-file-name "silos/" org-directory))
 
 ;;; Org Hyperlinks
 (setq org-return-follows-link t)
@@ -186,18 +188,71 @@
   :config
   (setq denote-directory org-directory)
   (setq denote-file-type 'org)
-  (setq denote-known-keywords '("stages" "silos" "production" "technology" "papers")
+  (setq denote-known-keywords
+        '("stages" "silos" "images" "papers" "production" "technology")
         denote-infer-keywords t)
   (setq denote-save-buffers t
         denote-kill-buffers t)
   (setq denote-open-link-function #'find-file)
 
+  ;; Image handling with `yank-media'
+  (defvar sthenno/denote-images-directory "images"
+    "Relative path to the images subdirectory in the Denote root.")
+
+  (defun sthenno/denote-convert-to-png (data original-mimetype target-path)
+    "Add DATA to TARGET-PATH. Convert to PNG if ORIGINAL-MIMETYPE is not png."
+    (let* ((is-png (string= original-mimetype "image/png"))
+           (temp-file (make-temp-file "emacs-yank-img-" nil
+                                      (if is-png ".png" ".tmp"))))
+      (with-temp-file temp-file
+        (set-buffer-multibyte nil)
+        (insert data))
+      (if is-png
+          (rename-file temp-file target-path t)
+        (if (executable-find "convert")
+            (progn
+              (call-process "convert" nil nil nil temp-file target-path)
+              (delete-file temp-file))
+          (delete-file temp-file)
+          (error "Image is not PNG and `convert' (ImageMagick) tool is missing")))))
+
+  (defun sthenno/denote-yank-image-handler (mimetype data)
+    "Save image as PNG to denote images folder and insert link."
+    (let* ((denote-images-path
+            (expand-file-name sthenno/denote-images-directory (denote-directory)))
+           (id (format-time-string denote-id-format))
+           (image-title (read-string "Image title: "))
+           (slug (denote-sluggify-title image-title))
+           (keyword "images")
+           (filename (if (string-empty-p slug)
+                         (format "%s__%s.png" id keyword)
+                       (format "%s--%s__%s.png" id slug keyword)))
+           (abs-filepath (expand-file-name filename denote-images-path))
+           (image-path (file-relative-name abs-filepath
+                                           (file-name-directory buffer-file-name))))
+      (unless (file-exists-p denote-images-path)
+        (make-directory denote-images-path t))
+      (condition-case err
+          (progn
+            (sthenno/denote-convert-to-png data mimetype abs-filepath)
+            (insert (format "#+attr_org: :width 240px\n[[%s]]" image-path))
+            (org-display-inline-images)
+            (message "Saved and converted to %s" image-path))
+        (error
+         (message "Failed to save image: %s" (error-message-string err))))))
+
+  (defun sthenno/setup-org-yank-media ()
+    "Register the image handler for all image types in Org-mode."
+    (yank-media-handler "image/.*" #'sthenno/denote-yank-image-handler))
+  (add-hook 'org-mode-hook #'sthenno/setup-org-yank-media)
+  (keymap-set org-mode-map "s-." #'yank-media)
+
   ;; Do not include date, tags and ids in note files
   (setq denote-org-front-matter "#+title: %1$s\n\n")
 
   (denote-rename-buffer-mode 1)
-  (setq denote-buffer-name-prefix "[Soulin] ")
-  (setq denote-rename-buffer-format "%D [%k]")
+  (setq denote-buffer-name-prefix "[安安素描本] ")
+  (setq denote-rename-buffer-format "%D")
 
   ;; The `denote-rename-buffer-mode' can now show if a file has backlinks
   ;; (setq denote-rename-buffer-backlinks-indicator " ↔ ")

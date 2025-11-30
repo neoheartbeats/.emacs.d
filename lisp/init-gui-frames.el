@@ -41,8 +41,8 @@
           (fg-link-visited unspecified)
 
           ;; Prose colors
-          ;; (prose-todo info)
-          ;; (prose-done "#535353")
+          (prose-todo info)
+          (prose-done "#535353")
 
           ;; Matching parenthesis
           ;; (fg-paren-match green)
@@ -54,10 +54,11 @@
           ;; (fg-prose-block-delimiter fg-dim)
 
           ;; Completions (see also `init-comp')
-          ;; (bg-completion bg-hl-line)
+          (bg-completion bg-hl-line)
 
           ;; Apply the presets
-          ,@modus-themes-preset-overrides-faint))
+          ;; ,@modus-themes-preset-overrides-faint
+          ))
 
   ;; Load the enable the theme
   (modus-themes-load-theme 'modus-vivendi))
@@ -72,18 +73,6 @@
 (use-package spacious-padding
   :ensure t
   :config (spacious-padding-mode 1))
-
-;;; Pulse highlight line on demand or after running select functions
-;; (use-package pulsar
-;;   :ensure t
-;;   :config
-;;   (setq pulsar-pulse t
-;;         pulsar-pulse-on-window-change t)
-;;   (with-eval-after-load 'consult
-;;     (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line)
-;;     (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
-;;     (add-hook 'consult-after-jump-hook #'pulsar-reveal-entry))
-;;   (pulsar-global-mode 1))
 
 ;;; Mode line
 (setq-default mode-line-compact t)
@@ -110,8 +99,8 @@
   :config (global-highlight-parentheses-mode 1))
 
 ;;; Cursor faces
-(setopt cursor-type '(bar . 1))
-(setopt mouse-highlight nil)
+(setq-default cursor-type '(bar . 1))
+(setq mouse-highlight nil)
 
 (blink-cursor-mode -1)
 
@@ -134,33 +123,9 @@
 
 ;; Set up font for non-ascii fontset
 (let ((font "LXGW Marker Gothic"))
-  (set-fontset-font t 'big5       (font-spec :family font))
-  (set-fontset-font t 'big5-hkscs (font-spec :family font))
-
-  ;; Chinese
-  (set-fontset-font t 'chinese-cns11643-1  (font-spec :family font))
-  (set-fontset-font t 'chinese-cns11643-15 (font-spec :family font))
-  (set-fontset-font t 'chinese-cns11643-2  (font-spec :family font))
-  (set-fontset-font t 'chinese-cns11643-3  (font-spec :family font))
-  (set-fontset-font t 'chinese-cns11643-4  (font-spec :family font))
-  (set-fontset-font t 'chinese-cns11643-5  (font-spec :family font))
-  (set-fontset-font t 'chinese-cns11643-6  (font-spec :family font))
-  (set-fontset-font t 'chinese-cns11643-7  (font-spec :family font))
-  (set-fontset-font t 'chinese-gb2312      (font-spec :family font))
-  (set-fontset-font t 'chinese-gbk         (font-spec :family font))
-  (set-fontset-font t 'kanbun              (font-spec :family font))
-  (set-fontset-font t 'bopomofo            (font-spec :family font))
-  (set-fontset-font t 'han                 (font-spec :family font))
-
-  ;; Japanese
-  (set-fontset-font t 'japanese-jisx0208        (font-spec :family font))
-  (set-fontset-font t 'japanese-jisx0208-1978   (font-spec :family font))
-  (set-fontset-font t 'japanese-jisx0212        (font-spec :family font))
-  (set-fontset-font t 'japanese-jisx0213-1      (font-spec :family font))
-  (set-fontset-font t 'japanese-jisx0213-2      (font-spec :family font))
-  (set-fontset-font t 'japanese-jisx0213.2004-1 (font-spec :family font))
-  (set-fontset-font t 'jisx0201                 (font-spec :family font))
-  (set-fontset-font t 'kana                     (font-spec :family font)))
+  (set-fontset-font t 'kana (font-spec :family font))
+  (set-fontset-font t 'han (font-spec :family font))
+  (set-fontset-font t 'cjk-misc (font-spec :family font)))
 
 ;; Unicode
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
@@ -169,13 +134,13 @@
 ;;; Typographic ligatures
 (use-package ligature
   :ensure t
-  :config (let* ((ligs '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"
-                         "<---->" "<!--"
-                         "<==" "<===" "<=" "=>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
-                         "<====>" "<!---"
-                         "::" ":::" "==" "!=" "===" "!=="
-                         ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:"
-                         "<******>" "++" "+++"))
+  :config (let* ((ligs '( "<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"
+                          "<---->" "<!--"
+                          "<==" "<===" "<=" "=>" "==>" "===>" ">=" "<=>" "<==>" "<===>"
+                          "<====>" "<!---"
+                          "::" ":::" "==" "!=" "===" "!=="
+                          ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:"
+                          "<******>" "++" "+++"))
                  (ligs-dict (append '("__" "--") ligs))
                  (ligs-text (append '("__" "- [ ]" "- [X]" ) ligs)))
             (ligature-set-ligatures 'prog-mode ligs-dict)

@@ -19,34 +19,16 @@
 ;;; Code:
 
 ;; Temporarily maximize garbage collection limits during startup
-;; These values are restored to more reasonable defaults after initialization
-(let ((threshold (* 128 1024 1024))     ; 128MB
-      (percentage 0.6))
-  (setq-default gc-cons-threshold most-positive-fixnum
-                gc-cons-percentage 0.5)
-  (add-hook 'after-init-hook #'(lambda ()
-                                 (setq gc-cons-threshold threshold
-                                       gc-cons-percentage percentage))))
+(setq gc-cons-threshold most-positive-fixnum
+      gc-cons-percentage 1.0)
+(add-hook 'emacs-startup-hook #'(lambda ()
+                                  (setq gc-cons-threshold (* 80 1024 1024)
+                                        gc-cons-percentage 0.1)))
 
 ;; Suppress messages during initialization for cleaner startup
-(setq-default inhibit-message t)
-(add-hook 'after-init-hook #'(lambda ()
-                               (setq inhibit-message nil)))
-
-;; Reset frame parameters for clean slate
-(setq default-frame-alist nil)
-
-;; Temporarily disable file-name-handler-alist during startup for faster loading
-;; This significantly speeds up file operations during initialization
-(when (and (not noninteractive)
-           (not (daemonp)))
-  (let ((old-file-name-handler-alist file-name-handler-alist))
-    (setq file-name-handler-alist nil)
-    (add-hook 'after-init-hook
-              #'(lambda ()
-                  (setq file-name-handler-alist
-                        (delete-dups (append file-name-handler-alist
-                                             old-file-name-handler-alist)))))))
+;; (setq-default inhibit-message t)
+;; (add-hook 'before-init-hook #'(lambda ()
+;;                                 (setq inhibit-message nil)))
 
 ;; Set default frame parameters for all frames
 ;; These settings create a clean, modern UI appearance
@@ -59,7 +41,7 @@
 
                                     ;; Set default frame size
                                     (width . 125)
-                                    (height . 60)
+                                    (height . 65)
 
                                     ;; (alpha-background . 60)
                                     (alpha . (90 . 90))
@@ -69,8 +51,6 @@
                                     (ns-transparent-titlebar . t)))
 
 (setq-default initial-frame-alist default-frame-alist)
-
-(setq package-enable-at-startup nil)
 
 (add-to-list 'features 'org)
 (add-to-list 'features 'org-loaddefs)

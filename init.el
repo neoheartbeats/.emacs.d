@@ -98,24 +98,32 @@
     (message "%s %s" icon text)))
 
 ;;; Package Management
-;; Initialize package system
-(require 'package)
 (setq package-vc-allow-build-commands t
       package-vc-register-as-project nil
       package-install-upgrade-built-in t
       package-archives '(("gnu-devel" . "https://elpa.gnu.org/devel/")
                          ("gnu" . "https://elpa.gnu.org/packages/")
                          ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-                         ("melpa" . "https://melpa.org/packages/")))
-(package-activate-all)
-;; (unless (bound-and-true-p package--initialized)
-;;   (package-initialize))
+                         ("melpa" . "https://melpa.org/packages/"))
+      package-archive-priorities '(("nongnu" . 100)
+                                   ("gnu" . 100)
+                                   ("gnu-devel" . 80)
+                                   ("melpa" . 60)
+                                   ("melpa" . 0)))
+
+(use-package persistent-cached-load-filter
+  :ensure t
+  :vc ( :url "https://github.com/include-yy/persistent-cached-load-filter"
+        :branch "master"
+        :rev
+        :newest)
+  :config (persistent-cached-load-filter-easy-setup))
 
 ;; Append PATH from shell
-(use-package exec-path-from-shell
-  :ensure t
-  :init (when (memq window-system '(mac ns x))
-          (exec-path-from-shell-initialize)))
+;; (use-package exec-path-from-shell
+;;   :ensure t
+;;   :init (when (memq window-system '(mac ns x))
+;;           (exec-path-from-shell-initialize)))
 
 ;; Load the patched `org'
 (progn
@@ -129,7 +137,8 @@
   (setq initial-buffer-choice startup-buffer))
 
 ;; Store customizations
-(setq custom-file (make-temp-file "tmp"))
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(load custom-file)
 
 ;; Load configuration modules
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
