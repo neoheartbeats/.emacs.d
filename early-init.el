@@ -9,13 +9,6 @@
 ;; This configuration runs before the package system and GUI initialization.
 ;; It focuses on optimizing startup performance and setting up basic frame parameters.
 
-;; Key components:
-;; - Garbage collection optimization for startup
-;; - File handler management for faster loading
-;; - Native compilation configuration
-;; - Initial frame parameter settings
-;; - Basic UI element suppression
-
 ;;; Code:
 
 ;; Temporarily maximize garbage collection limits during startup
@@ -44,8 +37,8 @@
                                     (height . 65)
 
                                     ;; (alpha-background . 60)
-                                    (alpha . (90 . 90))
-                                    (title . "")
+                                    ;; (alpha . (90 . 90))
+                                    (title . "􀫥 它们没能得到答案，只能看到凋零的生命。")
 
                                     ;; macOS-specific titlebar settings
                                     (ns-transparent-titlebar . t)))
@@ -56,5 +49,3 @@
 (add-to-list 'features 'org-loaddefs)
 
 (provide 'early-init)
-
-;;; early-init.el ends here

@@ -94,7 +94,7 @@
     (:override () sthenno-startup-message)
   "Display a custom startup message in the echo area."
   (let ((icon (propertize "􀎛" 'face 'default))
-        (text "循此苦旅，終抵群星。"))
+        (text "它们没能得到答案，只能看到凋零的生命。"))
     (message "%s %s" icon text)))
 
 ;;; Package Management
@@ -120,10 +120,10 @@
   :config (persistent-cached-load-filter-easy-setup))
 
 ;; Append PATH from shell
-;; (use-package exec-path-from-shell
-;;   :ensure t
-;;   :init (when (memq window-system '(mac ns x))
-;;           (exec-path-from-shell-initialize)))
+(use-package exec-path-from-shell
+  :ensure t
+  :init (when (memq window-system '(mac ns x))
+          (exec-path-from-shell-initialize)))
 
 ;; Load the patched `org'
 (progn
@@ -137,13 +137,13 @@
   (setq initial-buffer-choice startup-buffer))
 
 ;; Store customizations
-(setq custom-file (locate-user-emacs-file "custom.el"))
-(load custom-file)
+(setq custom-file (make-temp-file "tmp"))
 
 ;; Load configuration modules
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
 (require 'init-system)
 (require 'init-gui-frames)
+(require 'init-tex)
 (require 'init-org)
 (require 'init-editing-utils)
 (require 'init-projects)
@@ -152,5 +152,3 @@
 (require 'init-eglot)
 
 (provide 'init)
-
-;;; init.el ends here

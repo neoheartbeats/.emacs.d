@@ -33,17 +33,12 @@
 
 ;;; Initialize `eglot'
 (use-package eglot
-  :config
-  (setq eglot-server-programs
-        `(((python-mode python-ts-mode) . ("basedpyright-langserver" "--stdio"))))
-
-  ;; Hooks
-  (add-hook 'python-ts-mode-hook 'eglot-ensure)
-
+  :ensure t
+  :hook ((LaTeX-mode . eglot-ensure)
+         (tex-mode   . eglot-ensure)
+         (python-base-mode . eglot-ensure))
   :bind ((:map eglot-mode-map
-               ("<f2>" . eglot-rename))
-         (:map python-base-mode-map
-               ("C-c e" . eglot))))
+               ("C-;" . eglot-rename))))
 
 ;;; Python
 
@@ -52,14 +47,14 @@
   :init (setq-default python-indent-offset 4
                       python-indent-guess-indent-offset nil
                       python-indent-guess-indent-offset-verbose nil)
-  :bind (:map python-ts-mode-map
+  :bind (:map python-base-mode-map
               ("s-<up>"   . python-nav-beginning-of-block)
               ("s-<down>" . python-nav-end-of-block)
               ("C-x m"    . python-nav-if-name-main)))
 
 (use-package ruff-format
   :ensure t
-  :config (add-hook 'python-ts-mode-hook 'ruff-format-on-save-mode))
+  :config (add-hook 'python-base-mode-hook 'ruff-format-on-save-mode))
 
 ;;; AI
 
@@ -107,9 +102,9 @@
 ;;   (defun sthenno/gptel-setup-openai ()
 ;;     (setq gptel-model 'gpt-4.1
 ;;           gptel-backend (gptel-make-openai "gpt-4.1"
-;;                           :models '(gpt-4.1)
-;;                           :stream t
-;;                           :key (gptel-api-key-from-auth-source "api.openai.com"))))
+;;                                            :models '(gpt-4.1)
+;;                                            :stream t
+;;                                            :key (gptel-api-key-from-auth-source "api.openai.com"))))
 ;;   (sthenno/gptel-setup-openai)
 
 ;;   ;; Generation options

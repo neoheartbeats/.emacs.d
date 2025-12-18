@@ -133,6 +133,10 @@ This disables syntax highlighting and auto-paring for such entries."
   :bind ((:map global-map
                ("S-SPC" . er/expand-region))))
 
+;;; Clipboard
+;; (setq select-enable-clipboard t
+;;       select-enable-primary t)
+
 ;;; Files
 (defun sthenno/convert-image-to-png (file)
   "Convert FILE to PNG format using macOS `sips' tool.

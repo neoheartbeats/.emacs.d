@@ -18,6 +18,7 @@
 (use-package modus-themes
   :ensure t
   :config
+  (modus-themes-include-derivatives-mode 1)
   (setq modus-themes-common-palette-overrides ; Mapping colors
         `(
           ;; Make the mode line borderless
@@ -57,8 +58,7 @@
           (bg-completion bg-hl-line)
 
           ;; Apply the presets
-          ;; ,@modus-themes-preset-overrides-faint
-          ))
+          ,@modus-themes-preset-overrides-faint))
 
   ;; Load the enable the theme
   (modus-themes-load-theme 'modus-vivendi))
@@ -122,7 +122,7 @@
 (set-face-italic 'italic nil)
 
 ;; Set up font for non-ascii fontset
-(let ((font "LXGW Marker Gothic"))
+(let ((font "Pingfang SC"))
   (set-fontset-font t 'kana (font-spec :family font))
   (set-fontset-font t 'han (font-spec :family font))
   (set-fontset-font t 'cjk-misc (font-spec :family font)))
@@ -151,6 +151,20 @@
 
 ;;; Make `fill-column-indicator' thinner
 (set-face-attribute 'fill-column-indicator nil :height 0.1 :weight 'thin)
+;; Setup fill column indicator with stipple
+;; (setq-default display-fill-column-indicator-character ?\s)
+;; (defun sthenno/adjust-fill-column-indicator-stipple ()
+;;   "Adjust the fill-column-indicator face with stipple"
+;;   (let* ((w (window-font-width))
+;;          (stipple `(,w 1 ,(apply #'unibyte-string
+;;                                  (append (make-list (1- (/ (+ w 7) 8)) ?\0)
+;;                                          '(1))))))
+;;     (custom-theme-set-faces
+;;      'user
+;;      `(fill-column-indicator ((t (:stipple ,stipple)))))))
+;; (add-hook 'after-init-hook #'sthenno/adjust-fill-column-indicator-stipple)
+;; (add-hook 'text-scale-mode-hook #'sthenno/adjust-fill-column-indicator-stipple)
+;; (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;;; Ellipsis symbol
 (setq truncate-string-ellipsis " …")
