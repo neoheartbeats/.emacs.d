@@ -125,11 +125,12 @@
   :init (when (memq window-system '(mac ns x))
           (exec-path-from-shell-initialize)))
 
-;; Load the patched `org'
-(progn
-  (add-to-list 'load-path "/Users/sthenno/.emacs.d/site-lisp/org/lisp/")
-  (setq features (delq 'org features))
-  (require 'org))
+;; Load the patched `org' if available (skip on non-macOS or fresh setups).
+(let ((org-site-lisp (locate-user-emacs-file "site-lisp/org/lisp")))
+  (when (file-directory-p org-site-lisp)
+    (add-to-list 'load-path org-site-lisp)
+    (setq features (delq 'org features))
+    (require 'org)))
 
 ;; Declare interactive functions used at startup to inform the byte-compiler
 (let ((startup-buffer 'denote-journal-new-or-existing-entry))
