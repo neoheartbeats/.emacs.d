@@ -22,51 +22,48 @@
 ;; Completion and minibuffer basics
 ;;
 
-;; Prevent auto-composition of characters around point
-;; (setq composition-break-at-point t)
-
 ;; Completion basics. See also `orderless'
 ;;
 
 ;; TAB cycle if there are only few candidates
-(setq completion-cycle-threshold nil)   ; Always show candidates in menu
+(setopt completion-cycle-threshold nil) ; Always show candidates in menu
 
 ;; Emacs 30: `cape-dict' is used instead.
 ;; NOTE: `setopt' is necessary.
 (setopt text-mode-ispell-word-completion nil)
 
 ;; Do not use the TAB key for `completion-at-point'.
-(setq tab-always-indent 'complete)
-(setq tab-first-completion nil)
+(setopt tab-always-indent 'complete)
+(setopt tab-first-completion nil)
 
 ;; minibuffer
-(setq echo-keystrokes 0.05)             ; Display the key pressed immediately
-(setq resize-mini-windows t)
+(setopt echo-keystrokes 0.0125)         ; Display the key pressed immediately
+(setopt resize-mini-windows t)
 
 ;; Help buffer
-(setq help-window-select t)
+(setopt help-window-select t)
 
 ;; Support opening new minibuffers from inside existing minibuffers
-(setq enable-recursive-minibuffers t)
-(setq read-minibuffer-restore-windows nil)
+(setopt enable-recursive-minibuffers t)
+(setopt read-minibuffer-restore-windows nil)
 
 ;; Hide undefined commands in M-x
-(setq read-extended-command-predicate #'command-completion-default-include-p)
-(setq minibuffer-default-prompt-format " [%s]"
-      minibuffer-completion-auto-choose t
-      minibuffer-visible-completions nil)
+(setopt read-extended-command-predicate #'command-completion-default-include-p)
+(setopt minibuffer-default-prompt-format " [%s]"
+        minibuffer-completion-auto-choose t
+        minibuffer-visible-completions nil)
 
 ;; Do not allow the cursor in the minibuffer prompt
 (setopt minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
-(setq crm-prompt (format "%s %%p" (propertize "[%d]" 'face 'shadow)))
+(setopt crm-prompt (format "%s %%p" (propertize "[%d]" 'face 'shadow)))
 (file-name-shadow-mode 1)
 
 ;;; Use the `orderless' completion style
 (use-package orderless
   :ensure t
   :init
-  (setq completion-pcm-leading-wildcard t) ; Emacs 31: make `partial-completion' behave like `substring'
+  (setopt completion-pcm-leading-wildcard t) ; Emacs 31: make `partial-completion' behave like `substring'
 
   ;; The basic completion style is specified as fallback in addition to orderless in
   ;; order to ensure that completion commands rely on dynamic completion tables
@@ -92,10 +89,10 @@
                 '(orderless-literal orderless-prefixes)))
 
 ;; Sort candidates by `minibuffer-sort-by-history'
-(setq completions-sort 'historical
-      completion-auto-help nil
-      completion-show-help nil
-      completion-show-inline-help nil)
+(setopt completions-sort 'historical
+        completion-auto-help nil
+        completion-show-help nil
+        completion-show-inline-help nil)
 
 ;; Ignore cases for completions
 (setq-default completion-ignore-case t)
@@ -118,23 +115,23 @@
                   (apply args))))
 
   ;; Use `consult-completion-in-region' if `vertico' is enabled.
-  (setq completion-in-region-function (lambda (&rest args)
-                                        (apply (if vertico-mode
-                                                   #'consult-completion-in-region
-                                                 #'completion--in-region)
-                                               args)))
+  (setopt completion-in-region-function (lambda (&rest args)
+                                          (apply (if vertico-mode
+                                                     #'consult-completion-in-region
+                                                   #'completion--in-region)
+                                                 args)))
 
   ;; Hooks
   (add-hook 'after-init-hook #'vertico-mode)
 
   :config
-  (setq vertico-count 15)
-  (setq vertico-resize t)
-  (setq vertico-scroll-margin 4)
-  (setq vertico-cycle nil)
+  (setopt vertico-count 15)
+  (setopt vertico-resize t)
+  (setopt vertico-scroll-margin 4)
+  (setopt vertico-cycle nil)
 
   ;; Add some simple indicator symbols here to make things clear
-  (setq vertico-count-format (cons "[ %-6s ] " "%s of %s"))
+  (setopt vertico-count-format (cons "[ %-6s ] " "%s of %s"))
 
   ;; Do not render italic fonts
   (set-face-attribute 'vertico-group-title nil :slant 'normal)
@@ -151,28 +148,28 @@
 (use-package marginalia
   :ensure t
   :init
-  (setq marginalia-field-width 50)
-  (setq marginalia-separator " ")
-  (setq marginalia-align 'left)
-  (setq marginalia-align-offset 4)
+  (setopt marginalia-field-width 50)
+  (setopt marginalia-separator " ")
+  (setopt marginalia-align 'left)
+  (setopt marginalia-align-offset 4)
   (marginalia-mode 1))
 
 ;;; Consult is useful previewing current content in buffer
 (use-package consult
   :ensure t
   :init
-  (setq register-preview-delay 0.125
-        register-preview-function #'consult-register-format)
+  (setopt register-preview-delay 0.125
+          register-preview-function #'consult-register-format)
 
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
+  (setopt xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref)
 
   :config
-  (setq completion-in-region-function #'consult-completion-in-region)
-  (setq consult-async-min-input 3
-        consult-async-input-debounce 0.50
-        consult-async-input-throttle 0.75)
-  (setq consult-narrow-key nil)
+  (setopt completion-in-region-function #'consult-completion-in-region)
+  (setopt consult-async-min-input 3
+          consult-async-input-debounce 0.50
+          consult-async-input-throttle 0.75)
+  (setopt consult-narrow-key nil)
 
   ;; Use `consult-ripgrep' instead of `project-find-regexp' in `project'
   (keymap-substitute project-prefix-map #'project-find-regexp #'consult-ripgrep)
@@ -182,9 +179,9 @@
                      project-switch-commands)
 
   ;; Customize `consult' minibuffer prompts
-  (setq consult-buffer-sources '(consult--source-modified-buffer
-                                 consult--source-buffer
-                                 consult--source-recent-file))
+  (setopt consult-buffer-sources '(consult--source-modified-buffer
+                                   consult--source-buffer
+                                   consult--source-recent-file))
 
   (consult-customize consult-buffer
                      :prompt "Buffer → ")
@@ -196,7 +193,7 @@
           items)
       (dolist (file recentf-list (nreverse items))
         (unless (eq (aref file 0) ?/)
-          (setq file (expand-file-name file)))
+          (setopt file (expand-file-name file)))
         (unless (gethash file ht)
           (push (propertize
                  (file-name-nondirectory file)
@@ -223,10 +220,10 @@
   :config
 
   ;; Better letter cases
-  (setq dabbrev-case-distinction 'case-replace
-        dabbrev-case-replace 'case-replace
-        dabbrev-case-fold-search nil
-        dabbrev-upcase-means-case-search t)
+  (setopt dabbrev-case-distinction 'case-replace
+          dabbrev-case-replace 'case-replace
+          dabbrev-case-fold-search nil
+          dabbrev-upcase-means-case-search t)
 
   (defun sthenno/dabbrev-elisp ()
     "Setup `dabbrev' for `emacs-lisp-mode'."
@@ -247,9 +244,9 @@
   :init
 
   ;; Dict
-  (setq cape-dict-case-fold t
-        cape-dict-case-replace t)
-  (setq cape-dict-limit 40)
+  (setopt cape-dict-case-fold t
+          cape-dict-case-replace t)
+  (setopt cape-dict-limit 40)
 
   ;; Setup Capfs
   (defun sthenno/capf-eglot ()
@@ -264,6 +261,7 @@
   (defun sthenno/capf-elisp ()
     (setq-local completion-at-point-functions
                 `(,(cape-capf-super
+                    (cape-capf-prefix-length #'cape-dict 4)
                     (cape-capf-predicate
                      #'elisp-completion-at-point
                      #'(lambda (cand)
@@ -282,9 +280,9 @@
 
     (defun sthenno/denote-org-link-refresh ()
       "Refresh the cache of Denote note titles and IDs for link completion.
-Uses Denote’s APIs to get all notes in `denote-directory', then caches
-their titles and identifiers. The cache is persisted across sessions
-using `org-persist'."
+  Uses Denote’s APIs to get all notes in `denote-directory', then caches
+  their titles and identifiers. The cache is persisted across sessions
+  using `org-persist'."
       (setq sthenno/denote-org-link-completions
             (let ((files (denote-directory-files nil nil t)))
               (mapcar (lambda (file)
@@ -297,14 +295,14 @@ using `org-persist'."
 
     (defun sthenno/denote-org-link-get-candidates ()
       "Return the list of note title candidates for completion, loading cache
-if needed."
+  if needed."
       (or sthenno/denote-org-link-completions
           (sthenno/denote-org-link-refresh)))
 
     (defun sthenno/denote-completion-at-point ()
       "Completion-at-point function for inserting Denote links in Org mode.
-Triggers only inside an open Org link “([[...]])”, completing to
-“[[denote:ID][Title]]”."
+  Triggers only inside an open Org link “([[...]])”, completing to
+  “[[denote:ID][Title]]”."
       (let* ((pos (point))
              (open-pos  (save-excursion (search-backward "[[" nil t)))
              (close-pos (save-excursion (search-backward "]]" nil t))))
@@ -331,43 +329,63 @@ Triggers only inside an open Org link “([[...]])”, completing to
                                          (when id
                                            (delete-region beg end)
                                            (insert (format "denote:%s][%s" id selection))))))))))))
+
     (defun sthenno/capf-text ()
       (setq-local completion-at-point-functions
                   `(,(cape-capf-super
                       (cape-capf-prefix-length #'cape-dict 4)
                       #'sthenno/denote-completion-at-point)
-                    cape-elisp-block
                     cape-file
                     cape-dabbrev)
                   cape-dabbrev-min-length 5))
-    (add-hook 'text-mode-hook #'sthenno/capf-text))
+    (add-hook 'text-mode-hook #'sthenno/capf-text)
 
-  :config
-  (defun sthenno/cape--symbol-annotation (sym)
-    "Return kind of SYM with customized annotations."
-    (setq sym (intern-soft sym))
-    (cond ((special-form-p sym)    " <s>")
-          ((macrop sym)            " <macro>")
-          ((commandp sym)          " <cmd>")
-          ((fboundp sym)           " <func>")
-          ((custom-variable-p sym) " <custom>")
-          ((boundp sym)            " <v>")
-          ((featurep sym)          " <feat>")
-          ((facep sym)             " <face>")
-          (t " <sym>")))
-  (define-advice cape--symbol-annotation (:override (sym)
-                                                    sthenno/cape--symbol-annotation)
-    "Modify the annotation for boundp symbols."
-    (sthenno/cape--symbol-annotation sym))
+    (defun sthenno/denote-org-create-on-open ()
+      "Create a denote note if the org link is a `fuzzy' link (e.g. [[topic]])."
+      (let ((element (org-element-context)))
+        (when (eq (org-element-type element) 'link)
+          (let ((type (org-element-property :type element))
+                (path (org-element-property :path element)))
+            (when (string= type "fuzzy")
+              (let* ((title path)
+                     (note-file (denote title)))
+                (when (and note-file (file-exists-p note-file))
+                  (save-excursion
+                    (let ((link-beg (org-element-property :begin element))
+                          (link-end (org-element-property :end element))
+                          (id (denote-retrieve-filename-identifier note-file)))
+                      (delete-region link-beg link-end)
+                      (insert (format "[[denote:%s][%s]]" id title))
+                      (sthenno/denote-org-link-refresh))))))))))
+    (add-hook 'org-open-at-point-functions #'sthenno/denote-org-create-on-open))
 
-  (setq cape--dabbrev-properties (list :annotation-function (lambda (_)
-                                                              ;; FIXME: how to avoid
-                                                              ;; parsing this as a
-                                                              ;; docstring?
-                                                              ""
-                                                              " <dab>")
-                                       :company-kind (lambda (_) 'text)
-                                       :exclusive 'no)))
+  ;; :config
+  ;; (defun sthenno/cape--symbol-annotation (sym)
+  ;;   "Return kind of SYM with customized annotations."
+  ;;   (setq sym (intern-soft sym))
+  ;;   (cond ((special-form-p sym)    " <s>")
+  ;;         ((macrop sym)            " <macro>")
+  ;;         ((commandp sym)          " <cmd>")
+  ;;         ((fboundp sym)           " <func>")
+  ;;         ((custom-variable-p sym) " <custom>")
+  ;;         ((boundp sym)            " <v>")
+  ;;         ((featurep sym)          " <feat>")
+  ;;         ((facep sym)             " <face>")
+  ;;         (t " <sym>")))
+  ;; (define-advice cape--symbol-annotation (:override (sym)
+  ;;                                                   sthenno/cape--symbol-annotation)
+  ;;   "Modify the annotation for boundp symbols."
+  ;;   (sthenno/cape--symbol-annotation sym))
+
+  ;; (setq cape--dabbrev-properties (list :annotation-function (lambda (_)
+  ;;                                                             ;; FIXME: how to avoid
+  ;;                                                             ;; parsing this as a
+  ;;                                                             ;; docstring?
+  ;;                                                             ""
+  ;;                                                             " <dab>")
+  ;;                                      :company-kind (lambda (_) 'text)
+  ;;                                      :exclusive 'no))
+  )
 
 ;;; The main completion frontend by Corfu
 (use-package corfu
@@ -376,22 +394,17 @@ Triggers only inside an open Org link “([[...]])”, completing to
   :init (add-hook 'after-init-hook #'(lambda ()
                                        (global-corfu-mode 1)))
   :config
-  (setq corfu-auto t
-        corfu-auto-delay 0.125          ; Making this to 0 is too expensive
-        corfu-auto-prefix 2)
-  (setq corfu-count 8
-        corfu-scroll-margin 4)
-  (setq corfu-min-width 20
-        corfu-max-width 40)
-  (setq corfu-quit-at-boundary 'separator
-        corfu-separator ?\s             ; Use space
-        corfu-quit-no-match 'separator  ; Don't quit if there is `corfu-separator'
-                                        ; inserted
-        corfu-preview-current 'insert   ; Preview first candidate. Insert on input if
-                                        ; only one
-        corfu-on-exact-match 'insert)
-  (setq corfu-cycle t)
-  (setq corfu-preselect 'directory)
+  (setopt corfu-auto t
+          corfu-auto-delay 0.125
+          corfu-auto-prefix 2)
+  (setopt corfu-count 8
+          corfu-scroll-margin 4)
+  (setopt corfu-min-width 20
+          corfu-max-width 40)
+  (setopt corfu-separator ?\s
+          corfu-preview-current 'insert)
+  (setopt corfu-cycle t)
+  (setopt corfu-preselect 'directory)
 
   ;; Performance optimization
   (defun sthenno/corfu-eshell-setup ()
@@ -414,17 +427,17 @@ Triggers only inside an open Org link “([[...]])”, completing to
       (if corfu-sort-function
           (funcall corfu-sort-function candidates)
         candidates)))
-  (setq corfu-sort-override-function #'sthenno/corfu-combined-sort)
+  (setopt corfu-sort-override-function #'sthenno/corfu-combined-sort)
 
   ;; Maintain a list of recently selected candidates
   (corfu-history-mode 1)
   (add-to-list 'savehist-additional-variables 'corfu-history)
 
   ;; Popup candidates info
-  (setq corfu-popupinfo-delay '(0.5 . 0.25))
-  (setq corfu-popupinfo-hide nil)
-  (setq corfu-popupinfo-max-width 80
-        corfu-popupinfo-min-width 20)
+  (setopt corfu-popupinfo-delay '(0.25 . 0.125))
+  (setopt corfu-popupinfo-hide nil)
+  (setopt corfu-popupinfo-max-width 80
+          corfu-popupinfo-min-width 20)
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (corfu-popupinfo-mode 1)))
   :bind (:map corfu-map
@@ -435,5 +448,3 @@ Triggers only inside an open Org link “([[...]])”, completing to
               ("<escape>" . corfu-quit)))
 
 (provide 'init-comp)
-
-;;; init-comp.el ends here

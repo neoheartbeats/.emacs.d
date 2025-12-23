@@ -125,12 +125,11 @@
   :init (when (memq window-system '(mac ns x))
           (exec-path-from-shell-initialize)))
 
-;; Load the patched `org' if available (skip on non-macOS or fresh setups).
-(let ((org-site-lisp (locate-user-emacs-file "site-lisp/org/lisp")))
-  (when (file-directory-p org-site-lisp)
-    (add-to-list 'load-path org-site-lisp)
-    (setq features (delq 'org features))
-    (require 'org)))
+;; Load the patched `org'
+;; (progn
+;;   (add-to-list 'load-path "/Users/sthenno/.emacs.d/site-lisp/org/lisp/")
+;;   (setq features (delq 'org features))
+;;   (require 'org))
 
 ;; Declare interactive functions used at startup to inform the byte-compiler
 (let ((startup-buffer 'denote-journal-new-or-existing-entry))
@@ -153,3 +152,18 @@
 (require 'init-eglot)
 
 (provide 'init)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-vc-selected-packages
+   '((persistent-cached-load-filter :url
+				    "https://github.com/include-yy/persistent-cached-load-filter"
+				    :branch "master"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

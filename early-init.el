@@ -45,7 +45,7 @@
 
 (setq-default initial-frame-alist default-frame-alist)
 
-(add-to-list 'features 'org)
-(add-to-list 'features 'org-loaddefs)
+;; (add-to-list 'features 'org)
+;; (add-to-list 'features 'org-loaddefs)
 
 (provide 'early-init)

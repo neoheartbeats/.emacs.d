@@ -8,199 +8,95 @@
 
 ;; This config is currently for a patched version of Org that is under development.
 ;; See https://code.tecosaur.net/tec/org-mode for more details.
-;;
-;; This file includes:
-;;
-;; - Org Mode basics
-;; - TEC's `org-latex-preview' specific configurations
-;; - Modern Org Mode
-;; - Note-taking system using `denote'
 
 ;;; Code:
 ;;
 
 ;;; Setup default directory
-(setq org-directory "/Users/sthenno/uncodified/")
-(setq org-persist-directory (locate-user-emacs-file "org-persist/"))
+(setopt org-directory "/Users/sthenno/uncodified/")
+(setopt org-persist-directory (locate-user-emacs-file "org-persist/"))
 
 ;;; Org Mode buffer init behaviors
-(setq org-startup-with-link-previews t)
-(setq org-startup-with-latex-preview t)
-
-;; Fold titles by default
-;; (setq org-startup-folded 'content)
-
-;; Use CDLaTeX to improve editing experiences
-;; (use-package cdlatex
-;;   :ensure t
-;;   :config (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
-
-;; Add “libgs” to `org-latex-preview-process-alist'
-(setq org-latex-preview-process-default 'dvisvgm)
-(let ((dvisvgm (alist-get 'dvisvgm org-latex-preview-process-alist))
-      (libgs "/opt/homebrew/opt/ghostscript/lib/libgs.dylib"))
-  (plist-put dvisvgm :image-converter
-             `(,(concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts"
-                        " --libgs=" libgs
-                        " --bbox=preview -v4 -o %B-%%9p.svg %f"))))
-
-;; Enable `org-latex-preview-mode'
-(add-hook 'org-mode-hook #'(lambda ()
-                             (org-latex-preview-mode 1)))
-
-;; Preview functions
-(defun sthenno/org-preview-fragments ()
-  (interactive)
-  (call-interactively #'org-latex-preview-clear-cache)
-  (org-latex-preview 'buffer)
-  (org-link-preview-refresh))
-(keymap-set org-mode-map "C-p" #'sthenno/org-preview-fragments)
-
-(setq org-latex-packages-alist '(("" "siunitx"   t)
-
-                                 ;; https://ctan.org/pkg/newtx
-                                 ("libertinus" "newtx" t)
-
-                                 ;; Load this after all math to give access to bold math
-                                 ("" "bm" t)
-
-                                 ;; Package physics2 requires to be loaded after font
-                                 ;; packages. See https://ctan.org/pkg/physics2
-                                 ("" "physics2" t)
-
-                                 ;; Typeset the differential operators
-                                 ("normal" "fixdif" t)))
-
-;; Add additional modules required by LaTeX packages like physics2 to the preamble
-(let* ((physics2-modules '(("" "ab")
-                           ("" "ab.braket")
-                           ("" "diagmat")
-                           ("" "xmat")))
-       (physics2-preamble (concat (mapconcat
-                                   (lambda (m)
-                                     (let ((options (car  m))
-                                           (module  (cadr m)))
-                                       (if (string= options "")
-                                           (format "\\usephysicsmodule{%s}" module)
-                                         (format "\\usephysicsmodule[%s]{%s}" options module))))
-                                   physics2-modules
-                                   "\n")
-                                  "\n"))
-       (default-preamble "\\documentclass{article}
-\[DEFAULT-PACKAGES]
-\[PACKAGES]
-\\usepackage{xcolor}"))
-  (setq org-latex-preview-preamble
-        (concat default-preamble
-                "\n" physics2-preamble
-                "\\DeclareMathOperator*{\\argmax}{arg\\,max}\n"
-                "\\DeclareMathOperator*{\\argmin}{arg\\,min}")))
-
-(setq org-highlight-latex-and-related '(native)) ; Highlight inline LaTeX code
-(setq org-use-sub-superscripts '{})
-;; (setq org-pretty-entities t
-;;       org-pretty-entities-include-sub-superscripts nil)
-
-(let ((factor (- (/ (face-attribute 'default :height)
-                    100.0)
-                 0.025)))
-  (plist-put org-latex-preview-appearance-options :scale factor)
-  (plist-put org-latex-preview-appearance-options :zoom  factor))
+(setopt org-startup-with-link-previews t)
 
 ;;; Modern Org mode theme
 (use-package org-modern
   :ensure t
   :config
-  (setq org-modern-label-border 0.25)
-  (setq org-modern-star 'replace)
-  (let ((stars "􀄩"))
-    (setq org-modern-replace-stars stars
-          org-modern-hide-stars stars))
-  (setq org-modern-list '((?- . "•")))
-  (setq org-modern-checkbox '((?X  . "􀃰")
-                              (?-  . "􀃞")
-                              (?\s . "􀂒")))
-  (setq org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
-  (setq org-modern-block-name
-        '(("src"   . ("􀃥" "􀃥"))
-          ("quote" . ("􁈏" "􁈐"))
-          (t . t)))
-  (setq org-modern-keyword '(("title"   . "􀫘")
-                             ("results" . "􀎛")
-                             (t . "‣ ")))
+  (setopt org-modern-label-border 0.25)
+  (setopt org-modern-list '((?- . "•")))
+  (setopt org-modern-checkbox '((?X  . "􀃰")
+                                (?-  . "􀃞")
+                                (?\s . "􀂒")))
+  (setopt org-modern-timestamp '(" %Y-%m-%d " . " %H:%M "))
+  (setopt org-modern-block-name
+          '(("src"   . ("􀃥" "􀃥"))
+            ("quote" . ("􁈏" "􁈐"))
+            (t . t)))
+  (setopt org-modern-keyword '(("title"   . "􀫘")
+                               ("results" . "􀎛")
+                               (t . t)))
   ;; Hooks
   (add-hook 'org-mode-hook #'(lambda ()
                                (org-modern-mode 1))))
 
 ;; External settings for `org-modern'
-(setq org-ellipsis " …")
-(setq org-use-property-inheritance t)
-(setq org-auto-align-tags nil)
-(setq org-tags-column 0)
-(setq org-hide-emphasis-markers t
-      org-hide-macro-markers t)
-
-;; Use this with "C-<return>"
-(setq org-insert-heading-respect-content t)
-
-;; Use this with "C-S-<return>"
-(setq org-treat-insert-todo-heading-as-state-change t)
+(setopt org-ellipsis " …")
+(setopt org-use-property-inheritance t)
+(setopt org-auto-align-tags nil)
+(setopt org-tags-column 0)
+(setopt org-hide-emphasis-markers t
+        org-hide-macro-markers t)
 
 ;; Better experiences jumping through headlines
-(setq org-special-ctrl-a/e t)
+(setopt org-special-ctrl-a/e t)
 
 ;; Fold drawers by default
-(setq org-cycle-hide-drawer-startup t)
+(setopt org-cycle-hide-drawer-startup t)
 (add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
 
 ;;; Org fragments and overlays
 
 ;; Org images
-(setq org-image-align 'left
-      org-image-actual-width '(420)
-      org-image-max-width 'fill-column)
+(setopt org-image-align 'left
+        org-image-actual-width '(420)
+        org-image-max-width 'fill-column)
 
-(setq org-yank-image-save-method (expand-file-name "images/" org-directory))
-(setq org-yank-dnd-default-attach-method 'cp)
+(setopt org-yank-image-save-method (expand-file-name "images/" org-directory))
+(setopt org-yank-dnd-default-attach-method 'cp)
 
 ;;; Org Hyperlinks
-(setq org-return-follows-link t)
+(setopt org-return-follows-link t)
 
 ;;; Open file links in current window
 (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 
 ;;; Using shift-<arrow-keys> to select text
-(setq org-support-shift-select 'always) ; Everywhere except timestamps
-(setq org-use-fast-todo-selection 'expert)
+(setopt org-support-shift-select t)
 
 ;;; The Zettlekasten note-taking system by Denote
 (use-package denote
   :ensure t
   :config
-  (setq denote-directory org-directory)
-  (setq denote-file-type 'org)
-  (setq denote-known-keywords
-        '("stages" "silos" "images" "papers" "production" "technology")
-        denote-infer-keywords t)
-  (setq denote-save-buffers t
-        denote-kill-buffers t)
-  (setq denote-open-link-function #'find-file)
+  (setopt denote-directory org-directory)
+  (setopt denote-file-type 'org)
+  (setopt denote-known-keywords '("stages" "silos" "images" "papers"))
+  (setopt denote-save-buffers t
+          denote-kill-buffers t)
+  (setopt denote-open-link-function #'find-file)
 
   ;; Do not include date, tags and ids in note files
-  (setq denote-org-front-matter "#+title: %1$s\n\n")
+  (setopt denote-org-front-matter "#+title: %1$s\n\n")
 
   (denote-rename-buffer-mode 1)
-  (setq denote-buffer-name-prefix "[uncodified] ")
-  (setq denote-rename-buffer-format "%D")
-
-  ;; The `denote-rename-buffer-mode' can now show if a file has backlinks
-  ;; (setq denote-rename-buffer-backlinks-indicator " ↔ ")
+  (setopt denote-buffer-name-prefix "[uncodified] ")
+  (setopt denote-rename-buffer-format "%D")
 
   ;; Do not issue any extra prompts. Always sort by the `title' file name component and
   ;; never do a reverse sort.
-  (setq denote-sort-dired-extra-prompts nil
-        denote-sort-dired-default-sort-component 'title
-        denote-sort-dired-default-reverse-sort t)
+  (setopt denote-sort-dired-extra-prompts nil
+          denote-sort-dired-default-sort-component 'title
+          denote-sort-dired-default-reverse-sort t)
 
   ;; Hooks
   (add-hook 'dired-mode-hook #'denote-dired-mode))
@@ -208,7 +104,7 @@
 (use-package denote-org
   :ensure t
   :config
-  (setq denote-org-store-link-to-heading 'context)
+  (setopt denote-org-store-link-to-heading 'context)
   (defun sthenno/denote-org-path-sorted-notes (directory)
     "Return a list of note files in DIRECTORY, sorted by name."
     (sort (seq-filter 'denote-file-is-note-p
@@ -218,9 +114,9 @@
 (use-package denote-journal
   :ensure t
   :config
-  (setq denote-journal-title-format "%e %B %Y"
-        denote-journal-directory (expand-file-name "stages/" denote-directory)
-        denote-journal-keyword '("stages")) ; Stages are journals
+  (setopt denote-journal-title-format "%e %B %Y"
+          denote-journal-directory (expand-file-name "stages/" denote-directory)
+          denote-journal-keyword '("stages")) ; Stages are journals
 
   ;; Helper functions
   (defun sthenno/denote-journal-find-stages-file-date (length)
@@ -254,45 +150,28 @@
 ;;; Load languages for Org Babel
 
 ;; Do not ask for confirmation before executing
-(setq org-link-elisp-confirm-function nil
-      org-link-shell-confirm-function nil)
+(setopt org-link-elisp-confirm-function nil
+        org-link-shell-confirm-function nil)
+(setopt org-link-search-must-match-exact-headline nil)
 
 ;; Org code blocks
-(setq org-confirm-babel-evaluate nil)
+(setopt org-confirm-babel-evaluate nil)
 
-(setq org-src-preserve-indentation t
-      org-edit-src-content-indentation 0
-      org-edit-src-persistent-message nil
-      org-src-fontify-natively t
-      org-src-tab-acts-natively t
-      org-src-window-setup 'current-window
-      org-src-ask-before-returning-to-edit-buffer nil)
-
-;; In addition to `org-src-fontify-natively'
-(add-to-list 'org-src-lang-modes (cons "python" 'python))
-
-;; (setq org-edit-src-turn-on-auto-save t)
-
-;; Prefer lower-case drawers
-(setq org-babel-results-keyword "results")
-
-;; Using `S-<return>' instead
-;; (setq org-babel-no-eval-on-ctrl-c-ctrl-c t)
-;; (keymap-set org-mode-map "S-<return>" #'org-babel-execute-maybe)
+(setopt org-src-preserve-indentation t
+        org-edit-src-content-indentation 0
+        org-edit-src-persistent-message nil
+        org-src-fontify-natively t
+        org-src-tab-acts-natively t
+        org-src-window-setup 'plain
+        org-src-ask-before-returning-to-edit-buffer nil)
 
 ;; Enable these languages for Org-Babel
-(org-babel-do-load-languages 'org-babel-load-languages '((emacs-lisp . t)
-                                                         (python . t)))
-
-;; Specific `org-babel-python-command'
-(setq org-babel-python-command "/Users/sthenno/Tempestissimo/tempestissimo/.venv/bin/python")
-
-;;; Org-Table
-;; (setq org-table-use-standard-references t)
+(setopt org-babel-load-languages '((emacs-lisp . t)
+                                   (python . t)
+                                   (latex . t)
+                                   (shell . t)))
 
 ;;; Export
-(setq org-export-allow-bind-keywords t)
+(setopt org-export-allow-bind-keywords t)
 
 (provide 'init-org)
-
-;;; init-org.el ends here

@@ -13,12 +13,13 @@
 ;;
 
 ;;; Setup `treesit' for better performance for processing coding syntax
-(use-package treesit-auto
-  :ensure t
-  :config
-  (setq treesit-auto-install t)
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (global-treesit-auto-mode 1))
+
+;; (use-package treesit-auto
+;;   :ensure t
+;;   :config
+;;   (setq treesit-auto-install t)
+;;   (treesit-auto-add-to-auto-mode-alist 'all)
+;;   (global-treesit-auto-mode 1))
 
 ;; Append *-mode-hook to *-ts-mode-hook for modes in `major-mode-remap-list'
 (mapc #'(lambda (major-mode-remap)
@@ -34,11 +35,10 @@
 ;;; Initialize `eglot'
 (use-package eglot
   :ensure t
+  :defer t
   :hook ((LaTeX-mode . eglot-ensure)
          (tex-mode   . eglot-ensure)
-         (python-base-mode . eglot-ensure))
-  :bind ((:map eglot-mode-map
-               ("C-;" . eglot-rename))))
+         (python-base-mode . eglot-ensure)))
 
 ;;; Python
 
@@ -234,5 +234,3 @@
 ;;                ("s-<return>" . sthenno/gptel-send))))
 
 (provide 'init-eglot)
-
-;;; init-eglot.el ends here

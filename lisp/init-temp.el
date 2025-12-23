@@ -31,7 +31,7 @@
 ;;; YASnippet
 (use-package yasnippet
   :ensure t
-  :demand t
+  :defer t
   :diminish (yas-minor-mode)
   :config
   (setq yas-triggers-in-field t)
