@@ -31,7 +31,6 @@
 ;;; YASnippet
 (use-package yasnippet
   :ensure t
-  :defer t
   :diminish (yas-minor-mode)
   :config
   (setq yas-triggers-in-field t)
@@ -73,5 +72,3 @@
 ;;   )
 
 (provide 'init-temp)
-
-;;; init-temp.el ends here

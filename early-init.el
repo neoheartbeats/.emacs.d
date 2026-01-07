@@ -12,11 +12,15 @@
 ;;; Code:
 
 ;; Temporarily maximize garbage collection limits during startup
-(setq gc-cons-threshold most-positive-fixnum
-      gc-cons-percentage 1.0)
-(add-hook 'emacs-startup-hook #'(lambda ()
-                                  (setq gc-cons-threshold (* 80 1024 1024)
-                                        gc-cons-percentage 0.1)))
+(setq-default gc-cons-threshold most-positive-fixnum
+              gc-cons-percentage 1.0)
+(add-hook 'after-init-hook #'(lambda ()
+                               (setopt gc-cons-threshold (* 80 1024 1024)
+                                       gc-cons-percentage 0.1)))
+
+(add-to-list 'load-path (locate-user-emacs-file "lisp/"))
+
+
 
 ;; Suppress messages during initialization for cleaner startup
 ;; (setq-default inhibit-message t)
@@ -25,27 +29,19 @@
 
 ;; Set default frame parameters for all frames
 ;; These settings create a clean, modern UI appearance
-(setq-default default-frame-alist '(
-                                    ;; Disable UI elements for a minimal look
-                                    (menu-bar-lines . 0)
-                                    (tool-bar-lines . 0)
-                                    (vertical-scroll-bars . nil)
-                                    (horizontal-scroll-bars . nil)
+(setopt default-frame-alist '((menu-bar-lines . 0)
+                              (tool-bar-lines . 0)
+                              (vertical-scroll-bars . nil)
+                              (horizontal-scroll-bars . nil)
+                              (width . 150)
+                              (height . 75)
+                              ;; (alpha-background . 60)
+                              (alpha . (85 . 85))
+                              (title . "􀫥 它们没能得到答案，只能看到凋零的生命。")
+                              (ns-transparent-titlebar . t)))
+(setopt initial-frame-alist default-frame-alist)
 
-                                    ;; Set default frame size
-                                    (width . 125)
-                                    (height . 65)
-
-                                    ;; (alpha-background . 60)
-                                    ;; (alpha . (90 . 90))
-                                    (title . "􀫥 它们没能得到答案，只能看到凋零的生命。")
-
-                                    ;; macOS-specific titlebar settings
-                                    (ns-transparent-titlebar . t)))
-
-(setq-default initial-frame-alist default-frame-alist)
-
-;; (add-to-list 'features 'org)
-;; (add-to-list 'features 'org-loaddefs)
+(require 'package)
+(setopt package-enable-at-startup t)
 
 (provide 'early-init)

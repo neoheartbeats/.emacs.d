@@ -11,7 +11,7 @@
 ;;; Code:
 ;;
 
-(setq project-prompter #'project-prompt-project-name)
+;; (setq project-prompter #'project-prompt-project-name)
 
 ;;; Git client using Magit
 (use-package magit
@@ -26,5 +26,3 @@
               ("M-/" . xref-find-references)))
 
 (provide 'init-projects)
-
-;;; init-projects.el ends here

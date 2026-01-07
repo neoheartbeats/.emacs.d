@@ -161,5 +161,3 @@ The converted file will be saved in the same directory with a .png extension."
     (find-file (expand-file-name output))))
 
 (provide 'init-editing-utils)
-
-;;; init-editing-utils.el ends here

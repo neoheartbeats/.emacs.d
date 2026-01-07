@@ -148,10 +148,10 @@
 (use-package marginalia
   :ensure t
   :init
-  (setopt marginalia-field-width 50)
-  (setopt marginalia-separator " ")
-  (setopt marginalia-align 'left)
-  (setopt marginalia-align-offset 4)
+  ;; (setopt marginalia-field-width 30)
+  ;; (setopt marginalia-separator " ")
+  ;; (setopt marginalia-align 'left)
+  ;; (setopt marginalia-align-offset 4)
   (marginalia-mode 1))
 
 ;;; Consult is useful previewing current content in buffer
@@ -280,7 +280,7 @@
 
     (defun sthenno/denote-org-link-refresh ()
       "Refresh the cache of Denote note titles and IDs for link completion.
-  Uses Denote’s APIs to get all notes in `denote-directory', then caches
+  Uses Denote's APIs to get all notes in `denote-directory', then caches
   their titles and identifiers. The cache is persisted across sessions
   using `org-persist'."
       (setq sthenno/denote-org-link-completions
@@ -341,7 +341,7 @@
     (add-hook 'text-mode-hook #'sthenno/capf-text)
 
     (defun sthenno/denote-org-create-on-open ()
-      "Create a denote note if the org link is a `fuzzy' link (e.g. [[topic]])."
+      "Create a denote note if the Org link is a `fuzzy' link (e.g. [[topic]])."
       (let ((element (org-element-context)))
         (when (eq (org-element-type element) 'link)
           (let ((type (org-element-property :type element))
@@ -354,7 +354,7 @@
                     (let ((link-beg (org-element-property :begin element))
                           (link-end (org-element-property :end element))
                           (id (denote-retrieve-filename-identifier note-file)))
-                      (delete-region link-beg link-end)
+                      ;; (delete-region link-beg link-end)
                       (insert (format "[[denote:%s][%s]]" id title))
                       (sthenno/denote-org-link-refresh))))))))))
     (add-hook 'org-open-at-point-functions #'sthenno/denote-org-create-on-open))

@@ -14,7 +14,7 @@
 ;; macOS specified key mapping
 ;;
 
-(setq mac-option-modifier  'meta)
+(setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'super)
 
 ;; macOS-styled keybindings
@@ -22,11 +22,10 @@
 (keymap-global-set "s-c" #'kill-ring-save)
 (keymap-global-set "s-v" #'yank)
 (keymap-global-set "s-x" #'kill-region)
-(keymap-global-set "s-q" #'save-buffers-kill-emacs)
+(keymap-global-set "s-q" #'kill-emacs)
 (keymap-global-set "s-s" #'save-buffer)
 (keymap-global-set "s-w" #'kill-current-buffer)
 (keymap-global-set "s-e" #'delete-window)
-(keymap-global-set "s-r" #'restart-emacs)
 (keymap-global-set "s-z" #'undo)
 (keymap-global-set "s-d" #'find-file)
 
@@ -183,10 +182,7 @@ Activate again to undo this. If the window changes before then, the undo expires
   (setq dired-vc-rename-file t)
   (setq dired-movement-style 'cycle-files)
   (add-hook 'dired-mode-hook #'(lambda ()
-                                 (dired-hide-details-mode 1)))
-
-  ;; `gls' is preferred on macOS
-  (setq insert-directory-program "/opt/homebrew/bin/gls"))
+                                 (dired-hide-details-mode 1))))
 
 ;;; Default is RET
 ;; (define-key input-decode-map [?\C-m] [C-m])
@@ -220,5 +216,3 @@ Activate again to undo this. If the window changes before then, the undo expires
   :config (ultra-scroll-mode 1))
 
 (provide 'init-system)
-
-;;; init-system.el ends here

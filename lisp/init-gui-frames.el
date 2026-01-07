@@ -122,7 +122,7 @@
 (set-face-italic 'italic nil)
 
 ;; Set up font for non-ascii fontset
-(let ((font "Pingfang SC"))
+(let ((font "LXGW Marker Gothic"))
   (set-fontset-font t 'kana (font-spec :family font))
   (set-fontset-font t 'han (font-spec :family font))
   (set-fontset-font t 'cjk-misc (font-spec :family font)))
@@ -166,9 +166,31 @@
 ;; (add-hook 'text-scale-mode-hook #'sthenno/adjust-fill-column-indicator-stipple)
 ;; (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
+;;; Resources
+;; (use-package posframe
+;;   :ensure t
+;;   :config
+;;   (defun sthenno/show-mascot ()
+;;     "Display the mascot image in the bottom right corner."
+;;     (interactive)
+;;     (when (display-graphic-p)
+;;       (posframe-show " *mascot-buffer*"
+;;                      :string (propertize " " 'display
+;;                                          (create-image
+;;                                           (locate-user-emacs-file "resources/supporter-required.png") nil nil
+;;                                           :width 150))
+;;                      :poshandler #'posframe-poshandler-window-bottom-right-corner
+;;                      :internal-border-width 0
+;;                      :background-color (face-attribute 'default :background)
+;;                      :no-accept-focus t)))
+
+;;   (defun sthenno/hide-mascot ()
+;;     "Hide the mascot."
+;;     (interactive)
+;;     (posframe-hide " *mascot-buffer*"))
+;;   (add-hook 'emacs-startup-hook #'sthenno/show-mascot))
+
 ;;; Ellipsis symbol
 (setq truncate-string-ellipsis " …")
 
 (provide 'init-gui-frames)
-
-;;; init-gui-frames.el ends here
