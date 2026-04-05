@@ -1,27 +1,23 @@
 ;;; init-projects.el --- Project management -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021-2025 Sthenno <sthenno@sthenno.com>
+;; Copyright (C) 2021-2026 Sthenno <sthenno@sthenno.com>
 
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
-;;
-;;
+
+;; This file contains project navigation and VCS tools.
 
 ;;; Code:
-;;
 
-;; (setq project-prompter #'project-prompt-project-name)
-
-;;; Git client using Magit
 (use-package magit
   :ensure t
-  :config (setq magit-diff-refine-hunk t)
+  :config (setopt magit-diff-refine-hunk t)
   :bind ("C-x g" . magit-status))
 
-;;; Xref
 (use-package xref
-  :init (setq xref-search-program 'ripgrep)
+  :ensure nil
+  :init (setopt xref-search-program 'ripgrep)
   :bind (:map global-map
               ("M-/" . xref-find-references)))
 

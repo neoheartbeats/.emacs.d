@@ -44,3 +44,5 @@ recentf
 /recentf.eld
 /site-lisp/org-bk/
 /load-path-cache.eld
+/user-lisp/.user-lisp-autoloads.el
+*.elc
