@@ -11,8 +11,7 @@
 ;;; Code:
 
 (use-package modus-themes
-  :ensure nil
-  :demand t
+  :ensure t
   :config
   (setopt modus-themes-common-palette-overrides
           `(
@@ -36,7 +35,7 @@
             ;; Prose and completion colors.
             (prose-todo info)
             (prose-done "#535353")
-            (bg-completion bg-hl-line)
+            ;; (bg-completion bg-hl-line)
 
             ,@modus-themes-preset-overrides-faint))
   (modus-themes-load-theme 'modus-vivendi))
@@ -48,11 +47,21 @@
 (setopt global-hl-line-sticky-flag t
         cursor-type '(bar . 1)
         truncate-string-ellipsis " …")
-(setq-default mode-line-compact t
-              mouse-highlight nil)
+(setopt mode-line-compact t
+        mode-line-collapse-minor-modes t
+        mode-line-modes-delimiters '("[" . "]"))
 
 (global-hl-line-mode 1)
+(global-display-fill-column-indicator-mode 1)
 (blink-cursor-mode -1)
+
+(use-package display-line-numbers
+  :ensure nil
+  :config
+  (setopt display-line-numbers-type 'relative
+          display-line-numbers-grow-only t
+          display-line-numbers-width-start t)
+  (global-display-line-numbers-mode 1))
 
 (use-package spacious-padding
   :ensure t
@@ -61,7 +70,7 @@
 (use-package paren
   :ensure nil
   :config
-  (set-face-attribute 'show-paren-match nil :inherit 'bold)
+  (set-face-attribute 'show-paren-match nil :inherit 'underline)
   (show-paren-mode 1))
 
 (use-package paren-face

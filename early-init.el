@@ -11,20 +11,20 @@
 ;;; Code:
 
 ;; Temporarily maximize garbage collection limits during startup
-(setq gc-cons-threshold most-positive-fixnum
-      gc-cons-percentage 1.0)
-(add-hook 'after-init-hook #'(lambda ()
-                               (setopt gc-cons-threshold (* 80 1024 1024)
-                                       gc-cons-percentage 0.1)))
+(setq-default gc-cons-threshold most-positive-fixnum
+              gc-cons-percentage 1.0)
+(add-hook 'after-init-hook (lambda ()
+                             (setq gc-cons-threshold (* 80 1024 1024)
+                                   gc-cons-percentage 0.1)))
 
 ;; Emacs 31 prepares and activates `user-lisp-directory' automatically
-(setopt user-lisp-directory (locate-user-emacs-file "user-lisp/")
-        user-lisp-auto-scrape t)
+(setq-default user-lisp-directory (locate-user-emacs-file "user-lisp/")
+              user-lisp-auto-scrape t)
 
 ;; Suppress messages during initialization for cleaner startup
 (setq-default inhibit-message t)
-(add-hook 'before-init-hook #'(lambda ()
-                                (setq inhibit-message nil)))
+(add-hook 'after-init-hook (lambda ()
+                             (setq inhibit-message nil)))
 
 ;; Set default frame parameters for all frames
 (setopt default-frame-alist '((menu-bar-lines . 0)
@@ -36,7 +36,7 @@
                               (alpha . (90 . 90))
                               (title . "")
                               (ns-transparent-titlebar . t)))
-(setopt initial-frame-alist default-frame-alist)
+(setq-default initial-frame-alist default-frame-alist)
 
 ;; Keep package activation enabled for installed packages
 (setq package-enable-at-startup t)

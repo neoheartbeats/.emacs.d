@@ -39,8 +39,8 @@
               ("s-<down>" . python-nav-end-of-block)
               ("C-x m"    . python-nav-if-name-main)))
 
-(use-package ruff-format
-  :ensure t
-  :hook (python-base-mode . ruff-format-on-save-mode))
+; (use-package ruff-format
+;   :ensure t
+;   :hook (python-base-mode . ruff-format-on-save-mode))
 
 (provide 'init-eglot)
