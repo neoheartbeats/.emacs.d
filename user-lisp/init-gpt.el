@@ -15,20 +15,19 @@
 
 (use-package gptel
   :ensure t
-  :config
-  (setopt gptel-default-mode #'org-mode
-          gptel-org-branching-context t)
-  (setopt gptel-model 'sthenno
-          gptel-backend (gptel-make-openai "local"
-                          :protocol "http"
-                          :host "192.168.100.204:8000"
-                          :endpoint "/v1/chat/completions"
-                          :stream t
-                          :key "tmp"
-                          :models '(sthenno)))
+  :defer t
+  :config (setopt gptel-default-mode #'org-mode
+                  gptel-org-branching-context t
+                  gptel-model 'sthenno
+                  gptel-backend (gptel-make-openai "local"
+                                  :protocol "http"
+                                  :host "192.168.100.207:8000"
+                                  :endpoint "/v1/chat/completions"
+                                  :stream t
+                                  :key "sk-tmp"
+                                  :models '(sthenno)))
   :bind ((:map global-map
-               ("s-p" . gptel)
-               ("s-<return>" . gptel-send))
+               ("s-p" . gptel))
          (:map gptel-mode-map
                ("s-<return>" . gptel-send))))
 

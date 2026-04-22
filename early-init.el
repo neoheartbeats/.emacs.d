@@ -27,15 +27,15 @@
                              (setq inhibit-message nil)))
 
 ;; Set default frame parameters for all frames
-(setopt default-frame-alist '((menu-bar-lines . 0)
-                              (tool-bar-lines . 0)
-                              (vertical-scroll-bars . nil)
-                              (horizontal-scroll-bars . nil)
-                              (width . 125)
-                              (height . 60)
-                              (alpha . (90 . 90))
-                              (title . "")
-                              (ns-transparent-titlebar . t)))
+(setq-default default-frame-alist '((menu-bar-lines . 0)
+                                    (tool-bar-lines . 0)
+                                    (vertical-scroll-bars . nil)
+                                    (horizontal-scroll-bars . nil)
+                                    (width . 135)
+                                    (height . 65)
+                                    (alpha . (90 . 90))
+                                    (title . "")
+                                    (ns-transparent-titlebar . t)))
 (setq-default initial-frame-alist default-frame-alist)
 
 ;; Keep package activation enabled for installed packages

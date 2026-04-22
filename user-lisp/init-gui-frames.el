@@ -12,37 +12,31 @@
 
 (use-package modus-themes
   :ensure t
-  :config
-  (setopt modus-themes-common-palette-overrides
-          `(
-            ;; Borderless mode line.
-            (border-mode-line-active unspecified)
-            (border-mode-line-inactive unspecified)
+  :config (setopt modus-themes-prompts 'bold
+                  modus-themes-common-palette-overrides
+                  `(
+                    ;; `display-line-numbers'
+                    (fg-line-number-active fg-dim)
+                    (bg-line-number-active bg-hl-line)
+                    (fg-line-number-inactive "#535353")
+                    (bg-line-number-inactive unspecified)
 
-            ;; `display-line-numbers-mode'.
-            (fg-line-number-active fg-dim)
-            (bg-line-number-active bg-hl-line)
-            (fg-line-number-inactive "#535353")
-            (bg-line-number-inactive unspecified)
+                    ;; Subtle links
+                    (underline-link border)
+                    (underline-link-visited border)
+                    (underline-link-symbolic border)
+                    (fg-link unspecified)
+                    (fg-link-visited unspecified)
 
-            ;; Subtle links.
-            (underline-link border)
-            (underline-link-visited border)
-            (underline-link-symbolic border)
-            (fg-link unspecified)
-            (fg-link-visited unspecified)
-
-            ;; Prose and completion colors.
-            (prose-todo info)
-            (prose-done "#535353")
-            ;; (bg-completion bg-hl-line)
-
-            ,@modus-themes-preset-overrides-faint))
+                    ;; Prose and completion colors
+                    (prose-todo info)
+                    (prose-done "#535353")
+                    ,@modus-themes-preset-overrides-faint))
   (modus-themes-load-theme 'modus-vivendi))
 
 (set-face-attribute 'region nil :extend nil)
 (set-face-attribute 'fill-column-indicator nil :height 0.1 :weight 'thin)
-(set-face-italic 'italic nil)
+(set-face-attribute 'italic nil :slant 'normal)
 
 (setopt global-hl-line-sticky-flag t
         cursor-type '(bar . 1)
@@ -57,11 +51,10 @@
 
 (use-package display-line-numbers
   :ensure nil
-  :config
-  (setopt display-line-numbers-type 'relative
-          display-line-numbers-grow-only t
-          display-line-numbers-width-start t)
-  (global-display-line-numbers-mode 1))
+  :hook (prog-mode . display-line-numbers-mode)
+  :config (setopt display-line-numbers-type 'visual
+                  display-line-numbers-grow-only t
+                  display-line-numbers-width-start t))
 
 (use-package spacious-padding
   :ensure t
@@ -69,28 +62,30 @@
 
 (use-package paren
   :ensure nil
-  :config
-  (set-face-attribute 'show-paren-match nil :inherit 'underline)
-  (show-paren-mode 1))
+  :init (show-paren-mode 1)
+  :config (setopt show-paren-delay 0.0125
+                  show-paren-context-when-offscreen t
+                  show-paren-not-in-comments-or-strings 'on-mismatch))
 
 (use-package paren-face
   :ensure t
-  :config
-  (set-face-attribute 'parenthesis nil :foreground "#989898")
-  (global-paren-face-mode 1))
+  :hook (prog-mode . paren-face-mode)
+  :config (set-face-attribute 'parenthesis nil :foreground "#989898"))
 
-(use-package highlight-parentheses
-  :ensure t
-  :diminish
-  :config (global-highlight-parentheses-mode 1))
+;; (use-package highlight-parentheses
+;;   :ensure t
+;;   :hook (prog-mode . highlight-parentheses-mode))
 
-;; UTF-8 is enough for modern Emacs.
-(set-language-environment 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-keyboard-coding-system 'utf-8-unix)
-(setq default-input-method nil)
+;; UTF-8 is enough for modern Emacs
+;; (set-language-environment 'utf-8-unix)
+;; (set-default-coding-systems 'utf-8-unix)
+;; (set-keyboard-coding-system 'utf-8-unix)
+(setq-default default-input-method nil)
 
-(set-face-attribute 'default nil :family "Tempestypes" :height 140)
+(set-face-attribute 'default nil
+                    :family "Tempestypes"
+                    :width 'condensed
+                    :height 140)
 
 (let ((font "PingFang SC"))
   (set-fontset-font t 'kana (font-spec :family font))

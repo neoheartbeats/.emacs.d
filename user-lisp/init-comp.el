@@ -7,6 +7,7 @@
 ;;; Commentary:
 
 ;; This file includes:
+;;
 ;; - completion styles enhancement using `orderless'
 ;; - minibuffer enhancement using `vertico' and `consult'
 ;; - popup completions by `corfu' as frontend and `cape' as backend
@@ -17,41 +18,38 @@
   (require 'cl-lib)
   (require 'subr-x))
 
-(setopt completion-cycle-threshold nil
-        text-mode-ispell-word-completion nil
-        tab-always-indent 'complete
-        tab-first-completion nil
-        echo-keystrokes 0.0125
-        resize-mini-windows t
-        help-window-select t
-        enable-recursive-minibuffers t
-        read-minibuffer-restore-windows nil
-        read-extended-command-predicate #'command-completion-default-include-p
-        minibuffer-default-prompt-format " [%s]"
-        minibuffer-visible-completions nil
-        minibuffer-prompt-properties '(read-only t cursor-intangible t
-                                                 face minibuffer-prompt)
-        crm-prompt (format "%s %%p" (propertize "[%d]" 'face 'shadow))
-        completions-sort 'historical
-        completion-auto-help nil
-        completion-show-help nil
-        completion-show-inline-help nil)
+(setq-default completion-cycle-threshold nil
+              text-mode-ispell-word-completion nil
+              tab-always-indent 'complete
+              tab-first-completion nil
+              echo-keystrokes 0.0125
+              resize-mini-windows t
+              help-window-select t
+              enable-recursive-minibuffers t
+              read-minibuffer-restore-windows nil
+              read-extended-command-predicate #'command-completion-default-include-p
+              minibuffer-default-prompt-format " [%s]"
+              minibuffer-visible-completions nil
+              minibuffer-prompt-properties '(read-only t cursor-intangible t
+                                                       face minibuffer-prompt)
+              crm-prompt (format "%s %%p" (propertize "[%d]" 'face 'shadow))
+              completions-sort 'historical
+              completion-auto-help nil
+              completion-show-help nil
+              completion-show-inline-help nil)
 (file-name-shadow-mode 1)
 
 (use-package orderless
   :ensure t
-  :init
-  ;; Emacs 31 lets us scope style-local bindings directly in
-  ;; `completion-category-overrides'.
-  (setq-default completion-styles '(orderless basic)
-                completion-category-defaults nil
-                completion-category-overrides
-                '((file (styles
-                         (partial-completion
-                          ((completion-pcm-leading-wildcard t)))
-                         basic))
-                  (eglot (styles orderless))
-                  (eglot-capf (styles orderless))))
+  :init (setq-default completion-styles '(orderless basic)
+                      completion-category-defaults nil
+                      completion-category-overrides
+                      '((file (styles
+                               (partial-completion
+                                ((completion-pcm-leading-wildcard t)))
+                               basic))
+                        (eglot (styles orderless))
+                        (eglot-capf (styles orderless))))
   :config
   (defun sthenno/completion-style-corfu ()
     "Use literal-first completion styles for Corfu popups."
@@ -72,30 +70,26 @@
 
 (use-package vertico
   :ensure t
-  :demand t
   :init
   (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
+  (advice-add #'ffap-menu-ask :around
+              (lambda (orig-fun &rest args)
+                (cl-letf (((symbol-function #'minibuffer-completion-help) #'ignore))
+                  (apply orig-fun args))))
 
-  (advice-add
-   #'ffap-menu-ask :around
-   (lambda (orig-fun &rest args)
-     (cl-letf (((symbol-function #'minibuffer-completion-help) #'ignore))
-       (apply orig-fun args))))
-
-  (setopt completion-in-region-function
-          (lambda (&rest args)
-            (apply (if vertico-mode
-                       #'consult-completion-in-region
-                     #'completion--in-region)
-                   args)))
+  (setq-default completion-in-region-function (lambda (&rest args)
+                                                (apply
+                                                 (if vertico-mode
+                                                     #'consult-completion-in-region
+                                                   #'completion--in-region)
+                                                 args)))
   :hook (after-init . vertico-mode)
   :config
-  (setopt vertico-count 15
+  (setopt vertico-count 12
           vertico-resize t
           vertico-scroll-margin 4
           vertico-cycle nil
           vertico-count-format (cons "[ %-6s ] " "%s of %s"))
-  (set-face-attribute 'vertico-group-title nil :slant 'normal)
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
   :bind ((:map vertico-map
                ("<tab>" . vertico-insert)
@@ -108,20 +102,14 @@
 
 (use-package consult
   :ensure t
-  :init
-  (setopt register-preview-delay 0.125
-          register-preview-function #'consult-register-format
-          xref-show-xrefs-function #'consult-xref
-          xref-show-definitions-function #'consult-xref)
+  :init (setq-default register-preview-delay 0.0125
+                      register-preview-function #'consult-register-format
+                      xref-show-xrefs-function #'consult-xref
+                      xref-show-definitions-function #'consult-xref)
   :config
-  (setopt consult-async-min-input 3
-          consult-async-input-debounce 0.50
-          consult-async-input-throttle 0.75
-          consult-narrow-key nil)
   (keymap-substitute project-prefix-map #'project-find-regexp #'consult-ripgrep)
-  (cl-nsubstitute-if '(consult-ripgrep "Find regexp")
-                     (pcase-lambda (`(,cmd _))
-                       (eq cmd #'project-find-regexp))
+  (cl-nsubstitute-if '(consult-ripgrep "Find regexp") (pcase-lambda (`(,cmd _))
+                                                        (eq cmd #'project-find-regexp))
                      project-switch-commands)
   :bind ((:map global-map
                ("s-b" . consult-buffer)
@@ -138,10 +126,10 @@
 (use-package dabbrev
   :ensure nil
   :config
-  (setopt dabbrev-case-distinction 'case-replace
-          dabbrev-case-replace 'case-replace
-          dabbrev-case-fold-search nil
-          dabbrev-upcase-means-case-search t)
+  (setq-default dabbrev-case-distinction 'case-replace
+                dabbrev-case-replace 'case-replace
+                dabbrev-case-fold-search nil
+                dabbrev-upcase-means-case-search t)
 
   (defun sthenno/dabbrev-elisp ()
     "Tune `dabbrev' for `emacs-lisp-mode'."
@@ -160,7 +148,7 @@
   :init
   (setopt cape-dict-case-fold t
           cape-dict-case-replace t
-          cape-dict-limit 40)
+          cape-dict-limit 25)
 
   (defun sthenno/capf-eglot ()
     "Compose CAPFs for `eglot-managed-mode'."
@@ -202,14 +190,13 @@
 
 (use-package corfu
   :ensure t
-  :demand t
   :hook (after-init . global-corfu-mode)
   :config
   (setopt corfu-auto t
-          corfu-auto-delay 0.125
+          corfu-auto-delay 0.0125
           corfu-auto-prefix 2
-          corfu-count 8
-          corfu-scroll-margin 4
+          corfu-count 5
+          corfu-scroll-margin 3
           corfu-min-width 20
           corfu-max-width 40
           corfu-separator ?\s
@@ -238,7 +225,7 @@
   (add-hook 'corfu-mode-hook #'sthenno/completion-style-corfu)
   (add-hook 'prog-mode-hook #'corfu-popupinfo-mode)
   (setopt corfu-sort-override-function #'sthenno/corfu-combined-sort
-          corfu-popupinfo-delay '(0.25 . 0.125)
+          corfu-popupinfo-delay '(0.125 . 0.025)
           corfu-popupinfo-hide nil
           corfu-popupinfo-max-width 80
           corfu-popupinfo-min-width 20)

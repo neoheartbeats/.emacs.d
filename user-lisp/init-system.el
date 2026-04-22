@@ -59,7 +59,7 @@
   (interactive)
   (sthenno/filtered-cycle-buffer #'previous-buffer))
 
-;; macOS-style keybindings.
+;; macOS-style keybindings
 (keymap-global-set "s-a" #'mark-whole-buffer)
 (keymap-global-set "s-c" #'kill-ring-save)
 (keymap-global-set "s-v" #'yank)

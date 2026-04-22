@@ -17,7 +17,7 @@
 
 (use-package xref
   :ensure nil
-  :init (setopt xref-search-program 'ripgrep)
+  :init (setq-default xref-search-program 'ripgrep)
   :bind (:map global-map
               ("M-/" . xref-find-references)))
 

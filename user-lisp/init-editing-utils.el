@@ -16,7 +16,6 @@
 ;;
 
 (electric-pair-mode 1)
-(delete-selection-mode 1)
 
 (defun sthenno/delete-current-line ()
   (interactive)
@@ -61,22 +60,22 @@
       (lisp-indent-region start end))
     (delete-trailing-whitespace-if-possible)))
 (keymap-set emacs-lisp-mode-map "s-i" #'sthenno/lisp-indent-buffer)
+(add-hook 'emacs-lisp-mode-hook #'(lambda ()
+                                    (add-hook 'before-save-hook
+                                              #'sthenno/lisp-indent-buffer nil t)))
 
-;; FIXME: An additional handler is expected for `lisp-mode'
-(add-hook 'before-save-hook #'sthenno/lisp-indent-buffer nil t)
-
-(use-package indent-bars
-  :ensure t
-  :hook ((python-base-mode sh-base-mode) . indent-bars-mode)
-  :config (setopt indent-bars-no-descend-lists t
-                  indent-bars-treesit-support t
-                  indent-bars-treesit-ignore-blank-lines-types '("module")
-                  indent-bars-prefer-character t
-                  indent-bars-color '(highlight :face-bg t :blend 0.4)
-                  indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
-                  indent-bars-highlight-current-depth '(:blend 0.8)
-                  indent-bars-starting-column 0
-                  indent-bars-display-on-blank-lines t))
+;; (use-package indent-bars
+;;   :ensure t
+;;   :hook ((python-base-mode sh-base-mode) . indent-bars-mode)
+;;   :config (setopt indent-bars-no-descend-lists t
+;;                   indent-bars-treesit-support t
+;;                   indent-bars-treesit-ignore-blank-lines-types '("module")
+;;                   indent-bars-prefer-character t
+;;                   indent-bars-color '(highlight :face-bg t :blend 0.4)
+;;                   indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+;;                   indent-bars-highlight-current-depth '(:blend 0.8)
+;;                   indent-bars-starting-column 0
+;;                   indent-bars-display-on-blank-lines t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
