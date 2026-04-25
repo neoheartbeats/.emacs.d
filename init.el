@@ -53,7 +53,7 @@
     (minibuffer-message "%s %s" icon text)))
 
 ;;; Package management
-(setq-default package-vc-allow-build-commands t
+(setq-default package-native-compile t
               package-install-upgrade-built-in t
               package-archives '(("melpa" . "https://melpa.org/packages/")
                                  ("gnu" . "https://elpa.gnu.org/packages/")
