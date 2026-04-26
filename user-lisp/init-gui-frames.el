@@ -12,8 +12,7 @@
 
 (use-package modus-themes
   :ensure t
-  :config (setopt modus-themes-prompts 'bold
-                  modus-themes-common-palette-overrides
+  :config (setopt modus-themes-common-palette-overrides
                   `(
                     ;; `display-line-numbers'
                     (fg-line-number-active fg-dim)
@@ -34,9 +33,17 @@
                     ,@modus-themes-preset-overrides-faint))
   (modus-themes-load-theme 'modus-vivendi))
 
+(set-face-attribute 'default nil :family "Tempestypes" :height 140)
 (set-face-attribute 'region nil :extend nil)
-(set-face-attribute 'fill-column-indicator nil :height 0.1 :weight 'thin)
+(set-face-attribute 'fill-column-indicator nil :height 0.1)
 (set-face-attribute 'italic nil :slant 'normal)
+
+(let ((font "PingFang SC"))
+  (set-fontset-font t 'kana (font-spec :family font))
+  (set-fontset-font t 'han (font-spec :family font))
+  (set-fontset-font t 'cjk-misc (font-spec :family font)))
+(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
+(set-fontset-font t 'ucs (font-spec :family "SF Pro") nil 'prepend)
 
 (setopt global-hl-line-sticky-flag t
         cursor-type '(bar . 1)
@@ -49,50 +56,15 @@
 (global-display-fill-column-indicator-mode 1)
 (blink-cursor-mode -1)
 
-(use-package display-line-numbers
-  :ensure nil
-  :hook (prog-mode . display-line-numbers-mode)
-  :config (setopt display-line-numbers-type 'visual
-                  display-line-numbers-grow-only t
-                  display-line-numbers-width-start t))
+(setq-default display-line-numbers-widen t
+              display-line-numbers-width 6)
+(global-display-line-numbers-mode 1)
 
-(use-package spacious-padding
-  :ensure t
-  :config (spacious-padding-mode 1))
+(setq-default show-paren-delay 0.025
+              show-paren-context-when-offscreen t
+              show-paren-not-in-comments-or-strings 'on-mismatch)
+(show-paren-mode 1)
 
-(use-package paren
-  :ensure nil
-  :init (show-paren-mode 1)
-  :config (setopt show-paren-delay 0.0125
-                  show-paren-context-when-offscreen t
-                  show-paren-not-in-comments-or-strings 'on-mismatch))
-
-(use-package paren-face
-  :ensure t
-  :hook (prog-mode . paren-face-mode)
-  :config (set-face-attribute 'parenthesis nil :foreground "#989898"))
-
-;; (use-package highlight-parentheses
-;;   :ensure t
-;;   :hook (prog-mode . highlight-parentheses-mode))
-
-;; UTF-8 is enough for modern Emacs
-;; (set-language-environment 'utf-8-unix)
-;; (set-default-coding-systems 'utf-8-unix)
-;; (set-keyboard-coding-system 'utf-8-unix)
 (setq-default default-input-method nil)
-
-(set-face-attribute 'default nil
-                    :family "Tempestypes"
-                    :width 'condensed
-                    :height 140)
-
-(let ((font "PingFang SC"))
-  (set-fontset-font t 'kana (font-spec :family font))
-  (set-fontset-font t 'han (font-spec :family font))
-  (set-fontset-font t 'cjk-misc (font-spec :family font)))
-
-(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
-(set-fontset-font t 'ucs (font-spec :family "SF Pro") nil 'prepend)
 
 (provide 'init-gui-frames)

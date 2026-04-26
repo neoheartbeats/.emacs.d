@@ -18,11 +18,12 @@
 (electric-pair-mode 1)
 
 (defun sthenno/delete-current-line ()
+  "Delete the current line."
   (interactive)
-  (delete-region (line-beginning-position)
-                 (line-beginning-position 2)))
+  (delete-region (line-beginning-position) (line-beginning-position 2)))
 
 (defun sthenno/delete-to-beginning-of-line ()
+  "Delete text from point to the beginning of the current line."
   (interactive)
   (delete-region (line-beginning-position) (point)))
 
@@ -32,6 +33,7 @@
 (keymap-global-set "M-<up>" #'backward-paragraph)
 
 (defun sthenno/org-inhibit-specific-delimiters ()
+  "Treat angle brackets as punctuation in Org buffers."
   (modify-syntax-entry ?< "." org-mode-syntax-table)
   (modify-syntax-entry ?> "." org-mode-syntax-table))
 (add-hook 'org-mode-hook #'sthenno/org-inhibit-specific-delimiters)
@@ -41,9 +43,9 @@
 ;;; TODO: Outlines
 ;;
 
-;; (use-package outline
-;;   :ensure nil
-;;   :config (setopt outline-minor-mode-use-buttons 'in-margins))
+(use-package outline
+  :ensure nil
+  :config (setopt outline-minor-mode-use-buttons 'in-margins))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -51,14 +53,16 @@
 ;;
 
 (defun sthenno/lisp-indent-buffer ()
+  "Indent the current Lisp buffer."
   (interactive)
   (save-excursion
-    (let ((start (point-min))
-          (end   (point-max))
-          (inhibit-message t))
-      (untabify start end)
-      (lisp-indent-region start end))
-    (delete-trailing-whitespace-if-possible)))
+    (save-restriction
+      (widen)
+      (let ((inhibit-message t))
+        (indent-region (point-min)
+                       (point-max))
+        (delete-trailing-whitespace-if-possible)))))
+
 (keymap-set emacs-lisp-mode-map "s-i" #'sthenno/lisp-indent-buffer)
 (add-hook 'emacs-lisp-mode-hook #'(lambda ()
                                     (add-hook 'before-save-hook
@@ -72,23 +76,24 @@
 ;;                   indent-bars-treesit-ignore-blank-lines-types '("module")
 ;;                   indent-bars-prefer-character t
 ;;                   indent-bars-color '(highlight :face-bg t :blend 0.4)
-;;                   indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)
+;;                   indent-bars-color-by-depth
+;;                   '(:regexp "outline-\\([0-9]+\\)" :blend 1)
 ;;                   indent-bars-highlight-current-depth '(:blend 0.8)
 ;;                   indent-bars-starting-column 0
 ;;                   indent-bars-display-on-blank-lines t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Indentation handlers
+;;; TODO: Expansion helpers
 ;;
 
 ;; TODO: Maybe I need to find some alternatives for the following packages
-(use-package iedit :ensure t)
-(use-package expand-region
-  :ensure t
-  :config (setopt expand-region-smart-cursor t)
-  :bind* ((:map global-map
-                ("S-SPC" . er/expand-region))))
+;; (use-package iedit :ensure t)
+
+;; (use-package expand-region :ensure
+;;   t
+;;   :config (setopt expand-region-smart-cursor t)
+;;   :bind* ((:map global-map ("S-SPC" . er/expand-region))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -118,3 +123,5 @@
 ;;     (find-file (expand-file-name output))))
 
 (provide 'init-editing-utils)
+
+;;; init-editing-utils.el ends here

@@ -86,96 +86,31 @@
 (keymap-global-unset "C-<wheel-up>")
 (keymap-global-unset "C-<wheel-down>")
 
-(windmove-default-keybindings 'control)
+(save-place-mode 1)
+(savehist-mode 1)
 
-(use-package saveplace
-  :ensure nil
-  :config
-  (save-place-mode 1))
+(setq-default recentf-max-saved-items 25
+              recentf-show-messages nil)
+(recentf-mode 1)
 
-(use-package savehist
-  :ensure nil
-  :init
-  (setopt history-length 128
-          history-delete-duplicates t
-          savehist-file (locate-user-emacs-file "savehist")
-          savehist-save-minibuffer-history t)
-  :config
-  (savehist-mode 1))
+(add-hook 'prog-mode-hook #'turn-on-auto-revert-mode)
+(pixel-scroll-precision-mode 1)
 
-(use-package recentf
-  :ensure nil
-  :hook (after-init . recentf-mode)
-  :config
-  (setopt recentf-max-saved-items 100
-          recentf-save-file-modes nil
-          recentf-keep nil
-          recentf-auto-cleanup nil
-          recentf-initialize-file-name-history nil
-          recentf-filename-handlers nil
-          recentf-show-file-shortcuts-flag nil))
-
-(use-package autorevert
-  :ensure nil
-  :config
-  (setopt auto-revert-use-notify nil
-          global-auto-revert-non-file-buffers t)
-  (global-auto-revert-mode 1))
-
-(use-package emacs
-  :ensure nil
-  :demand t
-  :init
-  (setopt use-short-answers t
-          mark-even-if-inactive nil
-          ring-bell-function #'ignore
-          require-final-newline t
-          ad-redefinition-action 'accept
-          delete-old-versions t
-          trash-directory "~/.Trash"
-          backward-delete-char-untabify-method 'hungry
-          column-number-mode nil
-          line-number-mode nil
-          kill-do-not-save-duplicates t
-          kill-ring-max 512
-          kill-whole-line t
-          next-line-add-newlines nil
-          save-interprogram-paste-before-kill t
-          sentence-end-double-space nil
-          prettify-symbols-unprettify-at-point 'right-edge
-          byte-compile-verbose nil
-          warning-minimum-log-level :error
-          disabled-command-function nil
-          mouse-drag-copy-region nil
-          select-enable-primary nil
-          select-enable-clipboard t
-          dired-auto-revert-buffer #'dired-directory-changed-p
-          dired-kill-when-opening-new-dired-buffer t
-          dired-free-space nil
-          dired-clean-up-buffers-too nil
-          dired-dwim-target t
-          dired-hide-details-hide-information-lines nil
-          dired-hide-details-hide-symlink-targets nil
-          dired-listing-switches "-lah"
-          dired-mouse-drag-files t
-          dired-no-confirm '(byte-compile chgrp chmod chown copy hardlink symlink
-                                          touch)
-          dired-recursive-copies 'always
-          dired-recursive-deletes 'always
-          dired-vc-rename-file t
-          dired-movement-style 'cycle-files)
-  (setq-default fill-column 88
-                tab-width 4
-                indent-tabs-mode nil
-                truncate-lines t
-                auto-hscroll-mode 'current-line)
-  (global-visual-wrap-prefix-mode 1)
-  (add-hook 'dired-mode-hook #'dired-hide-details-mode))
-
-(use-package ultra-scroll
-  :vc (:url "https://github.com/jdtsmith/ultra-scroll")
-  :init (setopt scroll-margin 0
-                scroll-conservatively 105)
-  :config (ultra-scroll-mode 1))
+(setq-default ring-bell-function nil ; How does this work?
+              use-short-answers nil
+              use-dialog-box nil
+              yes-or-no-prompt "(真的嘛?) "
+              indent-tabs-mode nil
+              ad-redefinition-action 'accept
+              backward-delete-char-untabify-method 'hungry
+              kill-do-not-save-duplicates t
+              kill-ring-max 512
+              next-line-add-newlines t
+              save-interprogram-paste-before-kill t
+              prettify-symbols-unprettify-at-point t
+              dired-no-confirm t
+              dired-recursive-deletes 'always
+              dired-movement-style 'cycle
+              fill-column 88)
 
 (provide 'init-system)

@@ -46,3 +46,5 @@ recentf
 /load-path-cache.eld
 /user-lisp/.user-lisp-autoloads.el
 *.elc
+/emacs/
+/history
