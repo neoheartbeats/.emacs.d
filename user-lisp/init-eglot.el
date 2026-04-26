@@ -14,7 +14,7 @@
 ;;; Prefer the built-in Emacs 31 tree-sitter mode remapping support
 (setopt treesit-font-lock-level 4
         treesit-enabled-modes t
-        treesit-auto-install-grammar 'always)
+        treesit-auto-install-grammar 'ask)
 
 ;;; Initialize `eglot'
 (use-package eglot

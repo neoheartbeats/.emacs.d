@@ -27,19 +27,15 @@
                                (setq inhibit-message nil)))
 
 ;;; Set default frame parameters for all frames
-(setq-default default-frame-alist '(
-                                    ;; (menu-bar-lines . 0)
-                                    (tool-bar-lines . 0)
+(setq-default default-frame-alist '((tool-bar-lines . 0)
                                     (vertical-scroll-bars)
                                     (horizontal-scroll-bars)
                                     (width . 120)
-                                    (height . 60)
+                                    (height . 55)
                                     (internal-border-width . 0)
                                     (left-fringe . 0)
                                     (right-fringe .0)
                                     (scroll-bar-width . 1)
-                                    ;; (title . "")
-                                    ;; (ns-transparent-titlebar . t)
                                     (undecorated . t)
                                     (alpha-background . 0.6)
                                     (ns-alpha-elements . (ns-alpha-default
@@ -47,9 +43,7 @@
                                                           ns-alpha-box
                                                           ns-alpha-stipple
                                                           ns-alpha-relief
-                                                          ns-alpha-glyphs))
-                                    ;; (ns-background-blur . 20)
-                                    ))
+                                                          ns-alpha-glyphs))))
 (setq-default initial-frame-alist default-frame-alist)
 (setq-default frame-resize-pixelwise t)
 

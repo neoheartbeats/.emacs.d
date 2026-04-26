@@ -37,6 +37,9 @@
 (set-face-attribute 'region nil :extend nil)
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
 (set-face-attribute 'italic nil :slant 'normal)
+(set-face-attribute 'show-paren-match nil
+                    :foreground "green"
+                    :box '(:line-width (-1 . -1) :style released-button))
 
 (let ((font "PingFang SC"))
   (set-fontset-font t 'kana (font-spec :family font))

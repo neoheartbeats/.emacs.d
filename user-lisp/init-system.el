@@ -96,7 +96,7 @@
 (add-hook 'prog-mode-hook #'turn-on-auto-revert-mode)
 (pixel-scroll-precision-mode 1)
 
-(setq-default ring-bell-function nil ; How does this work?
+(setq-default ring-bell-function 'ignore
               use-short-answers nil
               use-dialog-box nil
               yes-or-no-prompt "(真的嘛?) "
