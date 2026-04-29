@@ -48,3 +48,4 @@ recentf
 *.elc
 /emacs/
 /history
+/user-lisp/*.el#

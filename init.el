@@ -13,44 +13,39 @@
 ;;; Code:
 
 ;;; Process and display performance
-(setq-default read-process-output-max (* 4 1024 1024)
-              large-file-warning-threshold (* 512 1024 1024)
-              auto-save-default nil
-              save-silently t
-              create-lockfiles nil
-              make-backup-files nil
+(setq-default save-silently t
+              remote-file-name-inhibit-locks t
+              backup-inhibited t
               redisplay-skip-fontification-on-input t
-              fast-but-imprecise-scrolling t
               frame-inhibit-implied-resize t
-              cursor-in-non-selected-windows nil
-              ns-use-proxy-icon nil
-              auto-mode-case-fold nil
-              find-file-visit-truename nil
-              vc-follow-symlinks t
-              bidi-paragraph-direction 'left-to-right
-              bidi-inhibit-bpa t)
+              load-prefer-newer t
+              fill-column 100
+              mode-line-format "")
+
+(setq-default user-full-name user-login-name
+              user-mail-address "sthenno@sthenno.com")
 
 ;;; Basic startup settings
 (setq-default inhibit-startup-screen t
               inhibit-startup-echo-area-message user-login-name
               inhibit-startup-buffer-menu t
               inhibit-default-init t
-              initial-scratch-message nil)
+              initial-scratch-message "Hi!")
 
-(setq-default user-full-name user-login-name
-              user-mail-address "sthenno@sthenno.com"
-              elisp-fontify-semantically t)
+(setopt elisp-fontify-semantically t)
 
-;; (menu-bar-mode -1)
-;; (scroll-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
 (tool-bar-mode -1)
+(line-number-mode -1)
 
 (define-advice display-startup-echo-area-message
     (:override () sthenno-startup-message)
   "Display a custom startup message in the echo area."
-  (let ((icon (propertize "􀎛" 'face 'default))
-        (text "它们没能得到答案，只能看到凋零的生命。"))
-    (minibuffer-message "%s %s" icon text)))
+  (let ((text (propertize " 有朝一日，我们必将理解那些不能理解的东西。为了理解，我们只能这么做。"
+                          'face '( :foreground "#00c06f" :box '( :line-width (-1 . -1)
+                                                                 :style released-button)))))
+    (minibuffer-message "\n %s\n" text)))
 
 ;;; Package management
 (setq-default package-native-compile t
@@ -58,9 +53,10 @@
               package-archives '(("melpa" . "https://melpa.org/packages/")
                                  ("gnu" . "https://elpa.gnu.org/packages/")
                                  ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+(setq-default use-package-vc-prefer-newest t)
 
 ;;; Declare interactive functions used at startup to inform the byte-compiler
-(let ((startup-buffer 'denote-journal-new-or-existing-entry))
+(let ((startup-buffer #'denote-journal-new-or-existing-entry))
   (declare-function denote-journal-new-or-existing-entry "denote-journal"
                     (&optional date))
   (setq-default initial-buffer-choice startup-buffer))
@@ -68,9 +64,8 @@
 ;;; Store customizations separately
 (let ((fp (locate-user-emacs-file "custom.el")))
   (unless (file-exists-p fp)
-    (make-empty-file fp))
-  (setq-default custom-file fp)
-  (load custom-file nil 'nomessage))
+    (make-temp-file fp))
+  (setq-default custom-file fp))
 
 ;;; Load modules
 (require 'init-system)

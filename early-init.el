@@ -17,10 +17,6 @@
                                (setq gc-cons-threshold (* 1024 1024)
                                      gc-cons-percentage 0.1)))
 
-;;; Emacs 31 prepares and activates `user-lisp-directory' automatically
-(setq-default user-lisp-directory (locate-user-emacs-file "user-lisp/")
-              user-lisp-auto-scrape t)
-
 ;;; Suppress messages during initialization for cleaner startup
 (setq-default inhibit-message t)
 (add-hook 'after-init-hook #'(lambda ()
@@ -35,9 +31,8 @@
                                     (internal-border-width . 0)
                                     (left-fringe . 0)
                                     (right-fringe .0)
-                                    (scroll-bar-width . 1)
                                     (undecorated . t)
-                                    (alpha-background . 0.6)
+                                    (alpha-background . 0.60)
                                     (ns-alpha-elements . (ns-alpha-default
                                                           ns-alpha-fringe
                                                           ns-alpha-box
@@ -46,8 +41,6 @@
                                                           ns-alpha-glyphs))))
 (setq-default initial-frame-alist default-frame-alist)
 (setq-default frame-resize-pixelwise t)
-
-;;; Keep package activation enabled for installed packages
 (setq-default package-enable-at-startup t)
 
 (provide 'early-init)

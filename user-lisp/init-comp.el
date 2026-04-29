@@ -18,38 +18,36 @@
   (require 'cl-lib)
   (require 'subr-x))
 
-(setq-default completion-cycle-threshold nil
-              text-mode-ispell-word-completion nil
-              tab-always-indent 'complete
-              tab-first-completion nil
-              echo-keystrokes 0.0125
-              resize-mini-windows t
-              help-window-select t
-              enable-recursive-minibuffers t
-              read-minibuffer-restore-windows nil
-              read-extended-command-predicate #'command-completion-default-include-p
-              minibuffer-default-prompt-format " [%s]"
-              minibuffer-visible-completions nil
-              minibuffer-prompt-properties '(read-only t cursor-intangible t
-                                                       face minibuffer-prompt)
-              crm-prompt (format "%s %%p" (propertize "[%d]" 'face 'shadow))
-              completions-sort 'historical
-              completion-auto-help nil
-              completion-show-help nil
-              completion-show-inline-help nil)
+(setopt completion-cycle-threshold nil
+        text-mode-ispell-word-completion nil
+        tab-always-indent 'complete
+        tab-first-completion nil
+        echo-keystrokes 0.05
+        resize-mini-windows t
+        help-window-select t
+        enable-recursive-minibuffers t
+        read-minibuffer-restore-windows nil
+        read-extended-command-predicate #'command-completion-default-include-p
+        minibuffer-default-prompt-format " [%s]"
+        minibuffer-visible-completions nil
+        minibuffer-prompt-properties '(read-only t cursor-intangible t
+                                                 face minibuffer-prompt)
+        crm-prompt (format "%s %%p" (propertize "[%d]" 'face 'shadow))
+        completions-sort 'historical
+        completion-auto-help nil
+        completion-show-help nil
+        completion-show-inline-help nil)
 (file-name-shadow-mode 1)
 
 (use-package orderless
   :ensure t
-  :init (setq-default completion-styles '(orderless basic)
-                      completion-category-defaults nil
-                      completion-category-overrides
-                      '((file (styles
-                               (partial-completion
-                                ((completion-pcm-leading-wildcard t)))
-                               basic))
-                        (eglot (styles orderless))
-                        (eglot-capf (styles orderless))))
+  :init (setopt completion-styles '(flex basic)
+                completion-category-defaults nil
+                completion-category-overrides
+                '((file (styles
+                         (partial-completion
+                          ((completion-pcm-leading-wildcard t)))
+                         basic))))
   :config
   (defun sthenno/completion-style-corfu ()
     "Use literal-first completion styles for Corfu popups."
@@ -61,12 +59,12 @@
                 completion-category-overrides nil
                 completion-category-defaults nil))
 
-  (setq-default orderless-matching-styles
-                '(orderless-literal orderless-prefixes)))
+  (setopt orderless-matching-styles
+          '(orderless-literal orderless-prefixes)))
 
-(setq-default completion-ignore-case t
-              read-file-name-completion-ignore-case t
-              read-buffer-completion-ignore-case t)
+(setopt completion-ignore-case t
+        read-file-name-completion-ignore-case t
+        read-buffer-completion-ignore-case t)
 
 (use-package vertico
   :ensure t
@@ -76,13 +74,12 @@
               (lambda (orig-fun &rest args)
                 (cl-letf (((symbol-function #'minibuffer-completion-help) #'ignore))
                   (apply orig-fun args))))
-
-  (setq-default completion-in-region-function (lambda (&rest args)
-                                                (apply
-                                                 (if vertico-mode
-                                                     #'consult-completion-in-region
-                                                   #'completion--in-region)
-                                                 args)))
+  (setq-default completion-in-region-function
+                (lambda (&rest args) (apply
+                                      (if vertico-mode
+                                          #'consult-completion-in-region
+                                        #'completion--in-region)
+                                      args)))
   :hook (after-init . vertico-mode)
   :config
   (setopt vertico-count 12
@@ -102,14 +99,16 @@
 
 (use-package consult
   :ensure t
-  :init (setq-default register-preview-delay 0.0125
-                      register-preview-function #'consult-register-format
-                      xref-show-xrefs-function #'consult-xref
-                      xref-show-definitions-function #'consult-xref)
+  :init (setopt register-preview-delay 0.05
+                register-preview-function #'consult-register-format
+                xref-show-xrefs-function #'consult-xref
+                xref-show-definitions-function #'consult-xref)
   :config
-  (keymap-substitute project-prefix-map #'project-find-regexp #'consult-ripgrep)
-  (cl-nsubstitute-if '(consult-ripgrep "Find regexp") (pcase-lambda (`(,cmd _))
-                                                        (eq cmd #'project-find-regexp))
+  (keymap-substitute project-prefix-map
+                     #'project-find-regexp #'consult-ripgrep)
+  (cl-nsubstitute-if '(consult-ripgrep "Find regexp")
+                     (pcase-lambda (`(,cmd _))
+                       (eq cmd #'project-find-regexp))
                      project-switch-commands)
   :bind ((:map global-map
                ("s-b" . consult-buffer)
@@ -124,12 +123,11 @@
                ("?" . consult-narrow-help))))
 
 (use-package dabbrev
-  :ensure nil
   :config
-  (setq-default dabbrev-case-distinction 'case-replace
-                dabbrev-case-replace 'case-replace
-                dabbrev-case-fold-search nil
-                dabbrev-upcase-means-case-search t)
+  (setopt dabbrev-case-distinction 'case-replace
+          dabbrev-case-replace 'case-replace
+          dabbrev-case-fold-search nil
+          dabbrev-upcase-means-case-search t)
 
   (defun sthenno/dabbrev-elisp ()
     "Tune `dabbrev' for `emacs-lisp-mode'."
@@ -193,7 +191,7 @@
   :hook (after-init . global-corfu-mode)
   :config
   (setopt corfu-auto t
-          corfu-auto-delay 0.0125
+          corfu-auto-delay 0.025
           corfu-auto-prefix 2
           corfu-count 5
           corfu-scroll-margin 3
@@ -225,7 +223,7 @@
   (add-hook 'corfu-mode-hook #'sthenno/completion-style-corfu)
   (add-hook 'prog-mode-hook #'corfu-popupinfo-mode)
   (setopt corfu-sort-override-function #'sthenno/corfu-combined-sort
-          corfu-popupinfo-delay '(0.125 . 0.025)
+          corfu-popupinfo-delay '(0.025 . 0.05)
           corfu-popupinfo-hide nil
           corfu-popupinfo-max-width 80
           corfu-popupinfo-min-width 20)

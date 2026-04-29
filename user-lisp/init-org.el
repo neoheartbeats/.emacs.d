@@ -14,7 +14,6 @@
   (require 'cl-lib))
 
 (use-package org
-  :ensure nil
   :init (setopt org-directory "/Users/sthenno/uncodified/"
                 org-default-notes-file (expand-file-name "notes.org" org-directory)
                 org-persist-directory (locate-user-emacs-file "org-persist/")
@@ -44,33 +43,33 @@
                 org-src-tab-acts-natively t
                 org-src-window-setup 'plain
                 org-src-ask-before-returning-to-edit-buffer nil
-                org-export-allow-bind-keywords t)
-  :config
-  (setf (cdr (assq 'file org-link-frame-setup)) #'find-file)
-  (add-hook 'org-mode-hook #'org-fold-hide-drawer-all)
-  (org-babel-do-load-languages 'org-babel-load-languages
-                               '((emacs-lisp . t)
-                                 (python . t)
-                                 (shell . t))))
+                org-export-allow-bind-keywords t
+                org-babel-load-languages '((emacs-lisp . t)
+                                           (python . t)
+                                           (shell . t))))
 
 (use-package org-modern
   :ensure t
   :hook (org-mode . org-modern-mode)
-  :config (setopt org-modern-list '((?- . "•"))
-                  org-modern-checkbox '((?X . "􀃰")
-                                        (?- . "􀃞")
-                                        (?\s . "􀂒"))
-                  org-modern-timestamp '(" %Y-%m-%d " . " %H:%M ")
-                  org-modern-block-name '(("src" . ("􀃥" "􀃥"))
-                                          ("quote" . ("􁈏" "􁈐"))
-                                          (t . t))
-                  org-modern-keyword '(("title" . "􀫘")
-                                       ("results" . "􀎛")
-                                       (t . t))))
+  :config
+  (setopt org-modern-list '((?- . "•"))
+          org-modern-block-fringe 0
+          org-modern-checkbox '((?X . "􀃰")
+                                (?- . "􀃞")
+                                (?\s . "􀂒"))
+          org-modern-timestamp '(" %Y-%m-%d " . " %H:%M ")
+          org-modern-block-name '(("src" . ("􀃥" "􀃥"))
+                                  ("quote" . ("􁈏" "􁈐"))
+                                  (t . t))
+          org-modern-keyword '(("title" . "")
+                               ("results" . "􀎛")
+                               (t . t)))
+(set-face-attribute 'org-modern-block-name nil :inherit 'shadow))
 
 (use-package denote
   :ensure t
-  :config
+  :vc (:url "https://github.com/protesilaos/denote" :branch "main")
+  :init
   (setopt denote-directory org-directory
           denote-file-type 'org
           denote-known-keywords '("stages" "silos" "images" "papers")
@@ -88,16 +87,18 @@
 
 (use-package denote-org
   :ensure t
+  :vc (:url "https://github.com/protesilaos/denote-org" :branch "main")
   :config
   (setopt denote-org-store-link-to-heading 'context)
   (defun sthenno/denote-org-path-sorted-notes (directory)
     "Return a list of note files in DIRECTORY, sorted by name."
-    (sort (seq-filter #'denote-file-is-note-p
+    (sort (seq-filter #'denote-file-has-denoted-filename-p
                       (directory-files directory t "\\.org$"))
           #'string<)))
 
 (use-package denote-journal
   :ensure t
+  :vc (:url "https://github.com/protesilaos/denote-journal" :branch "main")
   :config
   (setopt denote-journal-title-format "%e %B %Y"
           denote-journal-directory (expand-file-name "stages/" denote-directory)

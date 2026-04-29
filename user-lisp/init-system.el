@@ -11,8 +11,8 @@
 
 ;;; Code:
 
-(setopt mac-option-modifier 'meta
-        mac-command-modifier 'super)
+(setq-default mac-option-modifier 'meta
+              mac-command-modifier 'super)
 
 (defun sthenno/eval-elisp-buffer-or-region ()
   "Evaluate the active region or current buffer with `debug-on-error'."
@@ -89,28 +89,25 @@
 (save-place-mode 1)
 (savehist-mode 1)
 
-(setq-default recentf-max-saved-items 25
-              recentf-show-messages nil)
+(setopt recentf-max-saved-items 25
+        recentf-show-messages nil)
 (recentf-mode 1)
 
 (add-hook 'prog-mode-hook #'turn-on-auto-revert-mode)
 (pixel-scroll-precision-mode 1)
 
-(setq-default ring-bell-function 'ignore
-              use-short-answers nil
-              use-dialog-box nil
-              yes-or-no-prompt "(真的嘛?) "
-              indent-tabs-mode nil
-              ad-redefinition-action 'accept
-              backward-delete-char-untabify-method 'hungry
-              kill-do-not-save-duplicates t
-              kill-ring-max 512
-              next-line-add-newlines t
-              save-interprogram-paste-before-kill t
-              prettify-symbols-unprettify-at-point t
-              dired-no-confirm t
-              dired-recursive-deletes 'always
-              dired-movement-style 'cycle
-              fill-column 88)
+(setopt ring-bell-function #'ignore
+        use-short-answers t
+        use-dialog-box nil
+        yes-or-no-prompt "(真的嘛?) "
+        indent-tabs-mode nil
+        ad-redefinition-action 'accept
+        backward-delete-char-untabify-method 'hungry
+        kill-do-not-save-duplicates t
+        kill-ring-max 512
+        save-interprogram-paste-before-kill t
+        dired-no-confirm t
+        dired-recursive-deletes 'always
+        dired-movement-style 'cycle)
 
 (provide 'init-system)
