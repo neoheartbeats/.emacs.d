@@ -63,7 +63,6 @@
 (require 'init-system)
 (require 'init-gui-frames)
 (require 'init-org)
-(require 'init-editing-utils)
 (require 'init-projects)
 (require 'init-temp)
 (require 'init-comp)
