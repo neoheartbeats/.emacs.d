@@ -41,6 +41,7 @@
                                                           ns-alpha-glyphs))))
 (setq-default initial-frame-alist default-frame-alist)
 (setq-default frame-resize-pixelwise t)
+(setq-default use-package-vc-prefer-newest t)
 (setq-default package-enable-at-startup t)
 
 (provide 'early-init)

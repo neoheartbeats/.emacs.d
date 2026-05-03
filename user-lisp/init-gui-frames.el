@@ -11,7 +11,6 @@
 ;;; Code:
 
 (use-package modus-themes
-  :ensure t
   :vc (:url "https://github.com/protesilaos/modus-themes" :branch "main")
   :init (mapc #'disable-theme custom-enabled-themes)
   :config
@@ -48,7 +47,7 @@
                     :background 'unspecified :foreground "#535353" :box nil
                     :underline t :height 0.1)
 
-(let ((font "Noto Serif CJK SC"))
+(let ((font "Pingfang SC"))
   (set-fontset-font t 'kana (font-spec :family font))
   (set-fontset-font t 'han (font-spec :family font))
   (set-fontset-font t 'cjk-misc (font-spec :family font)))
@@ -57,8 +56,7 @@
 
 (setopt global-hl-line-sticky-flag t
         x-stretch-cursor t
-        cursor-type '(bar . 1)
-        truncate-string-ellipsis " …")
+        cursor-type '(bar . 1))
 
 (global-hl-line-mode 1)
 (global-display-fill-column-indicator-mode 1)
@@ -72,6 +70,7 @@
                               (display-line-numbers-mode 1)))
 
 (setopt show-paren-delay 0.05
+        show-paren-when-point-inside-paren t
         show-paren-context-when-offscreen t
         show-paren-not-in-comments-or-strings 'on-mismatch)
 (show-paren-mode 1)

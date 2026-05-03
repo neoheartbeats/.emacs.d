@@ -32,20 +32,14 @@
 (keymap-global-set "M-<down>" #'forward-paragraph)
 (keymap-global-set "M-<up>" #'backward-paragraph)
 
-(defun sthenno/org-inhibit-specific-delimiters ()
-  "Treat angle brackets as punctuation in Org buffers."
-  (modify-syntax-entry ?< "." org-mode-syntax-table)
-  (modify-syntax-entry ?> "." org-mode-syntax-table))
-(add-hook 'org-mode-hook #'sthenno/org-inhibit-specific-delimiters)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; TODO: Outlines
 ;;
 
-(use-package outline
-  :ensure nil
-  :config (setopt outline-minor-mode-use-buttons 'in-margins))
+;; (use-package outline
+;;   :ensure nil
+;;   :config (setopt outline-minor-mode-use-buttons 'in-margins))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -59,10 +53,7 @@
     (save-restriction
       (widen)
       (let ((inhibit-message t))
-        (indent-region (point-min)
-                       (point-max))
-        (delete-trailing-whitespace-if-possible)))))
-
+        (lisp-indent-region (point-min) (point-max))))))
 (keymap-set emacs-lisp-mode-map "s-i" #'sthenno/lisp-indent-buffer)
 (add-hook 'emacs-lisp-mode-hook #'(lambda ()
                                     (add-hook 'before-save-hook
@@ -123,5 +114,3 @@
 ;;     (find-file (expand-file-name output))))
 
 (provide 'init-editing-utils)
-
-;;; init-editing-utils.el ends here

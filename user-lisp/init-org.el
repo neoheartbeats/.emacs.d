@@ -18,32 +18,27 @@
                 org-default-notes-file (expand-file-name "notes.org" org-directory)
                 org-persist-directory (locate-user-emacs-file "org-persist/")
                 org-startup-with-link-previews t
-                org-ellipsis " …"
                 org-use-property-inheritance t
-                org-auto-align-tags nil
-                org-tags-column 0
+                org-babel-uppercase-example-markers t
                 org-hide-emphasis-markers t
                 org-hide-macro-markers t
-                org-special-ctrl-a/e t
-                org-cycle-hide-drawer-startup t
+                org-hide-drawer-startup t
+                org-special-ctrl-a t
                 org-image-align 'left
-                org-image-actual-width '(420)
                 org-image-max-width 'fill-column
                 org-yank-image-save-method (expand-file-name "images/" org-directory)
-                org-yank-dnd-method 'ask
                 org-attach-method 'cp
                 org-return-follows-link t
-                org-support-shift-select t
-                org-link-search-must-match-exact-headline nil
+                org-support-shift-select 'everywhere
                 org-confirm-babel-evaluate nil
                 org-src-preserve-indentation t
                 org-edit-src-content-indentation 0
                 org-edit-src-persistent-message nil
                 org-src-fontify-natively t
                 org-src-tab-acts-natively t
-                org-src-window-setup 'plain
                 org-src-ask-before-returning-to-edit-buffer nil
                 org-export-allow-bind-keywords t
+                org-babel-update-intermediate t
                 org-babel-load-languages '((emacs-lisp . t)
                                            (python . t)
                                            (shell . t))))
@@ -54,84 +49,83 @@
   :config
   (setopt org-modern-list '((?- . "•"))
           org-modern-block-fringe 0
+          org-modern-todo nil
+          org-modern-block-name nil
           org-modern-checkbox '((?X . "􀃰")
                                 (?- . "􀃞")
                                 (?\s . "􀂒"))
           org-modern-timestamp '(" %Y-%m-%d " . " %H:%M ")
-          org-modern-block-name '(("src" . ("􀃥" "􀃥"))
-                                  ("quote" . ("􁈏" "􁈐"))
-                                  (t . t))
-          org-modern-keyword '(("title" . "")
-                               ("results" . "􀎛")
-                               (t . t)))
-(set-face-attribute 'org-modern-block-name nil :inherit 'shadow))
+          ;; org-modern-block-name '(("src" . ("􀃥" "􀃥"))
+          ;;                         ("quote" . ("􁈏" "􁈐"))
+          ;;                         (t . t))
+          ;; org-modern-keyword '(("title" . "")
+          ;;                      ("results" . "􀎛")
+          ;;                      (t . t))
+          )
+  (set-face-attribute 'org-modern-block-name nil :inherit 'shadow))
 
 (use-package denote
-  :ensure t
   :vc (:url "https://github.com/protesilaos/denote" :branch "main")
-  :init
+  :config
   (setopt denote-directory org-directory
           denote-file-type 'org
           denote-known-keywords '("stages" "silos" "images" "papers")
           denote-save-buffers t
           denote-kill-buffers t
           denote-open-link-function #'find-file
-          denote-org-front-matter "#+title: %1$s\n\n"
+          denote-org-front-matter "#+TITLE: %1$s\n\n"
           denote-buffer-name-prefix "[uncodified] "
-          denote-rename-buffer-format "%D"
-          denote-sort-dired-extra-prompts nil
-          denote-sort-dired-default-sort-component 'title
           denote-sort-dired-default-reverse-sort t)
-  (denote-rename-buffer-mode 1)
-  (add-hook 'dired-mode-hook #'denote-dired-mode))
+  (denote-rename-buffer-mode 1))
 
 (use-package denote-org
-  :ensure t
   :vc (:url "https://github.com/protesilaos/denote-org" :branch "main")
-  :config
-  (setopt denote-org-store-link-to-heading 'context)
-  (defun sthenno/denote-org-path-sorted-notes (directory)
-    "Return a list of note files in DIRECTORY, sorted by name."
-    (sort (seq-filter #'denote-file-has-denoted-filename-p
-                      (directory-files directory t "\\.org$"))
-          #'string<)))
+  :config (setopt denote-org-store-link-to-heading 'context))
 
 (use-package denote-journal
-  :ensure t
   :vc (:url "https://github.com/protesilaos/denote-journal" :branch "main")
-  :config
-  (setopt denote-journal-title-format "%e %B %Y"
-          denote-journal-directory (expand-file-name "stages/" denote-directory)
-          denote-journal-keyword '("stages"))
+  :config (setopt denote-journal-title-format "%e %B %Y"
+                  denote-journal-directory (expand-file-name "stages/" denote-directory)
+                  denote-journal-keyword "stages"))
 
-  (defun sthenno/denote-journal-find-stages-file-date (offset)
-    "Open the Denote journal file OFFSET positions away from the current one."
-    (let* ((buffer-file (buffer-file-name))
-           (sorted-files (sthenno/denote-org-path-sorted-notes
-                          denote-journal-directory))
-           (current-file-index (cl-position buffer-file sorted-files
-                                            :test #'string=)))
-      (if (null current-file-index)
-          (message "Current file is not a note file.")
-        (let ((target-index (+ current-file-index offset)))
-          (if (or (< target-index 0)
-                  (>= target-index (length sorted-files)))
-              (message "No Denote note file.")
-            (find-file (nth target-index sorted-files)))))))
+;;;###autoload
+(defun sthenno/denote-org-path-sorted-notes (directory)
+  "Return a list of note files in DIRECTORY, sorted by name."
+  (sort (seq-filter #'denote-file-has-denoted-filename-p
+                    (directory-files directory t "\\.org$"))
+        #'string<))
 
-  (defun sthenno/denote-journal-entry-previous ()
-    "Open the previous journal entry."
-    (interactive)
-    (sthenno/denote-journal-find-stages-file-date -1))
+;;;###autoload
+(defun sthenno/denote-journal-find-stages-file-date (offset)
+  "Open the Denote journal file OFFSET positions away from the current one."
+  (let* ((buffer-file (buffer-file-name))
+         (sorted-files (sthenno/denote-org-path-sorted-notes
+                        denote-journal-directory))
+         (current-file-index (cl-position buffer-file sorted-files
+                                          :test #'string=)))
+    (if (null current-file-index)
+        (message "Current file is not a note file.")
+      (let ((target-index (+ current-file-index offset)))
+        (if (or (< target-index 0)
+                (>= target-index (length sorted-files)))
+            (message "No Denote note file.")
+          (find-file (nth target-index sorted-files)))))))
 
-  (defun sthenno/denote-journal-entry-next ()
-    "Open the next journal entry."
-    (interactive)
-    (sthenno/denote-journal-find-stages-file-date 1))
+;;;###autoload
+(defun sthenno/denote-journal-entry-previous ()
+  "Open the previous journal entry."
+  (interactive)
+  (sthenno/denote-journal-find-stages-file-date -1))
 
-  (keymap-set org-mode-map "s-<up>" #'sthenno/denote-journal-entry-previous)
-  (keymap-set org-mode-map "s-<down>" #'sthenno/denote-journal-entry-next)
-  (keymap-global-set "C-c d" #'denote-journal-new-or-existing-entry))
+;;;###autoload
+(defun sthenno/denote-journal-entry-next ()
+  "Open the next journal entry."
+  (interactive)
+  (sthenno/denote-journal-find-stages-file-date 1))
+
+(keymap-set org-mode-map "s-<up>" #'sthenno/denote-journal-entry-previous)
+(keymap-set org-mode-map "s-<down>" #'sthenno/denote-journal-entry-next)
+(keymap-global-set "C-c d" #'denote-journal-new-or-existing-entry)
 
 ;;; [TODO] Experimental
 ;; (use-package org-latex-preview

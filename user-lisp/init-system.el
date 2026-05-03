@@ -11,102 +11,73 @@
 
 ;;; Code:
 
-(setq-default mac-option-modifier 'meta
-              mac-command-modifier 'super)
+(setopt mac-option-modifier 'meta
+        mac-command-modifier 'super)
+(setopt switch-to-prev-buffer-skip 0)
 
-(defun sthenno/eval-elisp-buffer-or-region ()
-  "Evaluate the active region or current buffer with `debug-on-error'."
-  (interactive)
-  (let ((debug-on-error t))
-    (elisp-eval-region-or-buffer)))
-
-(defun sthenno/split-window-below-focus ()
-  "Split the selected window below and move focus there."
-  (interactive)
-  (split-window-below)
-  (windmove-down))
-
-(defun sthenno/split-window-right-focus ()
-  "Split the selected window right and move focus there."
-  (interactive)
-  (split-window-right)
-  (windmove-right))
-
-(defun sthenno/delete-other-windows-reversible ()
-  "Like `delete-other-windows', but restore the old layout when repeated."
-  (interactive)
-  (if (and (one-window-p)
-           (assq ?_ register-alist))
-      (jump-to-register ?_)
-    (window-configuration-to-register ?_)
-    (delete-other-windows)))
-
-(defun sthenno/filtered-cycle-buffer (cycle-func)
-  "Use CYCLE-FUNC while skipping temporary star buffers."
-  (let ((original-buffer (current-buffer)))
-    (funcall cycle-func)
-    (while (and (string-match-p "\\*.*\\*" (buffer-name))
-                (not (eq original-buffer (current-buffer))))
-      (funcall cycle-func))))
-
-(defun sthenno/cycle-to-next-buffer ()
-  "Move to the next non-temporary buffer."
-  (interactive)
-  (sthenno/filtered-cycle-buffer #'next-buffer))
-
-(defun sthenno/cycle-to-previous-buffer ()
-  "Move to the previous non-temporary buffer."
-  (interactive)
-  (sthenno/filtered-cycle-buffer #'previous-buffer))
-
-;; macOS-style keybindings
-(keymap-global-set "s-a" #'mark-whole-buffer)
-(keymap-global-set "s-c" #'kill-ring-save)
-(keymap-global-set "s-v" #'yank)
-(keymap-global-set "s-x" #'kill-region)
 (keymap-global-set "s-q" #'kill-emacs)
-(keymap-global-set "s-s" #'save-buffer)
 (keymap-global-set "s-w" #'kill-current-buffer)
 (keymap-global-set "s-e" #'delete-window)
-(keymap-global-set "s-z" #'undo)
 (keymap-global-set "s-d" #'find-file)
-(keymap-global-set "s-1" #'sthenno/delete-other-windows-reversible)
-(keymap-global-set "s-2" #'sthenno/split-window-below-focus)
-(keymap-global-set "s-3" #'sthenno/split-window-right-focus)
-(keymap-global-set "s-<right>" #'sthenno/cycle-to-next-buffer)
-(keymap-global-set "s-<left>" #'sthenno/cycle-to-previous-buffer)
+(keymap-global-set "s-<right>" #'switch-to-next-buffer)
+(keymap-global-set "s-<left>" #'switch-to-prev-buffer)
 (keymap-global-set "<escape>" #'keyboard-escape-quit)
-
-(keymap-set emacs-lisp-mode-map "C-c C-c" #'sthenno/eval-elisp-buffer-or-region)
-
-;; Disable gestures and mouse bindings that conflict with the preferred workflow.
-(keymap-global-unset "<pinch>")
-(keymap-global-unset "<mouse-1>")
-(keymap-global-unset "<mouse-3>")
-(keymap-global-unset "C-<wheel-up>")
-(keymap-global-unset "C-<wheel-down>")
+(keymap-set emacs-lisp-mode-map "C-c C-c" #'emacs-lisp-byte-compile-and-load)
 
 (save-place-mode 1)
 (savehist-mode 1)
 
-(setopt recentf-max-saved-items 25
-        recentf-show-messages nil)
+(setopt recentf-max-saved-items 125
+        recentf-show-messages nil
+        recentf-suppress-open-file-help t)
 (recentf-mode 1)
 
 (add-hook 'prog-mode-hook #'turn-on-auto-revert-mode)
 (pixel-scroll-precision-mode 1)
+(electric-pair-mode 1)
+
+(defun sthenno/delete-current-line ()
+  "Delete the current line."
+  (interactive)
+  (delete-region (line-beginning-position) (line-beginning-position 2)))
+
+(defun sthenno/delete-to-beginning-of-line ()
+  "Delete text from point to the beginning of the current line."
+  (interactive)
+  (delete-region (line-beginning-position) (point)))
+
+(keymap-global-set "C-<backspace>" #'sthenno/delete-current-line)
+(keymap-global-set "s-<backspace>" #'sthenno/delete-to-beginning-of-line)
+(keymap-global-set "M-<down>" #'forward-paragraph)
+(keymap-global-set "M-<up>" #'backward-paragraph)
+
+
+(setopt elisp-fontify-semantically t)
+
+(defun sthenno/lisp-indent-buffer ()
+  "Indent the current Lisp buffer."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (let ((inhibit-message t))
+        (lisp-indent-region (point-min) (point-max))))))
+(keymap-set emacs-lisp-mode-map "s-i" #'sthenno/lisp-indent-buffer)
+(add-hook 'emacs-lisp-mode-hook #'(lambda ()
+                                    (add-hook 'before-save-hook
+                                              #'sthenno/lisp-indent-buffer nil t)))
 
 (setopt ring-bell-function #'ignore
         use-short-answers t
         use-dialog-box nil
-        yes-or-no-prompt "(真的嘛?) "
         indent-tabs-mode nil
-        ad-redefinition-action 'accept
         backward-delete-char-untabify-method 'hungry
         kill-do-not-save-duplicates t
         kill-ring-max 512
-        save-interprogram-paste-before-kill t
-        dired-no-confirm t
+        copy-region-blink-delay 0
+        copy-region-blink-predicate #'ignore
+        save-interprogram-paste-before-kill t)
+(setopt dired-no-confirm t
         dired-recursive-deletes 'always
         dired-movement-style 'cycle)
 

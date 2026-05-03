@@ -16,7 +16,6 @@
 ;;; LLM protocol
 (use-package gptel
   :ensure t
-  :defer t
   :config (setopt gptel-default-mode #'org-mode
                   gptel-org-branching-context t
                   gptel-model 'sthenno

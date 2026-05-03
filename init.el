@@ -33,9 +33,6 @@
               inhibit-default-init t
               initial-scratch-message "Hi!")
 
-(setopt elisp-fontify-semantically t)
-
-;; (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (line-number-mode -1)
@@ -43,32 +40,24 @@
 (define-advice display-startup-echo-area-message
     (:override () sthenno-startup-message)
   "Display a custom startup message in the echo area."
-  (let ((text (propertize "那……如果你现在手里有一杯热咖啡，你最想配什么样的点心？"
-                          'face 'default
-                          ;; '(:foreground "#00c06f" :box '(:line-width (-1 . -1) :style released-button)))
-                          )
-              ))
+  (let ((text (propertize
+               "Funding for this program was made possible by viewers like you."
+               'face 'default)))
     (minibuffer-message " %s" text)))
 
 ;;; Package management
-(setq-default package-native-compile t
-              package-install-upgrade-built-in t
-              package-archives '(("melpa" . "https://melpa.org/packages/")
-                                 ("gnu" . "https://elpa.gnu.org/packages/")
-                                 ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-(setq-default use-package-vc-prefer-newest t)
+(setopt package-native-compile t
+        package-install-upgrade-built-in t
+        package-archives '(("gnu-devel" . "https://elpa.gnu.org/devel/")
+                           ("gnu" . "https://elpa.gnu.org/packages/")
+                           ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+                           ("melpa" . "https://melpa.org/packages/")))
 
 ;;; Declare interactive functions used at startup to inform the byte-compiler
 (let ((startup-buffer #'denote-journal-new-or-existing-entry))
   (declare-function denote-journal-new-or-existing-entry "denote-journal"
                     (&optional date))
-  (setq-default initial-buffer-choice startup-buffer))
-
-;;; Store customizations separately
-(let ((fp (locate-user-emacs-file "custom.el")))
-  (unless (file-exists-p fp)
-    (make-temp-file fp))
-  (setq-default custom-file fp))
+  (setopt initial-buffer-choice startup-buffer))
 
 ;;; Load modules
 (require 'init-system)
@@ -80,5 +69,11 @@
 (require 'init-comp)
 (require 'init-eglot)
 (require 'init-gpt)
+
+;;; Store customizations separately
+(let ((fp (locate-user-emacs-file "custom.el")))
+  (unless (file-exists-p fp)
+    (make-temp-file fp))
+  (setq-default custom-file fp))
 
 (provide 'init)
