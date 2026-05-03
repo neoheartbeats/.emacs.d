@@ -48,7 +48,7 @@
                     :background 'unspecified :foreground "#535353" :box nil
                     :underline t :height 0.1)
 
-(let ((font "Pingfang SC"))
+(let ((font "Noto Serif CJK SC"))
   (set-fontset-font t 'kana (font-spec :family font))
   (set-fontset-font t 'han (font-spec :family font))
   (set-fontset-font t 'cjk-misc (font-spec :family font)))
@@ -56,6 +56,7 @@
 (set-fontset-font t 'ucs (font-spec :family "SF Pro") nil 'prepend)
 
 (setopt global-hl-line-sticky-flag t
+        x-stretch-cursor t
         cursor-type '(bar . 1)
         truncate-string-ellipsis " …")
 
@@ -65,7 +66,10 @@
 
 (setopt display-line-numbers-widen t
         display-line-numbers-width 4)
-(global-display-line-numbers-mode 1)
+(add-hook 'prog-mode-hook #'(lambda ()
+                              (display-line-numbers-mode 1)))
+(add-hook 'text-mode-hook #'(lambda ()
+                              (display-line-numbers-mode 1)))
 
 (setopt show-paren-delay 0.05
         show-paren-context-when-offscreen t

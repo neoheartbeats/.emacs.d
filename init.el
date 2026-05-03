@@ -19,7 +19,7 @@
               redisplay-skip-fontification-on-input t
               frame-inhibit-implied-resize t
               load-prefer-newer t
-              fill-column 100
+              fill-column 88
               mode-line-format ""
               header-line-format "")
 
@@ -35,7 +35,7 @@
 
 (setopt elisp-fontify-semantically t)
 
-(menu-bar-mode -1)
+;; (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (line-number-mode -1)
