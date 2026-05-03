@@ -48,7 +48,7 @@
                     :background 'unspecified :foreground "#535353" :box nil
                     :underline t :height 0.1)
 
-(let ((font "LantingHei"))
+(let ((font "Pingfang SC"))
   (set-fontset-font t 'kana (font-spec :family font))
   (set-fontset-font t 'han (font-spec :family font))
   (set-fontset-font t 'cjk-misc (font-spec :family font)))

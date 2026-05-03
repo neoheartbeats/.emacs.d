@@ -20,7 +20,8 @@
               frame-inhibit-implied-resize t
               load-prefer-newer t
               fill-column 100
-              mode-line-format "")
+              mode-line-format ""
+              header-line-format "")
 
 (setq-default user-full-name user-login-name
               user-mail-address "sthenno@sthenno.com")
@@ -42,10 +43,12 @@
 (define-advice display-startup-echo-area-message
     (:override () sthenno-startup-message)
   "Display a custom startup message in the echo area."
-  (let ((text (propertize " 有朝一日，我们必将理解那些不能理解的东西。为了理解，我们只能这么做。"
-                          'face '( :foreground "#00c06f" :box '( :line-width (-1 . -1)
-                                                                 :style released-button)))))
-    (minibuffer-message "\n %s\n" text)))
+  (let ((text (propertize "那……如果你现在手里有一杯热咖啡，你最想配什么样的点心？"
+                          'face 'default
+                          ;; '(:foreground "#00c06f" :box '(:line-width (-1 . -1) :style released-button)))
+                          )
+              ))
+    (minibuffer-message " %s" text)))
 
 ;;; Package management
 (setq-default package-native-compile t
