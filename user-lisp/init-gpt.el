@@ -10,9 +10,15 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl-lib))
+(eval-when-compile
+  (require 'cl-lib)
+  (require 'gv)
+  (require 'peg)
+  (require 'subr-x))
 (require 'cl-lib)
 (require 'gv)
+(require 'peg)
+(require 'subr-x)
 
 ;;; LLM protocol
 (use-package gptel
@@ -33,16 +39,105 @@
                ("s-<return>" . gptel-send))))
 
 
-;;; Misc.
+;;; Options
 
 (defgroup sthenno/hermit nil
   "A small image pet attached to an Emacs frame."
   :group 'applications)
 
+(defcustom sthenno/hermit-image-file (locate-user-emacs-file "resources/hmt-01.png")
+  "PNG file used as the pet image."
+  :type 'file
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-image-height 550
+  "Rendered pet image height in pixels."
+  :type 'integer
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-image-mask nil
+  "Optional mask passed to `create-image'."
+  :type '(choice (const :tag "None" nil)
+                 (const :tag "Heuristic" heuristic))
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-placement 'outside-right-bottom
+  "Initial pet placement relative to the parent frame."
+  :type '(choice (const :tag "Inside bottom right" inside-bottom-right)
+                 (const :tag "Outside right bottom" outside-right-bottom)
+                 (const :tag "Outside left bottom" outside-left-bottom)
+                 (const :tag "Center" center))
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-gap 10
+  "Gap between the pet, bubble, and parent frame in pixels."
+  :type 'integer
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-alpha-background 0
+  "Background opacity of the pet image frame."
+  :type 'integer
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-no-accept-focus t
+  "Whether Hermit child frames avoid accepting focus."
+  :type 'boolean
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-bubble-timeout 4.5
+  "Seconds before the speech bubble is hidden."
+  :type '(choice number (const nil))
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-message-delay 0.025
+  "Idle seconds used to coalesce echo-area messages."
+  :type 'number
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-bubble-max-columns 50
+  "Maximum display columns used by bubble text before wrapping."
+  :type 'integer
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-bubble-min-columns 10
+  "Minimum display columns used by bubble text."
+  :type 'integer
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-bubble-max-lines 2
+  "Maximum number of text lines shown in the bubble."
+  :type 'integer
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-bubble-padding-columns 2
+  "Horizontal bubble padding in `default' face character cells."
+  :type 'integer
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-bubble-padding-lines 1
+  "Vertical bubble padding in `default' face lines."
+  :type 'integer
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-bubble-border-width 1
+  "Bubble child-frame border width in pixels."
+  :type 'integer
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-bubble-use-text-box nil
+  "Whether to draw an additional `:box' around the bubble text."
+  :type 'boolean
+  :group 'sthenno/hermit)
+
+(defcustom sthenno/hermit-enable-dnd t
+  "Whether Shift-mouse-1 starts drag-and-drop from pet frames."
+  :type 'boolean
+  :group 'sthenno/hermit)
+
 (cl-defstruct (sthenno/hermit-options
                (:constructor sthenno/hermit--make-options
                              (&key image-file image-height image-mask placement gap
-                                   alpha-background
+                                   alpha-background no-accept-focus
                                    bubble-timeout message-delay bubble-max-columns
                                    bubble-min-columns
                                    bubble-max-lines bubble-padding-columns
@@ -50,99 +145,89 @@
                                    bubble-border-width bubble-use-text-box enable-dnd))
                (:conc-name sthenno/hermit-options-)
                (:copier nil))
-  (image-file (locate-user-emacs-file "resources/hmt-01.png"))
-  (image-height 420)
-  (image-mask nil)
-  (placement 'outside-right-bottom)
-  (gap 15)
-  (alpha-background 0)
-  (bubble-timeout 3.0)
-  (message-delay 0)
-  (bubble-max-columns 50)
-  (bubble-min-columns 10)
-  (bubble-max-lines 3)
-  (bubble-padding-columns 2)
-  (bubble-padding-lines 2)
-  (bubble-border-width 1)
-  (bubble-use-text-box nil)
-  (enable-dnd t))
+  (image-file sthenno/hermit-image-file)
+  (image-height sthenno/hermit-image-height)
+  (image-mask sthenno/hermit-image-mask)
+  (placement sthenno/hermit-placement)
+  (gap sthenno/hermit-gap)
+  (alpha-background sthenno/hermit-alpha-background)
+  (no-accept-focus sthenno/hermit-no-accept-focus)
+  (bubble-timeout sthenno/hermit-bubble-timeout)
+  (message-delay sthenno/hermit-message-delay)
+  (bubble-max-columns sthenno/hermit-bubble-max-columns)
+  (bubble-min-columns sthenno/hermit-bubble-min-columns)
+  (bubble-max-lines sthenno/hermit-bubble-max-lines)
+  (bubble-padding-columns sthenno/hermit-bubble-padding-columns)
+  (bubble-padding-lines sthenno/hermit-bubble-padding-lines)
+  (bubble-border-width sthenno/hermit-bubble-border-width)
+  (bubble-use-text-box sthenno/hermit-bubble-use-text-box)
+  (enable-dnd sthenno/hermit-enable-dnd))
 
 (defvar sthenno/hermit-options (sthenno/hermit--make-options)
   "Personal Hermit options struct.")
 
-(defconst sthenno/hermit--opt-getters
-  '((:image-file . sthenno/hermit-options-image-file)
-    (:image-height . sthenno/hermit-options-image-height)
-    (:image-mask . sthenno/hermit-options-image-mask)
-    (:placement . sthenno/hermit-options-placement)
-    (:gap . sthenno/hermit-options-gap)
-    (:alpha-background . sthenno/hermit-options-alpha-background)
-    (:bubble-timeout . sthenno/hermit-options-bubble-timeout)
-    (:message-delay . sthenno/hermit-options-message-delay)
-    (:bubble-max-columns . sthenno/hermit-options-bubble-max-columns)
-    (:bubble-min-columns . sthenno/hermit-options-bubble-min-columns)
-    (:bubble-max-lines . sthenno/hermit-options-bubble-max-lines)
-    (:bubble-padding-columns . sthenno/hermit-options-bubble-padding-columns)
-    (:bubble-padding-lines . sthenno/hermit-options-bubble-padding-lines)
-    (:bubble-border-width . sthenno/hermit-options-bubble-border-width)
-    (:bubble-use-text-box . sthenno/hermit-options-bubble-use-text-box)
-    (:enable-dnd . sthenno/hermit-options-enable-dnd))
-  "Keyword to accessor table for Hermit options.")
+(defconst sthenno/hermit--opt-vars
+  '((:image-file . sthenno/hermit-image-file)
+    (:image-height . sthenno/hermit-image-height)
+    (:image-mask . sthenno/hermit-image-mask)
+    (:placement . sthenno/hermit-placement)
+    (:gap . sthenno/hermit-gap)
+    (:alpha-background . sthenno/hermit-alpha-background)
+    (:no-accept-focus . sthenno/hermit-no-accept-focus)
+    (:bubble-timeout . sthenno/hermit-bubble-timeout)
+    (:message-delay . sthenno/hermit-message-delay)
+    (:bubble-max-columns . sthenno/hermit-bubble-max-columns)
+    (:bubble-min-columns . sthenno/hermit-bubble-min-columns)
+    (:bubble-max-lines . sthenno/hermit-bubble-max-lines)
+    (:bubble-padding-columns . sthenno/hermit-bubble-padding-columns)
+    (:bubble-padding-lines . sthenno/hermit-bubble-padding-lines)
+    (:bubble-border-width . sthenno/hermit-bubble-border-width)
+    (:bubble-use-text-box . sthenno/hermit-bubble-use-text-box)
+    (:enable-dnd . sthenno/hermit-enable-dnd))
+  "Keyword to public customization variable table for Hermit options.")
 
-(defconst sthenno/hermit--opt-setters
-  `((:image-file
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-image-file sthenno/hermit-options) value)))
-    (:image-height
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-image-height sthenno/hermit-options) value)))
-    (:image-mask
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-image-mask sthenno/hermit-options) value)))
-    (:placement
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-placement sthenno/hermit-options) value)))
-    (:gap
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-gap sthenno/hermit-options) value)))
-    (:alpha-background
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-alpha-background sthenno/hermit-options) value)))
-    (:bubble-timeout
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-bubble-timeout sthenno/hermit-options) value)))
-    (:message-delay
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-message-delay sthenno/hermit-options) value)))
-    (:bubble-max-columns
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-bubble-max-columns sthenno/hermit-options) value)))
-    (:bubble-min-columns
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-bubble-min-columns sthenno/hermit-options) value)))
-    (:bubble-max-lines
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-bubble-max-lines sthenno/hermit-options) value)))
-    (:bubble-padding-columns
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-bubble-padding-columns sthenno/hermit-options)
-                value)))
-    (:bubble-padding-lines
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-bubble-padding-lines sthenno/hermit-options)
-                value)))
-    (:bubble-border-width
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-bubble-border-width sthenno/hermit-options)
-                value)))
-    (:bubble-use-text-box
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-bubble-use-text-box sthenno/hermit-options)
-                value)))
-    (:enable-dnd
-     . ,(lambda (value)
-          (setf (sthenno/hermit-options-enable-dnd sthenno/hermit-options) value))))
-  "Keyword to setter table for Hermit options.")
+(cl-defmacro sthenno/hermit--define-access-tables
+    (getter-table setter-table object getter-doc setter-doc &rest specs)
+  "Define GETTER-TABLE and SETTER-TABLE for OBJECT slot SPECS."
+  `(progn
+     (defconst ,getter-table
+       ',(mapcar (lambda (spec) (cons (car spec) (cadr spec))) specs)
+       ,getter-doc)
+     (defconst ,setter-table
+       (list
+        ,@(mapcar
+           (lambda (spec)
+             (let ((key (car spec))
+                   (accessor (cadr spec)))
+               `(cons ',key
+                      (lambda (value)
+                        (setf (,accessor ,object) value)))))
+           specs))
+       ,setter-doc)))
+
+(sthenno/hermit--define-access-tables
+ sthenno/hermit--opt-getters
+ sthenno/hermit--opt-setters
+ sthenno/hermit-options
+ "Keyword to accessor table for Hermit options."
+ "Keyword to setter table for Hermit options."
+ (:image-file sthenno/hermit-options-image-file)
+ (:image-height sthenno/hermit-options-image-height)
+ (:image-mask sthenno/hermit-options-image-mask)
+ (:placement sthenno/hermit-options-placement)
+ (:gap sthenno/hermit-options-gap)
+ (:alpha-background sthenno/hermit-options-alpha-background)
+ (:no-accept-focus sthenno/hermit-options-no-accept-focus)
+ (:bubble-timeout sthenno/hermit-options-bubble-timeout)
+ (:message-delay sthenno/hermit-options-message-delay)
+ (:bubble-max-columns sthenno/hermit-options-bubble-max-columns)
+ (:bubble-min-columns sthenno/hermit-options-bubble-min-columns)
+ (:bubble-max-lines sthenno/hermit-options-bubble-max-lines)
+ (:bubble-padding-columns sthenno/hermit-options-bubble-padding-columns)
+ (:bubble-padding-lines sthenno/hermit-options-bubble-padding-lines)
+ (:bubble-border-width sthenno/hermit-options-bubble-border-width)
+ (:bubble-use-text-box sthenno/hermit-options-bubble-use-text-box)
+ (:enable-dnd sthenno/hermit-options-enable-dnd))
 
 (defun sthenno/hermit--opt (key)
   (pcase (assq key sthenno/hermit--opt-getters)
@@ -151,12 +236,20 @@
 
 (defun sthenno/hermit--set-opt-1 (key value)
   (pcase (assq key sthenno/hermit--opt-setters)
-    (`(,_ . ,setter) (funcall setter value))
+    (`(,_ . ,setter)
+     (funcall setter value)
+     (when-let* ((var (alist-get key sthenno/hermit--opt-vars)))
+       (set var value)))
     (_ (error "Unknown Hermit option key: %S" key)))
   value)
 
 (gv-define-setter sthenno/hermit--opt (value key)
   `(sthenno/hermit--set-opt-1 ,key ,value))
+
+(defun sthenno/hermit--sync-options ()
+  "Refresh internal Hermit option storage from public defcustom variables."
+  (dolist (cell sthenno/hermit--opt-vars sthenno/hermit-options)
+    (setf (sthenno/hermit--opt (car cell)) (symbol-value (cdr cell)))))
 
 (defface sthenno/hermit-bubble-face
   '((t :foreground "#303030" :background "#fff7fb"))
@@ -177,6 +270,20 @@
 (defvar sthenno/hermit--controller nil)
 (defvar sthenno/hermit--request nil)
 
+(cl-defstruct (sthenno/hermit-command
+               (:constructor sthenno/hermit--make-command
+                             (&key action text placement option value shell-command))
+               (:conc-name sthenno/hermit-command-)
+               (:copier nil))
+  action text placement option value shell-command)
+
+(cl-defstruct (sthenno/hermit-process-record
+               (:constructor sthenno/hermit--make-process-record
+                             (&key process command output))
+               (:conc-name sthenno/hermit-process-record-)
+               (:copier nil))
+  process command (output ""))
+
 (cl-defstruct (sthenno/hermit-controller
                (:constructor sthenno/hermit--make-controller
                              (&key status parent-frame return-frame file pet-size
@@ -185,116 +292,47 @@
                                    bubble-timer
                                    bubble-frame bubble bubble-visible
                                    bubble-content-size
-                                   bubble-outer-size bubble-buffer queued-bubble))
+                                   bubble-outer-size bubble-buffer queued-bubble
+                                   process-record))
                (:conc-name sthenno/hermit-controller-)
                (:copier nil))
   status parent-frame return-frame file pet-size pet-frame image-buffer
   pet-pos manual-position pending-message message-timer bubble-timer bubble-frame
   bubble bubble-visible bubble-content-size bubble-outer-size bubble-buffer
-  queued-bubble)
+  queued-bubble process-record)
 
-(defconst sthenno/hermit--state-getters
-  '((:status . sthenno/hermit-controller-status)
-    (:parent-frame . sthenno/hermit-controller-parent-frame)
-    (:return-frame . sthenno/hermit-controller-return-frame)
-    (:file . sthenno/hermit-controller-file)
-    (:pet-size . sthenno/hermit-controller-pet-size)
-    (:pet-frame . sthenno/hermit-controller-pet-frame)
-    (:image-buffer . sthenno/hermit-controller-image-buffer)
-    (:pet-pos . sthenno/hermit-controller-pet-pos)
-    (:manual-position . sthenno/hermit-controller-manual-position)
-    (:pending-message . sthenno/hermit-controller-pending-message)
-    (:message-timer . sthenno/hermit-controller-message-timer)
-    (:bubble-timer . sthenno/hermit-controller-bubble-timer)
-    (:bubble-frame . sthenno/hermit-controller-bubble-frame)
-    (:bubble . sthenno/hermit-controller-bubble)
-    (:bubble-visible . sthenno/hermit-controller-bubble-visible)
-    (:bubble-content-size . sthenno/hermit-controller-bubble-content-size)
-    (:bubble-outer-size . sthenno/hermit-controller-bubble-outer-size)
-    (:bubble-buffer . sthenno/hermit-controller-bubble-buffer)
-    (:queued-bubble . sthenno/hermit-controller-queued-bubble))
-  "Keyword to accessor table for Hermit controller state.")
+(sthenno/hermit--define-access-tables
+ sthenno/hermit--state-getters
+ sthenno/hermit--state-setters
+ sthenno/hermit--controller
+ "Keyword to accessor table for Hermit controller state."
+ "Keyword to setter table for Hermit controller state."
+ (:status sthenno/hermit-controller-status)
+ (:parent-frame sthenno/hermit-controller-parent-frame)
+ (:return-frame sthenno/hermit-controller-return-frame)
+ (:file sthenno/hermit-controller-file)
+ (:pet-size sthenno/hermit-controller-pet-size)
+ (:pet-frame sthenno/hermit-controller-pet-frame)
+ (:image-buffer sthenno/hermit-controller-image-buffer)
+ (:pet-pos sthenno/hermit-controller-pet-pos)
+ (:manual-position sthenno/hermit-controller-manual-position)
+ (:pending-message sthenno/hermit-controller-pending-message)
+ (:message-timer sthenno/hermit-controller-message-timer)
+ (:bubble-timer sthenno/hermit-controller-bubble-timer)
+ (:bubble-frame sthenno/hermit-controller-bubble-frame)
+ (:bubble sthenno/hermit-controller-bubble)
+ (:bubble-visible sthenno/hermit-controller-bubble-visible)
+ (:bubble-content-size sthenno/hermit-controller-bubble-content-size)
+ (:bubble-outer-size sthenno/hermit-controller-bubble-outer-size)
+ (:bubble-buffer sthenno/hermit-controller-bubble-buffer)
+ (:queued-bubble sthenno/hermit-controller-queued-bubble)
+ (:process-record sthenno/hermit-controller-process-record))
 
 (defun sthenno/hermit--state (key)
   (when (sthenno/hermit-controller-p sthenno/hermit--controller)
     (pcase (assq key sthenno/hermit--state-getters)
       (`(,_ . ,getter) (funcall getter sthenno/hermit--controller))
       (_ (error "Unknown Hermit state key: %S" key)))))
-
-(defconst sthenno/hermit--state-setters
-  `((:status
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-status sthenno/hermit--controller) value)))
-    (:parent-frame
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-parent-frame sthenno/hermit--controller)
-                value)))
-    (:return-frame
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-return-frame sthenno/hermit--controller)
-                value)))
-    (:file
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-file sthenno/hermit--controller) value)))
-    (:pet-size
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-pet-size sthenno/hermit--controller) value)))
-    (:pet-frame
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-pet-frame sthenno/hermit--controller) value)))
-    (:image-buffer
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-image-buffer sthenno/hermit--controller)
-                value)))
-    (:pet-pos
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-pet-pos sthenno/hermit--controller) value)))
-    (:manual-position
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-manual-position sthenno/hermit--controller)
-                value)))
-    (:pending-message
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-pending-message sthenno/hermit--controller)
-                value)))
-    (:message-timer
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-message-timer sthenno/hermit--controller)
-                value)))
-    (:bubble-timer
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-bubble-timer sthenno/hermit--controller)
-                value)))
-    (:bubble-frame
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-bubble-frame sthenno/hermit--controller)
-                value)))
-    (:bubble
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-bubble sthenno/hermit--controller) value)))
-    (:bubble-visible
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-bubble-visible sthenno/hermit--controller)
-                value)))
-    (:bubble-content-size
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-bubble-content-size
-                 sthenno/hermit--controller)
-                value)))
-    (:bubble-outer-size
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-bubble-outer-size
-                 sthenno/hermit--controller)
-                value)))
-    (:bubble-buffer
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-bubble-buffer sthenno/hermit--controller)
-                value)))
-    (:queued-bubble
-     . ,(lambda (value)
-          (setf (sthenno/hermit-controller-queued-bubble sthenno/hermit--controller)
-                value))))
-  "Keyword to setter table for Hermit controller state.")
 
 (defun sthenno/hermit--set-state-1 (key value)
   (unless (sthenno/hermit-controller-p sthenno/hermit--controller)
@@ -344,40 +382,14 @@
   `(sthenno/hermit--with-live (,var ,key #'buffer-live-p) ,@body))
 
 
-(defun sthenno/hermit--n--clamp (value minimum fallback maximum)
-  "Clamp VALUE with MINIMUM/FALLBACK/MAXIMUM constraints.
-
-`VALUE` is clamped to integer bounds and invalid inputs fall back to
-`FALLBACK`."
+(defun sthenno/hermit--n (value minimum &optional fallback maximum)
+  "Clamp VALUE to MINIMUM and optional MAXIMUM.
+Invalid VALUE falls back to FALLBACK, or 0 when FALLBACK is not numeric."
   (let* ((value-number (and (numberp value) (truncate value)))
          (fallback-number (and (numberp fallback) (truncate fallback))))
     (if (null maximum)
         (max minimum (or value-number fallback-number 0))
       (min maximum (max minimum (or value-number fallback-number 0))))))
-
-(defalias 'sthenno/hermit--n
-  (eval
-   (if (fboundp 'case-lambda)
-       '(case-lambda
-         ((value minimum)
-          (sthenno/hermit--n--clamp value minimum 0 nil))
-         ((value minimum fallback)
-          (sthenno/hermit--n--clamp value minimum fallback nil))
-         ((value minimum fallback maximum)
-          (sthenno/hermit--n--clamp value minimum fallback maximum)))
-     ;; Fallback for environments without `case-lambda`.
-     '(lambda (value minimum &rest args)
-        (pcase (length args)
-          (0 (sthenno/hermit--n--clamp value minimum 0 nil))
-          (1 (sthenno/hermit--n--clamp value minimum (car args) nil))
-          (2 (sthenno/hermit--n--clamp value minimum (car args) (cadr args)))
-          (_ (error "sthenno/hermit--n: invalid arity %S (expected 2..4 args)" args))))))
-  "Arity-dispatched clamping helper for Hermit text geometry.
-
-Signatures:
-- (VALUE MINIMUM)
-- (VALUE MINIMUM FALLBACK)
-- (VALUE MINIMUM FALLBACK MAXIMUM)")
 
 (defun sthenno/hermit--live-frame (key)
   (let ((frame (sthenno/hermit--state key)))
@@ -399,8 +411,6 @@ Signatures:
 (defun sthenno/hermit--wrap (text columns rows)
   (let ((columns (sthenno/hermit--n columns 4 4))
         (rows (sthenno/hermit--n rows 1 1)))
-    ;; `named-let` keeps the recursive worker explicit and local:
-    ;; each step consumes exactly one chunk and returns the accumulated lines.
     (named-let collect ((rest (or (sthenno/hermit--plain text) ""))
                         (lines nil))
       (if (or (>= (length lines) rows)
@@ -455,8 +465,7 @@ Signatures:
                      (* (length render-lines) (max 1 (frame-char-height parent)))))
            (border (sthenno/hermit--n (sthenno/hermit--opt :bubble-border-width) 0))
            (outer (cons (+ (car content) (* 2 border)) (+ (cdr content) (* 2 border)))))
-      `(:plain-lines ,lines :render-lines ,render-lines :content-size ,content
-                     :outer-size ,outer))))
+      `(:plain-lines ,lines :render-lines ,render-lines :content-size ,content :outer-size ,outer))))
 
 (defun sthenno/hermit--pet-position (placement parent-size pet-size gap)
   (pcase-let
@@ -492,7 +501,7 @@ Signatures:
       (delete-before . ,parent) (mouse-wheel-frame . ,parent) (no-other-frame . t)
       (minibuffer)
       (visibility) (undecorated-round . t) (skip-taskbar . t) (no-focus-on-map . t)
-      (no-accept-focus . nil)
+      (no-accept-focus . ,(if (sthenno/hermit--opt :no-accept-focus) t nil))
       (z-group . above) (left + 0) (top + 0) (width text-pixels . ,w)
       (height text-pixels . ,h)
       (min-width . 0) (min-height . 0) (border-width . 0) (left-fringe . 0)
@@ -603,29 +612,23 @@ Signatures:
                                                                          content))))
                           (setf (sthenno/hermit--state :bubble-frame) new-frame)
                           new-frame)))
-             (face
-              (if (sthenno/hermit--opt :bubble-use-text-box)
-                  'sthenno/hermit-bubble-box-face
-                'sthenno/hermit-bubble-face)))
-        (sthenno/hermit--with-slots (:bubble text
-                                             :bubble-visible t
-                                             :bubble-content-size content
-                                             :bubble-outer-size
-                                             (plist-get layout :outer-size))
-                                    (sthenno/hermit--paint frame :bubble-buffer
-                                                           " *sthenno/hermit-bubble*"
-                                                           sthenno/hermit-bubble-mode-map
-                                                           (lambda ()
-                                                             (insert
-                                                              (propertize
-                                                               (mapconcat
-                                                                #'identity
-                                                                (plist-get
-                                                                 layout
-                                                                 :render-lines)
-                                                                "\n")
-                                                               'face
-                                                               face)))))
+             (face 'sthenno/hermit-bubble-face))
+        (sthenno/hermit--with-slots
+         ( :bubble text
+           :bubble-visible t
+           :bubble-content-size content
+           :bubble-outer-size
+           (plist-get layout :outer-size))
+         (sthenno/hermit--paint frame :bubble-buffer
+                                " *sthenno/hermit-bubble*"
+                                sthenno/hermit-bubble-mode-map
+                                (lambda ()
+                                  (insert (propertize (mapconcat #'identity
+                                                                 (plist-get layout
+                                                                            :render-lines)
+                                                                 "\n")
+                                                      'face
+                                                      face)))))
         (modify-frame-parameters frame
                                  (sthenno/hermit--bubble-frame-parameters parent content))
         (pcase-let ((`(,w . ,h) content)) (set-frame-size frame w h t))
@@ -859,13 +862,201 @@ Signatures:
     (sthenno/hermit--restore-focus)))
 
 (defun sthenno/hermit--root-frame (frame)
-  ;; `named-let` here expresses an explicit tail-recursive walk to the top frame.
   (named-let walk ((candidate frame))
     (if-let* ((parent (frame-parent candidate)))
         (walk parent)
       candidate)))
 
+(defconst sthenno/hermit--placements
+  '(inside-bottom-right outside-right-bottom outside-left-bottom center)
+  "Placements accepted by `sthenno/hermit-command'.")
+
+(defun sthenno/hermit--command-parts (input)
+  "Return a cons of command verb and rest parsed from INPUT with PEG."
+  (with-temp-buffer
+    (insert input)
+    (goto-char (point-min))
+    (condition-case nil
+        (pcase-let ((`(,rest ,verb)
+                     (peg-parse
+                      (and (* [blank])
+                           (substring (+ [alpha ?-]))
+                           (* [blank])
+                           (substring (* (any)))
+                           (eob)))))
+          (cons verb (string-trim rest)))
+      (error nil))))
+
+(defun sthenno/hermit--parse-option-args (text)
+  "Return a cons of option key text and value text parsed from TEXT."
+  (with-temp-buffer
+    (insert text)
+    (goto-char (point-min))
+    (condition-case nil
+        (pcase-let ((`(,value ,key)
+                     (peg-parse
+                      (and (* [blank])
+                           (substring (+ [alnum ?: ?-]))
+                           (+ [blank])
+                           (substring (* (any)))
+                           (eob)))))
+          (cons key (string-trim value)))
+      (error nil))))
+
+(defun sthenno/hermit--parse-placement (text)
+  "Parse TEXT into a supported Hermit placement symbol."
+  (let ((placement (intern (string-trim text))))
+    (unless (memq placement sthenno/hermit--placements)
+      (user-error "Unknown Hermit placement: %s" text))
+    placement))
+
+(defun sthenno/hermit--option-key (text)
+  "Parse TEXT into a supported Hermit option keyword."
+  (let* ((name (string-remove-prefix ":" (string-trim text)))
+         (key (intern (concat ":" name))))
+    (unless (assq key sthenno/hermit--opt-vars)
+      (user-error "Unknown Hermit option: %s" text))
+    key))
+
+(defun sthenno/hermit--number-text-p (text)
+  "Return non-nil when TEXT is a simple integer or float literal."
+  (string-match-p "\\`[-+]?[0-9]+\\(?:\\.[0-9]+\\)?\\'" text))
+
+(defun sthenno/hermit--parse-option-value (key text)
+  "Parse option KEY value from TEXT."
+  (let ((value (string-trim text)))
+    (cond
+     ((member value '("t" "true" "yes" "on")) t)
+     ((member value '("nil" "false" "no" "off")) nil)
+     ((eq key :placement) (sthenno/hermit--parse-placement value))
+     ((eq key :image-mask)
+      (cond ((string= value "heuristic") 'heuristic)
+            ((string= value "nil") nil)
+            (t (user-error "Unsupported Hermit image mask: %s" value))))
+     ((sthenno/hermit--number-text-p value) (string-to-number value))
+     (t value))))
+
+(defun sthenno/hermit--parse-command (input)
+  "Parse INPUT as a Hermit command."
+  (pcase-let ((`(,verb . ,rest) (sthenno/hermit--command-parts input)))
+    (unless verb
+      (user-error "Invalid Hermit command: %s" input))
+    (pcase verb
+      ("say"
+       (when (sthenno/hermit--blank-string-p rest)
+         (user-error "Hermit say command needs text"))
+       (sthenno/hermit--make-command :action 'say :text rest))
+      ("place"
+       (sthenno/hermit--make-command
+        :action 'place
+        :placement (sthenno/hermit--parse-placement rest)))
+      ("option"
+       (pcase-let ((`(,key-text . ,value-text)
+                    (sthenno/hermit--parse-option-args rest)))
+         (unless key-text
+           (user-error "Hermit option command needs KEY VALUE"))
+         (let ((key (sthenno/hermit--option-key key-text)))
+           (sthenno/hermit--make-command
+            :action 'option
+            :option key
+            :value (sthenno/hermit--parse-option-value key value-text)))))
+      ("run"
+       (when (sthenno/hermit--blank-string-p rest)
+         (user-error "Hermit run command needs a shell command"))
+       (sthenno/hermit--make-command :action 'run :shell-command rest))
+      (_ (user-error "Unknown Hermit command: %s" verb)))))
+
+(defun sthenno/hermit--process-record-for (process)
+  "Return the active process record when PROCESS is current."
+  (let ((record (sthenno/hermit--state :process-record)))
+    (and (sthenno/hermit-process-record-p record)
+         (eq (sthenno/hermit-process-record-process record) process)
+         record)))
+
+(defun sthenno/hermit--cancel-process ()
+  "Delete the active Hermit process if it is still live."
+  (when-let* ((record (sthenno/hermit--state :process-record))
+              (process (sthenno/hermit-process-record-process record)))
+    (when (process-live-p process)
+      (delete-process process)))
+  (setf (sthenno/hermit--state :process-record) nil))
+
+(defun sthenno/hermit--process-filter (process text)
+  "Collect PROCESS output TEXT and show it in Hermit's bubble."
+  (when-let* ((record (sthenno/hermit--process-record-for process)))
+    (setf (sthenno/hermit-process-record-output record)
+          (concat (or (sthenno/hermit-process-record-output record) "") text))
+    (let ((plain (sthenno/hermit--plain
+                  (sthenno/hermit-process-record-output record))))
+      (unless (sthenno/hermit--blank-string-p plain)
+        (sthenno/hermit-say plain)))))
+
+(defun sthenno/hermit--process-sentinel (process event)
+  "Report PROCESS EVENT and clear the active process record."
+  (when-let* ((record (sthenno/hermit--process-record-for process)))
+    (let ((command (sthenno/hermit-process-record-command record))
+          (event (string-trim event)))
+      (setf (sthenno/hermit--state :process-record) nil)
+      (sthenno/hermit-say
+       (if (string= event "finished")
+           (format "run finished: %s" command)
+         (format "run stopped (%s): %s" event command))))))
+
+(defun sthenno/hermit-run-command (command)
+  "Run shell COMMAND asynchronously and send its output to Hermit."
+  (interactive "sHermit run: ")
+  (unless sthenno/hermit--controller
+    (user-error "sthenno/hermit-mode is not active"))
+  (when (sthenno/hermit--blank-string-p command)
+    (user-error "Hermit run command needs a shell command"))
+  (when-let* ((record (sthenno/hermit--state :process-record))
+              (process (sthenno/hermit-process-record-process record))
+              ((process-live-p process)))
+    (unless (yes-or-no-p "Kill the running Hermit process? ")
+      (user-error "Hermit process is still running"))
+    (sthenno/hermit--cancel-process))
+  (let* ((process
+          (make-process
+           :name "sthenno/hermit-run"
+           :buffer nil
+           :command (list shell-file-name shell-command-switch command)
+           :connection-type 'pipe
+           :noquery t
+           :filter #'sthenno/hermit--process-filter
+           :sentinel #'sthenno/hermit--process-sentinel))
+         (record (sthenno/hermit--make-process-record
+                  :process process
+                  :command command)))
+    (setf (sthenno/hermit--state :process-record) record)
+    (sthenno/hermit-say (format "run started: %s" command))
+    process))
+
+(defun sthenno/hermit--dispatch-command (command)
+  "Execute parsed Hermit COMMAND."
+  (pcase (sthenno/hermit-command-action command)
+    ('say (sthenno/hermit-say (sthenno/hermit-command-text command)))
+    ('place
+     (setf (sthenno/hermit--opt :placement)
+           (sthenno/hermit-command-placement command))
+     (sthenno/hermit-place))
+    ('option
+     (setf (sthenno/hermit--opt (sthenno/hermit-command-option command))
+           (sthenno/hermit-command-value command))
+     (when (memq (sthenno/hermit-command-option command)
+                 '(:placement :gap))
+       (sthenno/hermit-place))
+     (sthenno/hermit-command-value command))
+    ('run (sthenno/hermit-run-command
+           (sthenno/hermit-command-shell-command command)))))
+
+;;;###autoload
+(defun sthenno/hermit-command (input)
+  "Read and execute a PEG-parsed Hermit command from INPUT."
+  (interactive (list (read-string "Hermit command: ")))
+  (sthenno/hermit--dispatch-command (sthenno/hermit--parse-command input)))
+
 (defun sthenno/hermit--teardown-controller ()
+  (sthenno/hermit--cancel-process)
   (mapc #'sthenno/hermit--cancel-timer '(:bubble-timer :message-timer))
   (dolist (key '(:bubble-frame :pet-frame))
     (sthenno/hermit--with-live-frame (frame key)
@@ -884,6 +1075,7 @@ Signatures:
 
 (defun sthenno/hermit--enable (&optional file parent)
   (sthenno/hermit--disable)
+  (sthenno/hermit--sync-options)
   (let* ((file (expand-file-name (or file (sthenno/hermit--opt :image-file))))
          (parent (or parent (selected-frame))))
     (unless (display-graphic-p parent)
@@ -969,7 +1161,7 @@ Signatures:
 
 ;;;###autoload
 (defun sthenno/hermit-iconify-parent ()
-  "Iconify Hermit's root parent frame."
+  "Iconify Hermit root parent frame."
   (interactive)
   (when-let* ((parent (sthenno/hermit--parent-frame))
               (root (sthenno/hermit--root-frame parent))
