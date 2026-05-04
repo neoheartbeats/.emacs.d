@@ -70,9 +70,6 @@
 (require 'init-gpt)
 
 ;;; Store customizations separately
-(let ((fp (locate-user-emacs-file "custom.el")))
-  (unless (file-exists-p fp)
-    (make-temp-file fp))
-  (setq-default custom-file fp))
+(setq-default custom-file (make-temp-file "_"))
 
 (provide 'init)
