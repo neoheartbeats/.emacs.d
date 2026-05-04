@@ -16,8 +16,7 @@
   :bind ("C-x g" . magit-status))
 
 (use-package xref
-  :ensure nil
-  :init (setq-default xref-search-program 'ripgrep)
+  :init (setopt xref-search-program 'ripgrep)
   :bind (:map global-map
               ("M-/" . xref-find-references)))
 

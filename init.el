@@ -19,7 +19,7 @@
               redisplay-skip-fontification-on-input t
               frame-inhibit-implied-resize t
               load-prefer-newer t
-              fill-column 88
+              fill-column 100
               mode-line-format ""
               header-line-format "")
 
