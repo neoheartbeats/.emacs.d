@@ -18,6 +18,7 @@
                 org-default-notes-file (expand-file-name "notes.org" org-directory)
                 org-persist-directory (locate-user-emacs-file "org-persist/")
                 org-startup-with-link-previews t
+                org-startup-truncated t
                 org-use-property-inheritance t
                 org-babel-uppercase-example-markers t
                 org-hide-emphasis-markers t
@@ -29,7 +30,7 @@
                 org-yank-image-save-method (expand-file-name "images/" org-directory)
                 org-attach-method 'cp
                 org-return-follows-link t
-                org-support-shift-select 'everywhere
+                org-support-shift-select t ; 'everywhere
                 org-confirm-babel-evaluate nil
                 org-src-preserve-indentation t
                 org-edit-src-content-indentation 0

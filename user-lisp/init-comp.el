@@ -21,65 +21,62 @@
 (setopt completion-cycle-threshold nil
         text-mode-ispell-word-completion nil
         tab-always-indent 'complete
-        tab-first-completion nil
-        echo-keystrokes 0.05
-        resize-mini-windows t
+        echo-keystrokes 0.125
+        resize-mini-windows 'grow-only
         help-window-select t
-        enable-recursive-minibuffers t
+        ;; enable-recursive-minibuffers t
         read-minibuffer-restore-windows nil
         read-extended-command-predicate #'command-completion-default-include-p
         minibuffer-default-prompt-format " [%s]"
         minibuffer-visible-completions nil
-        minibuffer-prompt-properties '(read-only t cursor-intangible t
-                                                 face minibuffer-prompt)
+        minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
         crm-prompt (format "%s %%p" (propertize "[%d]" 'face 'shadow))
         completions-sort 'historical
-        completion-auto-help nil
-        completion-show-help nil
-        completion-show-inline-help nil)
+        ;; completion-auto-help nil
+        ;; completion-show-help nil
+        ;; completion-show-inline-help nil
+        )
 (file-name-shadow-mode 1)
 
-(use-package orderless
-  :ensure t
-  :init (setopt completion-styles '(flex basic)
-                completion-category-defaults nil
-                completion-category-overrides
-                '((file (styles
-                         (partial-completion
-                          ((completion-pcm-leading-wildcard t)))
-                         basic))))
-  :config
-  (defun sthenno/completion-style-corfu ()
-    "Use literal-first completion styles for Corfu popups."
-    (setq-local completion-styles
-                '((orderless
-                   ((orderless-style-dispatchers nil)
-                    (orderless-matching-styles (orderless-literal))))
-                  basic)
-                completion-category-overrides nil
-                completion-category-defaults nil))
+
+;;; Completions
+(setopt completion-styles '(flex basic)
+        completion-ignore-case nil)
 
-  (setopt orderless-matching-styles
-          '(orderless-literal orderless-prefixes)))
+;; (use-package orderless
+;;   :ensure t
+;;   :init 
+;;   :config
+;;   (defun sthenno/completion-style-corfu ()
+;;     "Use literal-first completion styles for Corfu popups."
+;;     (setq-local completion-styles
+;;                 '((orderless
+;;                    ((orderless-style-dispatchers nil)
+;;                     (orderless-matching-styles (orderless-literal))))
+;;                   basic)
+;;                 completion-category-overrides nil
+;;                 completion-category-defaults nil))
 
-(setopt completion-ignore-case t
+;;   (setopt orderless-matching-styles
+;;           '(orderless-literal orderless-prefixes)))
+
+(setopt completion-ignore-case nil
         read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t)
 
 (use-package vertico
   :ensure t
   :init
-  (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
-  (advice-add #'ffap-menu-ask :around
-              (lambda (orig-fun &rest args)
-                (cl-letf (((symbol-function #'minibuffer-completion-help) #'ignore))
-                  (apply orig-fun args))))
-  (setq-default completion-in-region-function
-                (lambda (&rest args) (apply
-                                      (if vertico-mode
-                                          #'consult-completion-in-region
-                                        #'completion--in-region)
-                                      args)))
+  ;; (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
+  ;; (advice-add #'ffap-menu-ask :around
+  ;;             (lambda (orig-fun &rest args)
+  ;;               (cl-letf (((symbol-function #'minibuffer-completion-help) #'ignore))
+  ;;                 (apply orig-fun args))))
+  (setq-default completion-in-region-function (lambda (&rest args)
+                                                (apply (if vertico-mode
+                                                           #'consult-completion-in-region
+                                                         #'completion--in-region)
+                                                       args)))
   :hook (after-init . vertico-mode)
   :config
   (setopt vertico-count 12
@@ -99,17 +96,18 @@
 
 (use-package consult
   :ensure t
-  :init (setopt register-preview-delay 0.05
+  :demand t
+  :init (setopt register-preview-delay 0.125
                 register-preview-function #'consult-register-format
                 xref-show-xrefs-function #'consult-xref
                 xref-show-definitions-function #'consult-xref)
   :config
   (keymap-substitute project-prefix-map
                      #'project-find-regexp #'consult-ripgrep)
-  (cl-nsubstitute-if '(consult-ripgrep "Find regexp")
-                     (pcase-lambda (`(,cmd _))
-                       (eq cmd #'project-find-regexp))
-                     project-switch-commands)
+  ;; (cl-nsubstitute-if '(consult-ripgrep "Find regexp")
+  ;;                    (pcase-lambda (`(,cmd _))
+  ;;                      (eq cmd #'project-find-regexp))
+  ;;                    project-switch-commands)
   :bind ((:map global-map
                ("s-b" . consult-buffer)
                ("C-s" . consult-line)
@@ -143,31 +141,30 @@
 
 (use-package cape
   :ensure t
-  :init
+  :demand t
+  :config
   (setopt cape-dict-case-fold t
           cape-dict-case-replace t
           cape-dict-limit 25)
 
-  (defun sthenno/capf-eglot ()
-    "Compose CAPFs for `eglot-managed-mode'."
-    (setq-local completion-at-point-functions
-                `(,(cape-capf-super
-                    (cape-capf-buster #'eglot-completion-at-point)
-                    #'cape-dabbrev)
-                  cape-file)
-                cape-dabbrev-min-length 4))
+  ;; (defun sthenno/capf-eglot ()
+  ;;   "Compose CAPFs for `eglot-managed-mode'."
+  ;;   (setq-local completion-at-point-functions
+  ;;               `(,(cape-capf-super
+  ;;                   (cape-capf-buster #'eglot-completion-at-point)
+  ;;                   #'cape-dabbrev)
+  ;;                 cape-file)
+  ;;               cape-dabbrev-min-length 4))
 
   (defun sthenno/capf-elisp ()
     "Compose CAPFs for `emacs-lisp-mode'."
     (setq-local completion-at-point-functions
                 `(,(cape-capf-super
                     (cape-capf-prefix-length #'cape-dict 4)
-                    (cape-capf-predicate
-                     #'elisp-completion-at-point
-                     (lambda (cand)
-                       (or (not (keywordp cand))
-                           (eq (char-after (car completion-in-region--data))
-                               ?:))))
+                    (cape-capf-predicate #'elisp-completion-at-point (lambda (cand)
+                                                                       (or (not (keywordp cand))
+                                                                           (eq (char-after (car completion-in-region--data))
+                                                                               ?:))))
                     #'cape-dabbrev)
                   cape-file)
                 cape-dabbrev-min-length 2))
@@ -182,25 +179,27 @@
                   cape-dabbrev)
                 cape-dabbrev-min-length 5))
 
-  (add-hook 'eglot-managed-mode-hook #'sthenno/capf-eglot)
+  ;; (add-hook 'eglot-managed-mode-hook #'sthenno/capf-eglot)
   (add-hook 'emacs-lisp-mode-hook #'sthenno/capf-elisp)
   (add-hook 'text-mode-hook #'sthenno/capf-text))
 
 (use-package corfu
   :ensure t
+  :demand t
   :hook (after-init . global-corfu-mode)
   :config
   (setopt corfu-auto t
           corfu-auto-delay 0.025
           corfu-auto-prefix 2
-          corfu-count 5
-          corfu-scroll-margin 3
+          corfu-count 10
+          corfu-scroll-margin 4
           corfu-min-width 20
           corfu-max-width 40
           corfu-separator ?\s
           corfu-preview-current 'insert
           corfu-cycle t
-          corfu-preselect 'directory)
+          ;; corfu-preselect 'directory
+          )
 
   (defun sthenno/corfu-eshell-setup ()
     "Use a more conservative Corfu setup in Eshell."
@@ -220,7 +219,7 @@
         candidates)))
 
   (add-hook 'eshell-mode-hook #'sthenno/corfu-eshell-setup)
-  (add-hook 'corfu-mode-hook #'sthenno/completion-style-corfu)
+  ;; (add-hook 'corfu-mode-hook #'sthenno/completion-style-corfu)
   (add-hook 'prog-mode-hook #'corfu-popupinfo-mode)
   (setopt corfu-sort-override-function #'sthenno/corfu-combined-sort
           corfu-popupinfo-delay '(0.025 . 0.05)
