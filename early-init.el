@@ -24,9 +24,7 @@
 (add-hook 'after-init-hook #'sthenno/restore-startup-settings)
 
 ;;; Loading
-(setq user-lisp-auto-scrape nil
-      load-path-filter-function #'load-path-filter-cache-directory-files
-      package-enable-at-startup t)
+(setq load-path-filter-function #'load-path-filter-cache-directory-files)
 
 ;;; Frames
 (setq default-frame-alist
