@@ -1,4 +1,4 @@
-;;; init-gpt.el --- AI assistance -*- lexical-binding: t; -*-
+;;; sthenno-hermit.el --- Hermit child-frame companion -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021-2026 Sthenno <sthenno@sthenno.com>
 
@@ -6,7 +6,7 @@
 
 ;;; Commentary:
 
-;; This file contains the interactive AI assistant configuration.
+;; This file contains the Hermit child-frame companion.
 
 ;;; Code:
 
@@ -20,25 +20,6 @@
 (require 'peg)
 (require 'subr-x)
 
-;;; LLM protocol
-(use-package gptel
-  :ensure t
-  :config (setopt gptel-default-mode #'org-mode
-                  gptel-org-branching-context t
-                  gptel-model 'sthenno
-                  gptel-backend (gptel-make-openai "local"
-                                  :protocol "http"
-                                  :host "192.168.100.207:8000"
-                                  :endpoint "/v1/chat/completions"
-                                  :stream t
-                                  :key "sk-tmp"
-                                  :models '(sthenno)))
-  :bind ((:map global-map
-               ("s-p" . gptel))
-         (:map gptel-mode-map
-               ("s-<return>" . gptel-send))))
-
-
 ;;; Options
 
 (defgroup sthenno/hermit nil
@@ -1168,4 +1149,5 @@ Invalid VALUE falls back to FALLBACK, or 0 when FALLBACK is not numeric."
               ((framep root)) ((frame-live-p root)))
     (iconify-frame root)))
 
-(provide 'init-gpt)
+(provide 'sthenno-hermit)
+;;; sthenno-hermit.el ends here

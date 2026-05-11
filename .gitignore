@@ -36,6 +36,10 @@ recentf
 /tree-sitter/
 /site-lisp/gptel-tools/
 /site-lisp/mcp.el/
+/site-lisp/denote/
+/site-lisp/denote-journal/
+/site-lisp/denote-org/
+/site-lisp/modus-themes/
 /projectile-bookmarks.eld
 /.lsp-session-v1
 /.swp

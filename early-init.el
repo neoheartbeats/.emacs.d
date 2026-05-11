@@ -10,38 +10,43 @@
 
 ;;; Code:
 
-;;; Temporarily maximize garbage collection limits during startup
-(setq-default gc-cons-threshold (* 512 1024 1024)
-              gc-cons-percentage 0.6)
-(add-hook 'after-init-hook #'(lambda ()
-                               (setq gc-cons-threshold (* 128 1024 1024)
-                                     gc-cons-percentage 0.1)))
+;;; Startup
+(setq gc-cons-threshold (* 512 1024 1024)
+      gc-cons-percentage 0.6
+      inhibit-message t)
 
-;;; Suppress messages during initialization for cleaner startup
-(setq-default inhibit-message t)
-(add-hook 'after-init-hook #'(lambda ()
-                               (setq inhibit-message nil)))
+(defun sthenno/restore-startup-settings ()
+  "Restore settings temporarily changed during startup."
+  (setq gc-cons-threshold (* 128 1024 1024)
+        gc-cons-percentage 0.1
+        inhibit-message nil))
 
-;;; Set default frame parameters for all frames
-(setq-default default-frame-alist '((tool-bar-lines . 0)
-                                    (vertical-scroll-bars)
-                                    (horizontal-scroll-bars)
-                                    (width . 120)
-                                    (height . 45)
-                                    (internal-border-width . 0)
-                                    (left-fringe . 0)
-                                    (right-fringe .0)
-                                    (undecorated . t)
-                                    (alpha-background . 0.60)
-                                    (ns-alpha-elements . (ns-alpha-default
-                                                          ns-alpha-fringe
-                                                          ns-alpha-box
-                                                          ns-alpha-stipple
-                                                          ns-alpha-relief
-                                                          ns-alpha-glyphs))))
-(setq-default initial-frame-alist default-frame-alist)
-(setq-default frame-resize-pixelwise t)
-(setq-default use-package-vc-prefer-newest t)
-(setq-default package-enable-at-startup t)
+(add-hook 'after-init-hook #'sthenno/restore-startup-settings)
+
+;;; Loading
+(setq user-lisp-auto-scrape nil
+      load-path-filter-function #'load-path-filter-cache-directory-files
+      package-enable-at-startup t)
+
+;;; Frames
+(setq default-frame-alist
+      '((tool-bar-lines . 0)
+        (vertical-scroll-bars)
+        (horizontal-scroll-bars)
+        (width . 120)
+        (height . 45)
+        (internal-border-width . 0)
+        (left-fringe . 0)
+        (right-fringe . 0)
+        (undecorated . t)
+        (alpha-background . 0.60)
+        (ns-alpha-elements . (ns-alpha-default
+                              ns-alpha-fringe
+                              ns-alpha-box
+                              ns-alpha-stipple
+                              ns-alpha-relief
+                              ns-alpha-glyphs))))
+(setq initial-frame-alist default-frame-alist
+      frame-resize-pixelwise t)
 
 (provide 'early-init)
