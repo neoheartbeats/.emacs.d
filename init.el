@@ -17,11 +17,12 @@
               remote-file-name-inhibit-locks t
               backup-inhibited t
               redisplay-skip-fontification-on-input t
-              frame-inhibit-implied-resize t
-              load-prefer-newer t
-              fill-column 100
+              ;; frame-inhibit-implied-resize t
+              fill-column 88
               mode-line-format ""
               header-line-format "")
+
+(setq-default custom-file (locate-user-emacs-file "custom.el"))
 
 (setq-default user-full-name user-login-name
               user-mail-address "sthenno@sthenno.com")
@@ -70,6 +71,8 @@
 (require 'init-gpt)
 
 ;;; Store customizations separately
-(setq-default custom-file (make-temp-file "_"))
+(if (file-exists-p custom-file)
+    (load-file custom-file)
+  (make-empty-file custom-file))
 
 (provide 'init)

@@ -47,14 +47,14 @@
                     :background 'unspecified :foreground "#535353" :box nil
                     :underline t :height 0.1)
 
-(let ((font "Pingfang SC"))
+(let ((font "PingFang SC"))
   (set-fontset-font t 'kana (font-spec :family font))
   (set-fontset-font t 'han (font-spec :family font))
   (set-fontset-font t 'cjk-misc (font-spec :family font)))
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
 (set-fontset-font t 'ucs (font-spec :family "SF Pro") nil 'prepend)
 
-(setopt global-hl-line-sticky-flag t
+(setopt global-hl-line-sticky-flag 'window
         x-stretch-cursor t
         cursor-type '(bar . 1))
 
@@ -63,7 +63,7 @@
 (blink-cursor-mode -1)
 
 (setopt display-line-numbers-widen t
-        display-line-numbers-width 4)
+        display-line-numbers-width 6)
 (add-hook 'prog-mode-hook #'(lambda ()
                               (display-line-numbers-mode 1)))
 (add-hook 'text-mode-hook #'(lambda ()

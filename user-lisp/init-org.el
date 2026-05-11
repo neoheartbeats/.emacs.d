@@ -40,7 +40,8 @@
                 org-src-ask-before-returning-to-edit-buffer nil
                 org-export-allow-bind-keywords t
                 org-babel-update-intermediate t
-                org-babel-load-languages '((emacs-lisp . t)
+                org-babel-load-languages '((dot . t)
+                                           (emacs-lisp . t)
                                            (python . t)
                                            (shell . t))))
 

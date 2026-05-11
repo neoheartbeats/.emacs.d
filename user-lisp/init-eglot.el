@@ -12,21 +12,18 @@
 
 
 ;;; Prefer the built-in Emacs 31 tree-sitter mode remapping support
-(setopt treesit-font-lock-level 4
+(setopt treesit-font-lock-level 3
         treesit-enabled-modes t
         treesit-auto-install-grammar 'ask)
 
 ;;; Initialize `eglot'
 (use-package eglot
-  :ensure nil
-  :defer t
   :hook ((LaTeX-mode tex-mode python-base-mode) . eglot-ensure))
 
 ;;; Python
 
 ;; The built-in `python' environment
 (use-package python
-  :ensure nil
   :init (setq-default python-indent-offset 4
                       python-indent-guess-indent-offset nil
                       python-indent-guess-indent-offset-verbose nil)
@@ -36,8 +33,8 @@
               ("C-x m"    . python-nav-if-name-main)))
 
 ;;; Ruff
-(use-package ruff-format
-  :ensure t
-  :hook (python-base-mode . ruff-format-on-save-mode))
+;; (use-package ruff-format
+;;   :ensure t
+;;   :hook (python-base-mode . ruff-format-on-save-mode))
 
 (provide 'init-eglot)

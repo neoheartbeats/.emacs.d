@@ -11,10 +11,10 @@
 ;;; Code:
 
 ;;; Temporarily maximize garbage collection limits during startup
-(setq-default gc-cons-threshold most-positive-fixnum
-              gc-cons-percentage 1.0)
+(setq-default gc-cons-threshold (* 512 1024 1024)
+              gc-cons-percentage 0.6)
 (add-hook 'after-init-hook #'(lambda ()
-                               (setq gc-cons-threshold (* 1024 1024)
+                               (setq gc-cons-threshold (* 128 1024 1024)
                                      gc-cons-percentage 0.1)))
 
 ;;; Suppress messages during initialization for cleaner startup
@@ -27,7 +27,7 @@
                                     (vertical-scroll-bars)
                                     (horizontal-scroll-bars)
                                     (width . 120)
-                                    (height . 55)
+                                    (height . 45)
                                     (internal-border-width . 0)
                                     (left-fringe . 0)
                                     (right-fringe .0)

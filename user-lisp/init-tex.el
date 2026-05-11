@@ -51,7 +51,6 @@
 ;;
 
 (use-package reftex
-  :ensure nil
   :config (setopt reftex-plug-into-AUCTeX t
                   reftex-use-multiple-selection-buffers t))
 
