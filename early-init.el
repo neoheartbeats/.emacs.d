@@ -24,7 +24,8 @@
 (add-hook 'after-init-hook #'sthenno/restore-startup-settings)
 
 ;;; Loading
-(setq load-path-filter-function #'load-path-filter-cache-directory-files)
+(setq package-enable-at-startup nil
+      load-path-filter-function #'load-path-filter-cache-directory-files)
 
 ;;; Frames
 (setq default-frame-alist

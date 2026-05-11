@@ -10,15 +10,15 @@
 
 ;;; Code:
 
-(eval-when-compile
+(eval-and-compile
   (require 'cl-lib)
   (require 'gv)
   (require 'peg)
   (require 'subr-x))
-(require 'cl-lib)
-(require 'gv)
-(require 'peg)
-(require 'subr-x)
+;; (require 'cl-lib)
+;; (require 'gv)
+;; (require 'peg)
+;; (require 'subr-x)
 
 ;;; Options
 
@@ -446,7 +446,8 @@ Invalid VALUE falls back to FALLBACK, or 0 when FALLBACK is not numeric."
                      (* (length render-lines) (max 1 (frame-char-height parent)))))
            (border (sthenno/hermit--n (sthenno/hermit--opt :bubble-border-width) 0))
            (outer (cons (+ (car content) (* 2 border)) (+ (cdr content) (* 2 border)))))
-      `(:plain-lines ,lines :render-lines ,render-lines :content-size ,content :outer-size ,outer))))
+      `(:plain-lines ,lines :render-lines ,render-lines :content-size ,content
+                     :outer-size ,outer))))
 
 (defun sthenno/hermit--pet-position (placement parent-size pet-size gap)
   (pcase-let
@@ -569,13 +570,13 @@ Invalid VALUE falls back to FALLBACK, or 0 when FALLBACK is not numeric."
               (size (sthenno/hermit--state :pet-size)))
     (sthenno/hermit--paint
      frame :image-buffer " *sthenno/hermit-image*"
-     sthenno/hermit-image-mode-map (lambda ()
-                                     (pcase-let ((`(,w . ,h) size))
-                                       (insert-image (apply #'create-image file nil nil
-                                                            `( :width ,w :height ,h
-                                                               :ascent 100
-                                                               ,@(when (sthenno/hermit--opt :image-mask)
-                                                                   `(:mask ,(sthenno/hermit--opt :image-mask)))))))))
+     sthenno/hermit-image-mode-map
+     (lambda ()
+       (pcase-let ((`(,w . ,h) size))
+         (insert-image (apply #'create-image file nil nil
+                              `(:width ,w :height ,h :ascent 100
+                                       ,@(when (sthenno/hermit--opt :image-mask)
+                                           `(:mask ,(sthenno/hermit--opt :image-mask)))))))))
     (modify-frame-parameters frame
                              (sthenno/hermit--pet-frame-parameters
                               (sthenno/hermit--parent-frame) size))
@@ -595,11 +596,8 @@ Invalid VALUE falls back to FALLBACK, or 0 when FALLBACK is not numeric."
                           new-frame)))
              (face 'sthenno/hermit-bubble-face))
         (sthenno/hermit--with-slots
-         ( :bubble text
-           :bubble-visible t
-           :bubble-content-size content
-           :bubble-outer-size
-           (plist-get layout :outer-size))
+         (:bubble text :bubble-visible t :bubble-content-size content :bubble-outer-size
+                  (plist-get layout :outer-size))
          (sthenno/hermit--paint frame :bubble-buffer
                                 " *sthenno/hermit-bubble*"
                                 sthenno/hermit-bubble-mode-map
@@ -1150,4 +1148,3 @@ Invalid VALUE falls back to FALLBACK, or 0 when FALLBACK is not numeric."
     (iconify-frame root)))
 
 (provide 'sthenno-hermit)
-;;; sthenno-hermit.el ends here

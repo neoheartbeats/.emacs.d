@@ -17,51 +17,34 @@
 
 
 ;;; Packages
-
 (setopt package-native-compile t
         package-install-upgrade-built-in t
-        package-archives '(("gnu-devel" . "https://elpa.gnu.org/devel/")
-                           ("gnu" . "https://elpa.gnu.org/packages/")
+        package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                            ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                            ("melpa" . "https://melpa.org/packages/"))
-        package-selected-packages '(auctex cape consult corfu gptel magit
-                                           marginalia vertico yasnippet))
+        package-selected-packages '(auctex consult corfu
+                                           denote denote-journal denote-org
+                                           gptel magit marginalia vertico yasnippet))
 
-(unless package--initialized
-  (package-initialize))
+(unless (bound-and-true-p package--activated)
+  (package-activate-all))
 
-(defun sthenno/package-missing-p ()
-  "Return non-nil when any selected package is missing."
-  (seq-some (lambda (package)
-              (not (package-installed-p package)))
-            package-selected-packages))
+(defun sthenno/package-missing-packages ()
+  "Return selected packages that are not installed."
+  (seq-remove #'package-installed-p package-selected-packages))
 
 (defun sthenno/package-install-selected ()
   "Install missing packages from `package-selected-packages'."
-  (when (sthenno/package-missing-p)
-    (unless package-archive-contents
-      (package-refresh-contents))
-    (package-install-selected-packages t)))
-
+  (let ((missing (sthenno/package-missing-packages)))
+    (when missing
+      (unless package--initialized
+        (package-initialize t))
+      (unless (seq-every-p (lambda (package)
+                             (assq package package-archive-contents))
+                           missing)
+        (package-refresh-contents))
+      (package-install-selected-packages t))))
 (sthenno/package-install-selected)
-
-(defconst sthenno/site-lisp-directory
-  (locate-user-emacs-file "site-lisp/")
-  "Directory for manually managed package checkouts.")
-
-(defun sthenno/site-lisp (directory)
-  "Return DIRECTORY inside `sthenno/site-lisp-directory'."
-  (expand-file-name directory sthenno/site-lisp-directory))
-
-(defun sthenno/add-site-lisp (directory)
-  "Add DIRECTORY inside `sthenno/site-lisp-directory' to `load-path'."
-  (let ((path (sthenno/site-lisp directory)))
-    (add-to-list 'load-path path)
-    path))
-
-(add-to-list 'custom-theme-load-path (sthenno/add-site-lisp "modus-themes"))
-(dolist (directory '("denote" "denote-org" "denote-journal"))
-  (sthenno/add-site-lisp directory))
 
 (defun sthenno/after-init (function)
   "Run FUNCTION after startup, or immediately if startup is done."
@@ -71,7 +54,6 @@
 
 
 ;;; Core startup and UI state
-
 (setopt save-silently t
         remote-file-name-inhibit-locks t
         backup-inhibited t
@@ -86,20 +68,15 @@
         inhibit-startup-echo-area-message user-login-name
         inhibit-startup-buffer-menu t
         inhibit-default-init t
-        initial-scratch-message "Hi!")
-
-(setopt menu-bar-mode nil
+        initial-scratch-message "Hi!"
+        menu-bar-mode nil
         scroll-bar-mode nil
         tool-bar-mode nil
         line-number-mode nil)
-
 (define-advice display-startup-echo-area-message
     (:override () sthenno-startup-message)
   "Display a custom startup message in the echo area."
-  (minibuffer-message
-   " %s"
-   (propertize "Funding for this program was made possible by viewers like you."
-               'face 'default)))
+  (message "Funding for this program was made possible by viewers like you."))
 
 
 ;;; System behavior
@@ -188,19 +165,18 @@
 
 (eval-and-compile
   (require-theme 'modus-themes))
-(setopt modus-themes-common-palette-overrides
-        `((fg-line-number-active fg-dim)
-          (bg-line-number-active bg-hl-line)
-          (fg-line-number-inactive "#535353")
-          (bg-line-number-inactive unspecified)
-          (underline-link border)
-          (underline-link-visited border)
-          (underline-link-symbolic border)
-          (fg-link unspecified)
-          (fg-link-visited unspecified)
-          (prose-todo info)
-          (prose-done "#535353")
-          ,@modus-themes-preset-overrides-faint))
+(setopt modus-themes-common-palette-overrides `((fg-line-number-active fg-dim)
+                                                (bg-line-number-active bg-hl-line)
+                                                (fg-line-number-inactive "#535353")
+                                                (bg-line-number-inactive unspecified)
+                                                (underline-link border)
+                                                (underline-link-visited border)
+                                                (underline-link-symbolic border)
+                                                (fg-link unspecified)
+                                                (fg-link-visited unspecified)
+                                                (prose-todo info)
+                                                (prose-done "#535353")
+                                                ,@modus-themes-preset-overrides-faint))
 (mapc #'disable-theme custom-enabled-themes)
 (load-theme 'modus-vivendi :no-confirm)
 
@@ -210,8 +186,7 @@
 (set-face-attribute 'bold nil :weight 'regular)
 (set-face-attribute 'italic nil :slant 'normal)
 (set-face-attribute 'show-paren-match nil
-                    :foreground "green"
-                    :box '(:line-width (-1 . -1) :style released-button))
+                    :foreground "green" :box '(:line-width (-1 . -1)))
 (dolist (face '(mode-line mode-line-active mode-line-inactive))
   (set-face-attribute face nil
                       :background 'unspecified :foreground "#535353" :box nil
@@ -338,19 +313,16 @@
 
 
 ;;; Projects
-
 (autoload 'magit-status "magit" nil t)
 (keymap-global-set "C-x g" #'magit-status)
 (with-eval-after-load 'magit
   (setopt magit-diff-refine-hunk t))
-
 (keymap-global-set "M-/" #'xref-find-references)
 (with-eval-after-load 'xref
   (setopt xref-search-program 'ripgrep))
 
 
 ;;; Templates
-
 (require 'yasnippet)
 (setopt yas-triggers-in-field t)
 (sthenno/after-init #'yas-global-mode)
@@ -359,7 +331,7 @@
 ;;; Completion and minibuffer
 
 (setopt completion-cycle-threshold nil
-        text-mode-ispell-word-completion nil
+        text-mode-ispell-word-completion 'completion-at-point
         tab-always-indent 'complete
         echo-keystrokes 0.125
         resize-mini-windows 'grow-only
@@ -374,7 +346,7 @@
         completions-sort 'historical
         completion-eager-display 'auto
         completion-eager-update 'auto
-        completion-styles '(flex substring basic)
+        completion-styles '(basic flex)
         completion-ignore-case nil
         read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t
@@ -382,8 +354,7 @@
 
 (require 'vertico)
 (require 'vertico-directory)
-(setopt vertico-count 12
-        vertico-resize t
+(setopt vertico-resize t
         vertico-scroll-margin 4
         vertico-cycle nil
         vertico-count-format (cons "[ %-6s ] " "%s of %s"))
@@ -411,16 +382,13 @@
         register-preview-function #'consult-register-format
         xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
-(keymap-substitute project-prefix-map
-                   #'project-find-regexp #'consult-ripgrep)
+(keymap-substitute project-prefix-map #'project-find-regexp #'consult-ripgrep)
 
 (require 'dabbrev)
-
 (defun sthenno/dabbrev-elisp ()
   "Tune `dabbrev' for `emacs-lisp-mode'."
   (setopt-local dabbrev-case-fold-search nil
                 dabbrev-case-replace nil))
-
 (setopt dabbrev-case-distinction 'case-replace
         dabbrev-case-replace 'case-replace
         dabbrev-case-fold-search nil
@@ -430,55 +398,26 @@
 (dolist (mode '(authinfo-mode doc-view-mode pdf-view-mode tags-table-mode))
   (add-to-list 'dabbrev-ignored-buffer-modes mode))
 
-(require 'cape)
-
-(defun sthenno/capf-elisp ()
-  "Compose CAPFs for `emacs-lisp-mode'."
-  (setq-local completion-at-point-functions
-              (list (cape-capf-super #'elisp-completion-at-point
-                                     #'cape-dabbrev)
-                    #'cape-file))
-  (setopt-local cape-dabbrev-min-length 2))
-
-(defun sthenno/capf-text ()
-  "Compose CAPFs for text-oriented buffers."
-  (setq-local completion-at-point-functions
-              (list (cape-capf-super
-                     (cape-capf-prefix-length #'cape-dict 4)
-                     #'cape-dabbrev)
-                    #'cape-file))
-  (setopt-local cape-dabbrev-min-length 5))
-
-(setopt cape-dict-case-fold t
-        cape-dict-case-replace t
-        cape-dict-limit 25)
-(add-hook 'emacs-lisp-mode-hook #'sthenno/capf-elisp)
-(add-hook 'text-mode-hook #'sthenno/capf-text)
+(setopt ispell-program-name "aspell"
+        ispell-save-corrections-as-abbrevs t
+        flyspell-delay-use-timer t
+        flyspell-mode t
+        dictionary-server nil)
+(keymap-set org-mode-map "M-." #'dictionary-lookup-definition)
 
 (require 'corfu)
 (require 'corfu-history)
 (require 'corfu-popupinfo)
-
 (defun sthenno/corfu-eshell-setup ()
   "Use a more conservative Corfu setup in Eshell."
   (setopt-local corfu-auto nil)
   (setopt corfu-mode t)
   (keymap-set corfu-map "RET" #'corfu-send))
-
 (setopt corfu-auto t
-        corfu-auto-delay 0.025
+        corfu-auto-delay 0.05
         corfu-auto-prefix 2
-        corfu-count 10
-        corfu-scroll-margin 4
-        corfu-min-width 20
-        corfu-max-width 40
-        corfu-separator ?\s
         corfu-preview-current 'insert
-        corfu-cycle t
-        corfu-popupinfo-delay '(0.025 . 0.05)
-        corfu-popupinfo-hide nil
-        corfu-popupinfo-max-width 80
-        corfu-popupinfo-min-width 20)
+        corfu-popupinfo-delay '(0.025 . 0.05))
 (keymap-set corfu-map "<down>" #'corfu-next)
 (keymap-set corfu-map "TAB" #'corfu-complete)
 (keymap-set corfu-map "<up>" #'corfu-previous)
@@ -495,53 +434,17 @@
 
 
 ;;; Languages
-
-(setopt treesit-font-lock-level 3
-        treesit-enabled-modes t
+(setopt treesit-enabled-modes t
         treesit-auto-install-grammar 'ask)
-
 (dolist (hook '(LaTeX-mode-hook tex-mode-hook python-base-mode-hook))
   (add-hook hook #'eglot-ensure))
-
 (with-eval-after-load 'python
   (setopt python-indent-offset 4
           python-indent-guess-indent-offset nil
           python-indent-guess-indent-offset-verbose nil))
 
 
-;;; TeX
-
-(defun sthenno/latexindent-buffer ()
-  "Format the current TeX buffer with `latexindent' when available."
-  (interactive)
-  (when (and (executable-find "latexindent")
-             (derived-mode-p 'latex-mode 'LaTeX-mode))
-    (let ((orig (point)))
-      (shell-command-on-region (point-min)
-                               (point-max)
-                               "latexindent -g /tmp/latexindent.log"
-                               (current-buffer) t)
-      (goto-char orig))))
-
-(defun sthenno/latexindent-on-save ()
-  "Format the current LaTeX buffer before saving."
-  (add-hook 'before-save-hook #'sthenno/latexindent-buffer nil t))
-
-(add-hook 'LaTeX-mode-hook #'turn-on-reftex)
-(add-hook 'LaTeX-mode-hook #'sthenno/latexindent-on-save)
-
-(with-eval-after-load 'tex
-  (setopt TeX-auto-save t
-          TeX-parse-self t
-          TeX-save-query nil))
-
-(with-eval-after-load 'reftex
-  (setopt reftex-plug-into-AUCTeX t
-          reftex-use-multiple-selection-buffers t))
-
-
 ;;; AI and Hermit
-
 (require 'gptel)
 (keymap-global-set "s-p" #'gptel)
 (keymap-set gptel-mode-map "s-<return>" #'gptel-send)
@@ -555,12 +458,10 @@
                         :stream t
                         :key "sk-tmp"
                         :models '(sthenno)))
-
 (require 'sthenno-hermit)
 
 
 ;;; Customizations
-
 (when (file-exists-p custom-file)
   (load custom-file :noerror :nomessage))
 
