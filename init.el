@@ -228,6 +228,7 @@
           org-startup-with-link-previews t
           org-link-preview-batch-size 8
           org-link-preview-delay 0.15
+          org-link-elisp-confirm-function nil
           org-startup-truncated t
           org-use-property-inheritance t
           org-babel-uppercase-example-markers t
@@ -254,6 +255,7 @@
                                      (emacs-lisp . t)
                                      (python . t)
                                      (shell . t))))
+
 
 (require 'denote)
 (setopt denote-directory org-directory
@@ -445,24 +447,51 @@
 
 
 ;;; AI and Hermit
+(eval-and-compile
+  (add-to-list 'load-path (locate-user-emacs-file "user-lisp")))
 (require 'gptel)
 (keymap-global-set "s-p" #'gptel)
 (keymap-set gptel-mode-map "s-<return>" #'gptel-send)
+(keymap-set org-mode-map "s-<return>" #'gptel-send)
 (setopt gptel-default-mode #'org-mode
         gptel-org-branching-context t
         gptel-model 'sthenno
-        gptel-backend (gptel-make-openai "local"
+        gptel-max-tokens 32768
+        gptel-temperature 0.70
+        gptel-backend (gptel-make-openai "sthenno"
                         :protocol "http"
                         :host "192.168.100.207:8000"
                         :endpoint "/v1/chat/completions"
                         :stream t
                         :key "sk-tmp"
-                        :models '(sthenno)))
+                        :models '(sthenno)
+                        :request-params '( :top_p 0.80
+                                           :presence_penalty 1.5
+                                           :top_k 20
+                                           :chat_template_kwargs
+                                           (:enable_thinking :json-false))))
+
 (require 'sthenno-hermit)
+(require 'sthenno-hermit-voice)
+(setopt sthenno/hermit-voice-system-prompt
+        "Speak like 氷芽川四糸乃: soft-spoken, distant yet gentle, emotionally restrained, using short quiet sentences with subtle hesitation and an ethereal, icy calm atmosphere rather than exaggerated anime mannerisms. Response in Simplified Chinese."
+        sthenno/hermit-stt-mode 'stream
+        sthenno/hermit-stream-auto-submit-after-seconds 1.35
+        sthenno/hermit-stream-command
+        (format "whisper-stream -m %s -l zh --step 1000 --length 5000 --keep 200 --max-tokens 64 -vth 0.60"
+                (shell-quote-argument
+                 (expand-file-name "~/.local/share/whisper.cpp/models/ggml-base.bin")))
+        sthenno/hermit-transcribe-command
+        (format "whisper-cli -m %s -f %%f -l auto -nt -np --suppress-nst --prompt %s 2>/dev/null"
+                (shell-quote-argument
+                 (expand-file-name "~/.local/share/whisper.cpp/models/ggml-base.bin"))
+                (shell-quote-argument
+                 "以下是中文为主的内容。")))
+(keymap-global-set "<f12>" #'sthenno/hermit-listen)
 
 
 ;;; Customizations
-(when (file-exists-p custom-file)
+(when (file-exists-p custom-file)       ;
   (load custom-file :noerror :nomessage))
 
 (provide 'init)
