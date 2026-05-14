@@ -11,41 +11,32 @@
 ;;; Code:
 
 ;;; Startup
-(setq gc-cons-threshold (* 512 1024 1024)
-      gc-cons-percentage 0.6
-      inhibit-message t)
-
-(defun sthenno/restore-startup-settings ()
-  "Restore settings temporarily changed during startup."
-  (setq gc-cons-threshold (* 128 1024 1024)
-        gc-cons-percentage 0.1
-        inhibit-message nil))
-
-(add-hook 'after-init-hook #'sthenno/restore-startup-settings)
+(setq-default gc-cons-threshold (* 512 1024 1024)
+              gc-cons-percentage 1.0)
+(add-hook 'emacs-startup-hook #'(lambda ()
+                                  (setq gc-cons-threshold (* 128 1024 1024)
+                                        gc-cons-percentage 0.1)))
 
 ;;; Loading
-(setq package-enable-at-startup nil
-      load-path-filter-function #'load-path-filter-cache-directory-files)
+(setq-default load-path-filter-function #'load-path-filter-cache-directory-files)
 
 ;;; Frames
-(setq default-frame-alist
-      '((tool-bar-lines . 0)
-        (vertical-scroll-bars)
-        (horizontal-scroll-bars)
-        (width . 120)
-        (height . 45)
-        (internal-border-width . 0)
-        (left-fringe . 0)
-        (right-fringe . 0)
-        (undecorated . t)
-        (alpha-background . 0.60)
-        (ns-alpha-elements . (ns-alpha-default
-                              ns-alpha-fringe
-                              ns-alpha-box
-                              ns-alpha-stipple
-                              ns-alpha-relief
-                              ns-alpha-glyphs))))
-(setq initial-frame-alist default-frame-alist
-      frame-resize-pixelwise t)
+(setq-default default-frame-alist
+              '((tool-bar-lines . 0)
+                (vertical-scroll-bars)
+                (horizontal-scroll-bars)
+                (width . 140)
+                (height . 55)
+                (internal-border-width . 0)
+                (left-fringe . 0)
+                (right-fringe . 0)
+                (undecorated . t)
+                (alpha-background . 0.60)
+                (ns-alpha-elements . (ns-alpha-default ns-alpha-fringe
+                                                       ns-alpha-box ns-alpha-stipple
+                                                       ns-alpha-relief ns-alpha-glyphs))))
+(setq-default initial-frame-alist default-frame-alist)
+(setq-default frame-resize-pixelwise t)
 
 (provide 'early-init)
+

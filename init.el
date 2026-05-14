@@ -6,14 +6,11 @@
 
 ;;; Commentary:
 
-;; Main Emacs configuration.  Personal library code lives in user-lisp/.
+;; Main Emacs configuration. Personal library code lives in user-lisp/.
 
 ;;; Code:
 
-(require 'package)
 (require 'seq)
-
-(autoload 'dired-hide-details-mode "dired" nil t)
 
 
 ;;; Packages
@@ -22,29 +19,8 @@
         package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                            ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                            ("melpa" . "https://melpa.org/packages/"))
-        package-selected-packages '(auctex consult corfu
-                                           denote denote-journal denote-org
-                                           gptel magit marginalia vertico yasnippet))
-
-(unless (bound-and-true-p package--activated)
-  (package-activate-all))
-
-(defun sthenno/package-missing-packages ()
-  "Return selected packages that are not installed."
-  (seq-remove #'package-installed-p package-selected-packages))
-
-(defun sthenno/package-install-selected ()
-  "Install missing packages from `package-selected-packages'."
-  (let ((missing (sthenno/package-missing-packages)))
-    (when missing
-      (unless package--initialized
-        (package-initialize t))
-      (unless (seq-every-p (lambda (package)
-                             (assq package package-archive-contents))
-                           missing)
-        (package-refresh-contents))
-      (package-install-selected-packages t))))
-(sthenno/package-install-selected)
+        package-selected-packages '(auctex consult corfu denote denote-journal denote-org
+                                           gptel magit marginalia mcp vertico yasnippet))
 
 (defun sthenno/after-init (function)
   "Run FUNCTION after startup, or immediately if startup is done."
@@ -58,7 +34,7 @@
         remote-file-name-inhibit-locks t
         backup-inhibited t
         redisplay-skip-fontification-on-input t
-        fill-column 88
+        fill-column 100
         mode-line-format ""
         header-line-format ""
         custom-file (locate-user-emacs-file "custom.el")
@@ -79,8 +55,7 @@
   (message "Funding for this program was made possible by viewers like you."))
 
 
-;;; System behavior
-
+;;; System essentials
 (setopt mac-option-modifier 'meta
         mac-command-modifier 'super
         switch-to-prev-buffer-skip 0
@@ -89,7 +64,6 @@
         recentf-autosave-interval 300
         recentf-show-messages nil
         recentf-suppress-open-file-help t
-        electric-indent-actions '(yank before-save)
         elisp-fontify-semantically t
         ring-bell-function #'ignore
         use-short-answers t
@@ -106,6 +80,14 @@
         save-interprogram-paste-before-kill t
         abbrev-mode t)
 
+(defun sthenno/frame-recenter (&optional frame)
+  "Center FRAME on the screen."
+  (interactive)
+  (unless (eq 'maximised (frame-parameter nil 'fullscreen))
+    (modify-frame-parameters
+     frame '((user-position . t) (top . 0.5) (left . 0.5)))))
+(keymap-global-set "<f12>" #'sthenno/frame-recenter)
+
 (require 'savehist)
 (setopt save-place-mode t
         savehist-mode t
@@ -113,8 +95,6 @@
         electric-pair-mode t
         electric-indent-mode t
         delete-selection-mode t)
-
-(add-hook 'prog-mode-hook #'turn-on-auto-revert-mode)
 
 (keymap-global-set "s-q" #'kill-emacs)
 (keymap-global-set "s-w" #'kill-current-buffer)
@@ -126,15 +106,11 @@
 (keymap-global-set "M-<down>" #'forward-paragraph)
 (keymap-global-set "M-<up>" #'backward-paragraph)
 
-(defun sthenno/delete-current-line ()
-  "Delete the current line."
-  (interactive)
-  (delete-region (line-beginning-position) (line-beginning-position 2)))
-
 (defun sthenno/delete-to-beginning-of-line ()
   "Delete text from point to the beginning of the current line."
   (interactive)
   (delete-region (line-beginning-position) (point)))
+(keymap-global-set "s-<backspace>" #'sthenno/delete-to-beginning-of-line)
 
 (defun sthenno/lisp-indent-buffer ()
   "Indent the current Lisp buffer."
@@ -144,13 +120,12 @@
       (widen)
       (let ((inhibit-message t))
         (lisp-indent-region (point-min) (point-max))))))
-
-(keymap-global-set "C-<backspace>" #'sthenno/delete-current-line)
-(keymap-global-set "s-<backspace>" #'sthenno/delete-to-beginning-of-line)
-(keymap-set emacs-lisp-mode-map "C-c C-c" #'emacs-lisp-native-compile-and-load)
 (keymap-set emacs-lisp-mode-map "s-i" #'sthenno/lisp-indent-buffer)
+(keymap-set emacs-lisp-mode-map "C-c C-c" #'emacs-lisp-byte-compile-and-load)
+(keymap-set emacs-lisp-mode-map "s-k" #'kill-sexp)
+(keymap-set emacs-lisp-mode-map "M-<backspace>" #'backward-kill-sexp)
 
-(add-hook 'dired-mode-hook #'dired-hide-details-mode)
+;;; Dired
 (with-eval-after-load 'dired
   (setopt dired-no-confirm t
           dired-use-ls-dired t
@@ -158,14 +133,14 @@
           dired-hide-details-hide-absolute-location t
           dired-check-symlinks nil
           dired-recursive-deletes 'always
-          dired-movement-style 'cycle))
+          dired-movement-style 'cycle)
+  (add-hook 'dired-mode-hook #'dired-hide-details-mode))
 
 
 ;;; Appearance
-
 (eval-and-compile
   (require-theme 'modus-themes))
-(setopt modus-themes-common-palette-overrides `((fg-line-number-active fg-dim)
+(setopt modus-themes-common-palette-overrides '((fg-line-number-active fg-dim)
                                                 (bg-line-number-active bg-hl-line)
                                                 (fg-line-number-inactive "#535353")
                                                 (bg-line-number-inactive unspecified)
@@ -174,52 +149,49 @@
                                                 (underline-link-symbolic border)
                                                 (fg-link unspecified)
                                                 (fg-link-visited unspecified)
+                                                (fg-paren-match fg-main)
+                                                (bg-paren-match unspecified)
                                                 (prose-todo info)
                                                 (prose-done "#535353")
                                                 ,@modus-themes-preset-overrides-faint))
-(mapc #'disable-theme custom-enabled-themes)
 (load-theme 'modus-vivendi :no-confirm)
 
-(set-face-attribute 'default nil :family "Tempestypes" :height 140 :weight 'light)
-(set-face-attribute 'region nil :extend nil)
+(set-face-attribute 'default nil :family "Tempestypes" :height 150)
+(set-face-attribute 'region nil :extend t :foreground 'unspecified)
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
-(set-face-attribute 'bold nil :weight 'regular)
 (set-face-attribute 'italic nil :slant 'normal)
 (set-face-attribute 'show-paren-match nil
-                    :foreground "green" :box '(:line-width (-1 . -1)))
+                    :background 'unspecified :foreground "green" :box '(:line-width (-1 . -1)))
 (dolist (face '(mode-line mode-line-active mode-line-inactive))
   (set-face-attribute face nil
                       :background 'unspecified :foreground "#535353" :box nil
                       :underline t :height 0.1))
 
-(let ((font "PingFang SC"))
+(let ((font "LXGW Marker Gothic"))
   (dolist (charset '(kana han cjk-misc))
     (set-fontset-font t charset (font-spec :family font))))
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
 (set-fontset-font t 'ucs (font-spec :family "SF Pro") nil 'prepend)
 
 (setopt global-hl-line-sticky-flag 'window
+        global-hl-line-mode t
+        global-display-fill-column-indicator-mode t
         x-stretch-cursor t
         cursor-type '(bar . 1)
         display-line-numbers-widen t
         display-line-numbers-width 6
         display-fill-column-indicator-warning t
-        show-paren-delay 0.05
-        show-paren-when-point-inside-paren t
+        show-paren-delay 0.0125
         show-paren-context-when-offscreen t
-        show-paren-not-in-comments-or-strings 'on-mismatch
-        default-input-method nil)
-
-(setopt global-hl-line-mode t
-        global-display-fill-column-indicator-mode t
         show-paren-mode t
+        show-paren-not-in-comments-or-strings 'on-mismatch
+        default-input-method nil
         blink-cursor-mode nil)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'text-mode-hook #'display-line-numbers-mode)
 
 
 ;;; Org and notes
-
 (require 'org)
 (let ((directory "/Users/sthenno/uncodified/"))
   (setopt org-directory directory
@@ -255,7 +227,6 @@
                                      (emacs-lisp . t)
                                      (python . t)
                                      (shell . t))))
-
 
 (require 'denote)
 (setopt denote-directory org-directory
@@ -331,12 +302,11 @@
 
 
 ;;; Completion and minibuffer
-
 (setopt completion-cycle-threshold nil
         text-mode-ispell-word-completion 'completion-at-point
         tab-always-indent 'complete
         echo-keystrokes 0.125
-        resize-mini-windows 'grow-only
+        resize-mini-windows t
         help-window-select t
         read-minibuffer-restore-windows nil
         read-extended-command-predicate #'command-completion-default-include-p
@@ -403,9 +373,7 @@
 (setopt ispell-program-name "aspell"
         ispell-save-corrections-as-abbrevs t
         flyspell-delay-use-timer t
-        flyspell-mode t
-        dictionary-server nil)
-(keymap-set org-mode-map "M-." #'dictionary-lookup-definition)
+        flyspell-mode t)
 
 (require 'corfu)
 (require 'corfu-history)
@@ -446,16 +414,16 @@
           python-indent-guess-indent-offset-verbose nil))
 
 
-;;; AI and Hermit
-(eval-and-compile
-  (add-to-list 'load-path (locate-user-emacs-file "user-lisp")))
+;;; AI
 (require 'gptel)
+(require 'gptel-integrations)
 (keymap-global-set "s-p" #'gptel)
 (keymap-set gptel-mode-map "s-<return>" #'gptel-send)
 (keymap-set org-mode-map "s-<return>" #'gptel-send)
 (setopt gptel-default-mode #'org-mode
         gptel-org-branching-context t
-        gptel-model 'sthenno
+        gptel-track-media t
+        gptel-directives '((default . "Speak like 氷芽川四糸乃: soft-spoken, distant yet gentle, emotionally restrained, using short quiet sentences with subtle hesitation and an ethereal, icy calm atmosphere rather than exaggerated anime mannerisms."))
         gptel-max-tokens 32768
         gptel-temperature 0.70
         gptel-backend (gptel-make-openai "sthenno"
@@ -465,33 +433,39 @@
                         :stream t
                         :key "sk-tmp"
                         :models '(sthenno)
-                        :request-params '( :top_p 0.80
-                                           :presence_penalty 1.5
-                                           :top_k 20
-                                           :chat_template_kwargs
-                                           (:enable_thinking :json-false))))
+                        :request-params '(:top_p 0.80 :presence_penalty 1.5 :top_k 20
+                                                 :chat_template_kwargs (:enable_thinking :json-false)))
+        gptel-model 'sthenno)
+
+(require 'mcp-hub)
+(setopt mcp-hub-servers
+        '(("filesystem" . (:command "npx" 
+                                    :args ("-y" "@modelcontextprotocol/server-filesystem")
+                                    :roots ("/Users/sthenno/")))
+          ("fetch" . (:command "uvx" :args ("mcp-server-fetch")))))
+(mcp-hub-start-all-server)
 
 (require 'sthenno-hermit)
-(require 'sthenno-hermit-voice)
-(setopt sthenno/hermit-voice-system-prompt
-        "Speak like 氷芽川四糸乃: soft-spoken, distant yet gentle, emotionally restrained, using short quiet sentences with subtle hesitation and an ethereal, icy calm atmosphere rather than exaggerated anime mannerisms. Response in Simplified Chinese."
-        sthenno/hermit-stt-mode 'stream
-        sthenno/hermit-stream-auto-submit-after-seconds 1.35
-        sthenno/hermit-stream-command
-        (format "whisper-stream -m %s -l zh --step 1000 --length 5000 --keep 200 --max-tokens 64 -vth 0.60"
-                (shell-quote-argument
-                 (expand-file-name "~/.local/share/whisper.cpp/models/ggml-base.bin")))
-        sthenno/hermit-transcribe-command
-        (format "whisper-cli -m %s -f %%f -l auto -nt -np --suppress-nst --prompt %s 2>/dev/null"
-                (shell-quote-argument
-                 (expand-file-name "~/.local/share/whisper.cpp/models/ggml-base.bin"))
-                (shell-quote-argument
-                 "以下是中文为主的内容。")))
-(keymap-global-set "<f12>" #'sthenno/hermit-listen)
+;; (require 'sthenno-hermit-voice)
+;; (setopt sthenno/hermit-voice-system-prompt
+;;         "Speak like 氷芽川四糸乃: soft-spoken, distant yet gentle, emotionally restrained, using short quiet sentences with subtle hesitation and an ethereal, icy calm atmosphere rather than exaggerated anime mannerisms. Response in Simplified Chinese."
+;;         sthenno/hermit-stt-mode 'stream
+;;         sthenno/hermit-stream-auto-submit-after-seconds 1.35
+;;         sthenno/hermit-stream-command
+;;         (format "whisper-stream -m %s -l zh --step 1000 --length 5000 --keep 200 --max-tokens 64 -vth 0.60"
+;;                 (shell-quote-argument
+;;                  (expand-file-name "~/.local/share/whisper.cpp/models/ggml-base.bin")))
+;;         sthenno/hermit-transcribe-command
+;;         (format "whisper-cli -m %s -f %%f -l auto -nt -np --suppress-nst --prompt %s 2>/dev/null"
+;;                 (shell-quote-argument
+;;                  (expand-file-name "~/.local/share/whisper.cpp/models/ggml-base.bin"))
+;;                 (shell-quote-argument
+;;                  "以下是中文为主的内容。")))
+;; (keymap-global-set "<f12>" #'sthenno/hermit-listen)
 
 
 ;;; Customizations
-(when (file-exists-p custom-file)       ;
+(when (file-exists-p custom-file)
   (load custom-file :noerror :nomessage))
 
 (provide 'init)
