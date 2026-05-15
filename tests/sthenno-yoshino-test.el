@@ -88,4 +88,32 @@
       (should (alist-get 'buffer (plist-get (sthenno-yoshino-workspace)
                                             :attention))))))
 
+(ert-deftest sthenno-yoshino-registers-default-skills ()
+  (sthenno-yoshino-reset-workspace)
+  (sthenno-yoshino-register-default-skills)
+  (should (gethash "sthenno-yoshino-observe" (sthenno-yoshino-skills)))
+  (should (gethash "sthenno-yoshino-write-diary" (sthenno-yoshino-skills)))
+  (should (< 4 (hash-table-count (sthenno-yoshino-skills)))))
+
+(ert-deftest sthenno-yoshino-mode-does-not-idle-by-default ()
+  (let ((sthenno-yoshino-idle-interval nil))
+    (unwind-protect
+        (progn
+          (sthenno-yoshino-mode 1)
+          (should sthenno-yoshino-mode)
+          (should-not sthenno-yoshino--idle-timer)
+          (should (gethash "sthenno-yoshino-observe"
+                           (sthenno-yoshino-skills))))
+      (sthenno-yoshino-mode -1))))
+
+(ert-deftest sthenno-yoshino-open-workspace-renders-state ()
+  (sthenno-yoshino-reset-workspace)
+  (let ((buffer (sthenno-yoshino-open-workspace)))
+    (unwind-protect
+        (with-current-buffer buffer
+          (should (search-forward "Yoshino Workspace" nil t))
+          (should (search-forward ":self" nil t)))
+      (when (buffer-live-p buffer)
+        (kill-buffer buffer)))))
+
 ;;; sthenno-yoshino-test.el ends here

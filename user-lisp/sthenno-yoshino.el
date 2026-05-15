@@ -15,10 +15,13 @@
 (eval-and-compile
   (require 'cl-lib)
   (require 'json)
+  (require 'seq)
   (require 'subr-x))
 
 (require 'thingatpt)
 (require 'project nil t)
+
+(declare-function gptel-request "gptel")
 
 ;;; Options
 
@@ -65,10 +68,19 @@
   :type 'string
   :group 'sthenno-yoshino)
 
+(defcustom sthenno-yoshino-idle-interval nil
+  "Seconds of idle time before Yoshino runs a step.
+Nil means `sthenno-yoshino-mode' is manual and never schedules autonomous
+steps."
+  :type '(choice (const :tag "Manual only" nil)
+                 number)
+  :group 'sthenno-yoshino)
+
 ;;; State
 
 (defvar sthenno-yoshino--workspace nil)
 (defvar sthenno-yoshino--idle-step nil)
+(defvar sthenno-yoshino--idle-timer nil)
 (defvar sthenno-yoshino--request-active nil)
 
 (defun sthenno-yoshino--fresh-workspace ()
@@ -230,7 +242,9 @@
 
 (defun sthenno-yoshino--alist-get (key alist &optional default)
   "Return KEY from ALIST, or DEFAULT."
-  (let ((cell (assq key alist)))
+  (let ((cell (or (assq key alist)
+                  (and (symbolp key)
+                       (assoc (symbol-name key) alist)))))
     (if cell (cdr cell) default)))
 
 (defun sthenno-yoshino--string-result (value)
@@ -277,6 +291,85 @@
     (when (called-interactively-p 'interactive)
       (message "%S" observation))
     observation))
+
+;;; Native exploration skills
+
+;;;###autoload
+(defun sthenno-yoshino-discover-symbol (symbol)
+  "Return native Emacs metadata about SYMBOL."
+  (interactive
+   (list (intern (completing-read "Symbol: " obarray nil t
+                                  (sthenno-yoshino--symbol-near-point)))))
+  (let ((metadata
+         `((symbol . ,(symbol-name symbol))
+           (fboundp . ,(fboundp symbol))
+           (boundp . ,(boundp symbol))
+           (commandp . ,(commandp symbol))
+           (function-doc . ,(or (ignore-errors (documentation symbol t)) ""))
+           (variable-doc . ,(or (ignore-errors
+                                  (documentation-property
+                                   symbol 'variable-documentation t))
+                                ""))
+           (function-file . ,(or (ignore-errors (symbol-file symbol 'defun)) ""))
+           (variable-file . ,(or (ignore-errors (symbol-file symbol 'defvar)) "")))))
+    (when (called-interactively-p 'interactive)
+      (message "%S" metadata))
+    metadata))
+
+(defun sthenno-yoshino-describe-symbol (symbol)
+  "Describe SYMBOL as a Yoshino skill result."
+  (sthenno-yoshino-discover-symbol symbol))
+
+(defun sthenno-yoshino-apropos-symbols (pattern)
+  "Return up to 40 symbols matching PATTERN."
+  (let* ((symbols (and (stringp pattern)
+                       (not (string-empty-p pattern))
+                       (ignore-errors (apropos-internal pattern))))
+         (names (mapcar #'symbol-name
+                        (seq-take (or symbols nil)
+                                  (min 40 (length (or symbols nil)))))))
+    (vconcat names)))
+
+(defun sthenno-yoshino-list-buffers ()
+  "Return a compact list of live user buffers."
+  (vconcat
+   (mapcar
+    (lambda (buffer)
+      (with-current-buffer buffer
+        `((name . ,(buffer-name buffer))
+          (file . ,(or buffer-file-name ""))
+          (major-mode . ,(symbol-name major-mode))
+          (modified . ,(buffer-modified-p))
+          (size . ,(buffer-size)))))
+    (cl-remove-if (lambda (buffer)
+                    (string-prefix-p " " (buffer-name buffer)))
+                  (buffer-list)))))
+
+(defun sthenno-yoshino-read-buffer (args)
+  "Read a buffer slice described by ARGS."
+  (let* ((name (sthenno-yoshino--alist-get 'buffer args))
+         (buffer (if (and (stringp name) (not (string-empty-p name)))
+                     (or (get-buffer name)
+                         (user-error "No buffer named `%s'" name))
+                   (current-buffer)))
+         (max-chars (or (sthenno-yoshino--alist-get 'max_chars args)
+                        (sthenno-yoshino--alist-get 'max-chars args)
+                        sthenno-yoshino-observation-char-limit)))
+    (with-current-buffer buffer
+      (save-restriction
+        (widen)
+        (let* ((start (or (sthenno-yoshino--alist-get 'start args)
+                          (point-min)))
+               (end (or (sthenno-yoshino--alist-get 'end args)
+                        (point-max)))
+               (start (max (point-min) (min start (point-max))))
+               (end (max start (min end (point-max)))))
+          `((buffer . ,(buffer-name buffer))
+            (start . ,start)
+            (end . ,end)
+            (content . ,(sthenno-yoshino--truncate
+                         (buffer-substring-no-properties start end)
+                         max-chars))))))))
 
 ;;; Skill registry
 
@@ -527,6 +620,122 @@ RISK is one of `read', `write', or `danger'.  ARGUMENT-STYLE is one of
     (when (called-interactively-p 'interactive)
       (find-file file))
     file))
+
+(defun sthenno-yoshino-write-trace ()
+  "Write the current in-memory trace to a Yoshino trace note."
+  (interactive)
+  (let ((file (sthenno-yoshino--append-note
+               'trace
+               (pp-to-string (plist-get (sthenno-yoshino-workspace) :trace)))))
+    (when (called-interactively-p 'interactive)
+      (find-file file))
+    file))
+
+(defun sthenno-yoshino-register-skill-from-args (args)
+  "Register a skill from raw ARGS."
+  (let* ((symbol (sthenno-yoshino--symbol-value
+                  (sthenno-yoshino--alist-get 'symbol args)))
+         (risk (sthenno-yoshino--symbol-value
+                (sthenno-yoshino--alist-get 'risk args)
+                'read))
+         (style (sthenno-yoshino--symbol-value
+                 (or (sthenno-yoshino--alist-get 'argument_style args)
+                     (sthenno-yoshino--alist-get 'argument-style args))
+                 'none)))
+    (sthenno-yoshino-register-skill
+     symbol risk style (sthenno-yoshino--alist-get 'description args))))
+
+;;;###autoload
+(defun sthenno-yoshino-open-workspace ()
+  "Open Yoshino's workspace buffer and return it."
+  (interactive)
+  (let ((buffer (get-buffer-create "*Yoshino Workspace*")))
+    (with-current-buffer buffer
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (insert "# Yoshino Workspace\n\n")
+        (insert "## State\n\n")
+        (pp (sthenno-yoshino-workspace) buffer)
+        (insert "\n## Skills\n\n")
+        (dolist (skill (sthenno-yoshino--skill-alists))
+          (pp skill buffer))
+        (goto-char (point-min))
+        (special-mode)))
+    (when (called-interactively-p 'interactive)
+      (pop-to-buffer buffer))
+    buffer))
+
+(defun sthenno-yoshino-open-memory-directory ()
+  "Open Yoshino's memory directory."
+  (interactive)
+  (dired (sthenno-yoshino--memory-directory)))
+
+;;; Defaults and mode
+
+;;;###autoload
+(defun sthenno-yoshino-register-default-skills ()
+  "Register Yoshino's default native Emacs skills."
+  (interactive)
+  (dolist (spec '((sthenno-yoshino-observe read none
+                   "Observe the current Emacs environment.")
+                  (sthenno-yoshino-describe-symbol read symbol
+                   "Describe a Lisp symbol using Emacs documentation.")
+                  (sthenno-yoshino-apropos-symbols read string
+                   "Search Emacs symbols by apropos pattern.")
+                  (sthenno-yoshino-list-buffers read none
+                   "List live user buffers.")
+                  (sthenno-yoshino-read-buffer read raw
+                   "Read a bounded slice of a buffer.")
+                  (sthenno-yoshino-write-diary write string
+                   "Write a Denote-style Yoshino diary note.")
+                  (sthenno-yoshino-write-reflection write string
+                   "Write a Denote-style Yoshino reflection note.")
+                  (sthenno-yoshino-write-trace write none
+                   "Write Yoshino's current session trace to memory.")
+                  (sthenno-yoshino-register-skill-from-args write raw
+                   "Register an existing Lisp function as a new skill.")))
+    (pcase-let ((`(,symbol ,risk ,style ,description) spec))
+      (sthenno-yoshino-register-skill symbol risk style description)))
+  (hash-table-count (sthenno-yoshino-skills)))
+
+(defun sthenno-yoshino--cancel-idle-timer ()
+  "Cancel Yoshino's idle timer."
+  (when (timerp sthenno-yoshino--idle-timer)
+    (cancel-timer sthenno-yoshino--idle-timer))
+  (setq sthenno-yoshino--idle-timer nil))
+
+(defun sthenno-yoshino--idle-tick ()
+  "Run one Yoshino step from an idle timer."
+  (let ((sthenno-yoshino--idle-step t))
+    (condition-case err
+        (unless sthenno-yoshino--request-active
+          (sthenno-yoshino-step))
+      (error
+       (sthenno-yoshino--trace
+        'idle-error `((message . ,(error-message-string err))))))))
+
+(defun sthenno-yoshino--install-idle-timer ()
+  "Install Yoshino's idle timer if configured."
+  (sthenno-yoshino--cancel-idle-timer)
+  (when (and (numberp sthenno-yoshino-idle-interval)
+             (> sthenno-yoshino-idle-interval 0))
+    (setq sthenno-yoshino--idle-timer
+          (run-with-idle-timer
+           sthenno-yoshino-idle-interval t
+           #'sthenno-yoshino--idle-tick))))
+
+;;;###autoload
+(define-minor-mode sthenno-yoshino-mode
+  "Toggle Yoshino's reflective Emacs runtime."
+  :global t
+  :group 'sthenno-yoshino
+  :lighter " Yoshino"
+  (if sthenno-yoshino-mode
+      (progn
+        (sthenno-yoshino-workspace)
+        (sthenno-yoshino-register-default-skills)
+        (sthenno-yoshino--install-idle-timer))
+    (sthenno-yoshino--cancel-idle-timer)))
 
 (provide 'sthenno-yoshino)
 

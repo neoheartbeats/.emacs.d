@@ -437,6 +437,8 @@
                                                  :chat_template_kwargs (:enable_thinking :json-false)))
         gptel-model 'sthenno)
 
+(require 'sthenno-yoshino)
+
 (require 'mcp-hub)
 (setopt mcp-hub-servers
         '(("filesystem" . (:command "npx" 
