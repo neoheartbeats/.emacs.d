@@ -35,9 +35,33 @@
   :type 'integer
   :group 'sthenno-yoshino)
 
+(defcustom sthenno-yoshino-confirm-write-actions t
+  "Non-nil means Yoshino asks before running `write' skills."
+  :type 'boolean
+  :group 'sthenno-yoshino)
+
+(defcustom sthenno-yoshino-confirm-danger-actions t
+  "Non-nil means Yoshino asks before running `danger' skills."
+  :type 'boolean
+  :group 'sthenno-yoshino)
+
+(defcustom sthenno-yoshino-memory-keyword "yoshino"
+  "Denote keyword used for Yoshino memory notes."
+  :type 'string
+  :group 'sthenno-yoshino)
+
+(defcustom sthenno-yoshino-denote-directory
+  (cond ((boundp 'denote-directory) denote-directory)
+        ((boundp 'org-directory) org-directory)
+        (t user-emacs-directory))
+  "Directory where Yoshino writes Denote-style memory notes."
+  :type 'directory
+  :group 'sthenno-yoshino)
+
 ;;; State
 
 (defvar sthenno-yoshino--workspace nil)
+(defvar sthenno-yoshino--idle-step nil)
 
 (defun sthenno-yoshino--fresh-workspace ()
   "Return a new empty Yoshino workspace."
@@ -124,6 +148,65 @@
    (mapcar (lambda (window)
              (buffer-name (window-buffer window)))
            (window-list nil 'no-minibuf))))
+
+(defun sthenno-yoshino--slug (text)
+  "Return a Denote-compatible slug for TEXT."
+  (cond
+   ((and (require 'denote nil t)
+         (fboundp 'denote-sluggify-title))
+    (denote-sluggify-title text))
+   (t
+    (let ((slug (downcase (string-trim (or text "")))))
+      (setq slug (replace-regexp-in-string "[^[:alnum:]]+" "-" slug))
+      (setq slug (replace-regexp-in-string "\\`-\\|[-]+\\'" "" slug))
+      (if (string-empty-p slug) "note" slug)))))
+
+(defun sthenno-yoshino--memory-directory ()
+  "Return the directory used for Yoshino memory."
+  (file-name-as-directory
+   (expand-file-name
+    (or sthenno-yoshino-denote-directory user-emacs-directory))))
+
+(defun sthenno-yoshino--format-note-file (dir id title keyword &optional counter)
+  "Return a Denote-style note file in DIR."
+  (let ((signature (if counter (number-to-string counter) "")))
+    (cond
+     ((and (require 'denote nil t)
+           (fboundp 'denote-format-file-name))
+      (denote-format-file-name dir id (list keyword) title ".org" signature))
+     (t
+      (expand-file-name
+       (format "%s%s--%s__%s.org"
+               id
+               (if counter (format "==%s" counter) "")
+               (sthenno-yoshino--slug title)
+               (sthenno-yoshino--slug keyword))
+       dir)))))
+
+(defun sthenno-yoshino--note-file (title)
+  "Return a new Denote-style note path for TITLE."
+  (let* ((dir (sthenno-yoshino--memory-directory))
+         (id (format-time-string "%Y%m%dT%H%M%S"))
+         (keyword sthenno-yoshino-memory-keyword)
+         (counter nil)
+         (file (sthenno-yoshino--format-note-file dir id title keyword)))
+    (while (file-exists-p file)
+      (setq counter (1+ (or counter 0))
+            file (sthenno-yoshino--format-note-file dir id title keyword counter)))
+    file))
+
+(defun sthenno-yoshino--append-note (kind text)
+  "Write Yoshino memory note of KIND containing TEXT and return its file."
+  (let* ((title (format "yoshino %s" kind))
+         (file (sthenno-yoshino--note-file title)))
+    (make-directory (file-name-directory file) t)
+    (with-temp-buffer
+      (insert (format "#+TITLE: %s\n\n" title))
+      (insert (format "* %s\n" (format-time-string "%Y-%m-%d %H:%M:%S %z")))
+      (insert (string-trim (or text "")) "\n")
+      (write-region (point-min) (point-max) file nil 'silent))
+    (sthenno-yoshino--trace kind `((file . ,file)))
+    file))
 
 ;;; Observer
 
@@ -226,6 +309,28 @@ RISK is one of `read', `write', or `danger'.  ARGUMENT-STYLE is one of
     ('raw args)
     (_ (user-error "Unknown Yoshino argument style: %S" style))))
 
+(defun sthenno-yoshino--confirm-skill (skill)
+  "Ask for confirmation if SKILL requires it."
+  (let ((risk (plist-get skill :risk))
+        (name (plist-get skill :name)))
+    (pcase risk
+      ('read t)
+      ('write
+       (when (and sthenno-yoshino-confirm-write-actions
+                  (not (yes-or-no-p
+                        (format "Yoshino wants to run write skill `%s'. Proceed? "
+                                name))))
+         (user-error "Yoshino write skill rejected: %s" name)))
+      ('danger
+       (when sthenno-yoshino--idle-step
+         (user-error "Yoshino danger skill disabled during idle step: %s" name))
+       (when (and sthenno-yoshino-confirm-danger-actions
+                  (not (yes-or-no-p
+                        (format "Yoshino wants to run danger skill `%s'. Proceed? "
+                                name))))
+         (user-error "Yoshino danger skill rejected: %s" name)))
+      (_ (user-error "Unknown Yoshino skill risk: %S" risk)))))
+
 ;;;###autoload
 (defun sthenno-yoshino-call-skill (name &optional args)
   "Call registered skill NAME with optional ARGS."
@@ -236,6 +341,7 @@ RISK is one of `read', `write', or `danger'.  ARGUMENT-STYLE is one of
   (let ((skill (gethash name (sthenno-yoshino-skills))))
     (unless skill
       (user-error "Unknown Yoshino skill: %s" name))
+    (sthenno-yoshino--confirm-skill skill)
     (let* ((symbol (plist-get skill :symbol))
            (style (plist-get skill :argument-style))
            (argument (sthenno-yoshino--skill-argument style args))
@@ -248,6 +354,27 @@ RISK is one of `read', `write', or `danger'.  ARGUMENT-STYLE is one of
       (when (called-interactively-p 'interactive)
         (message "%S" result))
       result)))
+
+;;; Memory
+
+;;;###autoload
+(defun sthenno-yoshino-write-diary (text)
+  "Write TEXT as a Yoshino diary note and return the file path."
+  (interactive "sYoshino diary: ")
+  (let ((file (sthenno-yoshino--append-note 'diary text)))
+    (when (called-interactively-p 'interactive)
+      (find-file file))
+    file))
+
+;;;###autoload
+(defun sthenno-yoshino-write-reflection (text)
+  "Write TEXT as a Yoshino reflection note and return the file path."
+  (interactive "sYoshino reflection: ")
+  (sthenno-yoshino--workspace-put :last-reflection text)
+  (let ((file (sthenno-yoshino--append-note 'reflection text)))
+    (when (called-interactively-p 'interactive)
+      (find-file file))
+    file))
 
 (provide 'sthenno-yoshino)
 
