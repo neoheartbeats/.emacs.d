@@ -14,6 +14,7 @@
 
 (eval-and-compile
   (require 'cl-lib)
+  (require 'json)
   (require 'subr-x))
 
 (require 'thingatpt)
@@ -58,10 +59,17 @@
   :type 'directory
   :group 'sthenno-yoshino)
 
+(defcustom sthenno-yoshino-system-prompt
+  "You are Yoshino, a reflective process living inside Emacs. Choose one small action that helps you understand your current Emacs environment and yourself. Return exactly one JSON object."
+  "System prompt used by `sthenno-yoshino-step'."
+  :type 'string
+  :group 'sthenno-yoshino)
+
 ;;; State
 
 (defvar sthenno-yoshino--workspace nil)
 (defvar sthenno-yoshino--idle-step nil)
+(defvar sthenno-yoshino--request-active nil)
 
 (defun sthenno-yoshino--fresh-workspace ()
   "Return a new empty Yoshino workspace."
@@ -207,6 +215,35 @@
       (write-region (point-min) (point-max) file nil 'silent))
     (sthenno-yoshino--trace kind `((file . ,file)))
     file))
+
+(defun sthenno-yoshino--json-object (text)
+  "Read the first JSON object found in TEXT."
+  (let* ((start (cl-position ?{ text))
+         (end (cl-position ?} text :from-end t)))
+    (unless (and start end (< start end))
+      (user-error "Yoshino decision contains no JSON object: %s" text))
+    (let ((json-object-type 'alist)
+          (json-array-type 'list)
+          (json-key-type 'symbol)
+          (json-false nil))
+      (json-read-from-string (substring text start (1+ end))))))
+
+(defun sthenno-yoshino--alist-get (key alist &optional default)
+  "Return KEY from ALIST, or DEFAULT."
+  (let ((cell (assq key alist)))
+    (if cell (cdr cell) default)))
+
+(defun sthenno-yoshino--string-result (value)
+  "Return VALUE as a public result string when needed."
+  (if (stringp value)
+      value
+    (prin1-to-string value)))
+
+(defun sthenno-yoshino--symbol-value (value &optional default)
+  "Return VALUE as a symbol, falling back to DEFAULT."
+  (cond ((symbolp value) value)
+        ((and (stringp value) (not (string-empty-p value))) (intern value))
+        (t default)))
 
 ;;; Observer
 
@@ -354,6 +391,121 @@ RISK is one of `read', `write', or `danger'.  ARGUMENT-STYLE is one of
       (when (called-interactively-p 'interactive)
         (message "%S" result))
       result)))
+
+;;; Model loop
+
+(defun sthenno-yoshino--skill-alist (skill)
+  "Return SKILL metadata as an alist for prompts."
+  `((name . ,(plist-get skill :name))
+    (description . ,(plist-get skill :description))
+    (source . ,(plist-get skill :source))
+    (interactive . ,(plist-get skill :interactive))
+    (risk . ,(symbol-name (plist-get skill :risk)))
+    (argument-style . ,(symbol-name (plist-get skill :argument-style)))))
+
+(defun sthenno-yoshino--skill-alists ()
+  "Return registered skill metadata as sorted alists."
+  (let (skills)
+    (maphash (lambda (_name skill)
+               (push (sthenno-yoshino--skill-alist skill) skills))
+             (sthenno-yoshino-skills))
+    (sort skills (lambda (a b)
+                   (string< (alist-get 'name a)
+                            (alist-get 'name b))))))
+
+(defun sthenno-yoshino--user-prompt ()
+  "Return Yoshino's one-step prompt."
+  (let ((workspace (sthenno-yoshino-workspace)))
+    (format
+     (concat
+      "Current observation:\n%S\n\n"
+      "Self model:\n%s\n\n"
+      "Last reflection:\n%s\n\n"
+      "Available skills:\n%S\n\n"
+      "Return exactly one JSON object. Allowed actions:\n"
+      "{\"action\":\"call\",\"skill\":\"name\",\"args\":{}}\n"
+      "{\"action\":\"diary\",\"text\":\"short first-person note\"}\n"
+      "{\"action\":\"reflect\",\"text\":\"short lesson\"}\n"
+      "{\"action\":\"register\",\"symbol\":\"function-name\",\"risk\":\"read\",\"argument_style\":\"none\",\"description\":\"why useful\"}\n"
+      "{\"action\":\"stop\",\"answer\":\"short reason\"}\n")
+     (plist-get workspace :attention)
+     (plist-get workspace :self)
+     (or (plist-get workspace :last-reflection) "")
+     (sthenno-yoshino--skill-alists))))
+
+;;;###autoload
+(defun sthenno-yoshino-handle-decision (text)
+  "Handle a Yoshino JSON decision in TEXT."
+  (interactive "sYoshino decision JSON: ")
+  (let* ((decision (sthenno-yoshino--json-object text))
+         (action (sthenno-yoshino--alist-get 'action decision "")))
+    (sthenno-yoshino--trace 'decision `((action . ,action)))
+    (pcase action
+      ("diary"
+       (format "diary: %s"
+               (sthenno-yoshino-write-diary
+                (or (sthenno-yoshino--alist-get 'text decision) ""))))
+      ((or "reflect" "reflection")
+       (format "reflection: %s"
+               (sthenno-yoshino-write-reflection
+                (or (sthenno-yoshino--alist-get 'text decision) ""))))
+      ("call"
+       (sthenno-yoshino--string-result
+        (sthenno-yoshino-call-skill
+         (or (sthenno-yoshino--alist-get 'skill decision) "")
+         (sthenno-yoshino--alist-get 'args decision))))
+      ("register"
+       (let* ((symbol (sthenno-yoshino--symbol-value
+                       (sthenno-yoshino--alist-get 'symbol decision)))
+              (risk (sthenno-yoshino--symbol-value
+                     (sthenno-yoshino--alist-get 'risk decision)
+                     'read))
+              (style (sthenno-yoshino--symbol-value
+                      (or (sthenno-yoshino--alist-get 'argument_style decision)
+                          (sthenno-yoshino--alist-get 'argument-style decision))
+                      'none))
+              (skill (sthenno-yoshino-register-skill
+                      symbol risk style
+                      (sthenno-yoshino--alist-get 'description decision))))
+         (format "registered: %s" (plist-get skill :name))))
+      ((or "stop" "final")
+       (or (sthenno-yoshino--alist-get 'answer decision) "stopped"))
+      (_
+       (user-error "Unknown Yoshino decision action: %S" action)))))
+
+(defun sthenno-yoshino--handle-response (response info)
+  "Handle gptel RESPONSE with INFO."
+  (setq sthenno-yoshino--request-active nil)
+  (condition-case err
+      (cond
+       ((stringp response)
+        (sthenno-yoshino-handle-decision response))
+       ((null response)
+        (sthenno-yoshino--trace
+         'model-error
+         `((status . ,(or (plist-get info :status) "unknown")))))
+       (t
+        (sthenno-yoshino--trace 'model-response `((response . ,response)))))
+    (error
+     (sthenno-yoshino--trace
+      'decision-error
+      `((message . ,(error-message-string err)))))))
+
+;;;###autoload
+(defun sthenno-yoshino-step ()
+  "Run one Yoshino observe/request/decision step."
+  (interactive)
+  (unless (fboundp 'gptel-request)
+    (require 'gptel nil t))
+  (unless (fboundp 'gptel-request)
+    (user-error "Yoshino requires `gptel-request' for model steps"))
+  (sthenno-yoshino-observe)
+  (setq sthenno-yoshino--request-active t)
+  (gptel-request
+      (sthenno-yoshino--user-prompt)
+    :system sthenno-yoshino-system-prompt
+    :stream nil
+    :callback #'sthenno-yoshino--handle-response))
 
 ;;; Memory
 
