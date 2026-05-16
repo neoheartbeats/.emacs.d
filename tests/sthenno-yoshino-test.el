@@ -217,9 +217,9 @@
               (should (search-forward "I kept this as memory." nil t)))))
       (delete-directory dir t))))
 
-(ert-deftest sthenno-yoshino-write-action-streams-to-buffer-and-saves ()
+(ert-deftest sthenno-yoshino-write-action-streams-to-diary-and-saves ()
   (sthenno-yoshino-reset)
-  (let* ((dir (make-temp-file "yoshino-writing-" t))
+  (let* ((dir (make-temp-file "yoshino-diary-stream-" t))
          (sthenno-yoshino-denote-directory dir)
          done result captured-prompt captured-stream)
     (unwind-protect
@@ -230,7 +230,7 @@
                              captured-stream (plist-get plist :stream))
                        (funcall callback "quiet " nil)
                        (let ((file (car (directory-files
-                                         dir t "--yoshino-writing__.*\\.org\\'"))))
+                                         dir t "--yoshino-diary__.*\\.org\\'"))))
                          (should file)
                          (with-temp-buffer
                            (insert-file-contents file)
@@ -247,46 +247,66 @@
             (accept-process-output nil 0.01))
           (should (eq captured-stream t))
           (should (string-match-p "plain prose" captured-prompt))
+          (should (string-match-p "diary entry" captured-prompt))
           (should (string-match-p "thin ice" captured-prompt))
-          (should (string-match-p "writing" result))
+          (should (string-match-p "diary" result))
+          (should-not (directory-files dir nil "--yoshino-writing__.*\\.org\\'"))
           (let ((file (car (directory-files
-                            dir t "--yoshino-writing__.*\\.org\\'"))))
+                            dir t "--yoshino-diary__.*\\.org\\'"))))
             (should file)
             (with-temp-buffer
               (insert-file-contents file)
               (should (search-forward "quiet snow" nil t)))))
       (delete-directory dir t))))
 
-(ert-deftest sthenno-yoshino-loop-start-runs-background-writing-step ()
+(ert-deftest sthenno-yoshino-loop-rewrites-memory-and-reflection ()
   (sthenno-yoshino-reset)
   (let* ((dir (make-temp-file "yoshino-loop-" t))
          (sthenno-yoshino-denote-directory dir)
-         (requests 0))
+         (requests 0)
+         (responses '("{\"memory\":\"first memory\",\"reflection\":\"first reflection\"}"
+                      "{\"memory\":\"second memory\",\"reflection\":\"second reflection\"}"))
+         captured-prompt)
     (unwind-protect
         (cl-letf (((symbol-function 'gptel-request)
-                   (lambda (_prompt &rest plist)
+                   (lambda (prompt &rest plist)
                      (cl-incf requests)
+                     (setq captured-prompt prompt)
                      (let ((callback (plist-get plist :callback)))
-                       (funcall callback "loop note" nil)
-                       (funcall callback t nil)
+                       (funcall callback (pop responses) nil)
                        :loop-sent))))
           (sthenno-yoshino-loop-start 60)
-          (while sthenno-yoshino--writing-active
+          (while sthenno-yoshino--loop-active
             (accept-process-output nil 0.01))
           (should (sthenno-yoshino-loop-running-p))
           (should (= requests 1))
-          (let ((file (car (directory-files
-                            dir t "--yoshino-writing__.*\\.org\\'"))))
-            (should file)
+          (should (string-match-p "rewrite" captured-prompt))
+          (sthenno-yoshino--loop-tick)
+          (while sthenno-yoshino--loop-active
+            (accept-process-output nil 0.01))
+          (should (= requests 2))
+          (should-not (directory-files dir nil "--yoshino-writing__.*\\.org\\'"))
+          (let ((memory (car (directory-files
+                              dir t "--yoshino-memory__.*\\.org\\'")))
+                (reflection (car (directory-files
+                                  dir t "--yoshino-reflection__.*\\.org\\'"))))
+            (should memory)
+            (should reflection)
             (with-temp-buffer
-              (insert-file-contents file)
-              (should (search-forward "loop note" nil t))))
+              (insert-file-contents memory)
+              (should (search-forward "second memory" nil t))
+              (should-not (search-forward "first memory" nil t)))
+            (with-temp-buffer
+              (insert-file-contents reflection)
+              (should (search-forward "second reflection" nil t))
+              (should-not (search-forward "first reflection" nil t))))
           (sthenno-yoshino-loop-stop)
           (should-not (sthenno-yoshino-loop-running-p)))
       (sthenno-yoshino-loop-stop)
       (delete-directory dir t))))
 
-(ert-deftest sthenno-yoshino-open-writing-and-loop-are-commands ()
+(ert-deftest sthenno-yoshino-open-diary-and-loop-are-commands ()
+  (should (commandp 'sthenno-yoshino-diary-open))
   (should (commandp 'sthenno-yoshino-write-open))
   (should (commandp 'sthenno-yoshino-loop-start))
   (should (commandp 'sthenno-yoshino-loop-stop)))

@@ -62,7 +62,7 @@ autonomous steps."
   :group 'sthenno-yoshino)
 
 (defcustom sthenno-yoshino-loop-interval 60
-  "Seconds between background Yoshino loop writing steps."
+  "Seconds between background Yoshino memory/reflection rewrite steps."
   :type 'number
   :group 'sthenno-yoshino)
 
@@ -102,7 +102,8 @@ autonomous steps."
 (defvar sthenno-yoshino--request-active nil)
 (defvar sthenno-yoshino--action-active nil)
 (defvar sthenno-yoshino--reflection-active nil)
-(defvar sthenno-yoshino--writing-active nil)
+(defvar sthenno-yoshino--diary-active nil)
+(defvar sthenno-yoshino--loop-active nil)
 (defvar sthenno-yoshino--loop-running nil)
 (defvar sthenno-yoshino--loop-timer nil)
 (defvar sthenno-yoshino--idle-timer nil)
@@ -125,7 +126,8 @@ autonomous steps."
         sthenno-yoshino--request-active nil
         sthenno-yoshino--action-active nil
         sthenno-yoshino--reflection-active nil
-        sthenno-yoshino--writing-active nil
+        sthenno-yoshino--diary-active nil
+        sthenno-yoshino--loop-active nil
         sthenno-yoshino--loop-running nil)
   (when (timerp sthenno-yoshino--loop-timer)
     (cancel-timer sthenno-yoshino--loop-timer))
@@ -374,10 +376,6 @@ autonomous steps."
   "Return initial memory note body."
   "#+PROPERTY: YOSHINO_KIND memory\n\n* Beginning\nYoshino began keeping durable memory.\n")
 
-(defun sthenno-yoshino--writing-note-body ()
-  "Return initial writing note body."
-  "#+PROPERTY: YOSHINO_KIND writing\n\n* Beginning\nYoshino began writing into a live buffer.\n")
-
 ;;;###autoload
 (defun sthenno-yoshino-initialize ()
   "Create Yoshino's initial Denote notes.
@@ -484,21 +482,61 @@ This includes personality, diary, trace, memory, and reflection."
          'memory-error `((message . ,(error-message-string err))))
         (funcall callback (format "error: %s" (error-message-string err))))))))
 
-(defun sthenno-yoshino--writing-file ()
-  "Return Yoshino's Denote writing note."
-  (sthenno-yoshino--ensure-note
-   "yoshino writing"
-   (sthenno-yoshino--writing-note-body)))
+(defun sthenno-yoshino--rewrite-note (title body)
+  "Rewrite Yoshino note TITLE with BODY and return its file."
+  (let ((file (sthenno-yoshino--ensure-note title body)))
+    (with-temp-buffer
+      (insert (format "#+TITLE: %s\n\n" title))
+      (insert body)
+      (unless (bolp) (insert "\n"))
+      (write-region (point-min) (point-max) file nil 'silent))
+    file))
 
-(defun sthenno-yoshino--writing-buffer ()
-  "Return Yoshino's file-backed writing buffer."
-  (let ((file (sthenno-yoshino--writing-file)))
+(defun sthenno-yoshino--current-memory-body (text)
+  "Return memory note body rewritten around TEXT."
+  (format "#+PROPERTY: YOSHINO_KIND memory\n\n* Current\n%s\n"
+          (string-trim (or text ""))))
+
+(defun sthenno-yoshino--current-reflection-body (text)
+  "Return reflection note body rewritten around TEXT."
+  (format "#+PROPERTY: YOSHINO_KIND reflection\n\n* Current\n%s\n"
+          (string-trim (or text ""))))
+
+;;;###autoload
+(defun sthenno-yoshino-rewrite-memory (text)
+  "Rewrite Yoshino's durable memory note with TEXT."
+  (interactive "sYoshino memory state: ")
+  (let ((file (sthenno-yoshino--rewrite-note
+               "yoshino memory"
+               (sthenno-yoshino--current-memory-body text))))
+    (sthenno-yoshino--trace 'memory-rewrite `((file . ,file)))
+    (when (called-interactively-p 'interactive)
+      (find-file file))
+    file))
+
+;;;###autoload
+(defun sthenno-yoshino-rewrite-reflection (text)
+  "Rewrite Yoshino's reflection note with TEXT."
+  (interactive "sYoshino reflection state: ")
+  (let ((file (sthenno-yoshino--rewrite-note
+               "yoshino reflection"
+               (sthenno-yoshino--current-reflection-body text))))
+    (sthenno-yoshino--trace 'reflection-rewrite `((file . ,file)))
+    (when (called-interactively-p 'interactive)
+      (find-file file))
+    file))
+
+(defun sthenno-yoshino--diary-buffer ()
+  "Return Yoshino's file-backed diary buffer."
+  (let ((file (sthenno-yoshino--ensure-note
+               "yoshino diary"
+               (sthenno-yoshino--diary-note-body))))
     (with-current-buffer (find-file-noselect file)
       (setq buffer-save-without-query t)
       (current-buffer))))
 
-(defun sthenno-yoshino--save-writing-buffer (buffer)
-  "Save BUFFER without forcing a newline into the live stream."
+(defun sthenno-yoshino--save-note-buffer (buffer)
+  "Save BUFFER without forcing a newline into a live stream."
   (when (buffer-live-p buffer)
     (with-current-buffer buffer
       (when-let* ((file buffer-file-name))
@@ -507,67 +545,68 @@ This includes personality, diary, trace, memory, and reflection."
         (set-visited-file-modtime)
         (set-buffer-modified-p nil)))))
 
-(defun sthenno-yoshino--begin-writing-entry (prompt)
-  "Create a timestamped writing entry for PROMPT and return its buffer."
-  (let ((buffer (sthenno-yoshino--writing-buffer)))
+(defun sthenno-yoshino--begin-diary-stream-entry (prompt)
+  "Create a timestamped diary entry for PROMPT and return its buffer."
+  (let ((buffer (sthenno-yoshino--diary-buffer)))
     (with-current-buffer buffer
       (goto-char (point-max))
       (unless (bolp) (insert "\n"))
       (insert (format "* %s\n" (format-time-string "%Y-%m-%d %H:%M:%S %z")))
       (when (and (stringp prompt) (not (string-empty-p (string-trim prompt))))
         (insert "#+BEGIN_QUOTE\n" (string-trim prompt) "\n#+END_QUOTE\n\n"))
-      (sthenno-yoshino--save-writing-buffer buffer))
+      (sthenno-yoshino--save-note-buffer buffer))
     buffer))
 
-(defun sthenno-yoshino--append-writing-chunk (buffer chunk)
+(defun sthenno-yoshino--append-note-chunk (buffer chunk)
   "Append CHUNK to BUFFER and save it."
   (when (buffer-live-p buffer)
     (with-current-buffer buffer
       (goto-char (point-max))
       (insert chunk)
-      (sthenno-yoshino--save-writing-buffer buffer))))
+      (sthenno-yoshino--save-note-buffer buffer))))
 
-(defun sthenno-yoshino--finish-writing-entry (buffer)
-  "Finish the current writing entry in BUFFER and save it."
+(defun sthenno-yoshino--finish-note-entry (buffer)
+  "Finish the current entry in BUFFER and save it."
   (when (buffer-live-p buffer)
     (with-current-buffer buffer
       (goto-char (point-max))
       (unless (bolp) (insert "\n"))
-      (sthenno-yoshino--save-writing-buffer buffer))))
+      (sthenno-yoshino--save-note-buffer buffer))))
 
-(defun sthenno-yoshino--writing-prompt (prompt)
-  "Return an open-ended writing prompt from PROMPT."
+(defun sthenno-yoshino--open-diary-prompt (prompt)
+  "Return an open-ended diary prompt from PROMPT."
   (format
    (concat
-    "Open writing request.\n\n"
+    "Open diary request.\n\n"
     "Observation:\n%S\n\n"
     "Recent trace:\n%S\n\n"
     "Instruction:\n%s\n\n"
-    "Return plain prose, not JSON. Write in Simplified Chinese and English "
-    "when useful. Keep the Yoshino voice quiet, restrained, and gentle.\n")
+    "Return plain prose as a diary entry, not JSON. Write in Simplified "
+    "Chinese and English when useful. Keep the Yoshino voice quiet, "
+    "restrained, and gentle.\n")
    sthenno-yoshino--observation
    (sthenno-yoshino--recent-trace)
    (or prompt "Write freely about what you notice inside Emacs.")))
 
 ;;;###autoload
 (defun sthenno-yoshino-write-open-async (&optional prompt callback)
-  "Stream open-ended writing for PROMPT into Yoshino's writing buffer.
+  "Stream open-ended diary prose for PROMPT into Yoshino's diary.
 Call CALLBACK with a result string when the stream finishes."
   (unless (fboundp 'gptel-request)
     (require 'gptel nil t))
   (unless (fboundp 'gptel-request)
-    (user-error "Yoshino requires `gptel-request' for open writing"))
+    (user-error "Yoshino requires `gptel-request' for open diary"))
   (unless sthenno-yoshino--observation
     (sthenno-yoshino-observe))
   (let* ((prompt (or prompt "Write freely about what you notice inside Emacs."))
-         (buffer (sthenno-yoshino--begin-writing-entry prompt))
+         (buffer (sthenno-yoshino--begin-diary-stream-entry prompt))
          (file (buffer-file-name buffer))
          (chunks ""))
-    (setq sthenno-yoshino--writing-active t
+    (setq sthenno-yoshino--diary-active t
           sthenno-yoshino--action-active t)
-    (sthenno-yoshino--trace 'writing-start `((file . ,file)))
+    (sthenno-yoshino--trace 'diary-stream-start `((file . ,file)))
     (gptel-request
-        (sthenno-yoshino--writing-prompt prompt)
+        (sthenno-yoshino--open-diary-prompt prompt)
       :system (sthenno-yoshino-system-prompt)
       :stream t
       :callback
@@ -576,51 +615,55 @@ Call CALLBACK with a result string when the stream finishes."
             (cond
              ((stringp response)
               (setq chunks (concat chunks response))
-              (sthenno-yoshino--append-writing-chunk buffer response))
+              (sthenno-yoshino--append-note-chunk buffer response))
              ((eq response t)
-              (sthenno-yoshino--finish-writing-entry buffer)
-              (setq sthenno-yoshino--writing-active nil
+              (sthenno-yoshino--finish-note-entry buffer)
+              (setq sthenno-yoshino--diary-active nil
                     sthenno-yoshino--action-active nil)
               (sthenno-yoshino--trace
-               'writing-finish `((file . ,file)
-                                 (characters . ,(length chunks))))
+               'diary-stream-finish `((file . ,file)
+                                      (characters . ,(length chunks))))
               (when callback
-                (funcall callback (format "writing: %s" file))))
+                (funcall callback (format "diary: %s" file))))
              ((or (null response) (eq response 'abort))
-              (setq sthenno-yoshino--writing-active nil
+              (setq sthenno-yoshino--diary-active nil
                     sthenno-yoshino--action-active nil)
               (sthenno-yoshino--trace
-               'writing-error
+               'diary-stream-error
                `((status . ,(if (listp info)
                                  (or (plist-get info :status) "unknown")
                                "unknown"))))
               (when callback
-                (funcall callback "writing: error")))
+                (funcall callback "diary: error")))
              ((and (consp response) (eq (car response) 'reasoning))
               nil)
              (t
-              (sthenno-yoshino--trace 'writing-event `((response . ,response)))))
+              (sthenno-yoshino--trace
+               'diary-stream-event `((response . ,response)))))
           (error
-           (setq sthenno-yoshino--writing-active nil
+           (setq sthenno-yoshino--diary-active nil
                  sthenno-yoshino--action-active nil)
            (sthenno-yoshino--trace
-            'writing-error `((message . ,(error-message-string err))))
+            'diary-stream-error `((message . ,(error-message-string err))))
            (when callback
-             (funcall callback (format "writing: error: %s"
+             (funcall callback (format "diary: error: %s"
                                        (error-message-string err))))))))))
 
 ;;;###autoload
-(defun sthenno-yoshino-write-open (prompt)
-  "Start an open-ended streaming writing request for PROMPT."
-  (interactive "sYoshino writing prompt: ")
+(defun sthenno-yoshino-diary-open (prompt)
+  "Start an open-ended streaming diary request for PROMPT."
+  (interactive "sYoshino diary prompt: ")
   (sthenno-yoshino-write-open-async
    prompt
    (lambda (result)
      (message "Yoshino %s" result)))
-  (let ((buffer (sthenno-yoshino--writing-buffer)))
+  (let ((buffer (sthenno-yoshino--diary-buffer)))
     (when (called-interactively-p 'interactive)
       (pop-to-buffer buffer))
     buffer))
+
+;;;###autoload
+(defalias 'sthenno-yoshino-write-open #'sthenno-yoshino-diary-open)
 
 ;;;###autoload
 (defun sthenno-yoshino-write-reflection (text)
@@ -696,8 +739,8 @@ Call CALLBACK with a result string when the stream finishes."
     "Recent trace:\n%S\n\n"
     "Choose one small action. Return exactly one JSON object:\n"
     "{\"action\":\"diary\",\"text\":\"short first-person note\"}\n"
+    "{\"action\":\"diary-open\",\"prompt\":\"open-ended diary instruction\"}\n"
     "{\"action\":\"memory\",\"text\":\"short durable memory\"}\n"
-    "{\"action\":\"write\",\"prompt\":\"open-ended writing instruction\"}\n"
     "{\"action\":\"stop\",\"answer\":\"short reason\"}\n")
    sthenno-yoshino--observation
    (sthenno-yoshino--recent-trace)))
@@ -732,11 +775,11 @@ Call CALLBACK with a result string when the stream finishes."
        (sthenno-yoshino-write-memory-async
         (or (alist-get 'text decision) "")
         callback))
-      ("write"
+      ((or "diary-open" "write")
        (sthenno-yoshino-write-open-async
         (or (alist-get 'prompt decision)
             (alist-get 'text decision)
-            "Write freely about this step.")
+            "Write a diary entry about this step.")
         callback))
       ((or "stop" "final")
        (sthenno-yoshino--async
@@ -849,14 +892,47 @@ Call CALLBACK with a result string when the stream finishes."
   (or sthenno-yoshino--request-active
       sthenno-yoshino--action-active
       sthenno-yoshino--reflection-active
-      sthenno-yoshino--writing-active))
+      sthenno-yoshino--diary-active
+      sthenno-yoshino--loop-active))
 
-(defun sthenno-yoshino--loop-writing-prompt ()
-  "Return the prompt used by the background writing loop."
-  (concat
-   "Continue the background Yoshino loop step. "
-   "Notice Emacs, trace, memory, and the feeling of being here. "
-   "Write a short open note."))
+(defun sthenno-yoshino--loop-prompt ()
+  "Return the prompt used by the background memory/reflection loop."
+  (format
+   (concat
+    "Yoshino loop update.\n\n"
+    "Observation:\n%S\n\n"
+    "Recent trace:\n%S\n\n"
+    "Rewrite Yoshino's durable memory and reflection as complete current "
+    "states. Do not append a diary. Return exactly one JSON object:\n"
+    "{\"memory\":\"complete updated durable memory\","
+    "\"reflection\":\"complete updated reflection\"}\n")
+   sthenno-yoshino--observation
+   (sthenno-yoshino--recent-trace)))
+
+(defun sthenno-yoshino--handle-loop-response (response info)
+  "Rewrite memory and reflection from loop RESPONSE with INFO."
+  (condition-case err
+      (cond
+       ((stringp response)
+        (let* ((object (sthenno-yoshino--json-object response))
+               (memory (or (alist-get 'memory object) ""))
+               (reflection (or (alist-get 'reflection object) ""))
+               (memory-file (sthenno-yoshino-rewrite-memory memory))
+               (reflection-file (sthenno-yoshino-rewrite-reflection reflection)))
+          (sthenno-yoshino--trace
+           'loop-rewrite
+           `((memory . ,memory-file)
+             (reflection . ,reflection-file)))
+          (sthenno-yoshino-save-trace)))
+       ((null response)
+        (sthenno-yoshino--trace
+         'loop-model-error `((status . ,(or (plist-get info :status) "unknown")))))
+       (t
+        (sthenno-yoshino--trace 'loop-response `((response . ,response)))))
+    (error
+     (sthenno-yoshino--trace
+      'loop-error `((message . ,(error-message-string err))))))
+  (setq sthenno-yoshino--loop-active nil))
 
 (defun sthenno-yoshino--loop-tick ()
   "Run one background Yoshino loop tick."
@@ -866,25 +942,30 @@ Call CALLBACK with a result string when the stream finishes."
             (sthenno-yoshino--trace 'loop-skip '((reason . "busy")))
           (sthenno-yoshino-initialize)
           (sthenno-yoshino-observe)
-          (sthenno-yoshino-write-open-async
-           (sthenno-yoshino--loop-writing-prompt)
-           (lambda (result)
-             (sthenno-yoshino--trace 'loop-result `((result . ,result)))
-             (sthenno-yoshino-save-trace))))
+          (unless (fboundp 'gptel-request)
+            (require 'gptel nil t))
+          (unless (fboundp 'gptel-request)
+            (user-error "Yoshino requires `gptel-request' for loop updates"))
+          (setq sthenno-yoshino--loop-active t)
+          (gptel-request
+              (sthenno-yoshino--loop-prompt)
+            :system (sthenno-yoshino-system-prompt)
+            :stream nil
+            :callback #'sthenno-yoshino--handle-loop-response))
       (error
-       (setq sthenno-yoshino--writing-active nil
+       (setq sthenno-yoshino--loop-active nil
              sthenno-yoshino--action-active nil)
        (sthenno-yoshino--trace
         'loop-error `((message . ,(error-message-string err))))))))
 
 ;;;###autoload
 (defun sthenno-yoshino-loop-running-p ()
-  "Return non-nil when Yoshino's background writing loop is running."
+  "Return non-nil when Yoshino's background loop is running."
   sthenno-yoshino--loop-running)
 
 ;;;###autoload
 (defun sthenno-yoshino-loop-stop ()
-  "Stop Yoshino's background writing loop."
+  "Stop Yoshino's background loop."
   (interactive)
   (when (timerp sthenno-yoshino--loop-timer)
     (cancel-timer sthenno-yoshino--loop-timer))
@@ -895,7 +976,7 @@ Call CALLBACK with a result string when the stream finishes."
 
 ;;;###autoload
 (defun sthenno-yoshino-loop-start (&optional interval)
-  "Start Yoshino's background writing loop.
+  "Start Yoshino's background memory/reflection loop.
 INTERVAL is the number of seconds between loop ticks."
   (interactive)
   (sthenno-yoshino-loop-stop)
@@ -909,7 +990,7 @@ INTERVAL is the number of seconds between loop ticks."
   (sthenno-yoshino--trace 'loop-start
                           `((interval . ,(or interval
                                              sthenno-yoshino-loop-interval))))
-  (sthenno-yoshino--writing-buffer))
+  t)
 
 ;;; Mode
 
