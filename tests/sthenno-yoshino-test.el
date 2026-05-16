@@ -80,6 +80,66 @@
           (should (functionp captured-callback)))
       (delete-directory dir t))))
 
+(ert-deftest sthenno-yoshino-diary-action-is-async ()
+  (let* ((dir (make-temp-file "yoshino-async-diary-" t))
+         (sthenno-yoshino-denote-directory dir)
+         done result)
+    (unwind-protect
+        (progn
+          (sthenno-yoshino-handle-decision-async
+           "{\"action\":\"diary\",\"text\":\"I moved later.\"}"
+           (lambda (value)
+             (setq result value
+                   done t)))
+          (should-not (directory-files dir nil "\\.org\\'"))
+          (while (not done)
+            (accept-process-output nil 0.01))
+          (should (string-match-p "diary" result))
+          (should (directory-files dir nil "--yoshino-diary__.*\\.org\\'")))
+      (delete-directory dir t))))
+
+(ert-deftest sthenno-yoshino-step-reflects-after-async-action ()
+  (sthenno-yoshino-reset)
+  (let* ((dir (make-temp-file "yoshino-reflect-" t))
+         (sthenno-yoshino-denote-directory dir)
+         (sthenno-yoshino-reflect-after-action t)
+         (calls 0)
+         prompts)
+    (unwind-protect
+        (cl-letf (((symbol-function 'gptel-request)
+                   (lambda (prompt &rest plist)
+                     (cl-incf calls)
+                     (push prompt prompts)
+                     (let ((callback (plist-get plist :callback)))
+                       (pcase calls
+                         (1 (funcall callback
+                                     "{\"action\":\"diary\",\"text\":\"I observed softly.\"}"
+                                     nil)
+                            :decision)
+                         (2 (funcall callback
+                                     "{\"reflection\":\"Observation became a small memory.\"}"
+                                     nil)
+                            :reflection)
+                         (_ (error "Unexpected gptel call")))))))
+          (should (eq (sthenno-yoshino-step) :decision))
+          (while (or sthenno-yoshino--request-active
+                     sthenno-yoshino--action-active
+                     sthenno-yoshino--reflection-active
+                     (< calls 2))
+            (accept-process-output nil 0.01))
+          (should (= calls 2))
+          (should (cl-some (lambda (prompt)
+                             (string-match-p "Reflection" prompt))
+                           prompts))
+          (let ((reflection (car (directory-files
+                                  dir t "--yoshino-reflection__.*\\.org\\'"))))
+            (should reflection)
+            (with-temp-buffer
+              (insert-file-contents reflection)
+              (should (search-forward "Observation became a small memory."
+                                      nil t)))))
+      (delete-directory dir t))))
+
 (ert-deftest sthenno-yoshino-handles-diary-decision ()
   (let* ((dir (make-temp-file "yoshino-decision-" t))
          (sthenno-yoshino-denote-directory dir))
