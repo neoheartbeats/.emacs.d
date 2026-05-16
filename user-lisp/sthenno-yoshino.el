@@ -7,15 +7,16 @@
 ;;; Commentary:
 
 ;; Yoshino is a small Emacs-resident presence.  It keeps a Denote-backed
-;; personality, diary, and reflection note.  Its gptel step observes Emacs,
-;; requests one decision asynchronously, runs the selected action asynchronously,
-;; and then asks for a reflection asynchronously.
+;; personality, diary, trace, memory, and reflection notes.  Its gptel step
+;; observes Emacs, requests one decision asynchronously, runs the selected
+;; action asynchronously, and then asks for a reflection asynchronously.
 
 ;;; Code:
 
 (eval-and-compile
   (require 'cl-lib)
   (require 'json)
+  (require 'pp)
   (require 'subr-x))
 
 (require 'thingatpt)
@@ -109,13 +110,11 @@ autonomous steps."
 (defalias 'sthenno-yoshino-reset-workspace #'sthenno-yoshino-reset)
 
 (defun sthenno-yoshino--trace (kind payload)
-  "Record KIND and PAYLOAD in Yoshino's short in-memory trace."
+  "Record KIND and PAYLOAD in Yoshino's complete in-memory trace."
   (let ((event `((time . ,(format-time-string "%Y-%m-%dT%H:%M:%S%z"))
                  (kind . ,(format "%s" kind))
                  (payload . ,payload))))
-    (setq sthenno-yoshino--trace
-          (cons event (cl-subseq sthenno-yoshino--trace
-                                 0 (min 31 (length sthenno-yoshino--trace)))))
+    (push event sthenno-yoshino--trace)
     event))
 
 ;;; Utility
@@ -270,9 +269,18 @@ autonomous steps."
   "Return initial reflection note body."
   "#+PROPERTY: YOSHINO_KIND reflection\n\n* Beginning\nYoshino began to reflect on what she observes.\n")
 
+(defun sthenno-yoshino--trace-note-body ()
+  "Return initial trace note body."
+  "#+PROPERTY: YOSHINO_KIND trace\n\n* Beginning\nYoshino began keeping a complete trace.\n")
+
+(defun sthenno-yoshino--memory-note-body ()
+  "Return initial memory note body."
+  "#+PROPERTY: YOSHINO_KIND memory\n\n* Beginning\nYoshino began keeping durable memory.\n")
+
 ;;;###autoload
 (defun sthenno-yoshino-initialize ()
-  "Create Yoshino's initial Denote personality, diary, and reflection notes."
+  "Create Yoshino's initial Denote notes.
+This includes personality, diary, trace, memory, and reflection."
   (interactive)
   (let ((personality (sthenno-yoshino--ensure-note
                       "yoshino personality"
@@ -282,16 +290,42 @@ autonomous steps."
                 (sthenno-yoshino--diary-note-body)))
         (reflection (sthenno-yoshino--ensure-note
                      "yoshino reflection"
-                     (sthenno-yoshino--reflection-note-body))))
+                     (sthenno-yoshino--reflection-note-body)))
+        (trace (sthenno-yoshino--ensure-note
+                "yoshino trace"
+                (sthenno-yoshino--trace-note-body)))
+        (memory (sthenno-yoshino--ensure-note
+                 "yoshino memory"
+                 (sthenno-yoshino--memory-note-body))))
     (sthenno-yoshino--trace 'initialize
                             `((personality . ,personality)
                               (diary . ,diary)
-                              (reflection . ,reflection)))
+                              (reflection . ,reflection)
+                              (trace . ,trace)
+                              (memory . ,memory)))
     (when (called-interactively-p 'interactive)
       (message "Yoshino initialized: %s" diary))
     `((personality . ,personality)
       (diary . ,diary)
-      (reflection . ,reflection))))
+      (reflection . ,reflection)
+      (trace . ,trace)
+      (memory . ,memory))))
+
+;;;###autoload
+(defun sthenno-yoshino-save-trace ()
+  "Append a complete snapshot of Yoshino's in-memory trace to the trace note."
+  (interactive)
+  (let ((file (sthenno-yoshino--ensure-note
+               "yoshino trace"
+               (sthenno-yoshino--trace-note-body))))
+    (sthenno-yoshino--trace 'trace-save `((file . ,file)))
+    (sthenno-yoshino--append-entry
+     file
+     (format "#+BEGIN_SRC emacs-lisp\n%s#+END_SRC"
+             (pp-to-string (reverse sthenno-yoshino--trace))))
+    (when (called-interactively-p 'interactive)
+      (find-file file))
+    file))
 
 ;;;###autoload
 (defun sthenno-yoshino-write-diary (text)
@@ -319,6 +353,34 @@ autonomous steps."
         (setq sthenno-yoshino--action-active nil)
         (sthenno-yoshino--trace
          'action-error `((message . ,(error-message-string err))))
+        (funcall callback (format "error: %s" (error-message-string err))))))))
+
+;;;###autoload
+(defun sthenno-yoshino-write-memory (text)
+  "Append TEXT to Yoshino's Denote memory note and return the memory file."
+  (interactive "sYoshino memory: ")
+  (let* ((file (sthenno-yoshino--ensure-note
+                "yoshino memory"
+                (sthenno-yoshino--memory-note-body)))
+         (file (sthenno-yoshino--append-entry file text)))
+    (sthenno-yoshino--trace 'memory `((file . ,file)))
+    (when (called-interactively-p 'interactive)
+      (find-file file))
+    file))
+
+(defun sthenno-yoshino-write-memory-async (text callback)
+  "Append TEXT to Yoshino's memory note asynchronously, then call CALLBACK."
+  (setq sthenno-yoshino--action-active t)
+  (sthenno-yoshino--async
+   (lambda ()
+     (condition-case err
+         (let ((file (sthenno-yoshino-write-memory text)))
+           (setq sthenno-yoshino--action-active nil)
+           (funcall callback (format "memory: %s" file)))
+       (error
+        (setq sthenno-yoshino--action-active nil)
+        (sthenno-yoshino--trace
+         'memory-error `((message . ,(error-message-string err))))
         (funcall callback (format "error: %s" (error-message-string err))))))))
 
 ;;;###autoload
@@ -395,6 +457,7 @@ autonomous steps."
     "Recent trace:\n%S\n\n"
     "Choose one small action. Return exactly one JSON object:\n"
     "{\"action\":\"diary\",\"text\":\"short first-person note\"}\n"
+    "{\"action\":\"memory\",\"text\":\"short durable memory\"}\n"
     "{\"action\":\"stop\",\"answer\":\"short reason\"}\n")
    sthenno-yoshino--observation
    (sthenno-yoshino--recent-trace)))
@@ -423,6 +486,10 @@ autonomous steps."
     (pcase action
       ("diary"
        (sthenno-yoshino-write-diary-async
+        (or (alist-get 'text decision) "")
+        callback))
+      ("memory"
+       (sthenno-yoshino-write-memory-async
         (or (alist-get 'text decision) "")
         callback))
       ((or "stop" "final")

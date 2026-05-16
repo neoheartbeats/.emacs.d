@@ -37,15 +37,57 @@
         (let ((files (sthenno-yoshino-initialize)))
           (should (file-exists-p (alist-get 'personality files)))
           (should (file-exists-p (alist-get 'diary files)))
+          (should (file-exists-p (alist-get 'reflection files)))
+          (should (file-exists-p (alist-get 'trace files)))
+          (should (file-exists-p (alist-get 'memory files)))
           (should (string-match-p "__yoshino" (file-name-nondirectory
                                                (alist-get 'personality files))))
+          (should (string-match-p "__yoshino" (file-name-nondirectory
+                                               (alist-get 'trace files))))
           (with-temp-buffer
             (insert-file-contents (alist-get 'personality files))
             (should (search-forward "氷芽川四糸乃" nil t))
             (should (search-forward "少し... 寂しい" nil t)))
           (with-temp-buffer
             (insert-file-contents (alist-get 'diary files))
-            (should (search-forward "Yoshino woke quietly inside Emacs." nil t))))
+            (should (search-forward "Yoshino woke quietly inside Emacs." nil t)))
+          (with-temp-buffer
+            (insert-file-contents (alist-get 'trace files))
+            (should (search-forward "YOSHINO_KIND trace" nil t)))
+          (with-temp-buffer
+            (insert-file-contents (alist-get 'memory files))
+            (should (search-forward "YOSHINO_KIND memory" nil t))))
+      (delete-directory dir t))))
+
+(ert-deftest sthenno-yoshino-save-trace-persists-complete-session-trace ()
+  (let* ((dir (make-temp-file "yoshino-trace-" t))
+         (sthenno-yoshino-denote-directory dir))
+    (unwind-protect
+        (progn
+          (sthenno-yoshino-reset)
+          (dotimes (index 35)
+            (sthenno-yoshino--trace 'tick `((index . ,index))))
+          (let ((file (sthenno-yoshino-save-trace)))
+            (should (file-exists-p file))
+            (with-temp-buffer
+              (insert-file-contents file)
+              (should (search-forward "YOSHINO_KIND trace" nil t))
+              (should (search-forward "(index . 0)" nil t))
+              (should (search-forward "(index . 34)" nil t)))))
+      (delete-directory dir t))))
+
+(ert-deftest sthenno-yoshino-memory-appends-entry ()
+  (let* ((dir (make-temp-file "yoshino-memory-" t))
+         (sthenno-yoshino-denote-directory dir))
+    (unwind-protect
+        (let ((file (sthenno-yoshino-write-memory "I remember the quiet buffer.")))
+          (should (file-exists-p file))
+          (let ((same-file (sthenno-yoshino-write-memory "I remember the second step.")))
+            (should (equal file same-file)))
+          (with-temp-buffer
+            (insert-file-contents file)
+            (should (search-forward "I remember the quiet buffer." nil t))
+            (should (search-forward "I remember the second step." nil t))))
       (delete-directory dir t))))
 
 (ert-deftest sthenno-yoshino-diary-appends-entry ()
@@ -151,6 +193,28 @@
                        "{\"action\":\"diary\",\"text\":\"I saw a buffer.\"}")))
           (should (string-match-p "diary" result))
           (should (directory-files dir nil "__yoshino.*\\.org\\'")))
+      (delete-directory dir t))))
+
+(ert-deftest sthenno-yoshino-handles-memory-decision-async ()
+  (let* ((dir (make-temp-file "yoshino-memory-decision-" t))
+         (sthenno-yoshino-denote-directory dir)
+         done result)
+    (unwind-protect
+        (progn
+          (sthenno-yoshino-handle-decision-async
+           "{\"action\":\"memory\",\"text\":\"I kept this as memory.\"}"
+           (lambda (value)
+             (setq result value
+                   done t)))
+          (while (not done)
+            (accept-process-output nil 0.01))
+          (should (string-match-p "memory" result))
+          (let ((memory (car (directory-files
+                              dir t "--yoshino-memory__.*\\.org\\'"))))
+            (should memory)
+            (with-temp-buffer
+              (insert-file-contents memory)
+              (should (search-forward "I kept this as memory." nil t)))))
       (delete-directory dir t))))
 
 ;;; sthenno-yoshino-test.el ends here
