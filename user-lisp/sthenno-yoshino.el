@@ -66,6 +66,16 @@ autonomous steps."
   :type 'number
   :group 'sthenno-yoshino)
 
+(defcustom sthenno-yoshino-log-buffer-name "*Yoshino Log*"
+  "Name of Yoshino's live logging buffer."
+  :type 'string
+  :group 'sthenno-yoshino)
+
+(defcustom sthenno-yoshino-log-enabled t
+  "Non-nil means Yoshino appends trace events to the live log buffer."
+  :type 'boolean
+  :group 'sthenno-yoshino)
+
 ;;; Personality
 
 (defconst sthenno-yoshino-voice
@@ -96,6 +106,7 @@ autonomous steps."
 (defvar sthenno-yoshino--loop-running nil)
 (defvar sthenno-yoshino--loop-timer nil)
 (defvar sthenno-yoshino--idle-timer nil)
+(defvar sthenno-yoshino--log-sequence 0)
 
 ;;;###autoload
 (defun sthenno-yoshino-personality ()
@@ -122,12 +133,85 @@ autonomous steps."
 
 (defalias 'sthenno-yoshino-reset-workspace #'sthenno-yoshino-reset)
 
+(define-derived-mode sthenno-yoshino-log-mode special-mode "Yoshino-Log"
+  "Major mode for Yoshino's live logging buffer.")
+
+(defun sthenno-yoshino--log-buffer-create ()
+  "Return Yoshino's live logging buffer."
+  (let ((buffer (get-buffer-create sthenno-yoshino-log-buffer-name)))
+    (with-current-buffer buffer
+      (unless (derived-mode-p 'sthenno-yoshino-log-mode)
+        (sthenno-yoshino-log-mode))
+      (when (= (buffer-size) 0)
+        (let ((inhibit-read-only t))
+          (insert (format "Yoshino live log started at %s\n\n"
+                          (format-time-string "%Y-%m-%d %H:%M:%S %z"))))))
+    buffer))
+
+(defun sthenno-yoshino--log-format (event)
+  "Return a single log entry string for EVENT."
+  (let ((time (alist-get 'time event))
+        (kind (alist-get 'kind event))
+        (payload (alist-get 'payload event)))
+    (format "[%04d] %s %-18s %s\n"
+            sthenno-yoshino--log-sequence
+            time
+            kind
+            (string-trim (pp-to-string payload)))))
+
+(defun sthenno-yoshino--log-event (event)
+  "Append EVENT to Yoshino's live logging buffer."
+  (when sthenno-yoshino-log-enabled
+    (cl-incf sthenno-yoshino--log-sequence)
+    (let ((buffer (sthenno-yoshino--log-buffer-create)))
+      (with-current-buffer buffer
+        (let ((inhibit-read-only t)
+              (at-end (= (point) (point-max))))
+          (goto-char (point-max))
+          (insert (sthenno-yoshino--log-format event))
+          (when at-end
+            (goto-char (point-max))))))))
+
+;;;###autoload
+(defun sthenno-yoshino-log-open ()
+  "Open Yoshino's live logging buffer."
+  (interactive)
+  (pop-to-buffer (sthenno-yoshino--log-buffer-create)))
+
+;;;###autoload
+(defun sthenno-yoshino-log-clear ()
+  "Clear Yoshino's live logging buffer."
+  (interactive)
+  (let ((buffer (sthenno-yoshino--log-buffer-create)))
+    (with-current-buffer buffer
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (insert (format "Yoshino live log cleared at %s\n\n"
+                        (format-time-string "%Y-%m-%d %H:%M:%S %z")))))
+    buffer))
+
+;;;###autoload
+(defun sthenno-yoshino-log-enable ()
+  "Enable Yoshino's live logging buffer."
+  (interactive)
+  (setq sthenno-yoshino-log-enabled t)
+  (sthenno-yoshino--log-buffer-create)
+  t)
+
+;;;###autoload
+(defun sthenno-yoshino-log-disable ()
+  "Disable Yoshino's live logging buffer."
+  (interactive)
+  (setq sthenno-yoshino-log-enabled nil)
+  nil)
+
 (defun sthenno-yoshino--trace (kind payload)
   "Record KIND and PAYLOAD in Yoshino's complete in-memory trace."
   (let ((event `((time . ,(format-time-string "%Y-%m-%dT%H:%M:%S%z"))
                  (kind . ,(format "%s" kind))
                  (payload . ,payload))))
     (push event sthenno-yoshino--trace)
+    (sthenno-yoshino--log-event event)
     event))
 
 ;;; Utility
