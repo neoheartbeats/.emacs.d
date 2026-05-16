@@ -217,4 +217,78 @@
               (should (search-forward "I kept this as memory." nil t)))))
       (delete-directory dir t))))
 
+(ert-deftest sthenno-yoshino-write-action-streams-to-buffer-and-saves ()
+  (sthenno-yoshino-reset)
+  (let* ((dir (make-temp-file "yoshino-writing-" t))
+         (sthenno-yoshino-denote-directory dir)
+         done result captured-prompt captured-stream)
+    (unwind-protect
+        (cl-letf (((symbol-function 'gptel-request)
+                   (lambda (prompt &rest plist)
+                     (let ((callback (plist-get plist :callback)))
+                       (setq captured-prompt prompt
+                             captured-stream (plist-get plist :stream))
+                       (funcall callback "quiet " nil)
+                       (let ((file (car (directory-files
+                                         dir t "--yoshino-writing__.*\\.org\\'"))))
+                         (should file)
+                         (with-temp-buffer
+                           (insert-file-contents file)
+                           (should (search-forward "quiet " nil t))))
+                       (funcall callback "snow" nil)
+                       (funcall callback t nil)
+                       :streamed))))
+          (sthenno-yoshino-handle-decision-async
+           "{\"action\":\"write\",\"prompt\":\"Write about thin ice.\"}"
+           (lambda (value)
+             (setq result value
+                   done t)))
+          (while (not done)
+            (accept-process-output nil 0.01))
+          (should (eq captured-stream t))
+          (should (string-match-p "plain prose" captured-prompt))
+          (should (string-match-p "thin ice" captured-prompt))
+          (should (string-match-p "writing" result))
+          (let ((file (car (directory-files
+                            dir t "--yoshino-writing__.*\\.org\\'"))))
+            (should file)
+            (with-temp-buffer
+              (insert-file-contents file)
+              (should (search-forward "quiet snow" nil t)))))
+      (delete-directory dir t))))
+
+(ert-deftest sthenno-yoshino-loop-start-runs-background-writing-step ()
+  (sthenno-yoshino-reset)
+  (let* ((dir (make-temp-file "yoshino-loop-" t))
+         (sthenno-yoshino-denote-directory dir)
+         (requests 0))
+    (unwind-protect
+        (cl-letf (((symbol-function 'gptel-request)
+                   (lambda (_prompt &rest plist)
+                     (cl-incf requests)
+                     (let ((callback (plist-get plist :callback)))
+                       (funcall callback "loop note" nil)
+                       (funcall callback t nil)
+                       :loop-sent))))
+          (sthenno-yoshino-loop-start 60)
+          (while sthenno-yoshino--writing-active
+            (accept-process-output nil 0.01))
+          (should (sthenno-yoshino-loop-running-p))
+          (should (= requests 1))
+          (let ((file (car (directory-files
+                            dir t "--yoshino-writing__.*\\.org\\'"))))
+            (should file)
+            (with-temp-buffer
+              (insert-file-contents file)
+              (should (search-forward "loop note" nil t))))
+          (sthenno-yoshino-loop-stop)
+          (should-not (sthenno-yoshino-loop-running-p)))
+      (sthenno-yoshino-loop-stop)
+      (delete-directory dir t))))
+
+(ert-deftest sthenno-yoshino-open-writing-and-loop-are-commands ()
+  (should (commandp 'sthenno-yoshino-write-open))
+  (should (commandp 'sthenno-yoshino-loop-start))
+  (should (commandp 'sthenno-yoshino-loop-stop)))
+
 ;;; sthenno-yoshino-test.el ends here
