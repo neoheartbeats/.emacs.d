@@ -32,6 +32,18 @@
     (should (equal (sthenno-yoshino-call-skill "buffer-name")
                    "yoshino-test-buffer"))))
 
+(ert-deftest sthenno-yoshino-records-skill-result-in-trace ()
+  (sthenno-yoshino-reset-workspace)
+  (sthenno-yoshino-register-skill 'buffer-name 'read 'none)
+  (with-temp-buffer
+    (rename-buffer "trace-result-buffer" t)
+    (sthenno-yoshino-call-skill "buffer-name"))
+  (let* ((event (car (plist-get (sthenno-yoshino-workspace) :trace)))
+         (payload (alist-get 'payload event)))
+    (should (equal (alist-get 'kind event) "call-skill"))
+    (should (string-match-p "trace-result-buffer"
+                            (alist-get 'result payload)))))
+
 (ert-deftest sthenno-yoshino-blocks-write-skill-when-confirmation-declines ()
   (sthenno-yoshino-reset-workspace)
   (sthenno-yoshino-register-skill 'ignore 'write 'string)
@@ -87,6 +99,16 @@
       (should (functionp captured-callback))
       (should (alist-get 'buffer (plist-get (sthenno-yoshino-workspace)
                                             :attention))))))
+
+(ert-deftest sthenno-yoshino-prompt-includes-recent-trace ()
+  (sthenno-yoshino-reset-workspace)
+  (sthenno-yoshino-register-skill 'buffer-name 'read 'none)
+  (with-temp-buffer
+    (rename-buffer "prompt-trace-buffer" t)
+    (sthenno-yoshino-call-skill "buffer-name"))
+  (let ((prompt (sthenno-yoshino--user-prompt)))
+    (should (string-match-p "Recent trace" prompt))
+    (should (string-match-p "prompt-trace-buffer" prompt))))
 
 (ert-deftest sthenno-yoshino-registers-default-skills ()
   (sthenno-yoshino-reset-workspace)

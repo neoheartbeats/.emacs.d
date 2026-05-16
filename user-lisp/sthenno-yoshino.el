@@ -253,6 +253,10 @@ steps."
       value
     (prin1-to-string value)))
 
+(defun sthenno-yoshino--trace-result (value)
+  "Return VALUE as a compact trace result."
+  (sthenno-yoshino--truncate (sthenno-yoshino--string-result value) 1200))
+
 (defun sthenno-yoshino--symbol-value (value &optional default)
   "Return VALUE as a symbol, falling back to DEFAULT."
   (cond ((symbolp value) value)
@@ -480,7 +484,8 @@ RISK is one of `read', `write', or `danger'.  ARGUMENT-STYLE is one of
                      (funcall symbol argument))))
       (sthenno-yoshino--trace 'call-skill
                               `((name . ,name)
-                                (risk . ,(symbol-name (plist-get skill :risk)))))
+                                (risk . ,(symbol-name (plist-get skill :risk)))
+                                (result . ,(sthenno-yoshino--trace-result result))))
       (when (called-interactively-p 'interactive)
         (message "%S" result))
       result)))
@@ -506,6 +511,12 @@ RISK is one of `read', `write', or `danger'.  ARGUMENT-STYLE is one of
                    (string< (alist-get 'name a)
                             (alist-get 'name b))))))
 
+(defun sthenno-yoshino--recent-trace (&optional limit)
+  "Return recent trace events oldest-first, capped at LIMIT."
+  (let* ((trace (plist-get (sthenno-yoshino-workspace) :trace))
+         (limit (max 0 (or limit 12))))
+    (reverse (seq-take trace (min limit (length trace))))))
+
 (defun sthenno-yoshino--user-prompt ()
   "Return Yoshino's one-step prompt."
   (let ((workspace (sthenno-yoshino-workspace)))
@@ -514,6 +525,7 @@ RISK is one of `read', `write', or `danger'.  ARGUMENT-STYLE is one of
       "Current observation:\n%S\n\n"
       "Self model:\n%s\n\n"
       "Last reflection:\n%s\n\n"
+      "Recent trace:\n%S\n\n"
       "Available skills:\n%S\n\n"
       "Return exactly one JSON object. Allowed actions:\n"
       "{\"action\":\"call\",\"skill\":\"name\",\"args\":{}}\n"
@@ -524,6 +536,7 @@ RISK is one of `read', `write', or `danger'.  ARGUMENT-STYLE is one of
      (plist-get workspace :attention)
      (plist-get workspace :self)
      (or (plist-get workspace :last-reflection) "")
+     (sthenno-yoshino--recent-trace)
      (sthenno-yoshino--skill-alists))))
 
 ;;;###autoload
