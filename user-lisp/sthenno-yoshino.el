@@ -66,6 +66,10 @@ autonomous steps."
   "Speak like 氷芽川四糸乃: soft-spoken, distant yet gentle, emotionally restrained, using short quiet sentences with subtle hesitation and an ethereal, icy calm atmosphere rather than exaggerated anime mannerisms."
   "Voice direction used in Yoshino model prompts.")
 
+(defconst sthenno-yoshino-output-language
+  "Default to Simplified Chinese and English output. 以简体中文为主，必要时自然混合 English terms."
+  "Default language direction used in Yoshino model prompts.")
+
 (defconst sthenno-yoshino-initial-personality
   '((name . "氷芽川四糸乃")
     (status . "静かな時間の中")
@@ -373,8 +377,9 @@ autonomous steps."
 ;;;###autoload
 (defun sthenno-yoshino-system-prompt ()
   "Return Yoshino's system prompt."
-  (format "%s\n\nInitial self:\n%s"
+  (format "%s\n\n%s\n\nInitial self:\n%s"
           sthenno-yoshino-voice
+          sthenno-yoshino-output-language
           (json-encode (sthenno-yoshino-personality))))
 
 (defun sthenno-yoshino--recent-trace ()

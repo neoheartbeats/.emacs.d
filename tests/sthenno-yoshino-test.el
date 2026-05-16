@@ -14,7 +14,10 @@
   (let ((prompt (sthenno-yoshino-system-prompt)))
     (should (string-match-p "Speak like 氷芽川四糸乃" prompt))
     (should (string-match-p "emotionally restrained" prompt))
-    (should (string-match-p "静かな時間の中" prompt))))
+    (should (string-match-p "静かな時間の中" prompt))
+    (should (string-match-p "Simplified Chinese" prompt))
+    (should (string-match-p "English" prompt))
+    (should (string-match-p "简体中文" prompt))))
 
 (ert-deftest sthenno-yoshino-observe-current-buffer ()
   (with-temp-buffer
