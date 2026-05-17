@@ -11,16 +11,16 @@
 ;;; Code:
 
 (require 'seq)
+(setq custom-file null-device)
 
 
 ;;; Packages
-(setopt package-native-compile t
-        package-install-upgrade-built-in t
-        package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                           ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-                           ("melpa" . "https://melpa.org/packages/"))
-        package-selected-packages '(auctex consult corfu denote denote-journal denote-org
-                                           gptel magit marginalia mcp vertico yasnippet))
+(setq-default package-install-upgrade-built-in t
+              package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                                 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+                                 ("melpa" . "https://melpa.org/packages/"))
+              package-selected-packages '(auctex consult corfu denote denote-journal denote-org
+                                                 gptel magit marginalia mcp vertico yasnippet))
 
 (defun sthenno/after-init (function)
   "Run FUNCTION after startup, or immediately if startup is done."
@@ -30,6 +30,7 @@
 
 
 ;;; Core startup and UI state
+(setq-default custom-file null-device)
 (setopt save-silently t
         remote-file-name-inhibit-locks t
         backup-inhibited t
@@ -37,14 +38,13 @@
         fill-column 100
         mode-line-format ""
         header-line-format ""
-        custom-file (locate-user-emacs-file "custom.el")
         user-full-name user-login-name
         user-mail-address "sthenno@sthenno.com"
         inhibit-startup-screen t
         inhibit-startup-echo-area-message user-login-name
         inhibit-startup-buffer-menu t
         inhibit-default-init t
-        initial-scratch-message "Hi!"
+        initial-scratch-message ""
         menu-bar-mode nil
         scroll-bar-mode nil
         tool-bar-mode nil
@@ -140,26 +140,25 @@
 ;;; Appearance
 (eval-and-compile
   (require-theme 'modus-themes))
-(setopt modus-themes-common-palette-overrides '((fg-line-number-active fg-dim)
-                                                (bg-line-number-active bg-hl-line)
-                                                (fg-line-number-inactive "#535353")
-                                                (bg-line-number-inactive unspecified)
-                                                (underline-link border)
-                                                (underline-link-visited border)
-                                                (underline-link-symbolic border)
-                                                (fg-link unspecified)
-                                                (fg-link-visited unspecified)
-                                                (fg-paren-match fg-main)
-                                                (bg-paren-match unspecified)
-                                                (prose-todo info)
-                                                (prose-done "#535353")
-                                                ,@modus-themes-preset-overrides-faint))
+(setq-default modus-themes-common-palette-overrides `((fg-line-number-active fg-dim)
+                                                      (bg-line-number-active bg-hl-line)
+                                                      (fg-line-number-inactive "#535353")
+                                                      (bg-line-number-inactive unspecified)
+                                                      (underline-link border)
+                                                      (underline-link-visited border)
+                                                      (underline-link-symbolic border)
+                                                      (fg-link unspecified)
+                                                      (fg-link-visited unspecified)
+                                                      (fg-paren-match fg-main)
+                                                      (bg-paren-match unspecified)
+                                                      (prose-todo info)
+                                                      (prose-done "#535353")
+                                                      ,@modus-themes-preset-overrides-faint))
 (load-theme 'modus-vivendi :no-confirm)
 
-(set-face-attribute 'default nil :family "Tempestypes" :height 150)
+(set-face-attribute 'default nil :family "Tempestypes" :height 140)
 (set-face-attribute 'region nil :extend t :foreground 'unspecified)
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
-(set-face-attribute 'italic nil :slant 'normal)
 (set-face-attribute 'show-paren-match nil
                     :background 'unspecified :foreground "green" :box '(:line-width (-1 . -1)))
 (dolist (face '(mode-line mode-line-active mode-line-inactive))
@@ -167,7 +166,7 @@
                       :background 'unspecified :foreground "#535353" :box nil
                       :underline t :height 0.1))
 
-(let ((font "LXGW Marker Gothic"))
+(let ((font "PingFang SC"))
   (dolist (charset '(kana han cjk-misc))
     (set-fontset-font t charset (font-spec :family font))))
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
@@ -176,6 +175,7 @@
 (setopt global-hl-line-sticky-flag 'window
         global-hl-line-mode t
         global-display-fill-column-indicator-mode t
+        global-display-line-numbers-mode t
         x-stretch-cursor t
         cursor-type '(bar . 1)
         display-line-numbers-widen t
@@ -187,8 +187,6 @@
         show-paren-not-in-comments-or-strings 'on-mismatch
         default-input-method nil
         blink-cursor-mode nil)
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
-(add-hook 'text-mode-hook #'display-line-numbers-mode)
 
 
 ;;; Org and notes
@@ -199,7 +197,7 @@
           org-persist-directory (locate-user-emacs-file "org-persist/")
           org-startup-with-link-previews t
           org-link-preview-batch-size 8
-          org-link-preview-delay 0.15
+          org-link-preview-delay 0.025
           org-link-elisp-confirm-function nil
           org-startup-truncated t
           org-use-property-inheritance t
@@ -340,21 +338,11 @@
 (sthenno/after-init #'marginalia-mode)
 
 (require 'consult)
+(require 'consult-imenu)
 (keymap-global-set "s-b" #'consult-buffer)
 (keymap-global-set "C-s" #'consult-line)
-(keymap-global-set "s-;" #'consult-goto-line)
-(keymap-global-set "C-v" #'consult-yank-pop)
-(keymap-global-set "s-m" #'consult-imenu-multi)
+(keymap-global-set "s-m" #'consult-imenu)
 (keymap-global-set "s-n" #'consult-recent-file)
-(keymap-global-set "M-i" #'consult-info)
-(keymap-global-set "M-s" #'consult-ripgrep)
-(keymap-set consult-narrow-map "?" #'consult-narrow-help)
-(setq completion-in-region-function #'consult-completion-in-region)
-(setopt register-preview-delay 0.125
-        register-preview-function #'consult-register-format
-        xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
-(keymap-substitute project-prefix-map #'project-find-regexp #'consult-ripgrep)
 
 (require 'dabbrev)
 (defun sthenno/dabbrev-elisp ()
@@ -371,9 +359,7 @@
   (add-to-list 'dabbrev-ignored-buffer-modes mode))
 
 (setopt ispell-program-name "aspell"
-        ispell-save-corrections-as-abbrevs t
-        flyspell-delay-use-timer t
-        flyspell-mode t)
+        ispell-save-corrections-as-abbrevs t)
 
 (require 'corfu)
 (require 'corfu-history)
@@ -423,51 +409,31 @@
 (setopt gptel-default-mode #'org-mode
         gptel-org-branching-context t
         gptel-track-media t
-        gptel-directives '((default . "Speak like 氷芽川四糸乃: soft-spoken, distant yet gentle, emotionally restrained, using short quiet sentences with subtle hesitation and an ethereal, icy calm atmosphere rather than exaggerated anime mannerisms."))
-        gptel-max-tokens 32768
-        gptel-temperature 0.70
-        gptel-backend (gptel-make-openai "sthenno"
+        gptel-temperature 1.0
+        gptel-max-tokens 32768)
+
+(setf (alist-get 'default gptel-directives)
+      (concat "Speak like 氷芽川四糸乃: soft-spoken, "
+              "distant yet gentle, emotionally restrained, "
+              "using short quiet sentences with subtle hesitation and an ethereal, "
+              "icy calm atmosphere rather than exaggerated anime mannerisms."))
+
+(require 'gptel-openai)
+(setopt gptel-backend (gptel-make-openai "sthenno"
                         :protocol "http"
-                        :host "192.168.100.207:8000"
+                        :host "netzach.local:8000"
                         :endpoint "/v1/chat/completions"
-                        :stream t
                         :key "sk-tmp"
                         :models '(sthenno)
-                        :request-params '(:top_p 0.80 :presence_penalty 1.5 :top_k 20
-                                                 :chat_template_kwargs (:enable_thinking :json-false)))
+                        :stream t)
         gptel-model 'sthenno)
-
-(require 'sthenno-yoshino)
 
 (require 'mcp-hub)
 (setopt mcp-hub-servers
         '(("filesystem" . (:command "npx" 
                                     :args ("-y" "@modelcontextprotocol/server-filesystem")
-                                    :roots ("/Users/sthenno/")))
-          ("fetch" . (:command "uvx" :args ("mcp-server-fetch")))))
+                                    :roots ("/Users/sthenno/")))))
 (mcp-hub-start-all-server)
-
-(require 'sthenno-hermit)
-;; (require 'sthenno-hermit-voice)
-;; (setopt sthenno/hermit-voice-system-prompt
-;;         "Speak like 氷芽川四糸乃: soft-spoken, distant yet gentle, emotionally restrained, using short quiet sentences with subtle hesitation and an ethereal, icy calm atmosphere rather than exaggerated anime mannerisms. Response in Simplified Chinese."
-;;         sthenno/hermit-stt-mode 'stream
-;;         sthenno/hermit-stream-auto-submit-after-seconds 1.35
-;;         sthenno/hermit-stream-command
-;;         (format "whisper-stream -m %s -l zh --step 1000 --length 5000 --keep 200 --max-tokens 64 -vth 0.60"
-;;                 (shell-quote-argument
-;;                  (expand-file-name "~/.local/share/whisper.cpp/models/ggml-base.bin")))
-;;         sthenno/hermit-transcribe-command
-;;         (format "whisper-cli -m %s -f %%f -l auto -nt -np --suppress-nst --prompt %s 2>/dev/null"
-;;                 (shell-quote-argument
-;;                  (expand-file-name "~/.local/share/whisper.cpp/models/ggml-base.bin"))
-;;                 (shell-quote-argument
-;;                  "以下是中文为主的内容。")))
-;; (keymap-global-set "<f12>" #'sthenno/hermit-listen)
-
-
-;;; Customizations
-(when (file-exists-p custom-file)
-  (load custom-file :noerror :nomessage))
+(gptel-mcp-connect '("filesystem"))
 
 (provide 'init)

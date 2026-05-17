@@ -27,13 +27,12 @@
                 (horizontal-scroll-bars)
                 (width . 140)
                 (height . 55)
-                (internal-border-width . 0)
-                (left-fringe . 0)
-                (right-fringe . 0)
+                ;; (internal-border-width . 0)
+                ;; (left-fringe . 0)
+                ;; (right-fringe . 0)
                 (undecorated . t)
                 (alpha-background . 0.60)
-                (ns-alpha-elements . (ns-alpha-default ns-alpha-fringe
-                                                       ns-alpha-box ns-alpha-stipple
+                (ns-alpha-elements . (ns-alpha-default ns-alpha-fringe ns-alpha-box ns-alpha-stipple
                                                        ns-alpha-relief ns-alpha-glyphs))))
 (setq-default initial-frame-alist default-frame-alist)
 (setq-default frame-resize-pixelwise t)

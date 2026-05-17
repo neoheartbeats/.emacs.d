@@ -61,7 +61,7 @@ autonomous steps."
   :type 'boolean
   :group 'sthenno-yoshino)
 
-(defcustom sthenno-yoshino-loop-interval 60
+(defcustom sthenno-yoshino-loop-interval 5
   "Seconds between background Yoshino memory/reflection rewrite steps."
   :type 'number
   :group 'sthenno-yoshino)
