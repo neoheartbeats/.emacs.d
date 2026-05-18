@@ -22,20 +22,13 @@
 
 ;;; Frames
 (setq-default default-frame-alist
-              '((tool-bar-lines . 0)
-                (vertical-scroll-bars)
-                (horizontal-scroll-bars)
-                (width . 140)
-                (height . 55)
-                ;; (internal-border-width . 0)
-                ;; (left-fringe . 0)
-                ;; (right-fringe . 0)
-                (undecorated . t)
-                (alpha-background . 0.60)
+              '((tool-bar-lines . 0) (horizontal-scroll-bars) (vertical-scroll-bars)
+                (height . 45) (width . 120)
+                (internal-border-width . 0) (left-fringe . 0) (right-fringe . 0)
+                (undecorated . t) (alpha-background . 0.65) (ns-background-blur . 20)
                 (ns-alpha-elements . (ns-alpha-default ns-alpha-fringe ns-alpha-box ns-alpha-stipple
                                                        ns-alpha-relief ns-alpha-glyphs))))
 (setq-default initial-frame-alist default-frame-alist)
 (setq-default frame-resize-pixelwise t)
 
 (provide 'early-init)
-

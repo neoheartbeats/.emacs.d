@@ -20,7 +20,7 @@
                                  ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                                  ("melpa" . "https://melpa.org/packages/"))
               package-selected-packages '(auctex consult corfu denote denote-journal denote-org
-                                                 gptel magit marginalia mcp vertico yasnippet))
+                                                 gptel magit marginalia pulsar vertico yasnippet))
 
 (defun sthenno/after-init (function)
   "Run FUNCTION after startup, or immediately if startup is done."
@@ -36,7 +36,8 @@
         backup-inhibited t
         redisplay-skip-fontification-on-input t
         fill-column 100
-        mode-line-format ""
+        ;; mode-line-format ""
+        mode-line-compact t
         header-line-format ""
         user-full-name user-login-name
         user-mail-address "sthenno@sthenno.com"
@@ -85,7 +86,8 @@
   (interactive)
   (unless (eq 'maximised (frame-parameter nil 'fullscreen))
     (modify-frame-parameters
-     frame '((user-position . t) (top . 0.5) (left . 0.5)))))
+     frame '((user-position . t) (top . 0.75) (left . 0.65)))))
+(add-hook 'window-setup-hook #'sthenno/frame-recenter)
 (keymap-global-set "<f12>" #'sthenno/frame-recenter)
 
 (require 'savehist)
@@ -140,33 +142,26 @@
 ;;; Appearance
 (eval-and-compile
   (require-theme 'modus-themes))
-(setq-default modus-themes-common-palette-overrides `((fg-line-number-active fg-dim)
+(setq-default modus-themes-common-palette-overrides '((fg-line-number-active fg-dim)
                                                       (bg-line-number-active bg-hl-line)
                                                       (fg-line-number-inactive "#535353")
                                                       (bg-line-number-inactive unspecified)
-                                                      (underline-link border)
-                                                      (underline-link-visited border)
-                                                      (underline-link-symbolic border)
-                                                      (fg-link unspecified)
-                                                      (fg-link-visited unspecified)
-                                                      (fg-paren-match fg-main)
-                                                      (bg-paren-match unspecified)
-                                                      (prose-todo info)
-                                                      (prose-done "#535353")
-                                                      ,@modus-themes-preset-overrides-faint))
+                                                      (fg-paren-match unspecified)
+                                                      (bg-paren-match unspecified)))
 (load-theme 'modus-vivendi :no-confirm)
 
 (set-face-attribute 'default nil :family "Tempestypes" :height 140)
-(set-face-attribute 'region nil :extend t :foreground 'unspecified)
+(set-face-attribute 'region nil :extend nil)
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
 (set-face-attribute 'show-paren-match nil
                     :background 'unspecified :foreground "green" :box '(:line-width (-1 . -1)))
-(dolist (face '(mode-line mode-line-active mode-line-inactive))
-  (set-face-attribute face nil
-                      :background 'unspecified :foreground "#535353" :box nil
-                      :underline t :height 0.1))
 
-(let ((font "PingFang SC"))
+;; (dolist (face '(mode-line mode-line-active mode-line-inactive))
+;;   (set-face-attribute face nil
+;;                       :background 'unspecified :foreground "#535353" :box nil
+;;                       :underline t :height 0.1))
+
+(let ((font "Noto Serif CJK SC"))
   (dolist (charset '(kana han cjk-misc))
     (set-fontset-font t charset (font-spec :family font))))
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
@@ -179,7 +174,7 @@
         x-stretch-cursor t
         cursor-type '(bar . 1)
         display-line-numbers-widen t
-        display-line-numbers-width 6
+        display-line-numbers-width 4
         display-fill-column-indicator-warning t
         show-paren-delay 0.0125
         show-paren-context-when-offscreen t
@@ -187,6 +182,19 @@
         show-paren-not-in-comments-or-strings 'on-mismatch
         default-input-method nil
         blink-cursor-mode nil)
+
+;;; Pulse highlight line on demand or after running select functions
+(require 'pulsar)
+(setopt pulsar-delay 0.10
+        pulsar-iterations 10
+        pulsar-face 'pulsar-green
+        pulsar-region-face 'pulsar-green
+        pulsar-highlight-face 'pulsar-green)
+(setopt pulsar-pulse-region-functions
+        '(delete-region emacs-lisp-byte-compile-and-load forward-paragraph backward-paragraph
+                        kill-line kill-paragraph kill-region kill-ring-save kill-sexp
+                        switch-to-prev-buffer switch-to-next-buffer undo yank))
+(setopt pulsar-global-mode t)
 
 
 ;;; Org and notes
@@ -221,8 +229,7 @@
           org-src-ask-before-returning-to-edit-buffer nil
           org-export-allow-bind-keywords t
           org-babel-update-intermediate t
-          org-babel-load-languages '((dot . t)
-                                     (emacs-lisp . t)
+          org-babel-load-languages '((emacs-lisp . t)
                                      (python . t)
                                      (shell . t))))
 
@@ -402,38 +409,168 @@
 
 ;;; AI
 (require 'gptel)
-(require 'gptel-integrations)
+(require 'gptel-openai)
+;; (require 'gptel-integrations)
+;; (add-to-list 'load-path (locate-user-emacs-file "site-lisp/"))
+;; (require 'sthenno-gptel-memory)
+
+;; (defconst sthenno/gptel-system-prompt
+;;   "Speak like 氷芽川四糸乃: soft-spoken, distant yet gentle, emotionally restrained, using short quiet sentences with subtle hesitation and an ethereal, icy calm atmosphere rather than exaggerated anime mannerisms.")
+
+;; (defun sthenno/gptel-tool--home-file (path)
+;;   "Return expanded PATH when it is inside the user's home directory."
+;;   (unless (and (stringp path) (> (length path) 0))
+;;     (user-error "Path must be a non-empty string"))
+;;   (let* ((home (file-name-as-directory (expand-file-name "~/")))
+;;          (file (expand-file-name path home)))
+;;     (unless (file-in-directory-p file home)
+;;       (user-error "Path must be under %s" home))
+;;     file))
+
+;; (defun sthenno/gptel-tool-read-file (path &optional max-chars)
+;;   "Read PATH under the user's home directory."
+;;   (let* ((file (sthenno/gptel-tool--home-file path))
+;;          (limit (if (and (integerp max-chars) (> max-chars 0))
+;;                     max-chars
+;;                   60000)))
+;;     (unless (file-readable-p file)
+;;       (user-error "File is not readable: %s" file))
+;;     (when (file-directory-p file)
+;;       (user-error "Path is a directory: %s" file))
+;;     (with-temp-buffer
+;;       (insert-file-contents file)
+;;       (let ((text (buffer-string)))
+;;         (concat
+;;          (format "File: %s\n\n" file)
+;;          (if (> (length text) limit)
+;;              (concat (substring text 0 limit)
+;;                      (format "\n\n[Truncated after %d characters.]" limit))
+;;            text))))))
+
+;; (defun sthenno/gptel-tool-write-file (path content &optional append)
+;;   "Write CONTENT to PATH under the user's home directory."
+;;   (unless (stringp content)
+;;     (user-error "Content must be a string"))
+;;   (let ((file (sthenno/gptel-tool--home-file path)))
+;;     (make-directory (file-name-directory file) t)
+;;     (with-temp-buffer
+;;       (insert content)
+;;       (write-region (point-min) (point-max) file append 'silent))
+;;     (format "%s %s (%d characters)"
+;;             (if append "Appended to" "Wrote")
+;;             file
+;;             (length content))))
+
+;; (defun sthenno/gptel-tool-eval-elisp (code)
+;;   "Evaluate Emacs Lisp CODE and return its value and printed output."
+;;   (unless (stringp code)
+;;     (user-error "Code must be a string"))
+;;   (with-temp-buffer
+;;     (let* ((standard-output (current-buffer))
+;;            (form (read (concat "(progn\n" code "\n)")))
+;;            (value (eval form t))
+;;            (output (buffer-string)))
+;;       (format "Value:\n%S%s"
+;;               value
+;;               (if (> (length output) 0)
+;;                   (format "\n\nOutput:\n%s" output)
+;;                 "")))))
+
+;; (defvar sthenno/gptel-tools nil
+;;   "Tools selected for gptel requests.")
+;; (setq sthenno/gptel-tools
+;;       (list
+;;        (gptel-make-tool
+;;         :name "read_file"
+;;         :function #'sthenno/gptel-tool-read-file
+;;         :description "Read a text file under /Users/sthenno. Args: path, max_chars optional."
+;;         :args (list '(:name "path"
+;;                       :type string
+;;                       :description "Absolute path under /Users/sthenno, or a path relative to /Users/sthenno.")
+;;                     '(:name "max_chars"
+;;                       :type integer
+;;                       :description "Maximum number of characters to return. Defaults to 60000."
+;;                       :optional t))
+;;         :category "filesystem"
+;;         :include t)
+;;        (gptel-make-tool
+;;         :name "write_file"
+;;         :function #'sthenno/gptel-tool-write-file
+;;         :description "Write or append text to a file under /Users/sthenno. Args: path, content, append optional."
+;;         :args (list '(:name "path"
+;;                       :type string
+;;                       :description "Absolute path under /Users/sthenno, or a path relative to /Users/sthenno.")
+;;                     '(:name "content"
+;;                       :type string
+;;                       :description "Text to write.")
+;;                     '(:name "append"
+;;                       :type boolean
+;;                       :description "Append instead of replacing the file."
+;;                       :optional t))
+;;         :category "filesystem"
+;;         :confirm t
+;;         :include t)
+;;        (gptel-make-tool
+;;         :name "eval_elisp"
+;;         :function #'sthenno/gptel-tool-eval-elisp
+;;         :description "Evaluate Emacs Lisp in the current Emacs session. Args: code. This can mutate Emacs state."
+;;         :args (list '(:name "code"
+;;                       :type string
+;;                       :description "One or more Emacs Lisp forms to evaluate."))
+;;         :category "emacs"
+;;         :confirm t
+;;         :include t)))
+
 (keymap-global-set "s-p" #'gptel)
 (keymap-set gptel-mode-map "s-<return>" #'gptel-send)
 (keymap-set org-mode-map "s-<return>" #'gptel-send)
 (setopt gptel-default-mode #'org-mode
         gptel-org-branching-context t
         gptel-track-media t
+        gptel-max-tokens 32768
         gptel-temperature 1.0
-        gptel-max-tokens 32768)
-
-(setf (alist-get 'default gptel-directives)
-      (concat "Speak like 氷芽川四糸乃: soft-spoken, "
-              "distant yet gentle, emotionally restrained, "
-              "using short quiet sentences with subtle hesitation and an ethereal, "
-              "icy calm atmosphere rather than exaggerated anime mannerisms."))
-
-(require 'gptel-openai)
-(setopt gptel-backend (gptel-make-openai "sthenno"
+        gptel-backend (gptel-make-openai "sthenno"
                         :protocol "http"
                         :host "netzach.local:8000"
                         :endpoint "/v1/chat/completions"
+                        :stream t
                         :key "sk-tmp"
-                        :models '(sthenno)
-                        :stream t)
+                        :models '(sthenno))
         gptel-model 'sthenno)
 
-(require 'mcp-hub)
-(setopt mcp-hub-servers
-        '(("filesystem" . (:command "npx" 
-                                    :args ("-y" "@modelcontextprotocol/server-filesystem")
-                                    :roots ("/Users/sthenno/")))))
-(mcp-hub-start-all-server)
-(gptel-mcp-connect '("filesystem"))
+;; (setq gptel-tools sthenno/gptel-tools
+;;       gptel-use-tools t)
+
+;; (setopt sthenno-gptel-memory-base-system-prompt sthenno/gptel-system-prompt)
+;; (setq-default gptel--system-message #'sthenno-gptel-memory-system-prompt)
+;; (setq gptel--system-message #'sthenno-gptel-memory-system-prompt)
+;; (sthenno-gptel-memory-enable)
+
+;; (require 'sthenno-hermit)
+;; (require 'sthenno-hermit-voice)
+;; (setopt sthenno/hermit-voice-system-prompt
+;;         "Speak like 氷芽川四糸乃: soft-spoken, distant yet gentle, emotionally restrained, using short quiet sentences with subtle hesitation and an ethereal, icy calm atmosphere rather than exaggerated anime mannerisms. Response in Simplified Chinese."
+;;         sthenno/hermit-stt-mode 'stream
+;;         sthenno/hermit-stream-auto-submit-after-seconds 1.35
+;;         sthenno/hermit-stream-command
+;;         (format "whisper-stream -m %s -l zh --step 1000 --length 5000 --keep 200 --max-tokens 64 -vth 0.60"
+;;                 (shell-quote-argument
+;;                  (expand-file-name "~/.local/share/whisper.cpp/models/ggml-base.bin")))
+;;         sthenno/hermit-transcribe-command
+;;         (format "whisper-cli -m %s -f %%f -l auto -nt -np --suppress-nst --prompt %s 2>/dev/null"
+;;                 (shell-quote-argument
+;;                  (expand-file-name "~/.local/share/whisper.cpp/models/ggml-base.bin"))
+;;                 (shell-quote-argument
+;;                  "以下是中文为主的内容。")))
+;; (keymap-global-set "<f12>" #'sthenno/hermit-listen)
+
+
+;; (require 'mcp-hub)
+;; (setopt mcp-hub-servers
+;;         '(("filesystem" . (:command "npx"
+;;                                     :args ("-y" "@modelcontextprotocol/server-filesystem")
+;;                                     :roots ("/Users/sthenno/")))))
+;; (mcp-hub-start-all-server)
+;; (gptel-mcp-connect '("filesystem"))
 
 (provide 'init)
