@@ -1,0 +1,3 @@
+Emacs 环境 → Observer → Workspace → Agent Loop → Action → Emacs 环境
+                         ↑                         ↓
+                    Memory / Diary / Trace / Reflection

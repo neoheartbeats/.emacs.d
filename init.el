@@ -10,23 +10,16 @@
 
 ;;; Code:
 
-(require 'seq)
+(setq custom-file (make-temp-file ".emacs-custom"))
 
 
 ;;; Packages
-(setopt package-native-compile t
-        package-install-upgrade-built-in t
+(setopt package-install-upgrade-built-in t
         package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                            ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                            ("melpa" . "https://melpa.org/packages/"))
         package-selected-packages '(auctex consult corfu denote denote-journal denote-org
-                                           gptel magit marginalia mcp vertico yasnippet))
-
-(defun sthenno/after-init (function)
-  "Run FUNCTION after startup, or immediately if startup is done."
-  (if after-init-time
-      (funcall function)
-    (add-hook 'after-init-hook function)))
+                                           gptel magit marginalia ultra-scroll vertico yasnippet))
 
 
 ;;; Core startup and UI state
@@ -37,18 +30,18 @@
         fill-column 100
         mode-line-format ""
         header-line-format ""
-        custom-file (locate-user-emacs-file "custom.el")
         user-full-name user-login-name
         user-mail-address "sthenno@sthenno.com"
         inhibit-startup-screen t
         inhibit-startup-echo-area-message user-login-name
         inhibit-startup-buffer-menu t
         inhibit-default-init t
-        initial-scratch-message "Hi!"
+        initial-scratch-message ""
         menu-bar-mode nil
         scroll-bar-mode nil
         tool-bar-mode nil
         line-number-mode nil)
+
 (define-advice display-startup-echo-area-message
     (:override () sthenno-startup-message)
   "Display a custom startup message in the echo area."
@@ -60,10 +53,6 @@
         mac-command-modifier 'super
         switch-to-prev-buffer-skip 0
         save-place-autosave-interval 300
-        recentf-max-saved-items 25
-        recentf-autosave-interval 300
-        recentf-show-messages nil
-        recentf-suppress-open-file-help t
         elisp-fontify-semantically t
         ring-bell-function #'ignore
         use-short-answers t
@@ -73,25 +62,14 @@
                                      insert-directory-program)
         backward-delete-char-untabify-method 'hungry
         kill-do-not-save-duplicates t
-        kill-ring-max 256
-        copy-region-blink-delay 0
         copy-region-blink-predicate #'ignore
         sentence-end-double-space nil
         save-interprogram-paste-before-kill t
-        abbrev-mode t)
-
-(defun sthenno/frame-recenter (&optional frame)
-  "Center FRAME on the screen."
-  (interactive)
-  (unless (eq 'maximised (frame-parameter nil 'fullscreen))
-    (modify-frame-parameters
-     frame '((user-position . t) (top . 0.5) (left . 0.5)))))
-(keymap-global-set "<f12>" #'sthenno/frame-recenter)
+        global-auto-revert-mode t)
 
 (require 'savehist)
 (setopt save-place-mode t
         savehist-mode t
-        pixel-scroll-precision-mode t
         electric-pair-mode t
         electric-indent-mode t
         delete-selection-mode t)
@@ -133,41 +111,36 @@
           dired-hide-details-hide-absolute-location t
           dired-check-symlinks nil
           dired-recursive-deletes 'always
-          dired-movement-style 'cycle)
-  (add-hook 'dired-mode-hook #'dired-hide-details-mode))
+          dired-movement-style 'cycle))
+
+;;; Scrolling
+(setopt scroll-margin 0)
+(require 'ultra-scroll)
+(setopt ultra-scroll-mode t)
 
 
 ;;; Appearance
-(eval-and-compile
-  (require-theme 'modus-themes))
+(require-theme 'modus-themes)
 (setopt modus-themes-common-palette-overrides '((fg-line-number-active fg-dim)
                                                 (bg-line-number-active bg-hl-line)
                                                 (fg-line-number-inactive "#535353")
                                                 (bg-line-number-inactive unspecified)
-                                                (underline-link border)
-                                                (underline-link-visited border)
-                                                (underline-link-symbolic border)
-                                                (fg-link unspecified)
-                                                (fg-link-visited unspecified)
-                                                (fg-paren-match fg-main)
-                                                (bg-paren-match unspecified)
-                                                (prose-todo info)
-                                                (prose-done "#535353")
-                                                ,@modus-themes-preset-overrides-faint))
+                                                (fg-paren-match unspecified)
+                                                (bg-paren-match unspecified)))
 (load-theme 'modus-vivendi :no-confirm)
 
-(set-face-attribute 'default nil :family "Tempestypes" :height 150)
+(set-face-attribute 'default nil :family "Tempestypes" :height 140)
 (set-face-attribute 'region nil :extend t :foreground 'unspecified)
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
-(set-face-attribute 'italic nil :slant 'normal)
 (set-face-attribute 'show-paren-match nil
                     :background 'unspecified :foreground "green" :box '(:line-width (-1 . -1)))
+
 (dolist (face '(mode-line mode-line-active mode-line-inactive))
   (set-face-attribute face nil
                       :background 'unspecified :foreground "#535353" :box nil
                       :underline t :height 0.1))
 
-(let ((font "LXGW Marker Gothic"))
+(let ((font "Noto Serif CJK SC"))
   (dolist (charset '(kana han cjk-misc))
     (set-fontset-font t charset (font-spec :family font))))
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
@@ -176,10 +149,11 @@
 (setopt global-hl-line-sticky-flag 'window
         global-hl-line-mode t
         global-display-fill-column-indicator-mode t
+        global-display-line-numbers-mode t
         x-stretch-cursor t
         cursor-type '(bar . 1)
         display-line-numbers-widen t
-        display-line-numbers-width 6
+        display-line-numbers-width 4
         display-fill-column-indicator-warning t
         show-paren-delay 0.0125
         show-paren-context-when-offscreen t
@@ -187,46 +161,40 @@
         show-paren-not-in-comments-or-strings 'on-mismatch
         default-input-method nil
         blink-cursor-mode nil)
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
-(add-hook 'text-mode-hook #'display-line-numbers-mode)
 
 
 ;;; Org and notes
 (require 'org)
-(let ((directory "/Users/sthenno/uncodified/"))
-  (setopt org-directory directory
-          org-default-notes-file (file-name-concat directory "notes.org")
-          org-persist-directory (locate-user-emacs-file "org-persist/")
-          org-startup-with-link-previews t
-          org-link-preview-batch-size 8
-          org-link-preview-delay 0.15
-          org-link-elisp-confirm-function nil
-          org-startup-truncated t
-          org-use-property-inheritance t
-          org-babel-uppercase-example-markers t
-          org-hide-emphasis-markers t
-          org-hide-macro-markers t
-          org-hide-drawer-startup t
-          org-special-ctrl-a t
-          org-image-align 'left
-          org-image-max-width 'fill-column
-          org-yank-image-save-method (file-name-concat directory "images")
-          org-attach-method 'cp
-          org-return-follows-link t
-          org-support-shift-select t
-          org-confirm-babel-evaluate nil
-          org-src-preserve-indentation t
-          org-src-content-indentation 0
-          org-edit-src-persistent-message nil
-          org-src-fontify-natively t
-          org-src-tab-acts-natively t
-          org-src-ask-before-returning-to-edit-buffer nil
-          org-export-allow-bind-keywords t
-          org-babel-update-intermediate t
-          org-babel-load-languages '((dot . t)
-                                     (emacs-lisp . t)
-                                     (python . t)
-                                     (shell . t))))
+
+(setopt org-directory "/Users/sthenno/Developer/op1/"
+        org-persist-directory (locate-user-emacs-file "org-persist/")
+        org-startup-with-link-previews t
+        org-link-preview-batch-size 8
+        org-link-preview-delay 0.025
+        org-link-elisp-confirm-function nil
+        org-startup-truncated t
+        org-use-property-inheritance t
+        org-babel-uppercase-example-markers t
+        org-hide-emphasis-markers t
+        org-hide-macro-markers t
+        org-hide-drawer-startup t
+        org-special-ctrl-a t
+        org-image-align 'left
+        org-image-max-width 420
+        org-attach-method 'cp
+        org-return-follows-link t
+        org-support-shift-select t
+        org-confirm-babel-evaluate nil
+        org-src-preserve-indentation t
+        org-src-content-indentation 0
+        org-edit-src-persistent-message nil
+        org-src-fontify-natively t
+        org-src-tab-acts-natively t
+        org-src-ask-before-returning-to-edit-buffer nil
+        org-babel-update-intermediate t
+        org-babel-load-languages '((emacs-lisp . t)
+                                   (python . t)
+                                   (shell . t)))
 
 (require 'denote)
 (setopt denote-directory org-directory
@@ -246,8 +214,7 @@
 (require 'denote-journal)
 (setopt denote-journal-title-format "%e %B %Y"
         denote-journal-directory (file-name-concat denote-directory "stages")
-        denote-journal-keyword "stages"
-        initial-buffer-choice #'denote-journal-new-or-existing-entry)
+        denote-journal-keyword "stages")
 
 (defun sthenno/denote-org-path-sorted-notes (directory)
   "Return a list of note files in DIRECTORY, sorted by name."
@@ -282,7 +249,7 @@
 (with-eval-after-load 'org
   (keymap-set org-mode-map "s-<up>" #'sthenno/denote-journal-entry-previous)
   (keymap-set org-mode-map "s-<down>" #'sthenno/denote-journal-entry-next))
-(keymap-global-set "C-c d" #'denote-journal-new-or-existing-entry)
+(keymap-global-set "s-j" #'denote-journal-new-or-existing-entry)
 
 
 ;;; Projects
@@ -298,12 +265,11 @@
 ;;; Templates
 (require 'yasnippet)
 (setopt yas-triggers-in-field t)
-(sthenno/after-init #'yas-global-mode)
+(setopt yas-global-mode t)
 
 
 ;;; Completion and minibuffer
-(setopt completion-cycle-threshold nil
-        text-mode-ispell-word-completion 'completion-at-point
+(setopt text-mode-ispell-word-completion 'completion-at-point
         tab-always-indent 'complete
         echo-keystrokes 0.125
         resize-mini-windows t
@@ -314,11 +280,11 @@
         minibuffer-visible-completions nil
         minibuffer-prompt-properties '(read-only t cursor-intangible t
                                                  face minibuffer-prompt)
-        crm-prompt (format "%s %%p" (propertize "[%d]" 'face 'shadow))
+        completion-cycle-threshold nil
         completions-sort 'historical
         completion-eager-display 'auto
         completion-eager-update 'auto
-        completion-styles '(basic flex)
+        completion-styles '(flex)
         completion-ignore-case nil
         read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t
@@ -327,34 +293,21 @@
 (require 'vertico)
 (require 'vertico-directory)
 (setopt vertico-resize t
-        vertico-scroll-margin 4
-        vertico-cycle nil
         vertico-count-format (cons "[ %-6s ] " "%s of %s"))
 (keymap-set vertico-map "<tab>" #'vertico-insert)
 (keymap-set vertico-map "<return>" #'vertico-directory-enter)
 (keymap-set vertico-map "<backspace>" #'vertico-directory-delete-char)
-(add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
-(sthenno/after-init #'vertico-mode)
+(setopt vertico-mode t)
 
 (require 'marginalia)
-(sthenno/after-init #'marginalia-mode)
+(setopt marginalia-mode t)
 
 (require 'consult)
+(require 'consult-imenu)
 (keymap-global-set "s-b" #'consult-buffer)
 (keymap-global-set "C-s" #'consult-line)
-(keymap-global-set "s-;" #'consult-goto-line)
-(keymap-global-set "C-v" #'consult-yank-pop)
-(keymap-global-set "s-m" #'consult-imenu-multi)
+(keymap-global-set "s-m" #'consult-imenu)
 (keymap-global-set "s-n" #'consult-recent-file)
-(keymap-global-set "M-i" #'consult-info)
-(keymap-global-set "M-s" #'consult-ripgrep)
-(keymap-set consult-narrow-map "?" #'consult-narrow-help)
-(setq completion-in-region-function #'consult-completion-in-region)
-(setopt register-preview-delay 0.125
-        register-preview-function #'consult-register-format
-        xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
-(keymap-substitute project-prefix-map #'project-find-regexp #'consult-ripgrep)
 
 (require 'dabbrev)
 (defun sthenno/dabbrev-elisp ()
@@ -371,9 +324,7 @@
   (add-to-list 'dabbrev-ignored-buffer-modes mode))
 
 (setopt ispell-program-name "aspell"
-        ispell-save-corrections-as-abbrevs t
-        flyspell-delay-use-timer t
-        flyspell-mode t)
+        ispell-save-corrections-as-abbrevs t)
 
 (require 'corfu)
 (require 'corfu-history)
@@ -396,7 +347,8 @@
 (add-hook 'eshell-mode-hook #'sthenno/corfu-eshell-setup)
 (add-hook 'prog-mode-hook #'corfu-popupinfo-mode)
 (setopt corfu-history-mode t)
-(sthenno/after-init #'global-corfu-mode)
+(setopt global-corfu-mode t)
+
 (with-eval-after-load 'savehist
   (add-to-list 'savehist-additional-variables 'corfu-history))
 (with-eval-after-load 'completion-preview
@@ -406,8 +358,6 @@
 ;;; Languages
 (setopt treesit-enabled-modes t
         treesit-auto-install-grammar 'ask)
-(dolist (hook '(LaTeX-mode-hook tex-mode-hook python-base-mode-hook))
-  (add-hook hook #'eglot-ensure))
 (with-eval-after-load 'python
   (setopt python-indent-offset 4
           python-indent-guess-indent-offset nil
@@ -416,56 +366,23 @@
 
 ;;; AI
 (require 'gptel)
-(require 'gptel-integrations)
+(require 'gptel-openai)
+
 (keymap-global-set "s-p" #'gptel)
 (keymap-set gptel-mode-map "s-<return>" #'gptel-send)
 (keymap-set org-mode-map "s-<return>" #'gptel-send)
-(setopt gptel-default-mode #'org-mode
+(setopt gptel-default-mode 'org-mode
         gptel-org-branching-context t
         gptel-track-media t
-        gptel-directives '((default . "Speak like 氷芽川四糸乃: soft-spoken, distant yet gentle, emotionally restrained, using short quiet sentences with subtle hesitation and an ethereal, icy calm atmosphere rather than exaggerated anime mannerisms."))
         gptel-max-tokens 32768
-        gptel-temperature 0.70
+        gptel-temperature 0.60
         gptel-backend (gptel-make-openai "sthenno"
                         :protocol "http"
-                        :host "192.168.100.207:8000"
+                        :host "netzach.local:8000"
                         :endpoint "/v1/chat/completions"
                         :stream t
                         :key "sk-tmp"
-                        :models '(sthenno)
-                        :request-params '(:top_p 0.80 :presence_penalty 1.5 :top_k 20
-                                                 :chat_template_kwargs (:enable_thinking :json-false)))
+                        :models '(sthenno))
         gptel-model 'sthenno)
-
-(require 'mcp-hub)
-(setopt mcp-hub-servers
-        '(("filesystem" . (:command "npx" 
-                                    :args ("-y" "@modelcontextprotocol/server-filesystem")
-                                    :roots ("/Users/sthenno/")))
-          ("fetch" . (:command "uvx" :args ("mcp-server-fetch")))))
-(mcp-hub-start-all-server)
-
-(require 'sthenno-hermit)
-;; (require 'sthenno-hermit-voice)
-;; (setopt sthenno/hermit-voice-system-prompt
-;;         "Speak like 氷芽川四糸乃: soft-spoken, distant yet gentle, emotionally restrained, using short quiet sentences with subtle hesitation and an ethereal, icy calm atmosphere rather than exaggerated anime mannerisms. Response in Simplified Chinese."
-;;         sthenno/hermit-stt-mode 'stream
-;;         sthenno/hermit-stream-auto-submit-after-seconds 1.35
-;;         sthenno/hermit-stream-command
-;;         (format "whisper-stream -m %s -l zh --step 1000 --length 5000 --keep 200 --max-tokens 64 -vth 0.60"
-;;                 (shell-quote-argument
-;;                  (expand-file-name "~/.local/share/whisper.cpp/models/ggml-base.bin")))
-;;         sthenno/hermit-transcribe-command
-;;         (format "whisper-cli -m %s -f %%f -l auto -nt -np --suppress-nst --prompt %s 2>/dev/null"
-;;                 (shell-quote-argument
-;;                  (expand-file-name "~/.local/share/whisper.cpp/models/ggml-base.bin"))
-;;                 (shell-quote-argument
-;;                  "以下是中文为主的内容。")))
-;; (keymap-global-set "<f12>" #'sthenno/hermit-listen)
-
-
-;;; Customizations
-(when (file-exists-p custom-file)
-  (load custom-file :noerror :nomessage))
 
 (provide 'init)
