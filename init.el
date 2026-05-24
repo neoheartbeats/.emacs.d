@@ -13,15 +13,6 @@
 (setq custom-file (make-temp-file ".emacs-custom"))
 
 
-;;; Packages
-(setopt package-install-upgrade-built-in t
-        package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                           ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-                           ("melpa" . "https://melpa.org/packages/"))
-        package-selected-packages '(auctex consult corfu denote denote-journal denote-org
-                                           gptel magit marginalia ultra-scroll vertico yasnippet))
-
-
 ;;; Core startup and UI state
 (setopt save-silently t
         remote-file-name-inhibit-locks t
@@ -31,16 +22,17 @@
         mode-line-format ""
         header-line-format ""
         user-full-name user-login-name
-        user-mail-address "sthenno@sthenno.com"
-        inhibit-startup-screen t
+        user-mail-address "sthenno@sthenno.com")
+(setopt inhibit-startup-screen t
         inhibit-startup-echo-area-message user-login-name
         inhibit-startup-buffer-menu t
         inhibit-default-init t
-        initial-scratch-message ""
-        menu-bar-mode nil
+        initial-scratch-message "")
+(setopt menu-bar-mode nil
         scroll-bar-mode nil
         tool-bar-mode nil
-        line-number-mode nil)
+        line-number-mode nil
+        column-number-mode nil)
 
 (define-advice display-startup-echo-area-message
     (:override () sthenno-startup-message)
@@ -50,8 +42,8 @@
 
 ;;; System essentials
 (setopt mac-option-modifier 'meta
-        mac-command-modifier 'super
-        switch-to-prev-buffer-skip 0
+        mac-command-modifier 'super)
+(setopt switch-to-prev-buffer-skip 0
         save-place-autosave-interval 300
         elisp-fontify-semantically t
         ring-bell-function #'ignore
@@ -121,12 +113,12 @@
 
 ;;; Appearance
 (require-theme 'modus-themes)
-(setopt modus-themes-common-palette-overrides '((fg-line-number-active fg-dim)
-                                                (bg-line-number-active bg-hl-line)
-                                                (fg-line-number-inactive "#535353")
-                                                (bg-line-number-inactive unspecified)
-                                                (fg-paren-match unspecified)
-                                                (bg-paren-match unspecified)))
+;; (setopt modus-themes-common-palette-overrides '((fg-line-number-active fg-dim)
+;;                                                 (bg-line-number-active bg-hl-line)
+;;                                                 (fg-line-number-inactive "#535353")
+;;                                                 (bg-line-number-inactive unspecified)
+;;                                                 (fg-paren-match unspecified)
+;;                                                 (bg-paren-match unspecified)))
 (load-theme 'modus-vivendi :no-confirm)
 
 (set-face-attribute 'default nil :family "Tempestypes" :height 140)
@@ -134,6 +126,8 @@
 (set-face-attribute 'fill-column-indicator nil :height 0.1)
 (set-face-attribute 'show-paren-match nil
                     :background 'unspecified :foreground "green" :box '(:line-width (-1 . -1)))
+;; (set-face-attribute 'line-number nil :font (font-spec :family "Noto Serif CJK SC"))
+;; (set-face-attribute 'line-number-current-line nil :font (font-spec :family "Noto Serif CJK SC"))
 
 (dolist (face '(mode-line mode-line-active mode-line-inactive))
   (set-face-attribute face nil
@@ -143,10 +137,10 @@
 (let ((font "Noto Serif CJK SC"))
   (dolist (charset '(kana han cjk-misc))
     (set-fontset-font t charset (font-spec :family font))))
-(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
-(set-fontset-font t 'ucs (font-spec :family "SF Pro") nil 'prepend)
+;; (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
+;; (set-fontset-font t 'ucs (font-spec :family "SF Pro") nil 'prepend)
 
-(setopt global-hl-line-sticky-flag 'window
+(setopt global-hl-line-sticky-flag nil
         global-hl-line-mode t
         global-display-fill-column-indicator-mode t
         global-display-line-numbers-mode t
@@ -168,9 +162,8 @@
 
 (setopt org-directory "/Users/sthenno/Developer/op1/"
         org-persist-directory (locate-user-emacs-file "org-persist/")
+        org-ellipsis ""
         org-startup-with-link-previews t
-        org-link-preview-batch-size 8
-        org-link-preview-delay 0.025
         org-link-elisp-confirm-function nil
         org-startup-truncated t
         org-use-property-inheritance t
@@ -180,7 +173,7 @@
         org-hide-drawer-startup t
         org-special-ctrl-a t
         org-image-align 'left
-        org-image-max-width 420
+        org-image-max-width 0.60
         org-attach-method 'cp
         org-return-follows-link t
         org-support-shift-select t
@@ -273,13 +266,10 @@
         tab-always-indent 'complete
         echo-keystrokes 0.125
         resize-mini-windows t
-        help-window-select t
-        read-minibuffer-restore-windows nil
+        help-window-select nil
         read-extended-command-predicate #'command-completion-default-include-p
         minibuffer-default-prompt-format " [%s]"
         minibuffer-visible-completions nil
-        minibuffer-prompt-properties '(read-only t cursor-intangible t
-                                                 face minibuffer-prompt)
         completion-cycle-threshold nil
         completions-sort 'historical
         completion-eager-display 'auto
@@ -375,7 +365,7 @@
         gptel-org-branching-context t
         gptel-track-media t
         gptel-max-tokens 32768
-        gptel-temperature 0.60
+        gptel-temperature 1.0
         gptel-backend (gptel-make-openai "sthenno"
                         :protocol "http"
                         :host "netzach.local:8000"
