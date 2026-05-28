@@ -147,12 +147,13 @@
 (setopt modus-themes-common-palette-overrides '((fg-paren-match unspecified)
                                                 (bg-paren-match unspecified)
                                                 (border bg-main)
-                                                (fringe bg-main)))
+                                                (fringe bg-main)
+                                                (cursor fg-alt)))
 (load-theme 'modus-vivendi :no-confirm)
 
 (set-face-attribute 'default nil :family "Tempestypes" :height 140)
 (set-face-attribute 'region nil :extend t :foreground 'unspecified)
-(set-face-attribute 'fill-column-indicator nil :height 0.1)
+;; (set-face-attribute 'fill-column-indicator nil :height 0.1)
 (set-face-attribute 'show-paren-match nil
                     :background 'unspecified :foreground "green" :box '(:line-width (-1 . -1)))
 
@@ -164,13 +165,14 @@
 (set-fontset-font t 'ucs (font-spec :family "SF Pro") nil 'prepend)
 
 ;;; Highlighting
+
 ;; (setopt global-hl-line-sticky-flag nil
 ;;         global-hl-line-mode t)
 
 ;;; Columns and line numbers
 
-;; (setopt global-display-fill-column-indicator-mode t
-;;         display-line-numbers-widen t
+;; (setopt global-display-fill-column-indicator-mode t)
+;; (setopt display-line-numbers-widen t
 ;;         display-line-numbers-width 4
 ;;         global-display-line-numbers-mode t)
 
@@ -196,21 +198,24 @@
         org-persist-directory (locate-user-emacs-file "org-persist/"))
 
 ;;; Org display
-(setopt org-startup-truncated t
+(setopt org-startup-truncated nil
         org-startup-with-link-previews t
         org-ellipsis " (*)"
         org-hide-emphasis-markers t
         org-hide-macro-markers t
         org-hide-drawer-startup t
         org-image-align 'left
-        org-image-max-width 0.60)
+        org-image-actual-width t
+        org-image-max-width 0.6)
 
-;;; Org interaction
-(setopt org-link-elisp-confirm-function nil
-        org-special-ctrl-a t
-        org-return-follows-link t
-        org-support-shift-select t
-        org-use-property-inheritance t)
+(define-advice org--create-inline-image
+    (:filter-return (image) sthenno-max-height)
+  "Keep Org inline image preview height within the preview width."
+  (when-let* ((props (cdr-safe image))
+              (size (or (plist-get props :max-width)
+                        (plist-get props :width))))
+    (setcdr image (plist-put props :max-height 320)))
+  image)
 
 (setopt org-attach-method 'cp)
 
@@ -291,7 +296,7 @@ STATUS is the completion exit status."
       (when (sthenno/org-image-completion-file-p path)
         (delete-region trigger-start (point))
         (insert (org-link-make-string path))
-        (org-link-preview)))))
+        (org-link-preview-region)))))
 
 (defun sthenno/org-image-completion-at-point ()
   "Complete Org image links after `sthenno/org-image-completion-trigger'."
@@ -407,8 +412,8 @@ STATUS is the completion exit status."
         completions-sort 'historical
         completion-eager-display 'auto
         completion-eager-update 'auto
-        completion-ignore-case nil
-        read-file-name-completion-ignore-case t
+        completion-ignore-case nil)
+(setopt read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t
         file-name-shadow-mode t)
 
@@ -441,25 +446,22 @@ STATUS is the completion exit status."
   (setopt-local dabbrev-case-fold-search nil
                 dabbrev-case-replace nil))
 
-(defun sthenno/dabbrev-capf-ignore-user-error (capf &rest args)
-  "Return nil when CAPF reports no dabbrev completion."
-  (condition-case nil
-      (apply capf args)
-    (user-error nil)))
-
 (setopt dabbrev-case-distinction 'case-replace
         dabbrev-case-replace 'case-replace
         dabbrev-case-fold-search nil
         dabbrev-upcase-means-case-search t)
-(advice-add 'dabbrev-capf :around #'sthenno/dabbrev-capf-ignore-user-error)
+
+(define-advice dabbrev-capf
+    (:around (capf &rest args) sthenno-ignore-user-error)
+  "Return nil when Dabbrev reports no completion."
+  (condition-case nil
+      (apply capf args)
+    (user-error nil)))
+
 (add-hook 'emacs-lisp-mode-hook #'sthenno/dabbrev-elisp)
 (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
 (dolist (mode '(authinfo-mode doc-view-mode pdf-view-mode tags-table-mode))
   (add-to-list 'dabbrev-ignored-buffer-modes mode))
-
-;; Spelling
-(setopt ispell-program-name "aspell"
-        ispell-save-corrections-as-abbrevs t)
 
 ;; Corfu
 (require 'corfu)
@@ -524,6 +526,373 @@ STATUS is the completion exit status."
                         :endpoint "/v1/chat/completions"
                         :stream t
                         :key "sk-tmp"
-                        :models '(sthenno)))
+                        :models '((sthenno :capabilities (media tool-use json url)
+                                           :mime-types ("image/jpeg" "image/png" "image/webp")
+                                           :context-window 256))))
+
+(require 'subr-x)
+
+(defface sthenno/gptel-inline-completion-face
+  '((t :foreground "#535353"))
+  "Face for gptel inline completion ghost text."
+  :group 'faces)
+
+(defvar-local sthenno/gptel-inline-completion-mode nil
+  "Non-nil when gptel inline completion mode is enabled.")
+
+(defvar sthenno/gptel-inline-completion-delay 0.15
+  "Idle delay before requesting a gptel inline completion.")
+
+(defvar sthenno/gptel-inline-completion-max-tokens 128
+  "Maximum tokens to request for gptel inline completions.")
+
+(defvar sthenno/gptel-inline-completion-temperature 0.2
+  "Temperature to use for gptel inline completions.")
+
+(defvar sthenno/gptel-inline-completion-before-lines 80
+  "Number of lines before point to include in inline completion prompts.")
+
+(defvar sthenno/gptel-inline-completion-after-lines 20
+  "Number of lines after point to include in inline completion prompts.")
+
+(defvar sthenno/gptel-inline-completion-context-chars 32768
+  "Approximate character budget for gptel inline completion context.")
+
+(defvar sthenno/gptel-inline-completion-system-prompt
+  (concat "You are an inline code and prose completion engine. "
+          "Return only the exact text to insert at <cursor>. "
+          "Prefer the smallest useful continuation.")
+  "System prompt used for gptel inline completions.")
+
+(defvar-local sthenno/gptel-inline--overlay nil
+  "Overlay displaying the current gptel inline completion.")
+
+(defvar-local sthenno/gptel-inline--text ""
+  "Current raw gptel inline completion text.")
+
+(defvar-local sthenno/gptel-inline--timer nil
+  "Idle timer for the current buffer's gptel inline completion.")
+
+(defvar-local sthenno/gptel-inline--request-id 0
+  "Generation id for the current buffer's gptel inline completion request.")
+
+(defvar-local sthenno/gptel-inline--in-flight nil
+  "Non-nil while a gptel inline completion request is running.")
+
+(defun sthenno/gptel-inline--cancel ()
+  "Cancel the current buffer's pending inline completion timer."
+  (when (timerp sthenno/gptel-inline--timer)
+    (cancel-timer sthenno/gptel-inline--timer))
+  (setq sthenno/gptel-inline--timer nil))
+
+(defun sthenno/gptel-inline--hide ()
+  "Delete the current inline completion overlay."
+  (when (overlayp sthenno/gptel-inline--overlay)
+    (delete-overlay sthenno/gptel-inline--overlay))
+  (setq sthenno/gptel-inline--overlay nil))
+
+(defun sthenno/gptel-inline--clean (text)
+  "Return displayable inline completion TEXT."
+  (let ((clean (substring-no-properties (or text ""))))
+    (setq clean
+          (replace-regexp-in-string
+           "\\`[[:space:]\n\r]*```[[:alnum:]_-]*[[:space:]\n\r]*\n" "" clean))
+    (replace-regexp-in-string "\n?[[:space:]\n\r]*```[[:space:]\n\r]*\\'" "" clean)))
+
+(defun sthenno/gptel-inline--position (&optional position)
+  "Return the inline completion text at POSITION, if any."
+  (let ((position (or position (point))))
+    (when (and (overlayp sthenno/gptel-inline--overlay)
+               (overlay-buffer sthenno/gptel-inline--overlay)
+               (= (overlay-start sthenno/gptel-inline--overlay) position))
+      (let ((text (sthenno/gptel-inline--clean
+                   sthenno/gptel-inline--text)))
+        (unless (string-empty-p text)
+          text)))))
+
+(defun sthenno/gptel-inline--show (text position &optional window)
+  "Show TEXT as inline completion ghost text at POSITION.
+When WINDOW is live and displays the current buffer, scope the overlay to it."
+  (let ((display (sthenno/gptel-inline--clean text)))
+    (if (string-empty-p display)
+        (sthenno/gptel-inline--hide)
+      (let ((ghost (propertize display
+                               'face 'sthenno/gptel-inline-completion-face)))
+        (add-text-properties 0 1 '(cursor 1) ghost)
+        (unless (overlayp sthenno/gptel-inline--overlay)
+          (setq sthenno/gptel-inline--overlay
+                (make-overlay position position nil nil nil))
+          (overlay-put sthenno/gptel-inline--overlay 'priority 1000))
+        (move-overlay sthenno/gptel-inline--overlay
+                      position position (current-buffer))
+        (overlay-put sthenno/gptel-inline--overlay
+                     'window
+                     (and (window-live-p window)
+                          (eq (window-buffer window) (current-buffer))
+                          window))
+        (overlay-put sthenno/gptel-inline--overlay
+                     'after-string ghost)))))
+
+(defun sthenno/gptel-inline--bounds (cursor)
+  "Return inline completion context bounds around CURSOR."
+  (let* ((line-before-start (save-excursion
+                              (goto-char cursor)
+                              (forward-line (- sthenno/gptel-inline-completion-before-lines))
+                              (line-beginning-position)))
+         (line-after-end (save-excursion
+                           (goto-char cursor)
+                           (forward-line sthenno/gptel-inline-completion-after-lines)
+                           (line-end-position)))
+         (budget sthenno/gptel-inline-completion-context-chars)
+         (before-budget (floor (* budget 0.75)))
+         (after-budget (- budget before-budget)))
+    (cons (max line-before-start (- cursor before-budget))
+          (min line-after-end (+ cursor after-budget)))))
+
+(defun sthenno/gptel-inline--media (beg end)
+  "Return Org media context entries between BEG and END."
+  (when (derived-mode-p 'org-mode)
+    (require 'gptel-org)
+    (let ((gptel-track-media t))
+      (delq nil
+            (mapcar (lambda (part)
+                      (when-let* ((path (plist-get part :media))
+                                  (mime (plist-get part :mime)))
+                        (list path :mime mime)))
+                    (gptel--parse-media-links major-mode beg end))))))
+
+(defun sthenno/gptel-inline-completion-clear ()
+  "Clear the current gptel inline completion."
+  (interactive)
+  (setq sthenno/gptel-inline--request-id
+        (1+ sthenno/gptel-inline--request-id)
+        sthenno/gptel-inline--text "")
+  (sthenno/gptel-inline--hide))
+
+(defun sthenno/gptel-inline--corfu-p ()
+  "Return non-nil when a completion UI is active in the current buffer."
+  (bound-and-true-p completion-in-region-mode))
+
+(defun sthenno/gptel-inline--blocked-p ()
+  "Return non-nil when inline completion should not run in this buffer."
+  (or (minibufferp)
+      buffer-read-only
+      (use-region-p)
+      (bound-and-true-p gptel-mode)))
+
+(defun sthenno/gptel-inline--eol-p ()
+  "Return non-nil when point is in a good place for inline completion."
+  (save-excursion
+    (skip-chars-forward " \t")
+    (eolp)))
+
+(defun sthenno/gptel-inline--ready-p ()
+  "Return non-nil when the current buffer should request inline completion."
+  (and sthenno/gptel-inline-completion-mode
+       (not sthenno/gptel-inline--in-flight)
+       (not (sthenno/gptel-inline--position))
+       (not (sthenno/gptel-inline--corfu-p))
+       (not (sthenno/gptel-inline--blocked-p))
+       (sthenno/gptel-inline--eol-p)
+       (not (bobp))))
+
+(defun sthenno/gptel-inline--prompt (cursor)
+  "Return (PROMPT . MEDIA-CONTEXT) for an inline completion at CURSOR."
+  (let* ((bounds (sthenno/gptel-inline--bounds cursor))
+         (before-start (car bounds))
+         (after-end (cdr bounds))
+         (file (or buffer-file-name (buffer-name)))
+         (before (buffer-substring-no-properties before-start cursor))
+         (after (buffer-substring-no-properties cursor after-end)))
+    (cons (format "File: %s\nMajor mode: %S\n\nBefore <cursor>:\n%s\n<cursor>\n\nAfter <cursor>:\n%s\n\nComplete at <cursor>."
+                  file major-mode before after)
+          (sthenno/gptel-inline--media before-start after-end))))
+
+(defun sthenno/gptel-inline--current-p (request-id request-marker request-tick)
+  "Return non-nil if REQUEST-ID, REQUEST-MARKER and REQUEST-TICK still match."
+  (and sthenno/gptel-inline-completion-mode
+       (= request-id sthenno/gptel-inline--request-id)
+       (when-let* ((position (marker-position request-marker)))
+         (= position (point)))
+       (= request-tick (buffer-chars-modified-tick))
+       (not (sthenno/gptel-inline--blocked-p))
+       (not (sthenno/gptel-inline--corfu-p))))
+
+(defun sthenno/gptel-inline--handle
+    (response info buffer request-id request-marker request-tick request-window manual)
+  "Handle a gptel inline completion RESPONSE with request metadata.
+INFO is the gptel callback plist.  BUFFER, REQUEST-ID, REQUEST-MARKER,
+REQUEST-TICK, REQUEST-WINDOW and MANUAL describe the original request."
+  (when (buffer-live-p buffer)
+    (with-current-buffer buffer
+      (save-excursion
+        (cond
+         ((stringp response)
+          (when (sthenno/gptel-inline--current-p
+                 request-id request-marker request-tick)
+            (setq sthenno/gptel-inline--text
+                  (concat sthenno/gptel-inline--text response))
+            (sthenno/gptel-inline--show
+             sthenno/gptel-inline--text
+             (marker-position request-marker)
+             request-window)))
+         ((eq response t)
+          (let ((current (sthenno/gptel-inline--current-p
+                          request-id request-marker request-tick)))
+            (set-marker request-marker nil)
+            (setq sthenno/gptel-inline--in-flight nil)
+            (cond
+             ((and current
+                   (string-empty-p (sthenno/gptel-inline--clean
+                                    sthenno/gptel-inline--text)))
+              (sthenno/gptel-inline-completion-clear))
+             ((and (not current)
+                   (/= request-tick (buffer-chars-modified-tick)))
+              (sthenno/gptel-inline--schedule)))))
+         ((or (null response) (eq response 'abort))
+          (set-marker request-marker nil)
+          (setq sthenno/gptel-inline--in-flight nil)
+          (when (= request-id sthenno/gptel-inline--request-id)
+            (sthenno/gptel-inline-completion-clear))
+          (when (and manual (null response))
+            (message "gptel inline completion failed: %s"
+                     (or (plist-get info :status) "no response")))))))))
+
+(defun sthenno/gptel-inline-completion-request (&optional manual)
+  "Request an inline completion from gptel.
+When MANUAL is non-nil, report why no request was started."
+  (interactive (list t))
+  (save-excursion
+    (sthenno/gptel-inline-completion-clear)
+    (cond
+     (sthenno/gptel-inline--in-flight
+      (when manual
+        (message "gptel inline completion request already running.")))
+     ((not (sthenno/gptel-inline--ready-p))
+      (when manual
+        (message "gptel inline completion is not available here.")))
+     (t
+      (let* ((buffer (current-buffer))
+             (request-id (1+ sthenno/gptel-inline--request-id))
+             (request-marker (copy-marker (point) nil))
+             (request-tick (buffer-chars-modified-tick))
+             (request-window (and (eq (window-buffer (selected-window)) buffer)
+                                  (selected-window)))
+             (prompt-data (sthenno/gptel-inline--prompt
+                           (marker-position request-marker)))
+             (prompt (car prompt-data))
+             (media-context (cdr prompt-data)))
+        (setq sthenno/gptel-inline--request-id request-id
+              sthenno/gptel-inline--in-flight t
+              sthenno/gptel-inline--text "")
+        (condition-case err
+            (let ((gptel-use-context nil)
+                  (gptel-context media-context)
+                  (gptel-use-tools nil)
+                  (gptel-max-tokens sthenno/gptel-inline-completion-max-tokens)
+                  (gptel-temperature sthenno/gptel-inline-completion-temperature)
+                  (gptel-track-media (and media-context t)))
+              (when media-context
+                (require 'gptel-context)
+                (setq gptel-use-context 'user))
+              (gptel-request prompt
+                :buffer buffer
+                :position request-marker
+                :stream t
+                :system sthenno/gptel-inline-completion-system-prompt
+                :callback (lambda (response info)
+                            (sthenno/gptel-inline--handle
+                             response info buffer request-id request-marker
+                             request-tick request-window manual))))
+          (error
+           (set-marker request-marker nil)
+           (setq sthenno/gptel-inline--in-flight nil)
+           (when manual
+             (message "gptel inline completion failed: %s"
+                      (error-message-string err))))))))))
+
+(defun sthenno/gptel-inline-completion-accept ()
+  "Accept the visible gptel inline completion.
+Return non-nil when a completion was accepted."
+  (interactive)
+  (when-let* ((text (sthenno/gptel-inline--position)))
+    (sthenno/gptel-inline-completion-clear)
+    (insert text)
+    t))
+
+(defun sthenno/gptel-inline-completion-tab ()
+  "Accept inline completion, complete with Corfu, or indent."
+  (interactive)
+  (cond
+   ((sthenno/gptel-inline-completion-accept))
+   ((sthenno/gptel-inline--corfu-p)
+    (corfu-complete))
+   (t
+    (indent-for-tab-command))))
+
+(defvar sthenno/gptel-inline-completion-mode-map
+  (let ((map (make-sparse-keymap)))
+    (keymap-set map "TAB" #'sthenno/gptel-inline-completion-tab)
+    (keymap-set map "<tab>" #'sthenno/gptel-inline-completion-tab)
+    map)
+  "Keymap for `sthenno/gptel-inline-completion-mode'.")
+
+(defun sthenno/gptel-inline--idle (buffer)
+  "Request inline completion in BUFFER from an idle timer."
+  (when (buffer-live-p buffer)
+    (with-current-buffer buffer
+      (setq sthenno/gptel-inline--timer nil)
+      (when (sthenno/gptel-inline--ready-p)
+        (sthenno/gptel-inline-completion-request)))))
+
+(defun sthenno/gptel-inline--schedule ()
+  "Schedule a gptel inline completion request for the current buffer."
+  (sthenno/gptel-inline--cancel)
+  (when (sthenno/gptel-inline--ready-p)
+    (setq sthenno/gptel-inline--timer
+          (run-with-idle-timer
+           sthenno/gptel-inline-completion-delay nil #'sthenno/gptel-inline--idle (current-buffer)))))
+
+(defun sthenno/gptel-inline--post-command ()
+  "Update inline completion state after each command."
+  (when (and (overlayp sthenno/gptel-inline--overlay)
+             (overlay-buffer sthenno/gptel-inline--overlay)
+             (or (not (= (overlay-start sthenno/gptel-inline--overlay)
+                         (point)))
+                 (sthenno/gptel-inline--blocked-p)
+                 (sthenno/gptel-inline--corfu-p)))
+    (sthenno/gptel-inline-completion-clear)))
+
+(defun sthenno/gptel-inline--after-change (&rest _)
+  "Schedule inline completion after buffer text changes."
+  (when sthenno/gptel-inline-completion-mode
+    (sthenno/gptel-inline-completion-clear)
+    (sthenno/gptel-inline--schedule)))
+
+(define-minor-mode sthenno/gptel-inline-completion-mode
+  "Show gptel-powered inline completions in the current buffer."
+  :lighter nil
+  :keymap sthenno/gptel-inline-completion-mode-map
+  (if sthenno/gptel-inline-completion-mode
+      (progn
+        (add-hook 'post-command-hook #'sthenno/gptel-inline--post-command nil t)
+        (add-hook 'after-change-functions #'sthenno/gptel-inline--after-change nil t))
+    (remove-hook 'post-command-hook #'sthenno/gptel-inline--post-command t)
+    (remove-hook 'after-change-functions #'sthenno/gptel-inline--after-change t)
+    (sthenno/gptel-inline--cancel)
+    (sthenno/gptel-inline-completion-clear)
+    (setq sthenno/gptel-inline--in-flight nil)))
+
+(defun sthenno/gptel-inline-completion-setup ()
+  "Enable gptel inline completion in the current buffer."
+  (sthenno/gptel-inline-completion-mode 1))
+
+(dolist (binding '(("TAB" . sthenno/gptel-inline-completion-tab)
+                   ("<tab>" . sthenno/gptel-inline-completion-tab)))
+  (keymap-global-set (car binding) (cdr binding))
+  (keymap-set corfu-map (car binding) (cdr binding)))
+
+(add-hook 'prog-mode-hook #'sthenno/gptel-inline-completion-setup)
+(add-hook 'text-mode-hook #'sthenno/gptel-inline-completion-setup)
 
 (provide 'init)

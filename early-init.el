@@ -17,30 +17,15 @@
       package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                          ("melpa" . "https://melpa.org/packages/"))
-      package-selected-packages '(auctex
-                                  consult
-                                  corfu
-                                  denote
-                                  denote-journal
-                                  denote-org
-                                  gptel
-                                  magit
-                                  marginalia
-                                  ultra-scroll
-                                  vertico))
+      package-selected-packages '(auctex consult corfu denote denote-journal denote-org
+                                         gptel magit marginalia ultra-scroll vertico))
 
 ;;; Frames
 (setq-default frame-resize-pixelwise t
-              default-frame-alist '((menu-bar-lines . 0)
-                                    (tool-bar-lines . 0)
-                                    (vertical-scroll-bars)
-                                    (horizontal-scroll-bars)
-                                    (height . 45)
-                                    (width . 120)
-                                    (undecorated . t)
-                                    (alpha . (0.8 . 0.8))
-                                    (top . 0.5)
-                                    (left . 0.5))
+              default-frame-alist '((menu-bar-lines . 0) (tool-bar-lines . 0)
+                                    (vertical-scroll-bars) (horizontal-scroll-bars)
+                                    (height . 45) (width . 120)
+                                    (undecorated . t))
               initial-frame-alist default-frame-alist)
 
 (provide 'early-init)
