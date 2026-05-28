@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: msg
-# key: msg
-# --
-(message "[DEBUG] %s" $0)

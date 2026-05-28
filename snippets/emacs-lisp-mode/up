@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: up
-# key: up
-# --
-(use-package $1
-  :ensure t$0)
