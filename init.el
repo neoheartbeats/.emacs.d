@@ -440,10 +440,18 @@ STATUS is the completion exit status."
   "Tune `dabbrev' for `emacs-lisp-mode'."
   (setopt-local dabbrev-case-fold-search nil
                 dabbrev-case-replace nil))
+
+(defun sthenno/dabbrev-capf-ignore-user-error (capf &rest args)
+  "Return nil when CAPF reports no dabbrev completion."
+  (condition-case nil
+      (apply capf args)
+    (user-error nil)))
+
 (setopt dabbrev-case-distinction 'case-replace
         dabbrev-case-replace 'case-replace
         dabbrev-case-fold-search nil
         dabbrev-upcase-means-case-search t)
+(advice-add 'dabbrev-capf :around #'sthenno/dabbrev-capf-ignore-user-error)
 (add-hook 'emacs-lisp-mode-hook #'sthenno/dabbrev-elisp)
 (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
 (dolist (mode '(authinfo-mode doc-view-mode pdf-view-mode tags-table-mode))
