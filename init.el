@@ -15,6 +15,7 @@
 (declare-function consult-imenu-multi "consult-imenu" (&optional query))
 (declare-function corfu-history-mode "corfu-history" (&optional arg))
 (declare-function corfu-popupinfo-mode "corfu-popupinfo" (&optional arg))
+(declare-function denote-journal-new-or-existing-entry "denote-journal" (&optional date))
 (declare-function gptel-make-openai "gptel-openai" (name &rest args))
 (declare-function vertico-directory-delete-char "vertico-directory" (n))
 (declare-function vertico-directory-enter "vertico-directory" (&optional arg))
@@ -25,7 +26,8 @@
         inhibit-startup-echo-area-message user-login-name
         inhibit-startup-buffer-menu t
         inhibit-default-init t
-        initial-scratch-message "")
+        initial-scratch-message ""
+        initial-buffer-choice #'denote-journal-new-or-existing-entry)
 
 (setopt user-full-name user-login-name
         user-mail-address "sthenno@sthenno.com")
@@ -186,6 +188,7 @@
 
 ;;; Org and notes
 (require 'seq)
+(require 'image)
 (require 'org)
 
 ;;; Org files
@@ -227,6 +230,93 @@
         org-src-tab-acts-natively t
         org-src-ask-before-returning-to-edit-buffer nil)
 
+;;; Org image completion
+(defvar sthenno/org-image-completion-directory "/Users/sthenno/Pictures/"
+  "Root directory for Org image link completion.")
+
+(defvar sthenno/org-image-completion-trigger "/"
+  "Trigger string for Org image link completion.")
+
+(defun sthenno/org-image-completion-file-p (file)
+  "Return non-nil if FILE is an image file Emacs can display."
+  (and (file-regular-p file)
+       (file-readable-p file)
+       (image-supported-file-p file)))
+
+(defun sthenno/org-image-completion-candidates ()
+  "Return root-level image candidates with full paths attached."
+  (let ((directory (file-name-as-directory sthenno/org-image-completion-directory)))
+    (when (file-directory-p directory)
+      (mapcar (lambda (file)
+                (propertize (file-name-nondirectory file)
+                            'sthenno/org-image-completion-path file))
+              (sort (seq-filter #'sthenno/org-image-completion-file-p
+                                (directory-files directory t nil t))
+                    #'string<)))))
+
+(defun sthenno/org-image-completion-candidate-path (candidate)
+  "Return the full image path for CANDIDATE."
+  (or (get-text-property 0 'sthenno/org-image-completion-path candidate)
+      (file-name-concat
+       (file-name-as-directory sthenno/org-image-completion-directory)
+       (substring-no-properties candidate))))
+
+(defun sthenno/org-image-completion-doc-buffer (candidate)
+  "Return a preview buffer for image CANDIDATE."
+  (let* ((path (sthenno/org-image-completion-candidate-path candidate))
+         (image (and (sthenno/org-image-completion-file-p path)
+                     (ignore-errors
+                       (create-image path nil nil :max-width 320 :max-height 240)))))
+    (when image
+      (with-current-buffer (get-buffer-create " *sthenno-org-image-preview*")
+        (let ((inhibit-read-only t))
+          (erase-buffer)
+          (insert-image image (file-name-nondirectory path))
+          (insert "\n" (file-name-nondirectory path)))
+        (current-buffer)))))
+
+(defun sthenno/org-image-completion-trigger-bounds ()
+  "Return bounds for the nearest Org image completion trigger on this line."
+  (let ((trigger sthenno/org-image-completion-trigger))
+    (save-excursion
+      (when (and (not (equal trigger ""))
+                 (search-backward trigger (line-beginning-position) t))
+        (cons (point) (match-end 0))))))
+
+(defun sthenno/org-image-completion-insert-link (trigger-start candidate status)
+  "Replace TRIGGER-START through point with an Org link to CANDIDATE.
+STATUS is the completion exit status."
+  (when (eq status 'finished)
+    (let ((path (sthenno/org-image-completion-candidate-path candidate)))
+      (when (sthenno/org-image-completion-file-p path)
+        (delete-region trigger-start (point))
+        (insert (org-link-make-string path))
+        (org-link-preview)))))
+
+(defun sthenno/org-image-completion-at-point ()
+  "Complete Org image links after `sthenno/org-image-completion-trigger'."
+  (when (derived-mode-p 'org-mode)
+    (when-let* ((bounds (sthenno/org-image-completion-trigger-bounds)))
+      (let ((trigger-start (copy-marker (car bounds)))
+            (completion-start (cdr bounds)))
+        (list completion-start
+              (point)
+              (sthenno/org-image-completion-candidates)
+              :company-doc-buffer #'sthenno/org-image-completion-doc-buffer
+              :company-prefix-length t
+              :exit-function (lambda (candidate status)
+                               (sthenno/org-image-completion-insert-link trigger-start
+                                                                         candidate
+                                                                         status)))))))
+
+(defun sthenno/org-image-completion-setup ()
+  "Enable Org image completion in the current buffer."
+  (add-hook 'completion-at-point-functions
+            #'sthenno/org-image-completion-at-point nil t)
+  (corfu-popupinfo-mode 1))
+
+(add-hook 'org-mode-hook #'sthenno/org-image-completion-setup)
+
 ;;; Denote
 (require 'denote)
 (setopt denote-directory org-directory
@@ -239,7 +329,7 @@
         denote-rename-buffer-mode t)
 
 (setopt denote-buffer-name-prefix "[D] "
-        denote-org-front-matter "#+TITLE: %1$s\n\n")
+        denote-org-front-matter "#+title: %1$s\n\n")
 
 ;;; Denote Org
 (require 'denote-org)
@@ -379,10 +469,10 @@
   (corfu-mode 1))
 
 (setopt corfu-auto t
-        corfu-auto-delay 0.05
+        corfu-auto-delay 0.0125
         corfu-auto-prefix 2
         corfu-preview-current 'insert
-        corfu-popupinfo-delay '(0.025 . 0.05))
+        corfu-popupinfo-delay '(0.0125 . 0.025))
 (dolist (binding '(("<down>" . corfu-next)
                    ("TAB" . corfu-complete)
                    ("<up>" . corfu-previous)
