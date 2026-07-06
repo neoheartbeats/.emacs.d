@@ -72,8 +72,6 @@
 (elpaca denote-org)
 (elpaca gptel)
 (elpaca magit)
-(elpaca marginalia)
-(elpaca vertico)
 
 ;; The config below uses direct `require' forms, so activate queued packages now.
 (elpaca-wait)
@@ -208,10 +206,7 @@
 
 ;;; Appearance
 (require-theme 'modus-themes)
-(setopt modus-themes-common-palette-overrides '(
-                                                ;; (fg-paren-match unspecified)
-                                                ;; (bg-paren-match unspecified)
-                                                (border bg-main)
+(setopt modus-themes-common-palette-overrides '((border bg-main)
                                                 (fringe bg-main)))
 (load-theme 'modus-vivendi :no-confirm)
 
@@ -244,7 +239,7 @@
         org-persist-directory (locate-user-emacs-file "org-persist/"))
 
 ;;; Org display
-(setopt org-startup-truncated nil
+(setopt org-startup-truncated t
         org-startup-with-link-previews t
         org-ellipsis " (*)"
         org-hide-emphasis-markers t
@@ -353,16 +348,14 @@
 ;;; Completion and minibuffer
 
 ;; Completion defaults
-(setopt text-mode-ispell-word-completion 'completion-at-point
-        tab-always-indent 'complete)
+(setopt text-mode-ispell-word-completion 'completion-at-point)
+(setopt tab-always-indent 'complete)
 
 ;; Minibuffer
-(setopt echo-keystrokes 0.125
-        resize-mini-windows t
-        help-window-select nil
-        read-extended-command-predicate #'command-completion-default-include-p
-        minibuffer-default-prompt-format " [%s]"
-        minibuffer-visible-completions nil)
+(setopt echo-keystrokes 0.125)
+(setopt resize-mini-windows t)
+(setopt help-window-select nil)
+(setopt read-extended-command-predicate #'command-completion-default-include-p)
 
 ;; Completion styles
 (setopt completion-styles '(flex)
@@ -372,34 +365,14 @@
         completion-eager-update 'auto
         completion-ignore-case nil)
 (setopt read-file-name-completion-ignore-case t
-        read-buffer-completion-ignore-case t
-        file-name-shadow-mode t)
-
-;; Vertico
-
-;; (require 'vertico)
-;; (require 'vertico-directory)
-;; (setopt vertico-resize t
-;;         vertico-count-format (cons "[ %-6s ] " "%s of %s"))
-
-;; (keymap-set vertico-map "<tab>" #'vertico-insert)
-;; (keymap-set vertico-map "<return>" #'vertico-directory-enter)
-;; (keymap-set vertico-map "<backspace>" #'vertico-directory-delete-char)
-;; (setopt vertico-mode t)
-
-
-
-;; Marginalia
-
-;; (require 'marginalia)
-;; (setopt marginalia-mode t)
+        read-buffer-completion-ignore-case t)
+(setopt file-name-shadow-mode t)
 
 ;; Consult
 (autoload 'consult-buffer "consult" nil t)
 (autoload 'consult-line "consult" nil t)
 (keymap-global-set "s-b" #'consult-buffer)
 (keymap-global-set "C-s" #'consult-line)
-;; (keymap-global-set "s-m" #'consult-imenu-multi)
 
 ;; Dabbrev
 (require 'dabbrev)
@@ -441,18 +414,9 @@
   (corfu-mode 1))
 
 (setopt corfu-auto t
-        corfu-auto-delay 0.125
-        corfu-auto-prefix 2
-        corfu-preview-current 'insert
-        corfu-popupinfo-delay '(0.125 . 0.25))
-
-(defun my-corfu-move-to-minibuffer ()
-  (pcase completion-in-region--data
-    (`(,beg ,end ,table ,pred ,extras)
-     (let ((completion-extra-properties extras)
-           completion-cycle-threshold completion-cycling)
-       (consult-completion-in-region beg end table pred)))))
-(add-to-list 'corfu-continue-commands #'my-corfu-move-to-minibuffer)
+        corfu-auto-delay 0.2
+        corfu-auto-prefix 2)
+(setopt corfu-popupinfo-delay '(0.125 . 0.25))
 
 ;; TAB in `corfu-map' is bound at the end of the AI section, together with
 ;; the inline completion TAB dispatch.
@@ -462,9 +426,13 @@
 (keymap-set corfu-map "RET" #'sthenno/corfu-confirm)
 
 (add-hook 'eshell-mode-hook #'sthenno/corfu-eshell-setup)
-(add-hook 'prog-mode-hook #'corfu-popupinfo-mode)
-(corfu-history-mode 1)
-(global-corfu-mode 1)
+(add-hook 'text-mode-hook #'sthenno/corfu-eshell-setup)
+
+(setopt corfu-history-mode t)
+(setopt corfu-popupinfo-mode t)
+(setopt global-corfu-minibuffer (lambda ()
+                                  (not (eq (current-local-map) read-passwd-map))))
+(setopt global-corfu-mode t)
 
 (with-eval-after-load 'completion-preview
   (setopt completion-preview-sort-function corfu-sort-function))
