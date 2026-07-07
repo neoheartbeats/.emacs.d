@@ -34,11 +34,13 @@
 
 ;;; Frames
 (setq frame-resize-pixelwise t
-      default-frame-alist '((menu-bar-lines . 0) (tool-bar-lines . 0)
-                            (vertical-scroll-bars) (horizontal-scroll-bars)
+      default-frame-alist '((vertical-scroll-bars) (horizontal-scroll-bars)
                             (height . 45) (width . 120)
-                            (background-color . "000000")
-                            (undecorated . t) (alpha . (85 . 85)))
+                            (background-color . "000000"))
       initial-frame-alist default-frame-alist)
+
+;; (add-to-list 'default-frame-alist '(alpha-background . 0.55))
+;; (add-to-list 'default-frame-alist '(ns-background-blur . 15))
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 
 ;;; early-init.el ends here

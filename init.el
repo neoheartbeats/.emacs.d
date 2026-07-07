@@ -76,9 +76,11 @@
 ;; The config below uses direct `require' forms, so activate queued packages now.
 (elpaca-wait)
 
-(autoload 'denote-journal-new-or-existing-entry "denote-journal" nil t)
 
 ;;; Startup
+
+(autoload 'denote-journal-new-or-existing-entry "denote-journal" nil t)
+
 (setopt inhibit-startup-screen t
         inhibit-startup-echo-area-message user-login-name
         inhibit-startup-buffer-menu t
@@ -107,14 +109,14 @@
 ;;; Files
 (setopt save-silently t
         remote-file-name-inhibit-locks t
-        backup-inhibited t
-        global-auto-revert-mode t)
+        backup-inhibited t)
+;; (setopt global-auto-revert-mode t)
 
 
 ;;; Windows
 (setopt redisplay-skip-fontification-on-input t
         mode-line-compact t
-        header-line-format ""
+        header-line-format nil
         switch-to-prev-buffer-skip 0)
 
 
@@ -134,9 +136,9 @@
 
 
 ;;; Interaction
+(setopt use-short-answers t
+        use-dialog-box nil)
 (setopt ring-bell-function #'ignore
-        use-short-answers t
-        use-dialog-box nil
         copy-region-blink-predicate #'ignore)
 
 
@@ -145,10 +147,10 @@
 (add-to-list 'savehist-additional-variables 'corfu-history)
 
 (setopt save-place-autosave-interval nil
-        save-place-mode t
-        savehist-mode t
-        electric-pair-mode t
-        delete-selection-mode t)
+        save-place-mode t)
+(setopt savehist-mode t)
+(setopt electric-pair-mode t)
+(setopt delete-selection-mode t)
 
 
 ;;; Key bindings
@@ -210,11 +212,11 @@
                                                 (fringe bg-main)))
 (load-theme 'modus-vivendi :no-confirm)
 
-(set-face-attribute 'default nil :family "M PLUS 1 Code" :height 140)
+(set-face-attribute 'default nil :family "Tempestypes" :height 140)
 (set-face-attribute 'region nil :extend t :foreground 'unspecified)
 
 ;;; Fonts
-(let ((font "PingFang SC"))
+(let ((font "Noto Serif CJK SC"))
   (dolist (charset '(kana han cjk-misc))
     (set-fontset-font t charset (font-spec :family font))))
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji"))
@@ -225,11 +227,11 @@
         x-stretch-cursor t
         blink-cursor-mode nil)
 
-(setopt default-input-method nil
-        show-paren-delay 0.125
+(setopt default-input-method nil)
+(setopt show-paren-delay 0.125
         show-paren-context-when-offscreen t
-        show-paren-mode t
-        show-paren-not-in-comments-or-strings 'on-mismatch)
+        show-paren-not-in-comments-or-strings 'on-mismatch
+        show-paren-mode t)
 
 ;;; Org and notes
 (require 'org)
@@ -249,20 +251,20 @@
         org-image-actual-width t
         org-image-max-width 0.6)
 
-(define-advice org--create-inline-image
-    (:filter-return (image) sthenno-max-height)
-  "Keep Org inline image preview height within the preview width."
-  (when-let* ((props (cdr-safe image))
-              (size (or (plist-get props :max-width)
-                        (plist-get props :width))))
-    (setcdr image (plist-put props :max-height 320)))
-  image)
+;; (define-advice org--create-inline-image
+;;     (:filter-return (image) sthenno-max-height)
+;;   "Keep Org inline image preview height within the preview width."
+;;   (when-let* ((props (cdr-safe image))
+;;               (size (or (plist-get props :max-width)
+;;                         (plist-get props :width))))
+;;     (setcdr image (plist-put props :max-height 320)))
+;;   image)
 
 (setopt org-attach-method 'cp)
 
 ;;; Org Babel
+(setopt org-confirm-babel-evaluate nil)
 (setopt org-babel-uppercase-example-markers t
-        org-confirm-babel-evaluate nil
         org-babel-update-intermediate t
         org-babel-load-languages '((emacs-lisp . t)
                                    (python . t)
@@ -272,9 +274,9 @@
 (setopt org-src-fontify-natively t
         org-src-preserve-indentation t
         org-src-content-indentation 0
-        org-edit-src-persistent-message nil
         org-src-tab-acts-natively t
         org-src-ask-before-returning-to-edit-buffer nil)
+(setopt org-edit-src-persistent-message nil)
 
 ;;; Denote
 (require 'denote)
@@ -348,7 +350,7 @@
 ;;; Completion and minibuffer
 
 ;; Completion defaults
-(setopt text-mode-ispell-word-completion 'completion-at-point)
+;; (setopt text-mode-ispell-word-completion 'completion-at-point)
 (setopt tab-always-indent 'complete)
 
 ;; Minibuffer
